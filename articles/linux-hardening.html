@@ -57,18 +57,32 @@
       </ol>
       <p>For more details, please refer to these sources:</p>
       <ul></ul>
-      <li><a href="https://blog.trainace.com/glossary/secure-boot-process" target="_blank" rel="noopener noreferrer">https://blog.trainace.com/glossary/secure-boot-process</a></li>
-      <li><a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank" rel="noopener noreferrer">https://wiki.ubuntu.com/UEFI/SecureBoot</a></li>
+      <li><a href="https://blog.trainace.com/glossary/secure-boot-process" target="_blank"
+          rel="noopener noreferrer">https://blog.trainace.com/glossary/secure-boot-process</a></li>
+      <li><a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank"
+          rel="noopener noreferrer">https://wiki.ubuntu.com/UEFI/SecureBoot</a></li>
       </ul>
       <hr>
       <h3>Linux and UEFI Secure Boot</h3>
       <p>Several Linux distributions support UEFI Secure Boot, including:</p>
       <ul></ul>
-      <li><strong>Fedora:</strong> Supported since Fedora 18 (2013). <a href="https://fedoraproject.org/wiki/Releases/18/FeatureList" target="_blank" rel="noopener noreferrer">Fedora 18 Feature List</a></li>
-      <li><strong>Ubuntu:</strong> <a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank" rel="noopener noreferrer">Ubuntu UEFI Secure Boot Wiki</a> <a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure Boot Not?</a></li>
-      <li><strong>Debian:</strong> Supported since Debian Buster (2019). <a href="https://www.debian.org/releases/buster/" target="_blank" rel="noopener noreferrer">Debian Buster Release</a> <a href="https://wiki.debian.org/SecureBoot" target="_blank" rel="noopener noreferrer">Debian Secure Boot Wiki</a></li>
-      <li><strong>openSUSE:</strong> Supported since openSUSE 12.3 (2013). <a href="https://en.opensuse.org/openSUSE:UEFI" target="_blank" rel="noopener noreferrer">openSUSE UEFI</a></li>
-      <li><strong>Oracle Linux:</strong> Supported since version 7.3 (2016). <a href="https://en.m.wikipedia.org/wiki/Oracle_Linux" target="_blank" rel="noopener noreferrer">Oracle Linux on Wikipedia</a> <a href="https://docs.oracle.com/en/operating-systems/oracle-linux/notice-sboot/" target="_blank" rel="noopener noreferrer">Oracle Linux Secure Boot Documentation</a></li>
+      <li><strong>Fedora:</strong> Supported since Fedora 18 (2013). <a
+          href="https://fedoraproject.org/wiki/Releases/18/FeatureList" target="_blank" rel="noopener noreferrer">Fedora
+          18 Feature List</a></li>
+      <li><strong>Ubuntu:</strong> <a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank"
+          rel="noopener noreferrer">Ubuntu UEFI Secure Boot Wiki</a> <a
+          href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure
+          Boot Not?</a></li>
+      <li><strong>Debian:</strong> Supported since Debian Buster (2019). <a
+          href="https://www.debian.org/releases/buster/" target="_blank" rel="noopener noreferrer">Debian Buster
+          Release</a> <a href="https://wiki.debian.org/SecureBoot" target="_blank" rel="noopener noreferrer">Debian
+          Secure Boot Wiki</a></li>
+      <li><strong>openSUSE:</strong> Supported since openSUSE 12.3 (2013). <a
+          href="https://en.opensuse.org/openSUSE:UEFI" target="_blank" rel="noopener noreferrer">openSUSE UEFI</a></li>
+      <li><strong>Oracle Linux:</strong> Supported since version 7.3 (2016). <a
+          href="https://en.m.wikipedia.org/wiki/Oracle_Linux" target="_blank" rel="noopener noreferrer">Oracle Linux on
+          Wikipedia</a> <a href="https://docs.oracle.com/en/operating-systems/oracle-linux/notice-sboot/"
+          target="_blank" rel="noopener noreferrer">Oracle Linux Secure Boot Documentation</a></li>
       </ul>
       <p>To achieve secure boot support, a prebootloader binary called <em>shim</em> is used to verify both the
         bootloader and the Linux kernel. These distributions typically pay Microsoft to have the <em>shim</em>
@@ -86,7 +100,8 @@
           </ul>
         </li>
         <li><strong>Qubes OS:</strong> Qubes OS does not yet support Secure Boot, although efforts are underway
-          to change this. <a href="https://github.com/QubesOS/qubes-issues/issues/4371" target="_blank" rel="noopener noreferrer">Qubes OS Issue #4371</a></li>
+          to change this. <a href="https://github.com/QubesOS/qubes-issues/issues/4371" target="_blank"
+            rel="noopener noreferrer">Qubes OS Issue #4371</a></li>
       </ul>
       <hr>
       <h3>Flaws in Current Linux Implementations</h3>
@@ -102,8 +117,10 @@
           only verifying the kernel and bootloader will not do anything against a remote attacker. To mitigate
           this, you must verify the base operating system with dm-verity, although this is very difficult and
           cumbersome due to the layout of traditional Linux distributions."</p>
-        <p><a href="https://madaidans-insecurities.github.io/guides/linux-hardening.html#verified-boot" target="_blank" rel="noopener noreferrer">Madaidans Insecurities</a></p>
-        <p><a href="https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html" target="_blank" rel="noopener noreferrer">Kernel Documentation on dm-verity</a></p>
+        <p><a href="https://madaidans-insecurities.github.io/guides/linux-hardening.html#verified-boot" target="_blank"
+            rel="noopener noreferrer">Madaidans Insecurities</a></p>
+        <p><a href="https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html" target="_blank"
+            rel="noopener noreferrer">Kernel Documentation on dm-verity</a></p>
       </blockquote>
       <h4>A Brief Overview of dm-verity Implementation</h4>
       <p>To achieve full Verified Boot, the following steps are generally recommended:</p>
@@ -116,12 +133,15 @@
         <li>Patch the kernel to prevent execution of writable memory.</li>
         <li>Ensure that no executable configuration file remains writable.</li>
       </ul>
-      <p>For further insights, see: <a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure Boot Not?</a></p>
+      <p>For further insights, see: <a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank"
+          rel="noopener noreferrer">Secure Boot Not?</a></p>
       <p>Another approach is to replace Microsoft's Secure Boot keys with your own. This requires signing a
         unified kernel image (combining the Linux kernel and bootloader into a single binary). However,
         replacing the platform keys can be risky and may brick your computer, especially since many devices rely
         on Microsoft's or the vendor's certificate for signing device firmware (e.g., GPU firmware). See section
-        3.1 of the Arch Wiki article on UEFI Secure Boot: <a href="https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot" target="_blank" rel="noopener noreferrer">Arch Wiki: Unified Extensible Firmware Interface/Secure Boot</a></p>
+        3.1 of the Arch Wiki article on UEFI Secure Boot: <a
+          href="https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot" target="_blank"
+          rel="noopener noreferrer">Arch Wiki: Unified Extensible Firmware Interface/Secure Boot</a></p>
       <p>Even if you manage to roll out your own keys without bricking your device, full Verified Boot is not
         achieved unless the base operating system is also signed. As one author explains:</p>
       <blockquote>
@@ -129,7 +149,8 @@
           Image and specifically not shim) is an option, why not do that? ... However, the kernel must then
           verify the operating system to ensure that only verified software is run, which requires
           cryptographic verification of every single executable in the system."</p>
-        <p><a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure Boot Not?</a></p>
+        <p><a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure
+            Boot Not?</a></p>
       </blockquote>
       <p>Furthermore, a key challenge is that there is no clear definition of which files are critical to system
         functionality. Unlike major operating systems—where system-critical files are placed on a separate,
@@ -141,7 +162,8 @@
           The system volume is signed by the OS vendor and remains immutable, ensuring that only authorized code
           runs. In contrast, Linux distributions mix system-critical files with other applications, making it
           nearly impossible to verify the integrity of 'the system'."</p>
-        <p><a href="https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot" target="_blank" rel="noopener noreferrer">PrivSec</a></p>
+        <p><a href="https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot" target="_blank"
+            rel="noopener noreferrer">PrivSec</a></p>
       </blockquote>
       <hr>
       <h3>Summary</h3>
