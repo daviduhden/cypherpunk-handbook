@@ -141,7 +141,6 @@ section p {
 
 /* Guides Section Styles */
 .guides {
-  all: unset;
   background: linear-gradient(135deg, #111, #333);
   padding: 40px;
   border: 1px solid #ff00ff;
