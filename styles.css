@@ -73,7 +73,7 @@ main blockquote {
 }
 
 main ul {
-  list-style: disc;
+  list-style: none;
   margin-left: 20px;
   padding-left: 20px;
 }
@@ -82,6 +82,42 @@ main ul li {
   margin-bottom: 10px;
   color: #fff;
   font-size: 1.2em;
+  padding-left: 30px;
+  position: relative;
+}
+
+main ul li::before {
+  content: '•';
+  color: #ff00ff;
+  font-size: 1.5em;
+  position: absolute;
+  left: -20px;
+  top: 0;
+}
+
+main ol {
+  list-style: none;
+  counter-reset: item;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+
+main ol li {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 1.2em;
+  padding-left: 30px;
+  position: relative;
+  counter-increment: item;
+}
+
+main ol li::before {
+  content: counter(item) ".";
+  color: #ff00ff;
+  font-size: 1.5em;
+  position: absolute;
+  left: -30px;
+  top: 0;
 }
 
 section {
