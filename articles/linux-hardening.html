@@ -2,191 +2,191 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Linux Hardening Guide - The Cyberpunk Handbook</title>
-  <link rel="icon" href="./../favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./../styles.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Linux Hardening Guide - The Cyberpunk Handbook</title>
+	<link rel="icon" href="./../favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./../styles.css">
 </head>
 
 <body>
-  <header>
-    <h1>Linux Hardening Guide</h1>
-  </header>
+	<header>
+		<h1>Linux Hardening Guide</h1>
+	</header>
 
-  <nav>
-    <ul>
-      <li><a href="./../index.html" target="_blank" rel="noopener noreferrer">Home</a></li>
-      <li><a href="./../manifesto.html" target="_blank" rel="noopener noreferrer">Manifesto</a></li>
-      <li><a href="./../contact.html" target="_blank" rel="noopener noreferrer">Contact</a></li>
-    </ul>
-  </nav>
+	<nav>
+		<ul>
+			<li><a href="./../index.html" target="_blank" rel="noopener noreferrer">Home</a></li>
+			<li><a href="./../manifesto.html" target="_blank" rel="noopener noreferrer">Manifesto</a></li>
+			<li><a href="./../contact.html" target="_blank" rel="noopener noreferrer">Contact</a></li>
+		</ul>
+	</nav>
 
-  <main>
-    <h1>1. Physical Security</h1>
-    <section>
-      <h2>1.1 Verified Boot</h2>
-      <p>Verified Boot is a security mechanism that ensures only trusted, cryptographically signed binaries—such
-        as the firmware, operating system, and bootloader—are loaded during the boot process. At startup, the
-        firmware verifies these components, and if any fail authentication due to unauthorized modifications,
-        the boot process is halted and a warning screen is displayed. In systems that support recovery measures,
-        a clean backup image may be restored automatically.</p>
-      <p>This mechanism is essential for preventing firmware-level malware, rootkits, and other preboot threats.
-        Preboot rootkits, for example, can provide attackers with deep control over the system before the
-        operating system fully loads, making detection and removal extremely challenging. Verified Boot blocks
-        these types of low-level malware from executing, thereby reinforcing the integrity of the system from
-        the very start.</p>
-      <h4>Types of Attacks Prevented by Verified Boot</h4>
-      <ol>
-        <li><strong>Firmware Malware:</strong> An attacker who compromises the firmware can modify it to load
-          malicious code at every boot. Verified Boot mitigates this risk by ensuring that only authenticated
-          firmware is executed.</li>
-        <li><strong>Preboot Rootkits:</strong> These malicious programs load before the operating system and can
-          evade conventional detection tools. Verified Boot prevents their execution by verifying the
-          authenticity of every critical binary.</li>
-        <li><strong>Boot-Level Persistence Attacks:</strong> If an attacker gains access to the system and
-          modifies the bootloader to execute malicious code at every restart, malware can reappear even after
-          being seemingly removed. Verified Boot detects unauthorized changes and blocks the boot process in
-          such cases.</li>
-        <li><strong>Kernel Tampering Attacks:</strong> Some attackers attempt to modify the operating system
-          kernel to run malicious code with elevated privileges. Verified Boot ensures the kernel’s integrity
-          before it is loaded, preventing any unauthorized alterations.</li>
-        <li><strong>Malicious Binary Injection:</strong> Should an attacker replace critical binaries with
-          modified versions that include backdoors, Verified Boot will detect the changes and stop the system
-          from booting with the unauthorized binaries.</li>
-      </ol>
-      <p>For more details, please refer to these sources:</p>
-      <ul>
-      <li><a href="https://blog.trainace.com/glossary/secure-boot-process" target="_blank"
-          rel="noopener noreferrer">https://blog.trainace.com/glossary/secure-boot-process</a></li>
-      <li><a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank"
-          rel="noopener noreferrer">https://wiki.ubuntu.com/UEFI/SecureBoot</a></li>
-      </ul>
-      <hr>
-      <h3>Linux and UEFI Secure Boot</h3>
-      <p>Several Linux distributions support UEFI Secure Boot, including:</p>
-      <ul>
-      <li><strong>Fedora:</strong> Supported since Fedora 18 (2013). <a
-          href="https://fedoraproject.org/wiki/Releases/18/FeatureList" target="_blank" rel="noopener noreferrer">Fedora
-          18 Feature List</a></li>
-      <li><strong>Ubuntu:</strong> <a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank"
-          rel="noopener noreferrer">Ubuntu UEFI Secure Boot Wiki</a> <a
-          href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure
-          Boot Not?</a></li>
-      <li><strong>Debian:</strong> Supported since Debian Buster (2019). <a
-          href="https://www.debian.org/releases/buster/" target="_blank" rel="noopener noreferrer">Debian Buster
-          Release</a> <a href="https://wiki.debian.org/SecureBoot" target="_blank" rel="noopener noreferrer">Debian
-          Secure Boot Wiki</a></li>
-      <li><strong>openSUSE:</strong> Supported since openSUSE 12.3 (2013). <a
-          href="https://en.opensuse.org/openSUSE:UEFI" target="_blank" rel="noopener noreferrer">openSUSE UEFI</a></li>
-      <li><strong>Oracle Linux:</strong> Supported since version 7.3 (2016). <a
-          href="https://en.m.wikipedia.org/wiki/Oracle_Linux" target="_blank" rel="noopener noreferrer">Oracle Linux on
-          Wikipedia</a> <a href="https://docs.oracle.com/en/operating-systems/oracle-linux/notice-sboot/"
-          target="_blank" rel="noopener noreferrer">Oracle Linux Secure Boot Documentation</a></li>
-      </ul>
-      <p>To achieve secure boot support, a prebootloader binary called <em>shim</em> is used to verify both the
-        bootloader and the Linux kernel. These distributions typically pay Microsoft to have the <em>shim</em>
-        binary signed, as most consumer laptops recognize only Microsoft’s Secure Boot keys (along with OEM
-        keys). Currently, Verified Boot/Secure Boot support on hardware platforms managed by Apple or Google is
-        not available.</p>
-      <hr>
-      <h3>Secure Boot on Security-Focused Distributions</h3>
-      <ul>
-        <li><strong>UEFI Secure Boot is supported on:</strong>
-          <ul>
-            <li>Kicksecure</li>
-            <li>Tails OS</li>
-            <li>SecureBlue</li>
-          </ul>
-        </li>
-        <li><strong>Qubes OS:</strong> Qubes OS does not yet support Secure Boot, although efforts are underway
-          to change this. <a href="https://github.com/QubesOS/qubes-issues/issues/4371" target="_blank"
-            rel="noopener noreferrer">Qubes OS Issue #4371</a></li>
-      </ul>
-      <hr>
-      <h3>Flaws in Current Linux Implementations</h3>
-      <p>Despite these measures, many Linux distributions have compromised UEFI Secure Boot to the extent that it
-        is largely ineffective against remote attackers or local attackers (when disk encryption is not used).
-        The <em>shim</em> binary only verifies the bootloader and kernel, leaving the base operating system
-        unverified—a significant vulnerability. This issue affects even security-focused Linux distributions:
-      </p>
-      <blockquote>
-        <p>"A remote attacker (or a physical attacker when not using encryption) can simply modify any other
-          privileged part of the operating system. For example, if they have the privileges to modify the
-          kernel, then they'd also be able to modify /sbin/init to achieve effectively the same result. Thus,
-          only verifying the kernel and bootloader will not do anything against a remote attacker. To mitigate
-          this, you must verify the base operating system with dm-verity, although this is very difficult and
-          cumbersome due to the layout of traditional Linux distributions."</p>
-        <p><a href="https://madaidans-insecurities.github.io/guides/linux-hardening.html#verified-boot" target="_blank"
-            rel="noopener noreferrer">Madaidans Insecurities</a></p>
-        <p><a href="https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html" target="_blank"
-            rel="noopener noreferrer">Kernel Documentation on dm-verity</a></p>
-      </blockquote>
-      <h4>A Brief Overview of dm-verity Implementation</h4>
-      <p>To achieve full Verified Boot, the following steps are generally recommended:</p>
-      <ul>
-        <li>Use a read-only filesystem for partitions containing executable code, enforced by dm-verity (or
-          alternatives such as fs-verity with file signatures or Linux IMA).</li>
-        <li>Employ the noexec mount option on data partitions.</li>
-        <li>Modify command interpreters to avoid executing scripts from mount points with the noexec option or
-          from STDIN.</li>
-        <li>Patch the kernel to prevent execution of writable memory.</li>
-        <li>Ensure that no executable configuration file remains writable.</li>
-      </ul>
-      <p>For further insights, see: <a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank"
-          rel="noopener noreferrer">Secure Boot Not?</a></p>
-      <p>Another approach is to replace Microsoft's Secure Boot keys with your own. This requires signing a
-        unified kernel image (combining the Linux kernel and bootloader into a single binary). However,
-        replacing the platform keys can be risky and may brick your computer, especially since many devices rely
-        on Microsoft's or the vendor's certificate for signing device firmware (e.g., GPU firmware). See section
-        3.1 of the Arch Wiki article on UEFI Secure Boot: <a
-          href="https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot" target="_blank"
-          rel="noopener noreferrer">Arch Wiki: Unified Extensible Firmware Interface/Secure Boot</a></p>
-      <p>Even if you manage to roll out your own keys without bricking your device, full Verified Boot is not
-        achieved unless the base operating system is also signed. As one author explains:</p>
-      <blockquote>
-        <p>"Since replacing the Microsoft keys and signing only authorized binaries (i.e. our own Unified Kernel
-          Image and specifically not shim) is an option, why not do that? ... However, the kernel must then
-          verify the operating system to ensure that only verified software is run, which requires
-          cryptographic verification of every single executable in the system."</p>
-        <p><a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure
-            Boot Not?</a></p>
-      </blockquote>
-      <p>Furthermore, a key challenge is that there is no clear definition of which files are critical to system
-        functionality. Unlike major operating systems—where system-critical files are placed on a separate,
-        immutable system partition—Linux distributions typically store all binaries (whether critical or not) in
-        the same directories (such as <code>/usr/bin</code> and <code>/usr/local/bin</code>). This lack of
-        segregation makes it extremely difficult to establish an effective verification mechanism.</p>
-      <blockquote>
-        <p>"Android, macOS, and ChromeOS have a clear distinction between system and user-installed applications.
-          The system volume is signed by the OS vendor and remains immutable, ensuring that only authorized code
-          runs. In contrast, Linux distributions mix system-critical files with other applications, making it
-          nearly impossible to verify the integrity of 'the system'."</p>
-        <p><a href="https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot" target="_blank"
-            rel="noopener noreferrer">PrivSec</a></p>
-      </blockquote>
-      <hr>
-      <h3>Summary</h3>
-      <p>In practice, enabling or disabling Secure Boot on a Linux distribution often makes little difference
-        because attackers can exploit unsigned system files to bypass the protection. Achieving full Verified
-        Boot—whether using Microsoft's keys or custom keys—is extremely challenging because system-critical
-        files and user-installed application binaries are stored together. For a truly secure implementation,
-        Linux distributions must segregate critical system files onto a separate, immutable partition and sign
-        them accordingly.</p>
-      <p>Until this change is adopted by Linux distro developers, users seeking a robust full Verified Boot
-        implementation may be better off using systems such as ChromeOS or Android.</p>
-    </section>
-  </main>
-  <footer>
-    <p>&copy; 2025 The Cyberpunk Handbook Authors. All Rights Reserved.</p>
-    <p><em>Perpetual and free authorization is hereby granted to any individual who acquires a copy of the content of
-        this website, within the respective domains listed on the home page, for unrestricted use. This authorization
-        includes, among other rights, the use, copying, modification, combination, publication, distribution,
-        sublicensing and sale of copies of the content, as well as the right to allow access to the content provided to
-        third parties. It should be noted that the content is provided without warranty of any kind, either express or
-        implied. However, the authors are confident that the information provided in the content of this website is
-        accurate and beneficial to the intended audience.</em></p>
-  </footer>
+	<main>
+		<h1>1. Physical Security</h1>
+		<section>
+			<h2>1.1 Verified Boot</h2>
+			<p>Verified Boot is a security mechanism that ensures only trusted, cryptographically signed binaries—such
+				as the firmware, operating system, and bootloader—are loaded during the boot process. At startup, the
+				firmware verifies these components, and if any fail authentication due to unauthorized modifications,
+				the boot process is halted and a warning screen is displayed. In systems that support recovery measures,
+				a clean backup image may be restored automatically.</p>
+			<p>This mechanism is essential for preventing firmware-level malware, rootkits, and other preboot threats.
+				Preboot rootkits, for example, can provide attackers with deep control over the system before the
+				operating system fully loads, making detection and removal extremely challenging. Verified Boot blocks
+				these types of low-level malware from executing, thereby reinforcing the integrity of the system from
+				the very start.</p>
+			<h4>Types of Attacks Prevented by Verified Boot</h4>
+			<ol>
+				<li><strong>Firmware Malware:</strong> An attacker who compromises the firmware can modify it to load
+					malicious code at every boot. Verified Boot mitigates this risk by ensuring that only authenticated
+					firmware is executed.</li>
+				<li><strong>Preboot Rootkits:</strong> These malicious programs load before the operating system and can
+					evade conventional detection tools. Verified Boot prevents their execution by verifying the
+					authenticity of every critical binary.</li>
+				<li><strong>Boot-Level Persistence Attacks:</strong> If an attacker gains access to the system and
+					modifies the bootloader to execute malicious code at every restart, malware can reappear even after
+					being seemingly removed. Verified Boot detects unauthorized changes and blocks the boot process in
+					such cases.</li>
+				<li><strong>Kernel Tampering Attacks:</strong> Some attackers attempt to modify the operating system
+					kernel to run malicious code with elevated privileges. Verified Boot ensures the kernel’s integrity
+					before it is loaded, preventing any unauthorized alterations.</li>
+				<li><strong>Malicious Binary Injection:</strong> Should an attacker replace critical binaries with
+					modified versions that include backdoors, Verified Boot will detect the changes and stop the system
+					from booting with the unauthorized binaries.</li>
+			</ol>
+			<p>For more details, please refer to these sources:</p>
+			<ul>
+			<li><a href="https://blog.trainace.com/glossary/secure-boot-process" target="_blank"
+					rel="noopener noreferrer">https://blog.trainace.com/glossary/secure-boot-process</a></li>
+			<li><a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank"
+					rel="noopener noreferrer">https://wiki.ubuntu.com/UEFI/SecureBoot</a></li>
+			</ul>
+			<hr>
+			<h3>Linux and UEFI Secure Boot</h3>
+			<p>Several Linux distributions support UEFI Secure Boot, including:</p>
+			<ul>
+			<li><strong>Fedora:</strong> Supported since Fedora 18 (2013). <a
+					href="https://fedoraproject.org/wiki/Releases/18/FeatureList" target="_blank" rel="noopener noreferrer">Fedora
+					18 Feature List</a></li>
+			<li><strong>Ubuntu:</strong> <a href="https://wiki.ubuntu.com/UEFI/SecureBoot" target="_blank"
+					rel="noopener noreferrer">Ubuntu UEFI Secure Boot Wiki</a> <a
+					href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure
+					Boot Not?</a></li>
+			<li><strong>Debian:</strong> Supported since Debian Buster (2019). <a
+					href="https://www.debian.org/releases/buster/" target="_blank" rel="noopener noreferrer">Debian Buster
+					Release</a> <a href="https://wiki.debian.org/SecureBoot" target="_blank" rel="noopener noreferrer">Debian
+					Secure Boot Wiki</a></li>
+			<li><strong>openSUSE:</strong> Supported since openSUSE 12.3 (2013). <a
+					href="https://en.opensuse.org/openSUSE:UEFI" target="_blank" rel="noopener noreferrer">openSUSE UEFI</a></li>
+			<li><strong>Oracle Linux:</strong> Supported since version 7.3 (2016). <a
+					href="https://en.m.wikipedia.org/wiki/Oracle_Linux" target="_blank" rel="noopener noreferrer">Oracle Linux on
+					Wikipedia</a> <a href="https://docs.oracle.com/en/operating-systems/oracle-linux/notice-sboot/"
+					target="_blank" rel="noopener noreferrer">Oracle Linux Secure Boot Documentation</a></li>
+			</ul>
+			<p>To achieve secure boot support, a prebootloader binary called <em>shim</em> is used to verify both the
+				bootloader and the Linux kernel. These distributions typically pay Microsoft to have the <em>shim</em>
+				binary signed, as most consumer laptops recognize only Microsoft’s Secure Boot keys (along with OEM
+				keys). Currently, Verified Boot/Secure Boot support on hardware platforms managed by Apple or Google is
+				not available.</p>
+			<hr>
+			<h3>Secure Boot on Security-Focused Distributions</h3>
+			<ul>
+				<li><strong>UEFI Secure Boot is supported on:</strong>
+					<ul>
+						<li>Kicksecure</li>
+						<li>Tails OS</li>
+						<li>SecureBlue</li>
+					</ul>
+				</li>
+				<li><strong>Qubes OS:</strong> Qubes OS does not yet support Secure Boot, although efforts are underway
+					to change this. <a href="https://github.com/QubesOS/qubes-issues/issues/4371" target="_blank"
+						rel="noopener noreferrer">Qubes OS Issue #4371</a></li>
+			</ul>
+			<hr>
+			<h3>Flaws in Current Linux Implementations</h3>
+			<p>Despite these measures, many Linux distributions have compromised UEFI Secure Boot to the extent that it
+				is largely ineffective against remote attackers or local attackers (when disk encryption is not used).
+				The <em>shim</em> binary only verifies the bootloader and kernel, leaving the base operating system
+				unverified—a significant vulnerability. This issue affects even security-focused Linux distributions:
+			</p>
+			<blockquote>
+				<p>"A remote attacker (or a physical attacker when not using encryption) can simply modify any other
+					privileged part of the operating system. For example, if they have the privileges to modify the
+					kernel, then they'd also be able to modify /sbin/init to achieve effectively the same result. Thus,
+					only verifying the kernel and bootloader will not do anything against a remote attacker. To mitigate
+					this, you must verify the base operating system with dm-verity, although this is very difficult and
+					cumbersome due to the layout of traditional Linux distributions."</p>
+				<p><a href="https://madaidans-insecurities.github.io/guides/linux-hardening.html#verified-boot" target="_blank"
+						rel="noopener noreferrer">Madaidans Insecurities</a></p>
+				<p><a href="https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html" target="_blank"
+						rel="noopener noreferrer">Kernel Documentation on dm-verity</a></p>
+			</blockquote>
+			<h4>A Brief Overview of dm-verity Implementation</h4>
+			<p>To achieve full Verified Boot, the following steps are generally recommended:</p>
+			<ul>
+				<li>Use a read-only filesystem for partitions containing executable code, enforced by dm-verity (or
+					alternatives such as fs-verity with file signatures or Linux IMA).</li>
+				<li>Employ the noexec mount option on data partitions.</li>
+				<li>Modify command interpreters to avoid executing scripts from mount points with the noexec option or
+					from STDIN.</li>
+				<li>Patch the kernel to prevent execution of writable memory.</li>
+				<li>Ensure that no executable configuration file remains writable.</li>
+			</ul>
+			<p>For further insights, see: <a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank"
+					rel="noopener noreferrer">Secure Boot Not?</a></p>
+			<p>Another approach is to replace Microsoft's Secure Boot keys with your own. This requires signing a
+				unified kernel image (combining the Linux kernel and bootloader into a single binary). However,
+				replacing the platform keys can be risky and may brick your computer, especially since many devices rely
+				on Microsoft's or the vendor's certificate for signing device firmware (e.g., GPU firmware). See section
+				3.1 of the Arch Wiki article on UEFI Secure Boot: <a
+					href="https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot" target="_blank"
+					rel="noopener noreferrer">Arch Wiki: Unified Extensible Firmware Interface/Secure Boot</a></p>
+			<p>Even if you manage to roll out your own keys without bricking your device, full Verified Boot is not
+				achieved unless the base operating system is also signed. As one author explains:</p>
+			<blockquote>
+				<p>"Since replacing the Microsoft keys and signing only authorized binaries (i.e. our own Unified Kernel
+					Image and specifically not shim) is an option, why not do that? ... However, the kernel must then
+					verify the operating system to ensure that only verified software is run, which requires
+					cryptographic verification of every single executable in the system."</p>
+				<p><a href="https://broken-by-design.fr/posts/secure-boot-not/" target="_blank" rel="noopener noreferrer">Secure
+						Boot Not?</a></p>
+			</blockquote>
+			<p>Furthermore, a key challenge is that there is no clear definition of which files are critical to system
+				functionality. Unlike major operating systems—where system-critical files are placed on a separate,
+				immutable system partition—Linux distributions typically store all binaries (whether critical or not) in
+				the same directories (such as <code>/usr/bin</code> and <code>/usr/local/bin</code>). This lack of
+				segregation makes it extremely difficult to establish an effective verification mechanism.</p>
+			<blockquote>
+				<p>"Android, macOS, and ChromeOS have a clear distinction between system and user-installed applications.
+					The system volume is signed by the OS vendor and remains immutable, ensuring that only authorized code
+					runs. In contrast, Linux distributions mix system-critical files with other applications, making it
+					nearly impossible to verify the integrity of 'the system'."</p>
+				<p><a href="https://privsec.dev/posts/linux/linux-insecurities/#lack-of-verified-boot" target="_blank"
+						rel="noopener noreferrer">PrivSec</a></p>
+			</blockquote>
+			<hr>
+			<h3>Summary</h3>
+			<p>In practice, enabling or disabling Secure Boot on a Linux distribution often makes little difference
+				because attackers can exploit unsigned system files to bypass the protection. Achieving full Verified
+				Boot—whether using Microsoft's keys or custom keys—is extremely challenging because system-critical
+				files and user-installed application binaries are stored together. For a truly secure implementation,
+				Linux distributions must segregate critical system files onto a separate, immutable partition and sign
+				them accordingly.</p>
+			<p>Until this change is adopted by Linux distro developers, users seeking a robust full Verified Boot
+				implementation may be better off using systems such as ChromeOS or Android.</p>
+		</section>
+	</main>
+	<footer>
+		<p>&copy; 2025 The Cyberpunk Handbook Authors. All Rights Reserved.</p>
+		<p><em>Perpetual and free authorization is hereby granted to any individual who acquires a copy of the content of
+				this website, within the respective domains listed on the home page, for unrestricted use. This authorization
+				includes, among other rights, the use, copying, modification, combination, publication, distribution,
+				sublicensing and sale of copies of the content, as well as the right to allow access to the content provided to
+				third parties. It should be noted that the content is provided without warranty of any kind, either express or
+				implied. However, the authors are confident that the information provided in the content of this website is
+				accurate and beneficial to the intended audience.</em></p>
+	</footer>
 </body>
 
 </html>
