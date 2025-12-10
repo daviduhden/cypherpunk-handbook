@@ -50,6 +50,32 @@ header {
   padding-bottom: 1rem;
 }
 
+article header {
+  margin-bottom: 1.1rem;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  color: #9fb3ff;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.meta {
+  margin: 0 0 0.6rem;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.lede {
+  margin: 0.2rem 0 1rem;
+  color: #e5e7eb;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
 header h1 {
   font-size: 2.1rem;
   font-weight: 700;
