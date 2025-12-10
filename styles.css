@@ -1,312 +1,196 @@
-/* Basic Reset */
+/*!
+ * 
+ * Copyright (c) 2025 The Cyberpunk Handbook Authors
+ * 
+ * Permission to use, copy, modify, and distribute this cascading style sheet 
+ * for any purpose with or without fee is hereby granted, provided that the
+ * above copyright notice and this permission notice appear in all copies.
+ * 
+ * THE CASCADING STYLE SHEET IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL 
+ * WARRANTIES WITH REGARD TO THIS CASCADING STYLE SHEET INCLUDING ALL IMPLIED 
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE 
+ * LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY 
+ * DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN 
+ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF 
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS CASCADING STYLE SHEET.
+ */
+
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Base Body Styles */
 body {
-	background: #000;
-	color: #fff;
-	font-family: sans-serif;
-	line-height: 1.6;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.6;
+  background: #0b1220;
+  color: #e2e8f0;
+  padding: 2rem 1.25rem;
 }
 
-/* Header Styles */
-header {
-	background: #111;
-	padding: 20px 0;
-	border-bottom: 2px solid #ff00ff;
-	box-shadow: 0 0 20px #0ff, 0 0 40px #ff00ff;
-}
-
-header h1 {
-	text-align: center;
-	font-size: 3em;
-	color: #0ff;
-	text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-	font-family: 'Trebuchet MS', Helvetica, sans-serif;
-}
-
-/* Navigation Styles */
-nav {
-	background: #222;
-	padding: 10px;
-}
-
-nav ul {
-	list-style: none;
-	display: flex;
-	justify-content: center;
-}
-
-nav ul li {
-	margin: 0 15px;
-}
-
-nav ul li a {
-	color: #ff00ff;
-	text-decoration: none;
-	font-size: 1.2em;
-	text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
-	transition: color 0.3s ease;
-}
-
-nav ul li a:hover {
-	color: #0ff;
-}
-
-/* Main Content Styles */
-main {
-	padding: 40px;
-}
-
-main blockquote {
-	background: rgba(0, 0, 0, 0.8);
-	border-left: 5px solid #ff00ff;
-	margin: 20px 0;
-	padding: 20px;
-	color: #fff;
-	font-style: italic;
-	box-shadow: 0 0 10px #0ff, 0 0 20px #ff00ff;
-}
-
-main ul {
-	list-style: none;
-	margin-left: 20px;
-	padding-left: 20px;
-}
-
-main ul li {
-	margin-bottom: 10px;
-	color: #fff;
-	font-size: 1.2em;
-	padding-left: 30px;
-	position: relative;
-}
-
-main ul li::before {
-	content: '•';
-	color: #ff00ff;
-	font-size: 1.5em;
-	position: absolute;
-	left: -20px;
-	top: 0;
-}
-
-main ol {
-	list-style: none;
-	counter-reset: item;
-	margin-left: 20px;
-	padding-left: 20px;
-}
-
-main ol li {
-	margin-bottom: 10px;
-	color: #fff;
-	font-size: 1.2em;
-	padding-left: 30px;
-	position: relative;
-	counter-increment: item;
-}
-
-main ol li::before {
-	content: counter(item) ".";
-	color: #ff00ff;
-	font-size: 1.5em;
-	position: absolute;
-	left: -30px;
-	top: 0;
-}
-
-section {
-	margin-bottom: 40px;
-}
-
-section h2 {
-	font-size: 2.5em;
-	margin-bottom: 20px;
-	color: #0ff;
-	text-shadow: 0 0 10px #ff00ff;
-	font-family: sans-serif;
-}
-
-section p {
-	font-size: 1.2em;
-	color: #fff;
-	font-family: sans-serif;
-	text-align: justify;
-}
-
-/* Guides Section Styles */
-.guides {
-	background: linear-gradient(135deg, #111, #333);
-	padding: 40px;
-	border: 1px solid #ff00ff;
-	box-shadow: 0 0 10px #0ff, 0 0 20px #ff00ff;
-	margin: 20px 0;
-	border-radius: 10px;
-}
-
-.guides h2 {
-	font-size: 2.5em;
-	margin-bottom: 20px;
-	color: #0ff;
-	text-shadow: 0 0 10px #ff00ff;
-	border-bottom: 2px solid #ff00ff;
-	padding-bottom: 10px;
-	font-family: sans-serif;
-}
-
-.guides ul {
-	list-style: none;
-	padding: 0;
-}
-
-.guides ul li {
-	font-size: 1.2em;
-	color: #fff;
-	margin-bottom: 10px;
-	padding: 10px;
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 5px;
-	transition: background 0.3s ease;
-}
-
-.guides ul li:hover {
-	background: rgba(0, 0, 0, 0.7);
-}
-
-/* Sidebar (Aside) Styles */
-aside {
-	background: rgba(0, 0, 0, 0.8);
-	padding: 20px;
-	border: 1px solid #ff00ff;
-	box-shadow: 0 0 10px #0ff, 0 0 20px #ff00ff;
-	margin: 20px 0;
-	border-radius: 10px;
-}
-
-aside h3 {
-	font-size: 2em;
-	color: #0ff;
-	text-shadow: 0 0 10px #ff00ff;
-	margin-bottom: 20px;
-	font-family: sans-serif;
-}
-
-aside h4 {
-	font-size: 1.5em;
-	margin-bottom: 10px;
-	font-family: sans-serif;
-}
-
-aside h4 a {
-	color: #ff00ff;
-	text-decoration: none;
-	transition: color 0.3s ease;
-}
-
-aside h4 a:hover {
-	color: #0ff;
-}
-
-/* Button and Interactive Elements */
-button,
-.btn {
-	background: #ff00ff;
-	border: none;
-	padding: 10px 20px;
-	color: #000;
-	font-size: 1em;
-	cursor: pointer;
-	text-transform: uppercase;
-	transition: background 0.3s ease;
-	box-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
-	font-family: sans-serif;
-}
-
-button:hover,
-.btn:hover {
-	background: #0ff;
-}
-
-/* General Link Styles */
 a {
-	color: #ff00ff;
-	text-decoration: none;
-	transition: color 0.3s ease;
+  color: #7cb7ff;
+  text-decoration: none;
 }
 
 a:hover {
-	color: #0ff;
+  text-decoration: underline;
 }
 
-/* Footer Styles */
+header,
+nav,
+main,
 footer {
-	background: #111;
-	text-align: center;
-	padding: 20px;
-	border-top: 2px solid #ff00ff;
-	box-shadow: 0 0 20px #0ff, 0 0 40px #ff00ff;
-	font-size: 0.9em;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-/* Code Styles */
-/* Inline code elements */
+header {
+  padding-bottom: 1rem;
+}
+
+header h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+nav a {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #1f2937;
+  border-radius: 999px;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+nav a:hover {
+  background: #1f2937;
+}
+
+main {
+  background: #0f172a;
+  border: 1px solid #1f273a;
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+}
+
+section {
+  margin-bottom: 1.5rem;
+}
+
+section h2 {
+  font-size: 1.7rem;
+  margin: 0 0 0.65rem;
+}
+
+section p,
+main p {
+  margin: 0.35rem 0 0.85rem;
+}
+
+.guides {
+  border: 1px solid #1f273a;
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: #0b1423;
+}
+
+.guides ul {
+  list-style: disc;
+  padding-left: 1.2rem;
+}
+
+.guides ul ul {
+  list-style: circle;
+}
+
+.guides li {
+  margin: 0.35rem 0;
+}
+
+aside {
+  margin-top: 1.5rem;
+  border: 1px solid #1f273a;
+  border-radius: 12px;
+  padding: 1.1rem;
+  background: #0b1423;
+}
+
+aside h3 {
+  margin: 0 0 0.5rem;
+}
+
+aside h4 {
+  margin: 0.35rem 0;
+}
+
+footer {
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
 code {
-	background-color: #222;
-	color: #ff00ff;
-	padding: 0.2em 0.4em;
-	border-radius: 3px;
-	font-family: monospace;
+  padding: 0.2em 0.35em;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: #111827;
 }
 
-/* Code blocks */
 pre {
-	background-color: #1a1a1a;
-	border-left: 5px solid #ff00ff;
-	padding: 1em;
-	overflow-x: auto;
-	font-family: monospace;
-	margin: 1em 0;
+  background-color: #0b1220;
+  border: 1px solid #1f273a;
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  margin: 1rem 0;
 }
 
-/* Image Styles */
 img {
-	max-width: 100%;
-	height: auto;
-	display: block;
-	margin: 0 auto;
-	border: 2px solid #ff00ff;
-	box-shadow: 0 0 10px #0ff, 0 0 20px #ff00ff;
-	border-radius: 10px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 10px;
+  border: 1px solid #1f273a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-	nav ul {
-		flex-direction: column;
-	}
+  nav ul {
+    flex-direction: column;
+  }
 
-	nav ul li {
-		margin: 10px 0;
-	}
+  nav ul li {
+    margin: 10px 0;
+  }
 
-	header h1 {
-		font-size: 2.5em;
-	}
+  header h1 {
+    font-size: 2.5em;
+  }
 
-	section h2 {
-		font-size: 2em;
-	}
+  section h2 {
+    font-size: 2em;
+  }
 
-	aside {
-		margin: 10px 0;
-	}
+  aside {
+    margin: 10px 0;
+  }
 
-	.guides {
-		padding: 20px;
-	}
+  .guides {
+    padding: 20px;
+  }
 }
