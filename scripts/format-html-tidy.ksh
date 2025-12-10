@@ -1,5 +1,5 @@
 #!/bin/ksh
-set -eu  # exit on error and on use of unset variables
+set -eu
 
 # Script to format HTML files using tidy
 #
