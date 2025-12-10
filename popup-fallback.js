@@ -1,4 +1,3 @@
-// @licstart The following is the license notice for the JavaScript code in this file.
 // @license SPDX: ISC
 /*!
  * Popup Fallback Script
@@ -17,7 +16,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-// @licend The above is the entire license notice for the JavaScript code in this file.
+// @license-end
 
 // Attempt to open target="_blank" links; if blocked, fall back to same-tab navigation.
 document.addEventListener('click', function (event) {
