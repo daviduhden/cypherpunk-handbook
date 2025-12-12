@@ -16,27 +16,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-// Ask first: open in new tab or same tab for target="_blank" links.
-// Avoid opening before the user decides; fall back gracefully if pop-ups are blocked.
+// This script provides a fallback for links with target="_blank".
+// When a user clicks such a link, ask if they want to open in a new tab.
+// If pop-ups are blocked, fall back to same-tab navigation.
 document.addEventListener('click', function (event) {
-  // Respect modified clicks (Ctrl/Cmd/Shift/Middle) and prior handlers.
+  // Ignore clicks with modifier keys or already-handled events.
   if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     return;
   }
 
+  // Find the nearest anchor element with an href.
   const link = event.target.closest('a[href]');
   if (!link || link.target !== '_blank') {
     return;
   }
 
+  // Prevent default navigation for _blank links.
   event.preventDefault();
   const href = link.href;
 
+  // Ask the user if they want to open in a new tab.
   const openInNewTab = window.confirm('Open this link in a new tab?');
   if (openInNewTab) {
     const opened = window.open(href, '_blank');
     if (!opened) {
-      // Pop-up blocked; fall back to same-tab navigation.
+      // If pop-up is blocked, navigate in the same tab.
       window.location.href = href;
     }
   } else {
