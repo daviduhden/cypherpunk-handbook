@@ -83,6 +83,29 @@ body {
   padding: var(--pad-y) var(--pad-x);
 }
 
+/* Ensure very long words can break and wrap to the next line for readability */
+html, body, p, li, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Protect code and pre from forced breaks */
+code, pre, kbd, samp {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+pre {
+  white-space: pre;
+  overflow-x: auto;
+}
+
+code {
+  white-space: pre-wrap;
+}
+
 /*
  * Link Styles
  * Color and hover effect for all links.
