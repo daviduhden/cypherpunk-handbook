@@ -16,19 +16,30 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-// Attempt to open target="_blank" links; if blocked, fall back to same-tab navigation.
+// Ask first: open in new tab or same tab for target="_blank" links.
+// Avoid opening before the user decides; fall back gracefully if pop-ups are blocked.
 document.addEventListener('click', function (event) {
-  const link = event.target.closest('a[href]');
-  if (!link) {
+  // Respect modified clicks (Ctrl/Cmd/Shift/Middle) and prior handlers.
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     return;
   }
 
-  if (link.target === '_blank') {
-    const href = link.href;
-    const opened = window.open(href, link.target);
+  const link = event.target.closest('a[href]');
+  if (!link || link.target !== '_blank') {
+    return;
+  }
+
+  event.preventDefault();
+  const href = link.href;
+
+  const openInNewTab = window.confirm('Open this link in a new tab?');
+  if (openInNewTab) {
+    const opened = window.open(href, '_blank');
     if (!opened) {
-      event.preventDefault();
+      // Pop-up blocked; fall back to same-tab navigation.
       window.location.href = href;
     }
+  } else {
+    window.location.href = href;
   }
 });
