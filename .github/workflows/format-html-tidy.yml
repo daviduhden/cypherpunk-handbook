@@ -1,0 +1,97 @@
+name: Format HTML (tidy)
+
+on:
+  push:
+    paths:
+      - "/*.html"
+      - "articles/*.html"
+      - "templates/*.html"
+  pull_request:
+    paths:
+      - "/*.html"
+      - "articles/*.html"
+      - "templates/*.html"
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout (push)
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout (pull_request HEAD)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Ensure ksh (package) + tidy are installed and /bin/ksh exists
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sudo apt-get update
+          sudo apt-get install -y ksh tidy
+
+          KSH_BIN="$(command -v ksh93 || command -v ksh)"
+          sudo ln -sf "$KSH_BIN" /bin/ksh
+
+          /bin/ksh -c 'echo "ksh OK"; whence -a ksh ksh93 || true'
+          tidy -version
+
+      - name: Run formatter script (ksh)
+        shell: bash
+        run: |
+          set -euo pipefail
+          /bin/ksh ./scripts/format-html-tidy.bash
+
+      - name: Commit & push changes (push event)
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "chore: format HTML with tidy"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Commit & push changes (PR from same repo)
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "chore: format HTML with tidy"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Fail if formatting changed files (PR from fork cannot be pushed)
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "PR from fork: cannot push changes back. Run formatter locally and commit."
+            git diff
+            exit 1
+          fi
