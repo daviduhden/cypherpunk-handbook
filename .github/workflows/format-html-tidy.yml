@@ -52,8 +52,7 @@ jobs:
       - name: Run formatter script (ksh)
         shell: bash
         run: |
-          set -euo pipefail
-          /bin/ksh ./scripts/format-html-tidy.bash
+          /bin/ksh ./scripts/format-html-tidy.ksh
 
       - name: Commit & push changes (push event)
         if: github.event_name == 'push'
