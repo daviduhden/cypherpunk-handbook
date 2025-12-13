@@ -6,11 +6,13 @@ on:
       - "/*.html"
       - "articles/*.html"
       - "templates/*.html"
+      - "scripts/*.ksh"
   pull_request:
     paths:
       - "/*.html"
       - "articles/*.html"
       - "templates/*.html"
+      - "scripts/*.ksh"
 
 permissions:
   contents: write
