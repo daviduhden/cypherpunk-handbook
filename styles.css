@@ -185,6 +185,14 @@ header h1 {
   color: var(--heading);
 }
 
+header h2 {
+  margin: 0 0 1em;
+  font-size: clamp(1.1em, 1.2vw + 0.9em, 1.45em);
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
 /*
  * Navigation list styles
  */
