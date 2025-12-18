@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>T.C.H. - PAGE TITLE</title>
-  <link rel="icon" href="./../favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./../styles.css">
-  <script src="./../popup-fallback.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>T.C.H. — Article</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
+  "../feeds/articles.xml">
+  <script src="../popup-fallback.js"></script>
 </head>
 <body>
-  <header>
-    <h1>ARTICLE TITLE</h1>
+  <header id="site-header">
+    <h1>The Cyberpunk Handbook</h1>
 
-    <h2>Guide</h2>
+    <h2>Article</h2>
   </header>
 
-  <nav>
+  <nav id="site-nav">
     <ul>
       <li>
-        <a href="./../index.html" target="_blank" rel=
+        <a href="../index.html" target="_blank" rel=
         "noopener noreferrer">Home</a>
       </li>
 
       <li>
-        <a href="./../manifesto.html" target="_blank" rel=
+        <a href="../manifesto.html" target="_blank" rel=
         "noopener noreferrer">Manifesto</a>
       </li>
 
       <li>
-        <a href="./../contact.html" target="_blank" rel=
+        <a href="../contact.html" target="_blank" rel=
         "noopener noreferrer">Contact</a>
+      </li>
+
+      <li>
+        <a href="../contribute.html" target="_blank" rel=
+        "noopener noreferrer">Contribute</a>
       </li>
     </ul>
   </nav>
 
-  <main>
+  <main id="site-main">
     <article>
-      <header>
-        <p class="kicker">GUIDE / CATEGORY</p>
+      <header class="article-header">
+        <p class="kicker">ARTICLE / CATEGORY</p>
 
         <h1>Article Title</h1>
 
-        <p class="meta">Updated <time datetime="2025-01-01">DATE</time> •
-        Version v0.0.0</p>
+        <p class="meta">Updated <time datetime="2025-01-01">DATE</time></p>
 
-        <p class="lede">Short summary of what this guide covers and why it
+        <p class="lede">Short summary of what this article covers and why it
         matters.</p>
 
         <section>
@@ -95,22 +101,23 @@
 
         <ul>
           <li>
-            <a href="https://example.com">Source one</a>
+            <a href="https://example.com" target="_blank" rel=
+            "noopener noreferrer">Source one</a>
           </li>
 
           <li>
-            <a href="https://example.com">Source two</a>
+            <a href="https://example.com" target="_blank" rel=
+            "noopener noreferrer">Source two</a>
           </li>
         </ul>
       </section>
     </article>
   </main>
 
-  <footer>
+  <footer id="site-footer">
     <p>&copy; 2025 The Cyberpunk Handbook Authors. All Rights Reserved.</p>
 
-    <p><a href="./../license.html" target="_blank" rel=
-    "noopener noreferrer">License</a>
+    <p><a href="../license.html" rel="noopener noreferrer">License</a>
     </p>
   </footer>
 </body>

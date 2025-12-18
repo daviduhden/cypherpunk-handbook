@@ -32,6 +32,7 @@
 /*
  * Design tokens (keep it simple)
  * Uses reading-width measures (ch) and font-relative sizing (em).
+ *
  */
 :root {
   color-scheme: dark;
@@ -44,7 +45,13 @@
   --muted: #cbd5e1;
   --heading: #e5e7eb;
 
-  --link: #7cb7ff;
+  /* Cyberpunk accent: electric blue with a slight violet lean (not purplish-blue). */
+  --accent: #3b82f6;
+  --accent-2: #7c3aed;
+
+  /* Links stay more blue, hover nudges slightly towards violet. */
+  --link: var(--accent);
+  --link-hover: #5b8cff;
 
   --border: #1f273a;
   --border-2: #1f2937;
@@ -67,8 +74,10 @@
   --pad-x: 1.25em;
   --gap: 1.5em;
 
-  /* Clear focus ring for keyboard users. */
-  --focus-ring: 0 0 0 0.2em rgba(124, 183, 255, 0.35);
+  /* Focus ring: blue + a faint violet glow. */
+  --focus-ring:
+    0 0 0 0.2em rgba(59, 130, 246, 0.35),
+    0 0 0 0.4em rgba(124, 58, 237, 0.12);
 }
 
 /*
@@ -116,6 +125,7 @@ a {
 }
 
 a:hover {
+  color: var(--link-hover);
   text-decoration: underline;
 }
 
@@ -140,10 +150,12 @@ footer {
 
 header {
   padding-bottom: 1em;
+  text-align: center;
 }
 
 article header {
   margin-bottom: 1.1em;
+  text-align: left;
 }
 
 /*
@@ -151,7 +163,7 @@ article header {
  */
 .kicker {
   margin: 0 0 0.35em;
-  color: #9fb3ff;
+  color: color-mix(in srgb, var(--accent) 85%, var(--accent-2) 15%);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -176,8 +188,6 @@ article header {
 
 /*
  * Page title
- *
- * Improvement: responsive sizing via clamp.
  */
 header h1 {
   font-size: clamp(1.8em, 2.4vw + 1em, 2.4em);
@@ -203,6 +213,7 @@ nav ul {
   gap: 0.75em;
   padding: 0;
   margin: 0 0 1.5em;
+  justify-content: center;
 }
 
 /*
@@ -219,7 +230,23 @@ nav a {
 
 nav a:hover {
   background: var(--nav-bg-hover);
+  border-color: color-mix(in srgb, var(--border-2) 70%, var(--accent) 30%);
 }
+
+/*
+ * Icon style for inline SVG or img icons
+ */
+.icon {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  vertical-align: middle;
+  margin-left: 0.4em;
+  margin-right: 0.4em;
+}
+
+  /* Ensure icons are not rounded */
+  border-radius: 0;
 
 /*
  * Main content panel
@@ -251,27 +278,95 @@ main p {
   margin: 0.35em 0 0.85em;
 }
 
+/* List indentation: make lists visually indented from normal paragraph text */
+ul, ol {
+  padding-left: 1.8em;
+  margin: 0.5em 0 0.9em;
+}
+
+/* Nested lists get an additional indent to show hierarchy */
+ul ul, ol ol, ul ol, ol ul {
+  padding-left: 1.4em;
+}
+
 /*
- * Guides box
+ * Articles box
  */
-.guides {
+.articles {
   border: thin solid var(--border);
   border-radius: var(--radius-soft);
   padding: 1.25em;
   background: var(--panel-2);
 }
 
-.guides ul {
+.articles ul {
   list-style: disc;
   padding-left: 1.2em;
 }
 
-.guides ul ul {
+.articles ul ul {
   list-style: circle;
 }
 
-.guides li {
+.articles li {
   margin: 0.35em 0;
+}
+
+/* Grid layout for articles: two columns on wide screens, stacked on small screens */
+.articles-grid {
+  display: grid;
+  /* Use a more readable minimum column width and allow the grid to
+     adapt fluidly across breakpoints. */
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1.5em;
+  align-items: start;
+  grid-auto-rows: minmax(0, auto);
+}
+
+.article-column {
+  padding: 0.6em;
+  border-radius: calc(var(--radius-soft) * 0.9);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent 15%);
+}
+
+.article-column h3 {
+  margin: 0 0 0.5em;
+  font-size: 1.05em;
+  color: var(--accent);
+}
+
+.article-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.article-list > li {
+  margin: 0.45em 0;
+}
+
+.topic-list {
+  list-style: none;
+  padding-left: 0.75em;
+  margin-top: 0.35em;
+}
+
+.topic-list li {
+  margin: 0.3em 0;
+  font-size: 0.97em;
+}
+
+.article-column a {
+  color: var(--link);
+}
+
+@media (max-width: 48em) {
+  .articles {
+    padding: 1em;
+  }
+  .article-column h3 {
+    font-size: 1em;
+  }
 }
 
 /*
@@ -297,12 +392,37 @@ aside h4 {
 
 /*
  * Footer
+ * Center footer content, except footnote paragraphs.
  */
 footer {
   margin-top: 1.5em;
   padding: 1em 0;
   color: var(--muted);
   font-size: 0.95em;
+  text-align: center;
+}
+
+footer p {
+  margin: 0.35em 0;
+  text-align: center;
+}
+
+/* Keep footnote paragraphs left-aligned (those that contain <sup>) */
+footer p:has(sup) {
+  text-align: left;
+}
+
+footer p sup {
+  display: inline-block;
+  min-width: 1.4em;
+  margin-right: 0.4em;
+  padding: 0.05em 0.4em;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--accent) 25%, #ffffff 75%);
+  color: var(--panel);
+  font-weight: 800;
+  font-size: 0.8em;
+  text-align: center;
 }
 
 /*
@@ -311,9 +431,11 @@ footer {
 code {
   padding: 0.2em 0.35em;
   border-radius: 0.35em;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   background: var(--nav-bg);
+  border: thin solid color-mix(in srgb, var(--border-2) 70%, var(--accent) 30%);
 }
 
 /*
@@ -325,8 +447,9 @@ pre {
   border-radius: calc(var(--radius-soft) * 0.9);
   padding: 1em;
   overflow-x: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   margin: 1em 0;
 }
 
@@ -341,18 +464,17 @@ pre {
   margin: 1.5em auto;
   border-radius: calc(var(--radius-soft) * 0.85);
   box-shadow: 0 0.125em 0.75em rgba(0, 0, 0, 0.07);
+  border: thin solid color-mix(in srgb, var(--border) 80%, var(--accent) 20%);
 }
 
-/* Small images (e.g., icons, inline)
-   Uses character measures + viewport rather than fixed pixel equivalents. */
+/* Small images (e.g., icons, inline) */
 .article-content img.img-small {
   max-width: clamp(16ch, 30vw, 28ch);
   margin: 1em auto;
   box-shadow: none;
 }
 
-/* Medium images (e.g., half-width)
-   Uses character measures + viewport rather than fixed pixel equivalents. */
+/* Medium images (e.g., half-width) */
 .article-content img.img-medium {
   max-width: clamp(32ch, 70vw, 56ch);
 }
@@ -378,7 +500,7 @@ img {
   box-shadow: var(--shadow-img);
 }
 
-/* 
+/*
  * Responsive Styles
  */
 @media (max-width: 48em) {
@@ -402,7 +524,7 @@ img {
     margin: 0.625em 0;
   }
 
-  .guides {
+  .articles {
     padding: 1.25em;
   }
 }

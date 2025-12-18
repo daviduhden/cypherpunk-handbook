@@ -17,21 +17,20 @@
  */
 
 (() => {
-  'use strict';
+  "use strict";
 
   // Behavior toggles
   const ONLY_EXTERNAL_LINKS = false; // set true if you only want questions for external domains
   const CONFIRM_ONCE_PER_SESSION = true; // remember user's choice for the session
 
-  const SESSION_KEY = 'popupFallbackChoice'; // "newtab" | "sametab" | "ask"
-  const ASK = 'ask';
+  const SESSION_KEY = "popupFallbackChoice"; // "newtab" | "sametab" | "ask"
+  const ASK = "ask";
 
   function getDocLang2() {
-    const lang =
-      document.documentElement.getAttribute('lang') ||
-      document.documentElement.lang ||
-      navigator.language ||
-      '';
+    const lang = document.documentElement.getAttribute("lang")
+      || document.documentElement.lang
+      || navigator.language
+      || "";
     return String(lang).slice(0, 2).toLowerCase();
   }
 
@@ -58,10 +57,10 @@
   }
 
   function message() {
-    const isEs = getDocLang2() === 'es';
+    const isEs = getDocLang2() === "es";
     return isEs
-      ? '¿Abrir este enlace en una pestaña nueva?'
-      : 'Open this link in a new tab?';
+      ? "¿Abrir este enlace en una pestaña nueva?"
+      : "Open this link in a new tab?";
   }
 
   function openSameTab(url) {
@@ -72,53 +71,57 @@
   function tryOpenNewTab(url, link) {
     // Security: ensure noopener/noreferrer in the opened tab if possible.
     // (We also set rel on the link as a best-effort, without mutating markup permanently.)
-    const rel = (link.getAttribute('rel') || '').toLowerCase();
-    if (!rel.includes('noopener') || !rel.includes('noreferrer')) {
+    const rel = (link.getAttribute("rel") || "").toLowerCase();
+    if (!rel.includes("noopener") || !rel.includes("noreferrer")) {
       // Keep existing rel tokens, add missing ones
       const tokens = new Set(rel.split(/\s+/).filter(Boolean));
-      tokens.add('noopener');
-      tokens.add('noreferrer');
-      link.setAttribute('rel', Array.from(tokens).join(' '));
+      tokens.add("noopener");
+      tokens.add("noreferrer");
+      link.setAttribute("rel", Array.from(tokens).join(" "));
     }
 
-    const opened = window.open(url.href, '_blank', 'noopener,noreferrer');
+    const opened = window.open(url.href, "_blank", "noopener,noreferrer");
     if (!opened) return false;
 
     // Some browsers may ignore features; best-effort hardening:
-    try { opened.opener = null; } catch { /* ignore */ }
+    try {
+      opened.opener = null;
+    } catch { /* ignore */ }
 
     return true;
   }
 
   // Capture phase helps intercept before other handlers that might navigate.
   document.addEventListener(
-    'click',
+    "click",
     (event) => {
       // Ignore already-handled events and non-primary clicks / modifier keys.
       if (
-        event.defaultPrevented ||
-        event.button !== 0 ||
-        event.metaKey ||
-        event.ctrlKey ||
-        event.shiftKey ||
-        event.altKey
+        event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
       ) {
         return;
       }
 
-      const link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+      const link = event.target && event.target.closest
+        ? event.target.closest("a[href]")
+        : null;
       if (!link) return;
 
       // Only handle target=_blank links (as original script intends)
-      if (String(link.target).toLowerCase() !== '_blank') return;
+      if (String(link.target).toLowerCase() !== "_blank") return;
 
       // Ignore downloads and hash-only navigation
-      if (link.hasAttribute('download')) return;
+      if (link.hasAttribute("download")) return;
 
       // Resolve URL safely (supports relative href)
       let url;
       try {
-        url = new URL(link.getAttribute('href'), window.location.href);
+        url = new URL(link.getAttribute("href"), window.location.href);
       } catch {
         return; // malformed URL
       }
@@ -130,17 +133,17 @@
       event.preventDefault();
 
       const choice = getChoice();
-      if (choice === 'newtab') {
+      if (choice === "newtab") {
         if (!tryOpenNewTab(url, link)) openSameTab(url);
         return;
       }
-      if (choice === 'sametab') {
+      if (choice === "sametab") {
         openSameTab(url);
         return;
       }
 
       const openInNewTab = window.confirm(message());
-      setChoice(openInNewTab ? 'newtab' : 'sametab');
+      setChoice(openInNewTab ? "newtab" : "sametab");
 
       if (openInNewTab) {
         if (!tryOpenNewTab(url, link)) openSameTab(url);
@@ -148,6 +151,6 @@
         openSameTab(url);
       }
     },
-    true
+    true,
   );
 })();

@@ -9,12 +9,12 @@
   <script src="./popup-fallback.js"></script>
 </head>
 <body>
-  <header>
+  <header id="site-header">
     <h1>The Cyberpunk Handbook</h1>
 
-    <h2>Guides and resources</h2>
+    <h2>Articles and resources</h2>
 
-    <nav>
+    <nav id="site-nav">
       <ul>
         <li>
           <a href="./index.html" target="_blank" rel=
@@ -30,68 +30,113 @@
           <a href="./contact.html" target="_blank" rel=
           "noopener noreferrer">Contact</a>
         </li>
+
+        <li>
+          <a href="./contribute.html" target="_blank" rel=
+          "noopener noreferrer">Contribute</a>
+        </li>
       </ul>
     </nav>
   </header>
 
-  <main>
+  <main id="site-main">
     <section>
       <h2>Welcome</h2>
 
-      <p><strong>This Website is Under Construction.</strong>
-      </p>
+      <h3>⚠️ This Website is Under Construction ⚠️</h3>
     </section>
 
-    <section class="guides">
-      <h2>Guides</h2>
+    <p class="feed-link"><img src="./images/feed.svg" alt="RSS" class=
+    "icon"><a href="./feeds/articles.xml" type="application/rss+xml" rel=
+    "noopener noreferrer">Subscribe to our RSS Feed</a>
+    </p>
 
-      <ul>
-        <li>System hardening
-          <ul>
-            <li>
-              <a href="./articles/linux-hardening.html" target="_blank" rel=
-              "noopener noreferrer">Linux</a>
-            </li>
+    <section class="articles">
+      <h2>Articles</h2>
 
+      <div class="articles-grid">
+        <section id="desktop-systems" class="article-column">
+          <h3 id="desktop-title">Desktop Systems</h3>
+
+          <ul class="article-list">
             <li>
               <a href="./articles/windows-hardening.html" target="_blank" rel=
               "noopener noreferrer">Windows</a>
             </li>
 
             <li>
-              <a href="./articles/macos-hardening.html" target="_blank" rel=
-              "noopener noreferrer">MacOS</a>
+              <a href="./articles/linux-hardening.html" target="_blank" rel=
+              "noopener noreferrer">Linux</a>
+            </li>
+
+            <li>
+              <a href="./articles/openbsd.html" target="_blank" rel=
+              "noopener noreferrer">OpenBSD</a>
             </li>
           </ul>
-        </li>
-      </ul>
+        </section>
+
+        <section id="mobile-systems" class="article-column">
+          <h3 id="mobile-title">Mobile Systems</h3>
+
+          <ul class="article-list">
+            <li>
+              <a href="./articles/mobile-platforms.html" target="_blank" rel=
+              "noopener noreferrer">Overview</a>
+            </li>
+
+            <li>Articles by topic
+              <ul class="topic-list">
+                <li>
+                  <a href="./articles/android-hardening.html" target="_blank"
+                  rel="noopener noreferrer">Android — Hardening</a>
+                </li>
+
+                <li>
+                  <a href="./articles/android-privacy.html" target="_blank"
+                  rel="noopener noreferrer">Android — Privacy &amp;
+                  Permissions</a>
+                </li>
+
+                <li>
+                  <a href="./articles/android-network.html" target="_blank"
+                  rel="noopener noreferrer">Android — Networking &amp; VPN</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+      </div>
     </section>
 
-    <aside>
+    <aside id="site-aside">
       <h3>Domains</h3>
 
-      <h4><a href="https://handbook.uhden.dev" target="_blank" rel=
-      "noopener noreferrer">Clearnet</a>
-      </h4>
+      <p><img src="./images/www.svg" alt="WWW" class="icon"><a href=
+      "https://handbook.uhden.dev" target="_blank" rel=
+      "noopener noreferrer">Clear network</a>
+      </p>
 
-      <h4><a href=
+      <p><img src="./images/tor.svg" alt="TOR" class="icon"><a href=
       "http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion"
-      target="_blank" rel="noopener noreferrer">Tor</a>
-      </h4>
+      target="_blank" rel="noopener noreferrer">Tor network</a>
+      </p>
 
-      <h4><a href=
+      <p><img src="./images/i2p.svg" alt="I2P" class="icon"><a href=
       "http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p"
-      target="_blank" rel="noopener noreferrer">I2P</a>
-      </h4>
+      target="_blank" rel="noopener noreferrer">I2P network</a>
+      </p>
     </aside>
   </main>
 
-  <footer>
+  <footer id="site-footer">
     <p>&copy; 2025 The Cyberpunk Handbook Authors. All Rights Reserved.</p>
 
-    <p><a href="./license.html" target="_blank" rel=
-    "noopener noreferrer">License</a>
+    <p><strong><a href="./license.html" target="_blank" rel=
+    "noopener noreferrer">LICENSE</a></strong>
     </p>
+
+    <h4>LIVE FREE OR DIE</h4>
   </footer>
 </body>
 </html>

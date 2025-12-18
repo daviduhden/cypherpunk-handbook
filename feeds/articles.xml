@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Cyberpunk Handbook - Articles</title>
+    <link>./../index.html</link>
+    <description>Latest articles and updates from the Cyberpunk Handbook.</description>
+    <language>en-us</language>
+    <pubDate>Thu, 18 Dec 2025 14:29:27 GMT</pubDate>
+    <lastBuildDate>Thu, 18 Dec 2025 14:29:27 GMT</lastBuildDate>
+    <!-- items inserted here -->
+    <item>
+      <title>Sample Article</title>
+      <link>./../articles/article-sample.html</link>
+      <description/>
+      <pubDate>Thu, 18 Dec 2025 14:29:27 GMT</pubDate>
+      <guid>./../articles/article-sample.html</guid>
+    </item>
+  </channel>
+</rss>
