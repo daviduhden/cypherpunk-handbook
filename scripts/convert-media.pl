@@ -1,4 +1,18 @@
 #!/usr/bin/perl
+
+# Copyright (c) 2025 David Uhden Collado
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 # This script converts media files under the specified root directory
 # to canonical formats:
@@ -205,7 +219,7 @@ sub write_atomic {
 my %skip_dir = map { $_ => 1 } qw(.git node_modules dist build .cache);
 
 my %img_ext = map { $_ => 1 } qw(
-  png jpg jpeg jpe gif bmp tiff tif webp ico heic heif avif
+    png jpg jpeg jpe gif bmp tiff tif webp heic heif avif
 );
 
 # Media containers/extensions we consider for ffprobe classification
@@ -277,16 +291,16 @@ my $ffprobe = have_cmd("ffprobe") ? "ffprobe" : "";
 
 if (@images) {
     $magick
-      or die_tool(
+      or die_tool_tool(
 "Required tool not found: 'magick' (ImageMagick 7) or 'convert' (ImageMagick 6) for image conversion."
       );
 }
 if (@media_candidates) {
     $ffmpeg
       or
-      die_tool("Required tool not found: 'ffmpeg' for audio/video conversion.");
+      die_tool_tool("Required tool not found: 'ffmpeg' for audio/video conversion.");
     $ffprobe
-      or die_tool(
+      or die_tool_tool(
         "Required tool not found: 'ffprobe' for audio/video classification.");
 }
 
@@ -316,7 +330,7 @@ sub convert_image_to_png {
     my ( $src, $dst ) = @_;
 
     my $dir = dirname($dst);
-    my ( $fh, $tmp ) = tempfile( "img-XXXXXX.png", DIR => $dir, UNLINK => 0 );
+    my ( $fh, $tmp ) = tempfile( TEMPLATE => "img-XXXXXX", SUFFIX => ".png", DIR => $dir, UNLINK => 0 );
     close $fh;
 
     # Note: Animated GIF -> first frame only (ImageMagick default).
@@ -435,7 +449,7 @@ sub convert_audio_to_vorbis_ogg {
     my ( $src, $dst ) = @_;
 
     my $dir = dirname($dst);
-    my ( $fh, $tmp ) = tempfile( "aud-XXXXXX.ogg", DIR => $dir, UNLINK => 0 );
+    my ( $fh, $tmp ) = tempfile( TEMPLATE => "aud-XXXXXX", SUFFIX => ".ogg", DIR => $dir, UNLINK => 0 );
     close $fh;
 
     my @cmd = (
@@ -502,7 +516,7 @@ sub convert_video_to_theora_ogv {
     my ( $src, $dst ) = @_;
 
     my $dir = dirname($dst);
-    my ( $fh, $tmp ) = tempfile( "vid-XXXXXX.ogv", DIR => $dir, UNLINK => 0 );
+    my ( $fh, $tmp ) = tempfile( TEMPLATE => "vid-XXXXXX", SUFFIX => ".ogv", DIR => $dir, UNLINK => 0 );
     close $fh;
 
     my @cmd = ( $ffmpeg, "-y", "-i", $src, "-c:v", "libtheora", "-q:v", "7", );
@@ -614,7 +628,7 @@ for my $dst ( sort keys %target_to_sources ) {
 }
 if ($collision) {
     exit 2 if !$mode_apply;
-    die_tool(
+    die_tool_tool(
 "Refusing to convert due to output name collisions. Rename files to avoid collisions."
     );
 }
@@ -670,7 +684,8 @@ sub update_html_references {
         my $dir = dirname($html);
 
         my $content = "";
-        if ( !open my $fh, "<", $html ) {
+        my $fh;
+        if ( !open $fh, "<", $html ) {
             logw("Could not read HTML (skipping): $html");
             next;
         }
@@ -707,8 +722,8 @@ sub update_html_references {
 
         next if $content eq $orig;
 
-        my ( $fhw, $tmp ) =
-          tempfile( "html-XXXXXX.tmp", DIR => $dir, UNLINK => 0 );
+                my ( $fhw, $tmp ) =
+                    tempfile( TEMPLATE => "html-XXXXXX", SUFFIX => ".tmp", DIR => $dir, UNLINK => 0 );
         if ( !$fhw ) {
             logw("Could not create temp file for HTML (skipping): $html");
             next;

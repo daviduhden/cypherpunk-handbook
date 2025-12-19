@@ -122,8 +122,32 @@ jobs:
           mkdir -p "$HOME/.local/bin"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-          # Official install script (downloads a compiled binary)
-          curl -fsSL https://dprint.dev/install.sh | sh -s -- --dir "$HOME/.local/bin"
+          # Try the official install script first; if it's unavailable (404),
+          # fall back to downloading the appropriate GitHub release archive.
+          tmp_script="/tmp/dprint-install.sh"
+          if curl -fLsS --retry 5 https://dprint.dev/install.sh -o "$tmp_script"; then
+            bash "$tmp_script" --dir "$HOME/.local/bin"
+          else
+            echo "Official install script not available; falling back to GitHub release"
+            OS=$(uname -s)
+            ARCH=$(uname -m)
+            case "$OS" in
+              Linux) os=unknown-linux-gnu ;;
+              Darwin) os=apple-darwin ;;
+              *) echo "Unsupported OS: $OS"; exit 1 ;;
+            esac
+            case "$ARCH" in
+              x86_64|amd64) arch=x86_64 ;;
+              aarch64|arm64) arch=aarch64 ;;
+              *) echo "Unsupported ARCH: $ARCH"; exit 1 ;;
+            esac
+            filename="dprint-${arch}-${os}.tar.gz"
+            url="https://github.com/dprint/dprint/releases/latest/download/${filename}"
+            curl -fLsS --retry 5 "$url" -o /tmp/dprint.tar.gz
+            tar -xzf /tmp/dprint.tar.gz -C /tmp
+            mv /tmp/dprint "$HOME/.local/bin/dprint"
+            chmod +x "$HOME/.local/bin/dprint"
+          fi
 
           dprint --version
 
@@ -170,4 +194,3 @@ jobs:
             exit 1
           fi
           echo "No formatting changes detected."
-          

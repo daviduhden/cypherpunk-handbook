@@ -79,8 +79,21 @@ jobs:
           fi
 
           # mat2 modifies in place when using --inplace.
-          # Use xargs -0 to handle spaces safely.
-          printf '%s\0' "${files[@]}" | xargs -0 -r mat2 --inplace
+          # Run per-file and continue on errors to avoid crashing the whole job
+          # (some files may trigger internal mat2 exceptions).
+          failures=()
+          for f in "${files[@]}"; do
+            if ! mat2 --inplace "$f"; then
+              echo "mat2 failed for: $f" >&2
+              failures+=("$f")
+            fi
+          done
+
+          if [ "${#failures[@]}" -ne 0 ]; then
+            echo "mat2 failed on ${#failures[@]} file(s):" >&2
+            printf '%s\n' "${failures[@]}" >&2
+            echo "Continuing despite mat2 failures. Run mat2 locally for failing files." >&2
+          fi
 
       - name: Commit & push changes (push event)
         if: github.event_name == 'push' && steps.detect.outputs.has_targets == 'true'
