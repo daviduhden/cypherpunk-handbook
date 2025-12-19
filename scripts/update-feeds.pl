@@ -169,6 +169,6 @@ write_file( $data_file, $out );
 my $rebuild = File::Spec->catfile( $root, 'scripts', 'rebuild-feeds.pl' );
 if ( -x $rebuild ) { system( $^X, $rebuild ) == 0 or logw("rebuild failed") }
 
-logi("Updated cyberpunk-handbook feed and data mapping.");
+logi("Updated cypherpunk-handbook feed and data mapping.");
 
 exit 0;

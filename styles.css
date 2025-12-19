@@ -1,7 +1,7 @@
 /*!
- * Cascading Style Sheet (CSS) for The Cyberpunk Handbook
+ * Cascading Style Sheet (CSS) for The Cypherpunk Handbook
  *
- * Copyright (c) 2025 The Cyberpunk Handbook Authors
+ * Copyright (c) 2025 The Cypherpunk Handbook Authors
  *
  * Permission to use, copy, modify, and distribute this cascading style sheet
  * for any purpose with or without fee is hereby granted, provided that the
@@ -35,7 +35,7 @@
  *
  */
 :root {
-  /* Dark site palette (local to cyberpunk-handbook) */
+  /* Dark site palette (local to cypherpunk-handbook) */
   color-scheme: dark;
 
   --bg: #0b1220;
