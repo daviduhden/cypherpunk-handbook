@@ -46,27 +46,29 @@ jobs:
           # Remove old files if they exist
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz archive in PAX format without using a pipe
-          tar --format=pax --exclude="$ARCHIVE" -czf "$ARCHIVE" .
+          # Create tar.gz archive in PAX format, excluding temporary directory
+          tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
 
           # Generate SHA256 checksum
           sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
 
-          # Write SIGNIFY_KEY secret to a temporary file
+          # Write SIGNIFY_KEY secret to a temporary file (never added to repo)
           printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
           chmod 600 "$TMP_DIR/archive.sec"
 
           # Sign the archive
           signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
-          # Copy archive files to the repo's archive directory
-          rsync -av --exclude="archive.sec" --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
+          # Copy only the archive, checksum, and signature to the repo's archive directory
+          cp "$ARCHIVE" "$ARCHIVE_DIR/"
+          cp "$CHECKSUM" "$ARCHIVE_DIR/"
+          cp "$SIGNATURE" "$ARCHIVE_DIR/"
 
       - name: Commit and Push Changes via GitHub CLI
         run: |
           set -e
 
-          # Setup git to use GitHub CLI credentials (no gh auth login needed)
+          # Setup git to use GitHub CLI credentials
           gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -81,4 +83,3 @@ jobs:
             git push origin "$BRANCH"
           else
             echo "No changes to commit."
-          fi
