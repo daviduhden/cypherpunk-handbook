@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      SIGNIFY_KEY: ${{ github.repository }}
+      GH_TOKEN: ${{ github.GH_TOKEN }}
+      SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
 
     steps:
       - name: Checkout repository
