@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
       SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
 
     steps:
@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pax signify-openbsd rsync
+          sudo apt-get install -y rsync signify-openbsd
 
       - name: Create Archive, Checksum, and Signature
         run: |
@@ -48,13 +48,13 @@ jobs:
           # Remove old files if any
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz archive
-          pax -w . | gzip -n -9 > "$ARCHIVE"
+          # Create tar.gz archive in PAX format
+          tar --format=pax -cf - . | gzip -n -9 > "$ARCHIVE"
 
           # Generate SHA256 checksum
           sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
 
-          # Write signify key (no passphrase)
+          # Write signify key (from secret, with untrusted comment)
           printf "untrusted comment: GitHub Actions archive key\n%s\n" "$SIGNIFY_KEY" > /tmp/archive.sec
           chmod 600 /tmp/archive.sec
 
@@ -72,7 +72,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add archive/
-          git commit -m "Archive website [skip ci]" || echo "No changes to commit"
+          git commit -m "Archive website [skip ci]" || exit 0
 
           # Authenticate with GitHub CLI and push
           echo "$GH_TOKEN" | gh auth login --with-token
