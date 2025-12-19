@@ -1,78 +1,32 @@
-name: Convert & normalize media (convert-media.pl)
+name: Validate & format website (validate-website.pl)
 
 on:
   push:
     paths:
-      - "**/*.png"
-      - "**/*.jpg"
-      - "**/*.jpeg"
-      - "**/*.jpe"
-      - "**/*.gif"
-      - "**/*.bmp"
-      - "**/*.tif"
-      - "**/*.tiff"
-      - "**/*.webp"
-      - "**/*.avif"
-      - "**/*.heic"
-      - "**/*.heif"
-      - "**/*.mp3"
-      - "**/*.wav"
-      - "**/*.flac"
-      - "**/*.aac"
-      - "**/*.m4a"
-      - "**/*.wma"
-      - "**/*.mp4"
-      - "**/*.m4v"
-      - "**/*.mov"
-      - "**/*.mkv"
-      - "**/*.webm"
-      - "**/*.avi"
-      - "**/*.mpg"
-      - "**/*.mpeg"
-      - "**/*.ogg"
-      - "**/*.oga"
-      - "**/*.ogv"
-      - "**/*.opus"
       - "**/*.html"
       - "**/*.htm"
-      - "scripts/convert-media.pl"
-      - ".github/workflows/convert-media.yml"
+      - "**/*.xml"
+      - "**/*.svg"
+      - "**/*.css"
+      - "**/*.js"
+      - "**/*.mjs"
+      - "**/*.cjs"
+      - "**/*.json"
+      - "scripts/validate-website.pl"
+      - ".github/workflows/validate-website.yml"
   pull_request:
     paths:
-      - "**/*.png"
-      - "**/*.jpg"
-      - "**/*.jpeg"
-      - "**/*.jpe"
-      - "**/*.gif"
-      - "**/*.bmp"
-      - "**/*.tif"
-      - "**/*.tiff"
-      - "**/*.webp"
-      - "**/*.avif"
-      - "**/*.heic"
-      - "**/*.heif"
-      - "**/*.mp3"
-      - "**/*.wav"
-      - "**/*.flac"
-      - "**/*.aac"
-      - "**/*.m4a"
-      - "**/*.wma"
-      - "**/*.mp4"
-      - "**/*.m4v"
-      - "**/*.mov"
-      - "**/*.mkv"
-      - "**/*.webm"
-      - "**/*.avi"
-      - "**/*.mpg"
-      - "**/*.mpeg"
-      - "**/*.ogg"
-      - "**/*.oga"
-      - "**/*.ogv"
-      - "**/*.opus"
       - "**/*.html"
       - "**/*.htm"
-      - "scripts/convert-media.pl"
-      - ".github/workflows/convert-media.yml"
+      - "**/*.xml"
+      - "**/*.svg"
+      - "**/*.css"
+      - "**/*.js"
+      - "**/*.mjs"
+      - "**/*.cjs"
+      - "**/*.json"
+      - "scripts/validate-website.pl"
+      - ".github/workflows/validate-website.yml"
   # Allow manual runs from the Actions tab
   workflow_dispatch: {}
 
@@ -80,7 +34,7 @@ permissions:
   contents: write
 
 jobs:
-  convert_media:
+  validate_website:
     runs-on: ubuntu-latest
     if: github.actor != 'github-actions[bot]'
 
@@ -103,60 +57,92 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Detect needs (images/media)
+      - name: Detect file types in repo
         id: detect
         run: |
           set -euo pipefail
 
-          has_images=false
-          has_media=false
+          has_html=false
+          has_xml=false
+          has_svg=false
+          has_css=false
+          has_js=false
+          has_json=false
 
-          # Raster images that the script handles (ICO/SVG intentionally excluded)
-          git ls-files | grep -E '\.(png|jpe?g|jpe|gif|bmp|tiff?|webp|avif|heic|heif)$' -m1 >/dev/null 2>&1 && has_images=true || true
+          git ls-files | grep -E '\.(html|htm)$' -m1 >/dev/null 2>&1 && has_html=true || true
+          git ls-files | grep -E '\.xml$' -m1 >/dev/null 2>&1 && has_xml=true || true
+          git ls-files | grep -E '\.svg$' -m1 >/dev/null 2>&1 && has_svg=true || true
+          git ls-files | grep -E '\.css$' -m1 >/dev/null 2>&1 && has_css=true || true
+          git ls-files | grep -E '\.(js|mjs|cjs)$' -m1 >/dev/null 2>&1 && has_js=true || true
+          git ls-files | grep -E '\.json$' -m1 >/dev/null 2>&1 && has_json=true || true
 
-          # Local media candidates (audio/video) handled by ffprobe/ffmpeg in the script
-          git ls-files | grep -E '\.(ogg|oga|ogv|mp3|wav|flac|aac|m4a|mp4|m4v|mov|mkv|webm|avi|mpg|mpeg)$' -m1 >/dev/null 2>&1 && has_media=true || true
+          echo "has_html=$has_html" >> "$GITHUB_OUTPUT"
+          echo "has_xml=$has_xml" >> "$GITHUB_OUTPUT"
+          echo "has_svg=$has_svg" >> "$GITHUB_OUTPUT"
+          echo "has_css=$has_css" >> "$GITHUB_OUTPUT"
+          echo "has_js=$has_js" >> "$GITHUB_OUTPUT"
+          echo "has_json=$has_json" >> "$GITHUB_OUTPUT"
 
-          echo "has_images=$has_images" >> "$GITHUB_OUTPUT"
-          echo "has_media=$has_media" >> "$GITHUB_OUTPUT"
-
-          echo "Detected: images=$has_images media=$has_media"
+          echo "Detected: html=$has_html xml=$has_xml svg=$has_svg css=$has_css js=$has_js"
 
       - name: Install minimal apt dependencies
         run: |
           set -euo pipefail
 
-          declare -a pkgs=()
-
+          pkgs=()
           pkgs+=(perl)
 
-          if [[ "${{ steps.detect.outputs.has_images }}" == "true" ]]; then
-            pkgs+=(imagemagick)
+          if [[ "${{ steps.detect.outputs.has_html }}" == "true" ]]; then
+            pkgs+=(tidy)
           fi
 
-          if [[ "${{ steps.detect.outputs.has_media }}" == "true" ]]; then
-            pkgs+=(ffmpeg)
+          if [[ "${{ steps.detect.outputs.has_xml }}" == "true" || "${{ steps.detect.outputs.has_svg }}" == "true" ]]; then
+            pkgs+=(libxml2-utils)
           fi
 
-          # If nothing detected, still succeed quickly
-          if [[ "${#pkgs[@]}" -gt 0 ]]; then
-            sudo apt-get update
-            sudo apt-get install -y "${pkgs[@]}"
+          if [[ "${{ steps.detect.outputs.has_css }}" == "true" || "${{ steps.detect.outputs.has_js }}" == "true" ]]; then
+            pkgs+=(curl unzip)
           fi
 
-          # Print versions for sanity (best-effort)
-          (magick -version 2>/dev/null || convert -version 2>/dev/null) | head -n 1 || true
-          ffmpeg -version | head -n 1 || true
-          ffprobe -version | head -n 1 || true
+          if [[ "${{ steps.detect.outputs.has_json }}" == "true" ]]; then
+            pkgs+=(jq)
+          fi
+
+          sudo apt-get update
+          sudo apt-get install -y "${pkgs[@]}"
+
+          tidy -version || true
+          xmllint --version | head -n 1 || true
           perl -v | head -n 2 || true
 
-      - name: Run conversion script (apply)
-        env:
-          LANG: C.UTF-8
-          LC_ALL: C.UTF-8
+      - name: Install dprint (only if CSS/JS exist)
+        if: steps.detect.outputs.has_css == 'true' || steps.detect.outputs.has_js == 'true'
         run: |
           set -euo pipefail
-          perl ./scripts/convert-media.pl --apply
+
+          # Install Rust toolchain (non-interactive) so we can use `cargo`
+          curl -sSf https://sh.rustup.rs -o /tmp/rustup.sh
+          chmod +x /tmp/rustup.sh
+          RUSTUP_HOME="$HOME/.rustup" CARGO_HOME="$HOME/.cargo" sh /tmp/rustup.sh -y --no-modify-path
+
+          # Ensure cargo in PATH for the rest of the job
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+
+          cargo --version || true
+
+          # Install dprint via cargo.
+          cargo install dprint --locked || true
+
+          # Ensure any cargo-installed binaries are available
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+          dprint --version || true
+
+      - name: Run validate-website.pl (format + validate)
+        run: |
+          set -euo pipefail
+          perl ./scripts/validate-website.pl --apply
 
       - name: Commit & push changes (push event)
         if: github.event_name == 'push'
@@ -166,7 +152,7 @@ jobs:
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
-            git commit -m "chore: normalize media assets"
+            git commit -m "chore: format website files"
             git push
           else
             echo "No changes to commit."
@@ -180,19 +166,19 @@ jobs:
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
-            git commit -m "chore: normalize media assets"
+            git commit -m "chore: format website files"
             git push origin HEAD:${{ github.head_ref }}
           else
             echo "No changes to commit."
           fi
 
-      - name: Fail if changes detected (PR from fork cannot be pushed)
+      - name: Fail if formatting changed files (PR from fork cannot be pushed)
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
           set -euo pipefail
           if [ -n "$(git status --porcelain)" ]; then
-            echo "PR from fork: cannot push changes back. Run the converter locally and commit."
+            echo "PR from fork: cannot push changes back. Run the formatter locally and commit."
             git diff
             exit 1
           fi
-          echo "No conversion changes detected."
+          echo "No formatting changes detected."
