@@ -9,7 +9,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: write  # Required to push changes
 
 jobs:
   archive:
@@ -20,20 +20,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run archive job in OpenBSD VM
+      - name: Install OpenBSD VM and packages
         uses: vmactions/openbsd-vm@v1
         with:
-          usesh: false
+          usesh: true
+          prepare: |
+            # Install required packages in OpenBSD
+            pkg_add gh git
+
           run: |
             set -x
 
             echo "Running on:"
             uname -a
 
-            # Extract repository name
             REPO_NAME=$(basename "$GITHUB_REPOSITORY")
-
-            # Create temporary output directory (outside repository to avoid conflicts)
             TMP_ARCHIVE_DIR="/tmp/archive"
             mkdir -p "$TMP_ARCHIVE_DIR"
 
@@ -41,28 +42,37 @@ jobs:
             CHECKSUM="$TMP_ARCHIVE_DIR/${REPO_NAME}.tar.gz.sha256"
             SIGNATURE="$TMP_ARCHIVE_DIR/${REPO_NAME}.tar.gz.sig"
 
-            # Remove previous files if they exist
+            # Remove previous files
             rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-            # Archive the whole repository (including .git)
-            pax -w . | gzip -n -9 > "$ARCHIVE"
+            # Archive the repository (excluding previous archives)
+            pax -w . -x ./archive | gzip -n -9 > "$ARCHIVE"
 
             # Create SHA256 checksum
             sha256 -q "$ARCHIVE" > "$CHECKSUM"
 
-            # Create temporary private key file for signify
+            # Decode the signify private key from GitHub secret
             echo "${{ secrets.SIGNIFY_KEY }}" | openssl base64 -d > archive.sec
             chmod 600 archive.sec
 
             # Sign the archive
             signify -S -s archive.sec -m "$ARCHIVE"
 
-            # Copy the final files to repository archive directory
+            # Copy files to repository folder
             ARCHIVE_DIR="archive"
             mkdir -p "$ARCHIVE_DIR"
             cp "$ARCHIVE" "$ARCHIVE_DIR/"
             cp "$CHECKSUM" "$ARCHIVE_DIR/"
             cp "${ARCHIVE}.sig" "$ARCHIVE_DIR/"
 
-            # List the generated files
             ls -lah "$ARCHIVE_DIR"
+
+            # Configure git user
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+            # Commit and push the archive
+            gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+            git add "$ARCHIVE_DIR"
+            git commit -m "Add archived repository ${REPO_NAME} [ci skip]" || echo "No changes to commit"
+            git push origin main
