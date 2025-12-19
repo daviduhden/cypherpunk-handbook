@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *'  # Runs once a day at 00:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   openbsd-ci:
     runs-on: ubuntu-latest
@@ -12,6 +15,7 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,9 +32,14 @@ jobs:
         shell: openbsd {0}
         run: |
           set -e
-          REPO_NAME=$(basename $GITHUB_REPOSITORY)
+
+          echo "Running on:"
+          uname -a
+
+          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
           TMP_ARCHIVE_DIR=/tmp/archive
           mkdir -p "$TMP_ARCHIVE_DIR"
+
           ARCHIVE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sig"
@@ -38,35 +47,35 @@ jobs:
           # Remove old files
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz excluding archive folder
-          pax -w -x tar -s '/^\.\///' -s '/^archive//' . | gzip -n -9 > "$ARCHIVE"
+          # Create tar.gz (exclude existing archive directory)
+          pax -w -x tar . | gzip -n -9 > "$ARCHIVE"
 
           # Generate SHA256 checksum
           sha256 -q "$ARCHIVE" > "$CHECKSUM"
 
-          # Decode signify key and sign archive
-          echo "$SIGNIFY_KEY" | openssl base64 -d > /root/archive.sec
+          # Write signify private key AS PLAIN TEXT (required by signify)
+          printf "%s\n" "$SIGNIFY_KEY" > /root/archive.sec
           chmod 600 /root/archive.sec
+
+          # Sign archive
           signify -S -s /root/archive.sec -m "$ARCHIVE"
 
       - name: Sync Archive Back
         shell: openbsd {0}
         run: |
           mkdir -p archive
-          rsync -av --delete /tmp/archive "$GITHUB_WORKSPACE/"
+          rsync -av --delete /tmp/archive/ archive/
 
       - name: Commit and Push Changes
         shell: bash
         run: |
+          set -e
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           git add archive/
-          git commit -m "Update archive from OpenBSD CI [skip ci]" || echo "No changes to commit"
+          git commit -m "Update archive from OpenBSD CI [skip ci]" || exit 0
+
           gh auth login --with-token <<< "$GH_TOKEN"
-          gh repo clone $GITHUB_REPOSITORY repo-push
-          cd repo-push
-          git pull origin main
-          cp -r $GITHUB_WORKSPACE/archive .
-          git add archive/
-          git commit -m "Archive website" || echo "No changes"
           git push origin main
