@@ -47,7 +47,7 @@ jobs:
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
           # Create tar.gz archive in PAX format without using a pipe
-          tar --format=pax -czf "$ARCHIVE" .
+          tar --format=pax --exclude="$ARCHIVE" -czf "$ARCHIVE" .
 
           # Generate SHA256 checksum
           sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
