@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y rsync signify-openbsd
+          sudo apt-get install -y signify-openbsd
 
       - name: Create Archive, Checksum, and Signature
         run: |
@@ -32,20 +32,14 @@ jobs:
           echo "Running on:"
           uname -a
 
-          # Repo info
           REPO_NAME=$(basename "$GITHUB_REPOSITORY")
           ARCHIVE_DIR=archive
           TMP_DIR=/tmp/archive
-
-          # Remove old archive directory
-          rm -rf "$ARCHIVE_DIR"
-          mkdir -p "$TMP_DIR" "$ARCHIVE_DIR"
 
           ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
 
-          # Remove old files if any
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
           # Create tar.gz archive in PAX format
@@ -64,16 +58,33 @@ jobs:
           # Copy archive files to repo archive directory
           rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
 
-      - name: Commit and Push Changes
+      - name: Commit and Push Changes via GitHub CLI
         run: |
           set -e
 
+          # Authenticate GitHub CLI
+          echo "$GH_TOKEN" | gh auth login --with-token
+
+          # Create a commit if changes exist
+          if gh repo view --json defaultBranchRef | grep -q '"name": "main"'; then
+            BRANCH="main"
+          else
+            BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
+          fi
+
+          gh repo clone "$GITHUB_REPOSITORY" temp-repo
+          cd temp-repo
+
+          rsync -av --delete ../archive/ archive/
+
+          gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add archive/
-          git commit -m "Archive website [skip ci]" || exit 0
-
-          # Authenticate with GitHub CLI and push
-          echo "$GH_TOKEN" | gh auth login --with-token
-          git push origin main
+          if [ -n "$(git status --porcelain)" ]; then
+            git add archive/
+            git commit -m "Archive website [skip ci]"
+            git push origin "$BRANCH"
+          else
+            echo "No changes to commit."
+          fi
