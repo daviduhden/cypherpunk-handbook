@@ -123,7 +123,7 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
           # Try the official install script first; if it's unavailable (404),
-          # fall back to downloading the appropriate GitHub release archive.
+          # fall back to selecting an asset from the GitHub releases API.
           tmp_script="/tmp/dprint-install.sh"
           if curl -fLsS --retry 5 https://dprint.dev/install.sh -o "$tmp_script"; then
             bash "$tmp_script" --dir "$HOME/.local/bin"
@@ -131,21 +131,49 @@ jobs:
             echo "Official install script not available; falling back to GitHub release"
             OS=$(uname -s)
             ARCH=$(uname -m)
-            case "$OS" in
-              Linux) os=unknown-linux-gnu ;;
-              Darwin) os=apple-darwin ;;
-              *) echo "Unsupported OS: $OS"; exit 1 ;;
-            esac
+
             case "$ARCH" in
-              x86_64|amd64) arch=x86_64 ;;
-              aarch64|arm64) arch=aarch64 ;;
-              *) echo "Unsupported ARCH: $ARCH"; exit 1 ;;
+              x86_64|amd64) arch="x86_64" ;;
+              aarch64|arm64) arch="aarch64" ;;
+              *) arch="$ARCH" ;;
             esac
-            filename="dprint-${arch}-${os}.tar.gz"
-            url="https://github.com/dprint/dprint/releases/latest/download/${filename}"
-            curl -fLsS --retry 5 "$url" -o /tmp/dprint.tar.gz
+
+            # Query GitHub API for latest release and pick a matching tar.gz asset
+            api_json=$(curl -fsS --retry 5 "https://api.github.com/repos/dprint/dprint/releases/latest" || true)
+            download_url=""
+            if [ -n "$api_json" ]; then
+              download_url=$(printf '%s' "$api_json" \
+                | grep '"browser_download_url":' \
+                | sed -E 's/.*"([^\"]+)".*/\1/' \
+                | grep -E '\.tar\.gz$' \
+                | grep -i "$arch" || true)
+            fi
+
+            # If no match found by arch, fallback to any linux tarball
+            if [ -z "$download_url" ]; then
+              download_url=$(printf '%s' "$api_json" \
+                | grep '"browser_download_url":' \
+                | sed -E 's/.*"([^\"]+)".*/\1/' \
+                | grep -i linux \
+                | grep -E '\.tar\.gz$' \
+                | head -n1 || true)
+            fi
+
+            if [ -z "$download_url" ]; then
+              echo "Could not determine a dprint release asset to download." >&2
+              exit 1
+            fi
+
+            echo "Downloading dprint from: $download_url"
+            curl -fLsS --retry 5 "$download_url" -o /tmp/dprint.tar.gz
             tar -xzf /tmp/dprint.tar.gz -C /tmp
-            mv /tmp/dprint "$HOME/.local/bin/dprint"
+            # Find the extracted dprint binary
+            binpath=$(find /tmp -maxdepth 3 -type f -name dprint -perm /u+x -print -quit || true)
+            if [ -z "$binpath" ]; then
+              echo "dprint binary not found inside archive" >&2
+              exit 1
+            fi
+            mv "$binpath" "$HOME/.local/bin/dprint"
             chmod +x "$HOME/.local/bin/dprint"
           fi
 
