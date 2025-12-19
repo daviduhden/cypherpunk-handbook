@@ -1,81 +1,70 @@
-name: Archive website (pax + gzip + signify)
+name: Archive website
 
 on:
-  schedule:
-    - cron: '0 0 * * *'   # Once per day at 00:00 UTC
+  push:
+    branches:
+      - main
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   archive:
     runs-on: ubuntu-latest
-    name: Archive website on OpenBSD
-
     env:
-      GH_TOKEN: ${{ github.token }}
-      SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      REPO: ${{ github.repository }}
+      VM_SSH_USER: runner
+      VM_SSH_HOST: 127.0.0.1
+      VM_SSH_PORT: 2224
+      VM_REPO_DIR: /home/runner/work/${{ github.repository }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Run archive job in OpenBSD
-        uses: vmactions/openbsd-vm@v1
-        with:
-          usesh: false
-          envs: 'GH_TOKEN SIGNIFY_KEY'
-          sync: rsync
-          copyback: false
-          prepare: |
-            pkg_add -I git
+      - name: Generate temporary Ed25519 SSH key
+        id: sshkey
+        run: |
+          ssh-keygen -t ed25519 -f $HOME/temp_ed25519 -N "" -q
+          echo "PRIVATE_KEY=$(cat $HOME/temp_ed25519)" >> $GITHUB_ENV
+          echo "PUBLIC_KEY=$(cat $HOME/temp_ed25519.pub)" >> $GITHUB_ENV
 
-          run: |
-            set -e
+      - name: Add temporary public key to VM
+        run: |
+          sshpass -p "$VM_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST \
+          "mkdir -p ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys"
 
-            echo "Running on:"
-            uname -a
+      - name: Prepare VM repository
+        run: |
+          mkdir -p ~/.ssh
+          echo "$PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p $VM_SSH_PORT $VM_SSH_HOST >> ~/.ssh/known_hosts
 
-            # Repo info
-            REPO_NAME=$(basename "$GITHUB_REPOSITORY")
-            ARCHIVE_DIR=archive
-            TMP_DIR=/tmp/archive
+          ssh -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST bash -c "'
+            cd $VM_REPO_DIR || exit 1
+            git init 2>/dev/null || true
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git 2>/dev/null || true
+            git config user.name \"github-actions[bot]\"
+            git config user.email \"github-actions[bot]@users.noreply.github.com\"
+          '"
 
-            mkdir -p "$TMP_DIR" "$ARCHIVE_DIR"
+      - name: Create archive using pax + gzip
+        run: |
+          pax -w -p e archive | gzip > archive.tar.gz
 
-            ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
-            CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
-            SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
-
-            rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
-
-            # Create archive
-            pax -w -x tar . | gzip -n -9 > "$ARCHIVE"
-
-            # Checksum
-            sha256 -q "$ARCHIVE" > "$CHECKSUM"
-
-            # Write signify key (no passphrase)
-            printf "%s\n" "$SIGNIFY_KEY" > /root/archive.sec
-            chmod 600 /root/archive.sec
-
-            # Sign archive
-            signify -S -s /root/archive.sec -m "$ARCHIVE"
-
-            # Replace archive directory contents
-            rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
-
-            # Git config
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-
-            # Commit changes
+      - name: Sync archive to VM and commit
+        run: |
+          scp -P $VM_SSH_PORT archive.tar.gz $VM_SSH_USER@$VM_SSH_HOST:$VM_REPO_DIR/
+          ssh -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST bash -c "'
+            cd $VM_REPO_DIR
+            gzip -dc archive.tar.gz | pax -r -p e
+            rm archive.tar.gz
             git add archive/
-            git commit -m "Archive website [skip ci]" || echo "Nothing to commit"
+            git commit -m \"Archive website [skip ci]\" || echo \"Nothing to commit\"
+            GIT_CURL_VERBOSE=1 GIT_TRACE=1 git push origin main || echo \"Push failed or nothing to push\"
+          '"
 
-            # Push changes using GH_TOKEN
-            git push https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git main
-
-            # Optional: cleanup temporary files
-            rm -rf "$TMP_DIR"
+      - name: Remove temporary SSH key from VM
+        run: |
+          ssh -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST \
+          "sed -i \"/$(echo $PUBLIC_KEY | sed 's/[\/&]/\\&/g')/d\" ~/.ssh/authorized_keys"
