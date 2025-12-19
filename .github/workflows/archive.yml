@@ -22,9 +22,7 @@ jobs:
           envs: 'GH_TOKEN SIGNIFY_KEY'
           usesh: true
           prepare: |
-            pkg_add -v curl gzip rsync git github-cli
-            # Install tree if needed
-            pkg_add -v tree
+            pkg_add -I tree curl rsync git github-cli
 
       - name: Create Archive, Checksum, and Signature
         shell: openbsd {0}
@@ -47,14 +45,15 @@ jobs:
           sha256 -q "$ARCHIVE" > "$CHECKSUM"
 
           # Decode signify key and sign archive
-          echo "$SIGNIFY_KEY" | base64 -d > /root/archive.sec
+          echo "$SIGNIFY_KEY" | openssl base64 -d > /root/archive.sec
           chmod 600 /root/archive.sec
           signify -S -s /root/archive.sec -m "$ARCHIVE"
 
       - name: Sync Archive Back
         shell: openbsd {0}
         run: |
-          rsync -av /tmp/archive "$GITHUB_WORKSPACE/"
+          mkdir -p archive
+          rsync -av --delete /tmp/archive "$GITHUB_WORKSPACE/"
 
       - name: Commit and Push Changes
         shell: bash
