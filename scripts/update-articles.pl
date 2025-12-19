@@ -14,7 +14,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# Small helper to update the Articles section in cyberpunk-handbook/index.html
+# Small helper to update the Articles section in cypherpunk-handbook/index.html
 # Usage: update-articles.pl
 # Prompts for: category (desktop|mobile), title, slug (without .html), where to insert
 
