@@ -134,7 +134,7 @@ sub have_cmd {
 sub require_cmd {
     my ( $cmd, $why ) = @_;
     have_cmd($cmd)
-      or die_tool("Required tool '$cmd' not found in PATH ($why).");
+      or die_tool_tool("Required tool '$cmd' not found in PATH ($why).");
 }
 
 sub run_cmd {

@@ -41,6 +41,31 @@ use File::Spec;
 use JSON::PP;
 use Time::Local qw(timegm);
 
+# -------------------------
+# Logging
+# -------------------------
+my $no_color  = 0;
+my $is_tty    = ( -t STDOUT )             ? 1 : 0;
+my $use_color = ( !$no_color && $is_tty ) ? 1 : 0;
+
+my ( $GREEN, $YELLOW, $RED, $RESET ) = ( "", "", "", "" );
+if ($use_color) {
+    $GREEN  = "\e[32m";
+    $YELLOW = "\e[33m";
+    $RED    = "\e[31m";
+    $RESET  = "\e[0m";
+}
+
+sub logi { print "${GREEN}✅ [INFO]${RESET} $_[0]\n"; }
+sub logw { print STDERR "${YELLOW}⚠️ [WARN]${RESET} $_[0]\n"; }
+sub loge { print STDERR "${RED}❌ [ERROR]${RESET} $_[0]\n"; }
+
+sub die_tool {
+    my ($msg) = @_;
+    loge($msg);
+    exit 1;
+}
+
 sub read_file {
     my ($p) = @_;
     open my $fh, '<:encoding(UTF-8)', $p or return undef;
@@ -52,7 +77,7 @@ sub read_file {
 
 sub write_file {
     my ( $p, $c ) = @_;
-    open my $fh, '>:encoding(UTF-8)', $p or die "Could not write $p: $!\n";
+    open my $fh, '>:encoding(UTF-8)', $p or die_tool "Could not write $p: $!\n";
     print {$fh} $c;
     close $fh;
 }
@@ -91,7 +116,7 @@ sub question {
 
 my $slug = question( 'Slug (without .html)', '' );
 $slug =~ s/^\s+|\s+$//g;
-die "slug required" unless length $slug;
+die_tool "slug required" unless length $slug;
 my $title = question( 'Title',       '' );
 my $desc  = question( 'Description', '' );
 
@@ -121,7 +146,7 @@ my $item =
   . "      <pubDate>$pub_rfc</pubDate>\n"
   . "      <guid>$link</guid>\n"
   . "    </item>\n";
-my $content = read_file($feed) // die "Feed template missing: $feed\n";
+my $content = read_file($feed) // die_tool "Feed template missing: $feed\n";
 $content =~ s{<pubDate>[^<]*</pubDate>}{<pubDate>$pub_rfc</pubDate>}m;
 $content =~
 s{<lastBuildDate>[^<]*</lastBuildDate>}{<lastBuildDate>$pub_rfc</lastBuildDate>}m;
@@ -142,8 +167,8 @@ write_file( $data_file, $out );
 
 # call rebuild if exists
 my $rebuild = File::Spec->catfile( $root, 'scripts', 'rebuild-feeds.pl' );
-if ( -x $rebuild ) { system( $^X, $rebuild ) == 0 or warn "rebuild failed" }
+if ( -x $rebuild ) { system( $^X, $rebuild ) == 0 or logw("rebuild failed") }
 
-print "Updated cyberpunk-handbook feed and data mapping.\n";
+logi("Updated cyberpunk-handbook feed and data mapping.");
 
 exit 0;

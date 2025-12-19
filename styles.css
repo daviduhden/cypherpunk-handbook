@@ -35,6 +35,7 @@
  *
  */
 :root {
+  /* Dark site palette (local to cyberpunk-handbook) */
   color-scheme: dark;
 
   --bg: #0b1220;
@@ -45,12 +46,7 @@
   --muted: #cbd5e1;
   --heading: #e5e7eb;
 
-  /* Cyberpunk accent: electric blue with a slight violet lean (not purplish-blue). */
-  --accent: #3b82f6;
-  --accent-2: #7c3aed;
-
-  /* Links stay more blue, hover nudges slightly towards violet. */
-  --link: var(--accent);
+  --link: #3b82f6;
   --link-hover: #5b8cff;
 
   --border: #1f273a;
@@ -59,22 +55,17 @@
   --nav-bg: #111827;
   --nav-bg-hover: #1f2937;
 
-  --shadow-panel: 0 0.75em 2em rgba(0, 0, 0, 0.24);
-  --shadow-img: 0 0.625em 1.875em rgba(0, 0, 0, 0.25);
-
   --radius: 0.875em;
   --radius-soft: 0.75em;
   --radius-pill: 999em;
 
-  /* Centers content and sets a reading-friendly max width. */
-  --max-width: 72ch;
+  --shadow: 0 0.75em 2em rgba(0, 0, 0, 0.24);
+  --shadow-img: 0 0.625em 1.875em rgba(0, 0, 0, 0.25);
 
-  /* Page padding and gaps. */
+  --max-width: 72ch;
   --pad-y: 2em;
   --pad-x: 1.25em;
-  --gap: 1.5em;
 
-  /* Focus ring: blue + a faint violet glow. */
   --focus-ring:
     0 0 0 0.2em rgba(59, 130, 246, 0.35),
     0 0 0 0.4em rgba(124, 58, 237, 0.12);
@@ -155,7 +146,7 @@ header {
 
 article header {
   margin-bottom: 1.1em;
-  text-align: left;
+  text-align: justify;
 }
 
 /*
@@ -206,10 +197,16 @@ header h2 {
 /*
  * Navigation list styles
  */
+
+nav * {
+  vertical-align: middle;
+}
+
 nav ul {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.75em;
   padding: 0;
   margin: 0 0 1.5em;
@@ -230,7 +227,7 @@ nav a {
 
 nav a:hover {
   background: var(--nav-bg-hover);
-  border-color: color-mix(in srgb, var(--border-2) 70%, var(--accent) 30%);
+  border-color: color-mix(in srgb, var(--border-2) 70%, var(--link) 30%);
 }
 
 /*
@@ -243,10 +240,10 @@ nav a:hover {
   vertical-align: middle;
   margin-left: 0.4em;
   margin-right: 0.4em;
-}
-
-  /* Ensure icons are not rounded */
   border-radius: 0;
+  border: none;
+  background: transparent;
+}
 
 /*
  * Main content panel
@@ -256,7 +253,7 @@ main {
   border: thin solid var(--border);
   border-radius: var(--radius);
   padding: 1.75em;
-  box-shadow: var(--shadow-panel);
+  box-shadow: var(--shadow);
 }
 
 /*
@@ -409,7 +406,7 @@ footer p {
 
 /* Keep footnote paragraphs left-aligned (those that contain <sup>) */
 footer p:has(sup) {
-  text-align: left;
+  text-align: justify;
 }
 
 footer p sup {
@@ -423,6 +420,15 @@ footer p sup {
   font-weight: 800;
   font-size: 0.8em;
   text-align: center;
+}
+
+/* Footer motto: keep icon tight with heading text */
+footer h4,
+footer .motto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0.35em 0;
 }
 
 /*
@@ -442,15 +448,36 @@ code {
  * Code blocks
  */
 pre {
-  background-color: var(--bg);
+  background: var(--panel-2);
   border: thin solid var(--border);
   border-radius: calc(var(--radius-soft) * 0.9);
   padding: 1em;
   overflow-x: auto;
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   margin: 1em 0;
+}
+
+/* Quotation styles */
+blockquote {
+  margin: 0 0 1em;
+  padding: 0.9em 1.05em;
+  background: var(--panel-2);
+  border-left: 4px solid var(--border);
+  border-radius: calc(var(--radius) * 0.35);
+  color: var(--muted);
+  font-style: italic;
+}
+
+blockquote p { margin: 0; }
+
+blockquote cite {
+  display: block;
+  margin-top: 0.5em;
+  font-size: 0.95em;
+  color: var(--muted);
+  font-style: normal;
+  text-align: right;
 }
 
 /*
@@ -463,8 +490,8 @@ pre {
   height: auto;
   margin: 1.5em auto;
   border-radius: calc(var(--radius-soft) * 0.85);
-  box-shadow: 0 0.125em 0.75em rgba(0, 0, 0, 0.07);
-  border: thin solid color-mix(in srgb, var(--border) 80%, var(--accent) 20%);
+  box-shadow: var(--shadow-img);
+  border: thin solid color-mix(in srgb, var(--border) 80%, var(--link) 20%);
 }
 
 /* Small images (e.g., icons, inline) */

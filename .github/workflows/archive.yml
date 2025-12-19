@@ -1,0 +1,54 @@
+name: Archive repository (pax + gzip + signify)
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    name: Archive repository (pax + gzip + signify)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run archive job in OpenBSD VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          usesh: true
+          run: |
+            set -eu
+
+            echo "Running on:"
+            uname -a
+
+            # Extract repository name from GITHUB_REPOSITORY
+            REPO_NAME=$(basename "$GITHUB_REPOSITORY")
+
+            # Define paths for archive, checksum, and signature
+            ARCHIVE_DIR="archive"
+            ARCHIVE="${ARCHIVE_DIR}/${REPO_NAME}.tar.gz"
+            CHECKSUM="${ARCHIVE}.sha256"
+            SIGNATURE="${ARCHIVE}.sig"
+
+            # Create archive directory and remove previous files
+            mkdir -p "$ARCHIVE_DIR"
+            rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
+
+            # Archive the entire repository (including .git)
+            pax -w . | gzip -n -9 > "$ARCHIVE"
+
+            # Create SHA256 checksum
+            sha256 "$ARCHIVE" > "$CHECKSUM"
+
+            # Create temporary private key file from GitHub secret
+            echo "${{ secrets.SIGNIFY_KEY }}" | base64 -d > archive.sec
+            chmod 600 archive.sec
+
+            # Sign the archive using signify
+            signify -S -s archive.sec -m "$ARCHIVE"
+
+            # List generated files
+            ls -lah "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"

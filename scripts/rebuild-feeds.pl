@@ -44,6 +44,31 @@ use Cwd            qw(abs_path);
 use File::Basename qw(dirname);
 use Time::Local    qw(timegm);
 
+# -------------------------
+# Logging
+# -------------------------
+my $no_color  = 0;
+my $is_tty    = ( -t STDOUT )             ? 1 : 0;
+my $use_color = ( !$no_color && $is_tty ) ? 1 : 0;
+
+my ( $GREEN, $YELLOW, $RED, $RESET ) = ( "", "", "", "" );
+if ($use_color) {
+    $GREEN  = "\e[32m";
+    $YELLOW = "\e[33m";
+    $RED    = "\e[31m";
+    $RESET  = "\e[0m";
+}
+
+sub logi { print "${GREEN}✅ [INFO]${RESET} $_[0]\n"; }
+sub logw { print STDERR "${YELLOW}⚠️ [WARN]${RESET} $_[0]\n"; }
+sub loge { print STDERR "${RED}❌ [ERROR]${RESET} $_[0]\n"; }
+
+sub die_tool {
+    my ($msg) = @_;
+    loge($msg);
+    exit 1;
+}
+
 sub read_utf8 {
     my ($p) = @_;
     open my $fh, '<:encoding(UTF-8)', $p or return undef;
@@ -55,7 +80,7 @@ sub read_utf8 {
 
 sub write_utf8 {
     my ( $p, $c ) = @_;
-    open my $fh, '>:encoding(UTF-8)', $p or die "Could not write $p: $!\n";
+    open my $fh, '>:encoding(UTF-8)', $p or die_tool "Could not write $p: $!\n";
     print {$fh} $c;
     close $fh;
 }
@@ -183,8 +208,8 @@ sub build_items {
     return join( "\n", map { $_->{xml} } @arr );
 }
 
-my $content = read_utf8($feed) // die "Feed template not found: $feed\n";
-if ( $content !~ /<channel>/ ) { die "Invalid feed template: $feed\n" }
+my $content = read_utf8($feed) // die_tool "Feed template not found: $feed\n";
+if ( $content !~ /<channel>/ ) { die_tool "Invalid feed template: $feed\n" }
 my $prefix = $content;
 my $idx    = index( $content, '</channel>' );
 if ( $idx != -1 ) {
@@ -203,8 +228,8 @@ s{<lastBuildDate>[^<]*</lastBuildDate>}{<lastBuildDate>$now</lastBuildDate>}m;
     my $new   = $prefix . $items . "\n" . $tail;
     $new =~ s/\n{3,}/\n\n/g;
     write_utf8( $feed, $new );
-    print "Wrote $feed\n";
+    logi("Wrote $feed");
 }
-else { die "Could not find </channel> in template\n" }
+else { die_tool "Could not find </channel> in template\n" }   
 
 exit 0;
