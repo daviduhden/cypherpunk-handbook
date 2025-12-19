@@ -81,3 +81,4 @@ jobs:
             git push origin "$BRANCH"
           else
             echo "No changes to commit."
+          fi
