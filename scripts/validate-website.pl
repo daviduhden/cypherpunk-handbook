@@ -42,6 +42,7 @@ use warnings;
 use FindBin;
 use File::Spec;
 use File::Find;
+use Cwd qw(abs_path);
 use Getopt::Long qw(GetOptions);
 use File::Temp   qw(tempfile);
 use IPC::Open3   qw(open3);
@@ -91,6 +92,14 @@ GetOptions(
     "no-color!" => \$no_color,
     "verbose!"  => \$verbose,
 ) or usage();
+
+# Normalize the root directory to a canonical absolute path where possible.
+# This avoids leaving `..` segments (e.g. scripts/..) which can lead to
+# tools like `dprint` failing canonicalization (see CI errors).
+my $abs_root = abs_path($root_dir);
+if ( defined $abs_root && length $abs_root ) {
+    $root_dir = $abs_root;
+}
 
 -d $root_dir or die "ERROR: root is not a directory: $root_dir\n";
 
