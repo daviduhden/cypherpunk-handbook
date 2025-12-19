@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  openbsd-ci:
+  archive:
     runs-on: ubuntu-latest
     name: Archive website on OpenBSD
 
@@ -21,61 +21,59 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Start OpenBSD VM
+      - name: Run archive job in OpenBSD
         uses: vmactions/openbsd-vm@v1
         with:
-          envs: 'GH_TOKEN SIGNIFY_KEY'
           usesh: true
+          envs: 'GH_TOKEN SIGNIFY_KEY'
           prepare: |
-            pkg_add -I git rsync github-cli gzip tree
+            pkg_add -I git rsync github-cli gzip
 
-      - name: Create archive and sign (OpenBSD)
-        shell: openbsd {0}
-        run: |
-          set -e
+          run: |
+            set -e
 
-          echo "Running on:"
-          uname -a
+            echo "Running on:"
+            uname -a
 
-          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
-          TMP_ARCHIVE_DIR=/tmp/archive
-          mkdir -p "$TMP_ARCHIVE_DIR"
+            # Repo info
+            REPO_NAME=$(basename "$GITHUB_REPOSITORY")
+            ARCHIVE_DIR=archive
+            TMP_DIR=/tmp/archive
 
-          ARCHIVE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz"
-          CHECKSUM="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sha256"
-          SIGNATURE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sig"
+            mkdir -p "$TMP_DIR" "$ARCHIVE_DIR"
 
-          rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
+            ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
+            CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
+            SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
 
-          # Create tar.gz of repository
-          pax -w -x tar . | gzip -n -9 > "$ARCHIVE"
+            rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # SHA256 checksum
-          sha256 -q "$ARCHIVE" > "$CHECKSUM"
+            # Create archive
+            pax -w -x tar . | gzip -n -9 > "$ARCHIVE"
 
-          # Write signify private key (no passphrase)
-          printf "%s\n" "$SIGNIFY_KEY" > /root/archive.sec
-          chmod 600 /root/archive.sec
+            # Checksum
+            sha256 -q "$ARCHIVE" > "$CHECKSUM"
 
-          # Sign archive
-          signify -S -s /root/archive.sec -m "$ARCHIVE"
+            # Write signify key (no passphrase)
+            printf "%s\n" "$SIGNIFY_KEY" > /root/archive.sec
+            chmod 600 /root/archive.sec
 
-      - name: Sync archive back to repository
-        shell: openbsd {0}
-        run: |
-          mkdir -p "$GITHUB_WORKSPACE/archive"
-          rsync -av --delete /tmp/archive/ "$GITHUB_WORKSPACE/archive/"
+            # Sign archive
+            signify -S -s /root/archive.sec -m "$ARCHIVE"
 
-      - name: Commit and push changes
-        shell: bash
-        run: |
-          set -e
+            # Replace archive directory contents
+            rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            # Git config
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add archive/
-          git commit -m "Archive website" || exit 0
+            # Commit changes
+            git add archive/
+            git commit -m "Archive website [skip ci]" || exit 0
 
-          gh auth login --with-token <<< "$GH_TOKEN"
-          git push origin main
+            # Authenticate with GitHub CLI
+            echo "$GH_TOKEN" | gh auth login --with-token
+
+            # Push changes
+            git push origin main
