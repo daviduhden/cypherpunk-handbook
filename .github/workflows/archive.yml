@@ -2,7 +2,7 @@ name: Archive website (pax + gzip + signify)
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs once a day at 00:00 UTC
+    - cron: '0 0 * * *'   # Once per day at 00:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -11,24 +11,25 @@ permissions:
 jobs:
   openbsd-ci:
     runs-on: ubuntu-latest
-    name: Run CI on OpenBSD VM
+    name: Archive website on OpenBSD
+
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Run OpenBSD VM
-        id: openbsd
+      - name: Start OpenBSD VM
         uses: vmactions/openbsd-vm@v1
         with:
           envs: 'GH_TOKEN SIGNIFY_KEY'
           usesh: true
           prepare: |
-            pkg_add -I tree curl rsync git github-cli
+            pkg_add -I git rsync github-cli gzip tree
 
-      - name: Create Archive, Checksum, and Signature
+      - name: Create archive and sign (OpenBSD)
         shell: openbsd {0}
         run: |
           set -e
@@ -44,29 +45,28 @@ jobs:
           CHECKSUM="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sig"
 
-          # Remove old files
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz (exclude existing archive directory)
+          # Create tar.gz of repository
           pax -w -x tar . | gzip -n -9 > "$ARCHIVE"
 
-          # Generate SHA256 checksum
+          # SHA256 checksum
           sha256 -q "$ARCHIVE" > "$CHECKSUM"
 
-          # Write signify private key AS PLAIN TEXT (required by signify)
+          # Write signify private key (no passphrase)
           printf "%s\n" "$SIGNIFY_KEY" > /root/archive.sec
           chmod 600 /root/archive.sec
 
           # Sign archive
           signify -S -s /root/archive.sec -m "$ARCHIVE"
 
-      - name: Sync Archive Back
+      - name: Sync archive back to repository
         shell: openbsd {0}
         run: |
-          mkdir -p archive
-          rsync -av --delete /tmp/archive/ archive/
+          mkdir -p "$GITHUB_WORKSPACE/archive"
+          rsync -av --delete /tmp/archive/ "$GITHUB_WORKSPACE/archive/"
 
-      - name: Commit and Push Changes
+      - name: Commit and push changes
         shell: bash
         run: |
           set -e
@@ -75,7 +75,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add archive/
-          git commit -m "Update archive from OpenBSD CI [skip ci]" || exit 0
+          git commit -m "Archive website" || exit 0
 
           gh auth login --with-token <<< "$GH_TOKEN"
           git push origin main
