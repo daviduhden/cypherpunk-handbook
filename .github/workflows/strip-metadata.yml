@@ -17,6 +17,8 @@ on:
       - "**/*.ogv"
       - "**/*.pdf"
       - ".github/workflows/strip-metadata.yml"
+  # Allow manual runs from the Actions tab
+  workflow_dispatch: {}
 
 permissions:
   contents: write

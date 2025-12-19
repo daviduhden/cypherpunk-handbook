@@ -3,7 +3,15 @@ name: Archive repository (pax + gzip + signify)
 on:
   push:
     branches:
-      - "**"
+      - main
+  schedule:
+    # Archive repository every day at midnight (UTC)
+    - cron: "0 0 * * *"
+  # Allow manual runs from the Actions tab
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 jobs:
   archive:

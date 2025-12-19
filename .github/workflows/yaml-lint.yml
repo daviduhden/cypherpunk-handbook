@@ -11,7 +11,7 @@ on:
       - "**/*.yaml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   yamllint:

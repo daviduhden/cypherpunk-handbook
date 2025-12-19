@@ -134,7 +134,7 @@ sub have_cmd {
 sub require_cmd {
     my ( $cmd, $why ) = @_;
     have_cmd($cmd)
-      or die_tool_tool("Required tool '$cmd' not found in PATH ($why).");
+      or die_tool("Required tool '$cmd' not found in PATH ($why).");
 }
 
 sub run_cmd {
@@ -418,22 +418,18 @@ sub dprint_validate_and_check_or_apply {
 
     if ($mode_apply) {
         logi("Formatting CSS/JS with dprint...");
-            for my $chunk ( chunked( $files_ref, 120 ) ) {
-                my ( $rc, $out, $err ) = run_capture( $dprint, "fmt", "--config", $dprint_cfg, @$chunk );
+        for my $chunk ( chunked( $files_ref, 120 ) ) {
+            # Use run_cmd so dprint writes files in-place and inherits stdout/stderr
+            my @cmd = ( $dprint, "fmt", "--config", $dprint_cfg, @$chunk );
+            print "[cmd] @cmd\n" if $verbose;
+            my $ok = run_cmd(@cmd);
 
-                # Detect plugin download/resolution errors (network or missing plugin)
-                if ( defined($err) && $err =~ /Error (downloading|resolving) plugin/i ) {
-                    logw("dprint plugin download/resolution failed; skipping dprint step in this run.");
-                    print STDERR $err if $verbose;
-                    return;    # skip dprint entirely
-                }
-
-                if ( $rc != 0 ) {
-                    # fmt failing implies parse/plugin/config problems (validation)
-                    loge("dprint formatting/parse failed for some files in chunk.");
-                    mark_validate_failed($_) for @$chunk;
-                }
+            # run_cmd returns true on success; false on failure
+            if ( !$ok ) {
+                loge("dprint formatting/parse failed for some files in chunk.");
+                mark_validate_failed($_) for @$chunk;
             }
+        }
         return;
     }
 

@@ -73,6 +73,8 @@ on:
       - "**/*.htm"
       - "scripts/convert-media.pl"
       - ".github/workflows/convert-media.yml"
+  # Allow manual runs from the Actions tab
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -194,4 +196,3 @@ jobs:
             exit 1
           fi
           echo "No conversion changes detected."
-
