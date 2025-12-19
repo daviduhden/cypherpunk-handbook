@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y signify-openbsd
+          sudo apt-get install -y signify-openbsd gh
 
       - name: Create Archive, Checksum, and Signature
         run: |
@@ -33,29 +33,33 @@ jobs:
           uname -a
 
           REPO_NAME=$(basename "$GITHUB_REPOSITORY")
-          ARCHIVE_DIR=archive
-          TMP_DIR=/tmp/archive
+          ARCHIVE_DIR="$GITHUB_WORKSPACE/archive"
+          TMP_DIR="$GITHUB_WORKSPACE/tmp_archive"
+
+          mkdir -p "$ARCHIVE_DIR"
+          mkdir -p "$TMP_DIR"
 
           ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
 
+          # Remove old files if they exist
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz archive in PAX format
-          tar --format=pax -cf - . | gzip -n -9 > "$ARCHIVE"
+          # Create tar.gz archive in PAX format without using a pipe
+          tar --format=pax -czf "$ARCHIVE" .
 
           # Generate SHA256 checksum
           sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
 
-          # Write signify key (from secret, with untrusted comment)
-          printf "untrusted comment: GitHub Actions archive key\n%s\n" "$SIGNIFY_KEY" > /tmp/archive.sec
-          chmod 600 /tmp/archive.sec
+          # Create temporary signify key file
+          printf "untrusted comment: GitHub Actions archive key\n%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
+          chmod 600 "$TMP_DIR/archive.sec"
 
           # Sign the archive
-          signify-openbsd -S -s /tmp/archive.sec -m "$ARCHIVE"
+          signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
-          # Copy archive files to repo archive directory
+          # Copy archive files to the repo's archive directory
           rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
 
       - name: Commit and Push Changes via GitHub CLI
@@ -65,25 +69,18 @@ jobs:
           # Authenticate GitHub CLI
           echo "$GH_TOKEN" | gh auth login --with-token
 
-          # Create a commit if changes exist
-          if gh repo view --json defaultBranchRef | grep -q '"name": "main"'; then
-            BRANCH="main"
-          else
-            BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
-          fi
-
-          gh repo clone "$GITHUB_REPOSITORY" temp-repo
-          cd temp-repo
-
-          rsync -av --delete ../archive/ archive/
-
+          # Setup git with GitHub CLI
           gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Commit changes only if there are any
+          cd "$GITHUB_WORKSPACE"
           if [ -n "$(git status --porcelain)" ]; then
             git add archive/
             git commit -m "Archive website [skip ci]"
+            # Detect default branch and push
+            BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
             git push origin "$BRANCH"
           else
             echo "No changes to commit."
