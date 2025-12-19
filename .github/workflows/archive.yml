@@ -22,21 +22,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install rsync on Ubuntu runner
-        if: runner.os == 'Linux'
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y rsync
-
       - name: Run archive job in OpenBSD VM
         uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
           run: |
-            set -eu
-
-            pkg_add -I rsync
+            set -x
 
             echo "Running on:"
             uname -a
