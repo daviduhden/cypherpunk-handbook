@@ -77,7 +77,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           if [ -n "$(git status --porcelain)" ]; then
             git add archive/
-            git commit -m "Archive website [skip ci]"
+            git commit -m "Archive website"
             # Detect default branch and push
             BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
             git push origin "$BRANCH"
