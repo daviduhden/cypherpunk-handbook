@@ -56,7 +56,7 @@ jobs:
           chmod 600 /tmp/archive.sec
 
           # Sign the archive
-          signify -S -s /tmp/archive.sec -m "$ARCHIVE"
+          signify-openbsd -S -s /tmp/archive.sec -m "$ARCHIVE"
 
           # Replace archive directory contents
           rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
