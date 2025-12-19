@@ -1,76 +1,67 @@
-name: Archive repository (pax + gzip + signify)
+name: Archive website (pax + gzip + signify)
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: {}
-
-permissions:
-  contents: write  # Required to push changes
+  schedule:
+    - cron: '0 0 * * *'  # Runs once a day at 00:00 UTC
+  workflow_dispatch:
 
 jobs:
-  archive:
+  openbsd-archive:
     runs-on: ubuntu-latest
-    name: Archive repository (pax + gzip + signify)
-
+    name: Run OpenBSD VM to create archive
+    env:
+      SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}  # base64-encoded signify key
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}        # GitHub token for GH CLI auth
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install OpenBSD VM and packages
+      - name: Run OpenBSD VM
+        id: vm
         uses: vmactions/openbsd-vm@v1
         with:
           usesh: true
+          envs: SIGNIFY_KEY GH_TOKEN
           prepare: |
-            # Install required packages in OpenBSD
-            pkg_add gh git
+            pkg_add git github-cli
 
           run: |
-            set -x
-
-            echo "Running on:"
+            echo "Running on OpenBSD:"
             uname -a
 
-            REPO_NAME=$(basename "$GITHUB_REPOSITORY")
-            TMP_ARCHIVE_DIR="/tmp/archive"
+            REPO_NAME=$(basename $GITHUB_REPOSITORY)
+            TMP_ARCHIVE_DIR=/tmp/archive
             mkdir -p "$TMP_ARCHIVE_DIR"
+            ARCHIVE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz"
+            CHECKSUM="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sha256"
+            SIGNATURE="$TMP_ARCHIVE_DIR/$REPO_NAME.tar.gz.sig"
 
-            ARCHIVE="$TMP_ARCHIVE_DIR/${REPO_NAME}.tar.gz"
-            CHECKSUM="$TMP_ARCHIVE_DIR/${REPO_NAME}.tar.gz.sha256"
-            SIGNATURE="$TMP_ARCHIVE_DIR/${REPO_NAME}.tar.gz.sig"
-
-            # Remove previous files
+            # Remove old files
             rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-            # Archive the repository (excluding previous archives)
-            pax -w . -x ./archive | gzip -n -9 > "$ARCHIVE"
+            # Create tar.gz excluding the archive folder
+            find . -path './archive' -prune -o -print | pax -w -p e | gzip -n -9 > "$ARCHIVE"
 
-            # Create SHA256 checksum
-            sha256 -q "$ARCHIVE" > "$CHECKSUM"
+            # Generate SHA256 checksum
+            shasum -a 256 "$ARCHIVE" > "$CHECKSUM"
 
-            # Decode the signify private key from GitHub secret
-            echo "${{ secrets.SIGNIFY_KEY }}" | openssl base64 -d > archive.sec
-            chmod 600 archive.sec
+            # Decode and prepare signify key
+            echo "$SIGNIFY_KEY" | base64 -d > /root/archive.sec
+            chmod 600 /root/archive.sec
 
             # Sign the archive
-            signify -S -s archive.sec -m "$ARCHIVE"
+            signify -S -s /root/archive.sec -m "$ARCHIVE"
 
-            # Copy files to repository folder
-            ARCHIVE_DIR="archive"
-            mkdir -p "$ARCHIVE_DIR"
-            cp "$ARCHIVE" "$ARCHIVE_DIR/"
-            cp "$CHECKSUM" "$ARCHIVE_DIR/"
-            cp "${ARCHIVE}.sig" "$ARCHIVE_DIR/"
+      - name: Copy back files
+        run: |
+          rsync -av /tmp/archive/ $GITHUB_WORKSPACE/archive/
 
-            ls -lah "$ARCHIVE_DIR"
-
-            # Configure git user
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-            # Commit and push the archive
-            gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-            git add "$ARCHIVE_DIR"
-            git commit -m "Add archived repository ${REPO_NAME} [ci skip]" || echo "No changes to commit"
-            git push origin main
+      - name: Commit and push archive using GitHub CLI
+        run: |
+          gh auth login --with-token <<< "$GH_TOKEN"
+          gh repo clone "$GITHUB_REPOSITORY" repo
+          cp -r archive/* repo/archive/
+          cd repo
+          gh auth setup-git
+          git add archive/
+          git commit -m "Archive website" || echo "Nothing to commit"
+          gh repo sync
