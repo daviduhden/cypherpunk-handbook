@@ -1,70 +1,77 @@
-name: Archive website
+name: Archive website (pax + gzip + signify)
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 0 * * *'   # Once per day at 00:00 UTC
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   archive:
     runs-on: ubuntu-latest
+
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      REPO: ${{ github.repository }}
-      VM_SSH_USER: runner
-      VM_SSH_HOST: 127.0.0.1
-      VM_SSH_PORT: 2224
-      VM_REPO_DIR: /home/runner/work/${{ github.repository }}
+      SIGNIFY_KEY: ${{ github.repository }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Generate temporary Ed25519 SSH key
-        id: sshkey
+      - name: Install dependencies
         run: |
-          ssh-keygen -t ed25519 -f $HOME/temp_ed25519 -N "" -q
-          echo "PRIVATE_KEY=$(cat $HOME/temp_ed25519)" >> $GITHUB_ENV
-          echo "PUBLIC_KEY=$(cat $HOME/temp_ed25519.pub)" >> $GITHUB_ENV
+          sudo apt-get update
+          sudo apt-get install -y pax signify-openbsd rsync
 
-      - name: Add temporary public key to VM
+      - name: Create Archive, Checksum, and Signature
         run: |
-          sshpass -p "$VM_ROOT_PASSWORD" ssh -o StrictHostKeyChecking=no -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST \
-          "mkdir -p ~/.ssh && echo \"$PUBLIC_KEY\" >> ~/.ssh/authorized_keys"
+          set -e
 
-      - name: Prepare VM repository
+          echo "Running on:"
+          uname -a
+
+          # Repo info
+          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
+          ARCHIVE_DIR=archive
+          TMP_DIR=/tmp/archive
+
+          mkdir -p "$TMP_DIR" "$ARCHIVE_DIR"
+
+          ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
+          CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
+          SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
+
+          rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
+
+          # Create tar.gz archive
+          pax -w . | gzip -n -9 > "$ARCHIVE"
+
+          # Generate SHA256 checksum
+          sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
+
+          # Write signify key (no passphrase)
+          printf "%s\n" "$SIGNIFY_KEY" > /tmp/archive.sec
+          chmod 600 /tmp/archive.sec
+
+          # Sign the archive
+          signify -S -s /tmp/archive.sec -m "$ARCHIVE"
+
+          # Replace archive directory contents
+          rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
+
+      - name: Commit and Push Changes
         run: |
-          mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p $VM_SSH_PORT $VM_SSH_HOST >> ~/.ssh/known_hosts
+          set -e
 
-          ssh -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST bash -c "'
-            cd $VM_REPO_DIR || exit 1
-            git init 2>/dev/null || true
-            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git 2>/dev/null || true
-            git config user.name \"github-actions[bot]\"
-            git config user.email \"github-actions[bot]@users.noreply.github.com\"
-          '"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create archive using pax + gzip
-        run: |
-          pax -w -p e archive | gzip > archive.tar.gz
+          git add archive/
+          git commit -m "Archive website [skip ci]" || exit 0
 
-      - name: Sync archive to VM and commit
-        run: |
-          scp -P $VM_SSH_PORT archive.tar.gz $VM_SSH_USER@$VM_SSH_HOST:$VM_REPO_DIR/
-          ssh -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST bash -c "'
-            cd $VM_REPO_DIR
-            gzip -dc archive.tar.gz | pax -r -p e
-            rm archive.tar.gz
-            git add archive/
-            git commit -m \"Archive website [skip ci]\" || echo \"Nothing to commit\"
-            GIT_CURL_VERBOSE=1 GIT_TRACE=1 git push origin main || echo \"Push failed or nothing to push\"
-          '"
+          # Authenticate with GitHub CLI
+          echo "$GH_TOKEN" | gh auth login --with-token
 
-      - name: Remove temporary SSH key from VM
-        run: |
-          ssh -p $VM_SSH_PORT $VM_SSH_USER@$VM_SSH_HOST \
-          "sed -i \"/$(echo $PUBLIC_KEY | sed 's/[\/&]/\\&/g')/d\" ~/.ssh/authorized_keys"
+          git push origin main
