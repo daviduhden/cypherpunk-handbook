@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y signify-openbsd gh
+          sudo apt-get install -y rsync signify-openbsd gh
 
       - name: Create Archive, Checksum, and Signature
         run: |
@@ -52,8 +52,8 @@ jobs:
           # Generate SHA256 checksum
           sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
 
-          # Create temporary signify key file
-          printf "untrusted comment: GitHub Actions archive key\n%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
+          # Write SIGNIFY_KEY secret to a temporary file
+          printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
           chmod 600 "$TMP_DIR/archive.sec"
 
           # Sign the archive
@@ -66,10 +66,7 @@ jobs:
         run: |
           set -e
 
-          # Authenticate GitHub CLI
-          echo "$GH_TOKEN" | gh auth login --with-token
-
-          # Setup git with GitHub CLI
+          # Setup git to use GitHub CLI credentials (no gh auth login needed)
           gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -84,4 +81,3 @@ jobs:
             git push origin "$BRANCH"
           else
             echo "No changes to commit."
-          fi
