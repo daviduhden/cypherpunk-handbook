@@ -60,7 +60,7 @@ jobs:
           signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
           # Copy archive files to the repo's archive directory
-          rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
+          rsync -av --exclude="archive.sec" --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
 
       - name: Commit and Push Changes via GitHub CLI
         run: |
