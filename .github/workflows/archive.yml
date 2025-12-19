@@ -1,13 +1,11 @@
-name: Archive repository (pax + gzip + signify)
+name: Archive repository (OpenBSD)
 
 on:
   push:
     branches:
       - main
   schedule:
-    # Archive repository every day at midnight (UTC)
     - cron: "0 0 * * *"
-  # Allow manual runs from the Actions tab
   workflow_dispatch: {}
 
 permissions:
@@ -16,47 +14,47 @@ permissions:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    name: Archive repository (pax + gzip + signify)
+    name: Archive repository in OpenBSD VM
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run archive job in OpenBSD VM
+      - name: Archive repository in OpenBSD VM
         uses: vmactions/openbsd-vm@v1
         with:
-          usesh: true
+          usesh: false
           run: |
             set -x
 
-            echo "Running on:"
+            echo "Running OpenBSD VM on:"
             uname -a
 
-            # Extract repository name from GITHUB_REPOSITORY
+            # Extraer nombre del repositorio
             REPO_NAME=$(basename "$GITHUB_REPOSITORY")
 
-            # Define paths for archive, checksum, and signature
+            # Definir rutas de archivo, checksum y firma
             ARCHIVE_DIR="archive"
             ARCHIVE="${ARCHIVE_DIR}/${REPO_NAME}.tar.gz"
             CHECKSUM="${ARCHIVE}.sha256"
             SIGNATURE="${ARCHIVE}.sig"
 
-            # Create archive directory and remove previous files
+            # Crear directorio de archivos y eliminar previos
             mkdir -p "$ARCHIVE_DIR"
             rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-            # Archive the entire repository (including .git)
+            # Crear el archivo tar.gz del repositorio completo
             pax -w . | gzip -n -9 > "$ARCHIVE"
 
-            # Create SHA256 checksum
-            sha256 "$ARCHIVE" > "$CHECKSUM"
+            # Generar checksum SHA256 (OpenBSD usa -q para output limpio)
+            sha256 -q "$ARCHIVE" > "$CHECKSUM"
 
-            # Create temporary private key file from GitHub secret
+            # Crear archivo temporal de clave privada desde secreto
             echo "${{ secrets.SIGNIFY_KEY }}" | base64 -d > archive.sec
             chmod 600 archive.sec
 
-            # Sign the archive using signify
+            # Firmar el archivo usando signify
             signify -S -s archive.sec -m "$ARCHIVE"
 
-            # List generated files
+            # Listar archivos generados
             ls -lah "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
