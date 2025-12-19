@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GH_TOKEN: ${{ github.GH_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
       SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
 
     steps:
@@ -37,12 +37,15 @@ jobs:
           ARCHIVE_DIR=archive
           TMP_DIR=/tmp/archive
 
+          # Remove old archive directory
+          rm -rf "$ARCHIVE_DIR"
           mkdir -p "$TMP_DIR" "$ARCHIVE_DIR"
 
           ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
 
+          # Remove old files if any
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
           # Create tar.gz archive
@@ -52,13 +55,13 @@ jobs:
           sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
 
           # Write signify key (no passphrase)
-          printf "%s\n" "$SIGNIFY_KEY" > /tmp/archive.sec
+          printf "untrusted comment: GitHub Actions archive key\n%s\n" "$SIGNIFY_KEY" > /tmp/archive.sec
           chmod 600 /tmp/archive.sec
 
           # Sign the archive
           signify-openbsd -S -s /tmp/archive.sec -m "$ARCHIVE"
 
-          # Replace archive directory contents
+          # Copy archive files to repo archive directory
           rsync -av --delete "$TMP_DIR/" "$ARCHIVE_DIR/"
 
       - name: Commit and Push Changes
@@ -69,9 +72,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add archive/
-          git commit -m "Archive website [skip ci]" || exit 0
+          git commit -m "Archive website [skip ci]" || echo "No changes to commit"
 
-          # Authenticate with GitHub CLI
+          # Authenticate with GitHub CLI and push
           echo "$GH_TOKEN" | gh auth login --with-token
-
           git push origin main
