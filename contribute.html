@@ -392,22 +392,25 @@ perl ./scripts/rebuild-feeds.pl
 
       <p>Default HTTP/HTTPS download:</p>
 
-      <pre>curl -O https://example.com/archive/cypherpunk-handbook.tar.gz
-curl -O https://example.com/archive/cypherpunk-handbook.tar.gz.sig
-curl -O https://example.com/archive/cypherpunk-handbook.sha256
+      <pre>
+curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz
+curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz.sig
+curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.sha256
 </pre>
       <p>SOCKS5 proxy via TOR:</p>
 
-      <pre>curl --socks5 127.0.0.1:9050 -O https://example.com/archive/cypherpunk-handbook.tar.gz
-curl --socks5 127.0.0.1:9050 -O https://example.com/archive/cypherpunk-handbook.tar.gz.sig
-curl --socks5 127.0.0.1:9050 -O https://example.com/archive/cypherpunk-handbook.sha256
+      <pre>
+curl --socks5 127.0.0.1:9050 -O https://http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz
+curl --socks5 127.0.0.1:9050 -O https://http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sig
+curl --socks5 127.0.0.1:9050 -O https://http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.sha256
 </pre>
       <p>SOCKS5 proxy via I2P <sup><a id="ref-1" href=
       "#fn-1">[1]</a></sup>:</p>
 
-      <pre>curl --socks5 127.0.0.1:4444 -O https://example.com/archive/cypherpunk-handbook.tar.gz
-curl --socks5 127.0.0.1:4444 -O https://example.com/archive/cypherpunk-handbook.tar.gz.sig
-curl --socks5 127.0.0.1:4444 -O https://example.com/archive/cypherpunk-handbook.sha256
+      <pre>
+curl --socks5 127.0.0.1:4444 -O https://http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz
+curl --socks5 127.0.0.1:4444 -O https://http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sig
+curl --socks5 127.0.0.1:4444 -O https://http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.sha256
 </pre>
       <h4>Verifying the archive</h4>
 
