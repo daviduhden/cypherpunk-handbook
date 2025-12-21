@@ -390,27 +390,27 @@ perl ./scripts/rebuild-feeds.pl
       <code>signify</code> signature.
       <h4>Downloading the archive using <code>curl</code></h4>
 
-      <p>Default HTTP/HTTPS download:</p>
+      <p>Default HTTPS download:</p>
 
       <pre>
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz.sig
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.sha256
 </pre>
-      <p>SOCKS5 proxy via TOR:</p>
-
-      <pre>
-curl --socks5 127.0.0.1:9050 -O https://http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz
-curl --socks5 127.0.0.1:9050 -O https://http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sig
-curl --socks5 127.0.0.1:9050 -O https://http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.sha256
-</pre>
-      <p>SOCKS5 proxy via I2P <sup><a id="ref-1" href=
+      <p>SOCKS5 proxy via TOR <sup><a id="ref-1" href=
       "#fn-1">[1]</a></sup>:</p>
 
       <pre>
-curl --socks5 127.0.0.1:4444 -O https://http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz
-curl --socks5 127.0.0.1:4444 -O https://http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sig
-curl --socks5 127.0.0.1:4444 -O https://http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.sha256
+curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz
+curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sig
+curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.sha256
+</pre>
+      <p>HTTP proxy via I2P <sup><a id="ref-2" href="#fn-2">[2]</a></sup>:</p>
+
+      <pre>
+curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz
+curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sig
+curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.sha256
 </pre>
       <h4>Verifying the archive</h4>
 
@@ -452,18 +452,22 @@ tar -xzf cypherpunk-handbook.tar.gz
       <pre>
 git clone https://github.com/daviduhden/cypherpunk-handbook.git
 </pre>
-      <p><strong>SOCKS5 proxy via TOR or I2P (global configuration)</strong>
+      <p><strong>SOCKS5 proxy via TOR (global configuration)</strong>
       </p>
-
-      <p>TOR:</p>
 
       <pre>
 git config --global http.proxy socks5://127.0.0.1:9050
 </pre>
-      <p>I2P:</p>
+      <p>Then clone normally:</p>
 
       <pre>
-git config --global http.proxy socks5://127.0.0.1:4444
+git clone https://github.com/daviduhden/cypherpunk-handbook.git
+</pre>
+      <p><strong>HTTP proxy via I2P (global configuration)</strong>
+      </p>
+
+      <pre>
+git config --global http.proxy http://127.0.0.1:4444
 </pre>
       <p>Then clone normally:</p>
 
@@ -477,12 +481,11 @@ git clone https://github.com/daviduhden/cypherpunk-handbook.git
       <pre>
 git -c http.proxy=socks5://127.0.0.1:9050 clone https://github.com/daviduhden/cypherpunk-handbook.git
 </pre>
-      <p><strong>SOCKS5 proxy via I2P (temporary for this command
-      only)</strong>
+      <p><strong>HTTP proxy via I2P (temporary for this command only)</strong>
       </p>
 
       <pre>
-git -c http.proxy=socks5://127.0.0.1:4444 clone https://github.com/daviduhden/cypherpunk-handbook.git
+git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cypherpunk-handbook.git
 </pre>
       <p class="underline">Global configuration (~/.gitconfig) affects all
       subsequent <code>git pull</code>, <code>git push</code>, and other
@@ -510,7 +513,7 @@ git -c http.proxy=socks5://127.0.0.1:4444 clone https://github.com/daviduhden/cy
         on OpenBSD.</li>
 
         <li><strong><a href="https://curl.se/" target="_blank" rel=
-        "noopener">curl</a></strong> - For file downloads and use of SOCKS5
+        "noopener">curl</a></strong> - For file downloads and use of HTTP and SOCKS5
         proxies.</li>
 
         <li><strong><a href="https://www.gnu.org/software/tar/" target="_blank"
@@ -527,7 +530,7 @@ git -c http.proxy=socks5://127.0.0.1:4444 clone https://github.com/daviduhden/cy
 
         <li><strong><a href="https://man.openbsd.org/signify" target="_blank"
         rel="noopener">signify</a></strong> - For signature verification
-        (OpenBSD tool) <sup><a id="ref-2" href="#fn-2">[2]</a></sup>.</li>
+        (OpenBSD tool) <sup><a id="ref-3" href="#fn-3">[3]</a></sup>.</li>
 
         <li><strong><a href="https://www.perl.org/" target="_blank" rel=
         "noopener">Perl</a></strong> with <code><a href=
@@ -567,15 +570,19 @@ git -c http.proxy=socks5://127.0.0.1:4444 clone https://github.com/daviduhden/cy
     <p><strong>Notes:</strong>
     </p>
 
-    <p id="fn-1"><sup>1</sup> When using I2P, an <a href=
+    <p id="fn-1"><sup>1</sup> <a href="https://arti.torproject.org/" target=
+    "_blank" rel="noopener">Arti</a> uses port 9150 by default for the local
+    SOCKS5 proxy.<a href="#ref-1">↩</a></p>
+
+    <p id="fn-2"><sup>2</sup> When using I2P, an <a href=
     "https://www.stormycloud.org/i2p-outproxy/" target="_blank" rel=
     "noopener noreferrer">outproxy</a> is required to reach the clearnet.
     Without an outproxy, only I2P destinations are reachable. <a href=
-    "#ref-1">↩</a></p>
+    "#ref-2">↩</a></p>
 
-    <p id="fn-2"><sup>2</sup> On Debian-based systems the signify tool is
+    <p id="fn-3"><sup>3</sup> On Debian-based systems the signify tool is
     available as a package named <code>signify-openbsd</code>, the binary must
-    be invoked as <code>signify-openbsd</code>. <a href="#ref-2">↩</a></p>
+    be invoked as <code>signify-openbsd</code>. <a href="#ref-3">↩</a></p>
   </footer>
 
   <footer id="site-footer">
