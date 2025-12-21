@@ -376,27 +376,6 @@ ul ul, ol ol, ul ol, ol ul {
 }
 
 /*
- * Domains box
- */
-.site-domains {
-  margin-top: 1.5em;
-  border: thin solid var(--border);
-  border-radius: var(--radius-soft);
-  padding: 1.1em;
-  background: var(--panel-2);
-}
-
-.site-domains h3 {
-  margin: 0 0 0.5em;
-  color: var(--heading);
-}
-
-.site-domains h4 {
-  margin: 0.35em 0;
-  color: var(--heading);
-}
-
-/*
  * Footer
  * Center footer content, except footnote paragraphs.
  */
@@ -558,10 +537,6 @@ img {
 
   section h2 {
     font-size: clamp(1.5em, 3vw + 1em, 2.1em);
-  }
-
-  .site-domains {
-    margin: 0.625em 0;
   }
 
   .articles {
