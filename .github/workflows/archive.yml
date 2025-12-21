@@ -49,8 +49,8 @@ jobs:
           # Create tar.gz archive in PAX format, excluding temporary directory
           tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
 
-          # Generate SHA256 checksum
-          sha256sum "$ARCHIVE" | awk '{print $1}' > "$CHECKSUM"
+          # Generate SHA256 checksum in proper format for sha256sum -c
+          sha256sum "$ARCHIVE" > "$CHECKSUM"
 
           # Write SIGNIFY_KEY secret to a temporary file (never added to repo)
           printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"

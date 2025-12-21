@@ -40,17 +40,28 @@
   </header>
 
   <main id="site-main">
-    <section>
+    <section id="intro">
       <h2>How to contribute</h2>
 
-      <ol>
-        <li>Fork the repository on GitHub.</li>
+      <p>Contributions are welcome and encouraged. This project values clear,
+      well-sourced, and practical content that follows consistent editorial,
+      technical, and licensing standards.</p>
 
-        <li>Create a dedicated branch for your changes.</li>
+      <p>You may contribute using one of the following supported workflows:</p>
 
-        <li>Submit a pull request with a clear and descriptive summary.</li>
-      </ol>
+      <ul>
+        <li>GitHub-based contributions (Pull Requests using <code>gh</code> /
+        <code>git</code>)</li>
 
+        <li>File and patch-based contributions using git (Anonymous
+        workflow)</li>
+
+        <li>File and patch-based contributions using got (OpenBSD
+        workflow)</li>
+      </ul>
+    </section>
+
+    <section id="guidelines">
       <h3>Content guidelines</h3>
 
       <ul>
@@ -60,28 +71,26 @@
 
         <li>Avoid commercial endorsements or promotional language.</li>
 
-        <li>Write in English or Spanish; include translations whenever
-        possible.</li>
+        <li>Write in US English; include translations whenever possible.</li>
 
-        <li>Use the repository template when available (see
-        <strong>articles/</strong>).</li>
+        <li>Use the repository templates when available (see
+        <strong>templates/</strong>).</li>
 
-        <li>Cite reliable sources and include links for tools, commands, and
-        references.</li>
+        <li>Cite reliable sources and include links for tools, commands,
+        standards, and references.</li>
 
         <li>Do not include personal data, credentials, or sensitive
         information.</li>
 
         <li>Follow existing markup and formatting conventions (headings,
-        paragraphs, <code>&lt;time&gt;</code> tags).</li>
+        paragraphs, tags, etc.).</li>
 
-        <li>Include minimal metadata: author, tags, and a
-        <code>&lt;time&gt;</code> element.</li>
-
-        <li>Optimize all media assets (images, audio, video, documents) and
-        store them within the repository (e.g. <strong>images/</strong>).</li>
+        <li>Optimize all media assets and store them within the repository
+        (e.g. <strong>images/</strong>).</li>
       </ul>
+    </section>
 
+    <section id="licensing">
       <h3>Licensing</h3>
 
       <p>All contributions must comply with the project license located at
@@ -91,105 +100,480 @@
       exception at the beginning of the file and include the applicable license
       or permission notice.</p>
 
-      <p>Suggested exception notice format (place near the top of the
-      file):</p>
+      <p>Suggested exception notice format:</p>
 
       <pre>
 EXCEPTIONS:
-files/images/thirdparty.jpg — licensed under CC BY 4.0 (see LICENSE in images/)
-some-code/snippet.c — used with permission from upstream (MIT)
+files/images/thirdparty.jpg &mdash; licensed under CC BY 4.0 (see LICENSE in images/)
+some-code/snippet.c &mdash; used with permission from upstream (MIT)
 </pre>
-      <h3>Submitting articles</h3>
+    </section>
 
-      <p>To publish a new article, create an HTML file under
-      <strong>articles/</strong>. Include a header containing a
-      <code>&lt;time&gt;</code> element that specifies the publication
-      date.</p>
+    <section id="method-1">
+      <h3>Method 1: Contributing via GitHub (gh / git)</h3>
 
-      <p>Example:</p>
+      <p>This workflow is intended for contributors with GitHub accounts who
+      prefer online collaboration via Pull Requests (PRs).</p>
 
-      <pre>
-&lt;header&gt;
-&lt;h1&gt;Title&lt;/h1&gt;
-&lt;time datetime="2025-12-18"&gt;18 Dec 2025&lt;/time&gt;
-&lt;/header&gt;
-</pre>
-      <p>Use the provided <a href="./templates/articles.html" target="_blank"
-      rel="noopener noreferrer">template</a> for new articles and update the
-      following files so the website and RSS feed reflect your changes:</p>
+      <ol>
+        <li>Fork the repository on GitHub.</li>
 
-      <pre>
-data/articles.json
-feeds/articles.xml
-</pre>
-      <p>Quick links: <a href="./data/articles.json" target="_blank" rel=
-      "noopener noreferrer">data/articles.json</a> — <a href=
-      "./feeds/articles.xml" target="_blank" rel=
-      "noopener noreferrer">feeds/articles.xml</a></p>
+        <li>Clone your fork locally.</li>
 
-      <h3>Repository & commands</h3>
+        <li>Create a dedicated branch for your changes.</li>
 
-      <p>Repository: <a href=
-      "https://github.com/daviduhden/cypherpunk-handbook" target="_blank" rel=
-      "noopener noreferrer">https://github.com/daviduhden/cypherpunk-handbook</a></p>
+        <li>Commit your work with a clear, descriptive message.</li>
 
-      <p>Recommended workflow using the GitHub CLI (<code>gh</code>):</p>
+        <li>Open a pull request summarizing the contribution.</li>
+      </ol>
+
+      <p><strong>Recommended workflow using GitHub CLI:</strong>
+      </p>
 
       <pre>
 gh repo fork daviduhden/cypherpunk-handbook --clone=true
 cd cypherpunk-handbook
-git checkout -b my-article
-# Add your article under articles/
+git switch -c my-article
 git add articles/my-article.html data/articles.json
 git commit -m "Add article: My Article"
 git push --set-upstream origin my-article
 gh pr create --fill
 </pre>
-      <p>Alternative workflow using plain Git:</p>
+      <p><strong>Alternative workflow using plain Git:</strong>
+      </p>
 
       <pre>
 git clone https://github.com/daviduhden/cypherpunk-handbook.git
 cd cypherpunk-handbook
-git checkout -b my-article
-# Add and commit changes
+git switch -c my-article
 git add articles/my-article.html data/articles.json
 git commit -m "Add article: My Article"
 git push origin my-article
 </pre>
-      <h3>Patches</h3>
+    </section>
 
-      <p>Git patches may also be sent to the <a href=
+    <section id="method-2">
+      <h3>Method 2: Contributing via files and patches</h3>
+
+      <p>This workflow is intended for contributors who prefer an anonymous
+      collaboration, or who do not use GitHub accounts.</p>
+
+      <p><strong>Submitting individual files</strong>
+      </p>
+
+      <ul>
+        <li>Send files directly to the SimpleX group.</li>
+
+        <li>Files must be attached uncompressed.</li>
+
+        <li>Archive formats (zip, tar, tar.gz, etc.) will be ignored.</li>
+
+        <li>All formatting, metadata, and licensing requirements must be
+        met.</li>
+      </ul>
+
+      <p><strong>Submitting Git patches (preferred)</strong>
+      </p>
+
+      <pre>
+git clone https://github.com/daviduhden/cypherpunk-handbook.git
+cd cypherpunk-handbook
+git switch -c my-contribution
+git add articles/my-article.html data/articles.json
+git commit -m "Add article: My Article"
+git format-patch -1 HEAD
+</pre>
+      <p>Send the generated <code>.patch</code> files uncompressed to the
+      <a href=
       "https://smp9.simplex.im/g#3VFA09OoCs4GaCcEmNppbp_nDrxeFp9u-kfy7aa15H0"
-      target="_blank" rel="noopener noreferrer">SimpleX group</a>. Files must
-      be attached uncompressed; archive formats (zip, tar, tar.gz, etc.) will
-      be ignored. Prefer standard patch formats such as those generated by
-      <code>git format-patch</code>.</p>
+      target="_blank" rel="noopener noreferrer">SimpleX group</a>.</p>
+    </section>
 
+    <section id="method-3">
+      <h3>Method 3: Contributing via got (Game of Trees)</h3>
+
+      <p>This workflow is intended for contributors using
+      <strong>OpenBSD</strong>, and who prefer a patch-based workflow without
+      relying on GitHub accounts.</p>
+
+      <p><strong>Submitting Git-compatible patches using got
+      (preferred)</strong>
+      </p>
+
+      <pre>
+got clone https://github.com/daviduhden/cypherpunk-handbook.git
+cd cypherpunk-handbook
+got branch -c master my-contribution
+got update -b my-contribution
+got add articles/my-article.html
+got add data/articles.json
+got commit -m "Add article: My Article"
+got diff master my-contribution &gt; 0001-Add-article-My-Article.patch
+</pre>
+      <p>Send the generated <code>.patch</code> file uncompressed to the
+      administrator of this website via <a href=
+      "mailto:david@uhden.dev">email</a>.</p>
+
+      <p>The resulting patch is a standard unified diff, compatible with
+      <a href="https://man.openbsd.org/patch" target="_blank" rel=
+      "noopener noreferrer">patch(1)</a> and Git-based workflows.</p>
+    </section>
+
+    <section id="submitting-articles">
+      <h3>Submitting Articles</h3>
+
+      <p>To publish a new article, create an HTML file under
+      <strong>articles/</strong> and include a header containing the following
+      elements:</p>
+
+      <ul>
+        <li><strong>kicker</strong>: a short category, tag, or label for the
+        article, inside a <code>&lt;p class="kicker"&gt;</code> element.</li>
+
+        <li><strong>title</strong>: the main article title inside a
+        <code>&lt;h1&gt;</code> element.</li>
+
+        <li><strong>meta</strong>: author information and last updated date
+        inside a <code>&lt;p class="meta"&gt;</code> element, using a
+        <code>&lt;time&gt;</code> element with the ISO date.</li>
+
+        <li><strong>lede</strong>: a short paragraph (<code>&lt;p
+        class="lede"&gt;</code>) summarizing the value and context of the
+        article in one or two sentences.</li>
+
+        <li><strong>TL;DR section</strong>: a <code>&lt;section&gt;</code>
+        inside the header containing a <code>&lt;h2&gt;TL;DR&lt;/h2&gt;</code>
+        and an unordered list (<code>&lt;ul&gt;</code>) of 2–4 primary
+        takeaways or recommendations.</li>
+      </ul>
+
+      <pre>
+&lt;article&gt;
+  &lt;header id="article-header"&gt;
+    &lt;p class="kicker"&gt;CATEGORY OR TAG&lt;/p&gt;
+
+    &lt;h1&gt;Article Title&lt;/h1&gt;
+
+    &lt;p class="meta"&gt;By AUTHOR - Updated 
+      &lt;time datetime="2025-01-01"&gt;DATE&lt;/time&gt;
+    &lt;/p&gt;
+
+    &lt;p class="lede"&gt;One or two sentences that set reader expectations 
+    and highlight the value of the article.&lt;/p&gt;
+
+    &lt;section&gt;
+      &lt;h2&gt;TL;DR&lt;/h2&gt;
+      &lt;ul&gt;
+        &lt;li&gt;Primary takeaway or recommendation.&lt;/li&gt;
+        &lt;li&gt;Another concise outcome or decision.&lt;/li&gt;
+        &lt;li&gt;Links to supporting resources if helpful.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/section&gt;
+  &lt;/header&gt;
+</pre>
+      <p>Use the provided <a href="./templates/articles.html" type="text/plain"
+      target="_blank" rel="noopener noreferrer">article template</a> and update
+      the following files:</p>
+
+      <ul>
+        <li>
+          <a href="./data/articles.json" type="application/json" target=
+          "_blank" rel="noopener noreferrer">data/articles.json</a>
+        </li>
+
+        <li>
+          <a href="./feeds/articles.xml" type="application/rss+xml" target=
+          "_blank" rel="noopener noreferrer">feeds/articles.xml</a>
+        </li>
+      </ul>
+
+      <h4>data/articles.json Structure</h4>
+
+      <p>The site uses <strong>data/articles.json</strong> as an index for
+      articles and feeds. Each top-level key is an article identifier (slug).
+      Example:</p>
+
+      <pre>
+{
+  "my-article-slug": {
+    "en": "articles/my-article.html",
+    "pubdate": "2025-12-18",
+    "title_en": "My Article Title"
+  }
+}
+</pre>
+      <p class="underline">Set <code>"pubdate"</code> to an ISO date
+      (YYYY-MM-DD) to control the publication date in feeds.</p>
+
+      <h4>Author Metadata and Pseudonyms</h4>
+
+      <p>Include the author name in the article header following the template
+      (see the <code>&lt;p class="meta"&gt;</code> line in <a href=
+      "./templates/articles.html" type="text/plain" target="_blank" rel=
+      "noopener noreferrer">templates/articles.html</a> ). The author can be a
+      real name or a pseudonym; real names are optional.</p>
+
+      <p>After updating the article file and <code>data/articles.json</code>,
+      regenerate feeds or open a pull request. The maintainer will run the site
+      scripts in <strong>scripts/</strong> if needed.</p>
+    </section>
+
+    <section id="strip-metadata">
+      <h3>Stripping metadata from files</h3>
+
+      <p>Before submitting articles, images, videos, audio, or other assets, it
+      is recommended to remove any potentially sensitive metadata. For most
+      file types, including <strong>SVG</strong> and <strong>PDF</strong>,
+      <strong>mat2</strong> (Metadata Anonymisation Toolkit 2) is the preferred
+      tool. Video and audio files can be cleaned using
+      <strong>ffmpeg</strong>.</p>
+
+      <ul>
+        <li>
+          <strong>mat2</strong> removes metadata from images, documents, audio,
+          and video files. By default, it <em>creates a new file</em> with
+          metadata removed:
+
+          <pre>
+mat2 filename.pdf
+mat2 filename.svg
+mat2 filename.jpg
+</pre>
+        </li>
+
+        <li>
+          <strong>exiftool</strong> can also be used but is <em>not recommended
+          for PDFs</em>:
+
+          <pre>
+exiftool -all= filename.jpg
+</pre>
+        </li>
+
+        <li>
+          <strong>ffmpeg</strong> can remove metadata from videos and audio
+          files. Use the following commands to create a new cleaned file
+          without overwriting the original:
+
+          <pre>
+ffmpeg -i input.mp4 -map_metadata -1 -c copy output.mp4
+ffmpeg -i input.mp3 -map_metadata -1 -c copy output.mp3
+</pre>
+          <p class="underline">Replace <code>input.*</code> with your original
+          file and <code>output.*</code> with the new file name to preserve the
+          original.</p>
+        </li>
+      </ul>
+
+      <p>Always verify that the new file has metadata removed and that it
+      remains intact before submission.</p>
+    </section>
+
+    <section id="automation">
       <h3>Automation</h3>
-
-      <p>Perl scripts located in <strong>scripts/</strong> can be used to
-      update and rebuild the site. These scripts regenerate
-      <strong>index.html</strong>, <strong>data/articles.json</strong>, and
-      <strong>feeds/articles.xml</strong>.</p>
+      Perl scripts located in <strong>scripts/</strong> can be used to update
+      and rebuild the site.
 
       <pre>
 perl ./scripts/update-guides.pl
 perl ./scripts/update-feeds.pl articles/my-article.html
 perl ./scripts/rebuild-feeds.pl
 </pre>
-      <h3>Feeds</h3>
+      <p class="underline">Requires Perl with JSON::PP</p>
+    </section>
 
-      <p>An RSS feed for articles is available at <a href=
-      "./feeds/articles.xml" target="_blank" rel=
-      "noopener noreferrer">./feeds/articles.xml</a>.</p>
+    <section id="downloads">
+      <h3>Downloading Archives &amp; Using Proxies</h3>
+      A signed archive of the repository is available at
+      <strong>archive/cypherpunk-handbook.tar.gz</strong>, updated every 24
+      hours. The archive comes with a <code>SHA256</code> hash and a
+      <code>signify</code> signature.
+      <h4>Downloading the archive using <code>curl</code></h4>
 
-      <h3>Contact</h3>
+      <p>Default HTTP/HTTPS download:</p>
 
-      <p>For assistance or questions, open an issue in the repository or
-      contact the maintainers via the <a href="./contact.html" target="_blank"
-      rel="noopener noreferrer">Contact</a> page.</p>
+      <pre>curl -O https://example.com/archive/cypherpunk-handbook.tar.gz
+curl -O https://example.com/archive/cypherpunk-handbook.tar.gz.sig
+curl -O https://example.com/archive/cypherpunk-handbook.sha256
+</pre>
+      <p>SOCKS5 proxy via TOR:</p>
+
+      <pre>curl --socks5 127.0.0.1:9050 -O https://example.com/archive/cypherpunk-handbook.tar.gz
+curl --socks5 127.0.0.1:9050 -O https://example.com/archive/cypherpunk-handbook.tar.gz.sig
+curl --socks5 127.0.0.1:9050 -O https://example.com/archive/cypherpunk-handbook.sha256
+</pre>
+      <p>SOCKS5 proxy via I2P <sup><a id="ref-1" href=
+      "#fn-1">[1]</a></sup>:</p>
+
+      <pre>curl --socks5 127.0.0.1:4444 -O https://example.com/archive/cypherpunk-handbook.tar.gz
+curl --socks5 127.0.0.1:4444 -O https://example.com/archive/cypherpunk-handbook.tar.gz.sig
+curl --socks5 127.0.0.1:4444 -O https://example.com/archive/cypherpunk-handbook.sha256
+</pre>
+      <h4>Verifying the archive</h4>
+
+      <p>Verify checksum and signature before extracting the archive.</p>
+
+      <p><strong>Linux</strong>
+      </p>
+
+      <p>verify using the SHA256 file.</p>
+
+      <pre>
+sha256sum -c cypherpunk-handbook.sha256
+</pre>
+      <p><strong>BSD</strong>
+      </p>
+
+      <p>Compute SHA256 and compare manually with the value in the SHA256
+      file.</p>
+
+      <pre>
+sha256 cypherpunk-handbook.tar.gz
+cat cypherpunk-handbook.sha256
+</pre>
+      <p>Verify the signed archive:</p>
+
+      <pre>
+signify -V -p cypherpunk-handbook.pub -x cypherpunk-handbook.tar.gz.sig -m cypherpunk-handbook.tar.gz
+</pre>
+      <h4>Extract the archive:</h4>
+
+      <pre>
+tar -xzf cypherpunk-handbook.tar.gz
+</pre>
+      <h4>Using Git with a proxy</h4>
+
+      <p><strong>Default (no proxy):</strong>
+      </p>
+
+      <pre>
+git clone https://github.com/daviduhden/cypherpunk-handbook.git
+</pre>
+      <p><strong>SOCKS5 proxy via TOR or I2P (global configuration)</strong>
+      </p>
+
+      <p>TOR:</p>
+
+      <pre>
+git config --global http.proxy socks5://127.0.0.1:9050
+</pre>
+      <p>I2P:</p>
+
+      <pre>
+git config --global http.proxy socks5://127.0.0.1:4444
+</pre>
+      <p>Then clone normally:</p>
+
+      <pre>
+git clone https://github.com/daviduhden/cypherpunk-handbook.git
+</pre>
+      <p><strong>SOCKS5 proxy via TOR (temporary for this command
+      only)</strong>
+      </p>
+
+      <pre>
+git -c http.proxy=socks5://127.0.0.1:9050 clone https://github.com/daviduhden/cypherpunk-handbook.git
+</pre>
+      <p><strong>SOCKS5 proxy via I2P (temporary for this command
+      only)</strong>
+      </p>
+
+      <pre>
+git -c http.proxy=socks5://127.0.0.1:4444 clone https://github.com/daviduhden/cypherpunk-handbook.git
+</pre>
+      <p class="underline">Global configuration (~/.gitconfig) affects all
+      subsequent <code>git pull</code>, <code>git push</code>, and other
+      commands. Temporary <code>-c</code> settings only apply to the specific
+      command.</p>
+    </section>
+
+    <section id="tools-used">
+      <h3>Tools Used</h3>
+
+      <p>This guide and the workflows mentioned use the following common tools
+      and utilities:</p>
+
+      <ul>
+        <li><strong><a href="https://cli.github.com/" target="_blank" rel=
+        "noopener">GitHub CLI (<code>gh</code>)</a></strong> - For forking and
+        creating PRs from the command line.</li>
+
+        <li><strong><a href="https://git-scm.com/" target="_blank" rel=
+        "noopener">Git</a></strong> - For version control and patch
+        generation.</li>
+
+        <li><strong><a href="https://gameoftrees.org/" target="_blank" rel=
+        "noopener">Got</a></strong> - For version control and patch generation
+        on OpenBSD.</li>
+
+        <li><strong><a href="https://curl.se/" target="_blank" rel=
+        "noopener">curl</a></strong> - For file downloads and use of SOCKS5
+        proxies.</li>
+
+        <li><strong><a href="https://www.gnu.org/software/tar/" target="_blank"
+        rel="noopener">GNU tar</a> / <a href="https://man.openbsd.org/tar"
+        target="_blank" rel="noopener">BSD tar</a></strong> - For the
+        extraction of <code>.tar.gz</code> archives.</li>
+
+        <li><strong><a href=
+        "https://www.gnu.org/software/coreutils/manual/html_node/sha256sum-invocation.html"
+        target="_blank" rel="noopener">sha256sum</a> / <a href=
+        "https://man.openbsd.org/sha256" target="_blank" rel=
+        "noopener">sha256</a></strong> - For SHA256 checksum verification
+        (Linux / BSD).</li>
+
+        <li><strong><a href="https://man.openbsd.org/signify" target="_blank"
+        rel="noopener">signify</a></strong> - For signature verification
+        (OpenBSD tool) <sup><a id="ref-2" href="#fn-2">[2]</a></sup>.</li>
+
+        <li><strong><a href="https://www.perl.org/" target="_blank" rel=
+        "noopener">Perl</a></strong> with <code><a href=
+        "https://metacpan.org/pod/JSON::PP" target="_blank" rel=
+        "noopener">JSON::PP</a></code> - For automation scripts included in
+        <code>scripts/</code>.</li>
+
+        <li>
+          <strong>Text editor</strong> - <a href=
+          "https://man.openbsd.org/vi">Vi</a>, <a href="https://www.vim.org/"
+          target="_blank" rel="noopener">Vim</a>, <a href=
+          "https://kakoune.org/" target="_blank" rel="noopener">Kakoune</a>,
+          <a href="https://helix-editor.com/" target="_blank" rel=
+          "noopener">Helix</a>, <a href="https://geany.org/" target="_blank"
+          rel="noopener">Geany</a>, <a href="https://kate-editor.org/" target=
+          "_blank" rel="noopener">Kate</a>, <a href="https://vscodium.com/"
+          target="_blank" rel="noopener">VSCodium</a>, etc. - For editing HTML,
+          CSS and JS/JSON files.
+        </li>
+
+        <li><strong><a href="https://github.com/jvoisin/mat2" target="_blank"
+        rel="noopener">Mat2</a></strong> - For metadata removal from images and
+        documents.</li>
+
+        <li><strong><a href="https://exiftool.org/" target="_blank" rel=
+        "noopener">ExifTool</a></strong> - For metadata removal from image
+        files.</li>
+
+        <li><strong><a href="https://ffmpeg.org/" target="_blank" rel=
+        "noopener">FFmpeg</a></strong> - For metadata removal from video and
+        audio files.</li>
+      </ul>
     </section>
   </main>
+
+  <footer id="footnotes">
+    <p><strong>Notes:</strong>
+    </p>
+
+    <p id="fn-1"><sup>1</sup> When using I2P, an <a href=
+    "https://www.stormycloud.org/i2p-outproxy/" target="_blank" rel=
+    "noopener noreferrer">outproxy</a> is required to reach the clearnet.
+    Without an outproxy, only I2P destinations are reachable. <a href=
+    "#ref-1">↩</a></p>
+
+    <p id="fn-2"><sup>2</sup> On Debian-based systems the signify tool is
+    available as a package named <code>signify-openbsd</code>, the binary must
+    be invoked as <code>signify-openbsd</code>. <a href="#ref-2">↩</a></p>
+  </footer>
 
   <footer id="site-footer">
     <p>&copy; 2025 The Cypherpunk Handbook Authors. All rights reserved.</p>
@@ -197,9 +581,9 @@ perl ./scripts/rebuild-feeds.pl
     <p><a href="./license.html" target="_blank" rel=
     "noopener noreferrer">LICENSE</a>
     </p>
-    <img src="./images/anarchy.svg" alt="freedom" class="icon">
+    <img class="icon" src="./images/anarchy.svg" alt="freedom">
     <h4 class="motto">LIVE FREE OR DIE</h4>
-    <img src="./images/anarchy.svg" alt="freedom" class="icon">
+    <img class="icon" src="./images/anarchy.svg" alt="freedom">
   </footer>
 </body>
 </html>

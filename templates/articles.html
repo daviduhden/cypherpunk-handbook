@@ -43,25 +43,26 @@
 
   <main id="site-main">
     <article>
-      <header class="article-header">
-        <p class="kicker">ARTICLE / CATEGORY</p>
+      <header id="article-header">
+        <p class="kicker">CATEGORY OR TAG</p>
 
         <h1>Article Title</h1>
 
-        <p class="meta">Updated <time datetime="2025-01-01">DATE</time></p>
+        <p class="meta">By AUTHOR - Updated <time datetime=
+        "2025-01-01">DATE</time></p>
 
-        <p class="lede">Short summary of what this article covers and why it
-        matters.</p>
+        <p class="lede">One or two sentences that set reader expectations and
+        state the value of the article.</p>
 
         <section>
           <h2>TL;DR</h2>
 
           <ul>
-            <li>Primary recommendation or outcome.</li>
+            <li>Primary takeaway or recommendation.</li>
 
-            <li>Secondary decision or warning.</li>
+            <li>Another concise outcome or decision.</li>
 
-            <li>Link to the most critical reference.</li>
+            <li>Links to supporting resources if helpful.</li>
           </ul>
         </section>
       </header>
@@ -69,38 +70,31 @@
       <section>
         <h2>Context</h2>
 
-        <p>Describe threat model, prerequisites, and scope. Call out what is
-        explicitly out of scope.</p>
+        <p>Describe the audience, assumptions, and scope. Clarify what is
+        intentionally out of scope.</p>
+      </section>
+
+      <section>
+        <h2>Main Content</h2>
+
+        <p>Develop your argument, walkthrough, or tutorial. Prefer short
+        paragraphs and actionable steps.</p>
+
+        <p>Here is an inline citation example with a footnote
+        reference<sup><a href="#fn-1" id="ref-1">[1]</a></sup>.</p>
 
         <ul>
-          <li>Assumption one</li>
+          <li>Key point one</li>
 
-          <li>Assumption two</li>
+          <li>Key point two</li>
         </ul>
-      </section>
 
-      <section>
-        <h2>Steps</h2>
-
-        <ol>
-          <li>Step one</li>
-
-          <li>Step two</li>
-        </ol>
-      </section>
-
-      <section>
-        <h2>Verification</h2>
-
-        <p>Document how to validate that the guidance worked (commands,
-        screenshots, or checksums).</p>
-
-        <p>Example inline citation with a footnote reference<sup><a href=
-        "#fn-1" id="ref-1">[1]</a></sup>.</p>
-
+        <pre>
+// Example code block
+console.log("Hello world");
+</pre>
         <blockquote>
-          <p>"If debugging is the process of removing bugs, then programming
-          must be the process of putting them in."</p>
+          <p>"Simplicity is prerequisite for reliability."</p>
           <cite>— Edsger W. Dijkstra</cite>
         </blockquote>
       </section>
@@ -110,13 +104,11 @@
 
         <ul>
           <li>
-            <a href="https://example.com" target="_blank" rel=
-            "noopener noreferrer">Source one</a>
+            <a href="https://example.com">Source one</a>
           </li>
 
           <li>
-            <a href="https://example.com" target="_blank" rel=
-            "noopener noreferrer">Source two</a>
+            <a href="https://example.com">Source two</a>
           </li>
         </ul>
       </section>
@@ -126,8 +118,8 @@
       <p><strong>Notes:</strong>
       </p>
 
-      <p id="fn-1"><sup>1</sup> Example footnote explaining the verification
-      step. <a href="#ref-1">↩</a></p>
+      <p id="fn-1"><sup>1</sup> Example footnote text explaining the citation
+      above. <a href="#ref-1">↩</a></p>
     </section>
   </main>
 

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="139.87" height="177.03" version="1.0">
+  <defs>
+    <linearGradient id="linearGradient13933" x1="-50.13" x2="-30.13" y1="75" y2="75" gradientTransform="rotate(-90 2.3697 -22.5)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0dcaa" offset="0"/>
+      <stop stop-color="#f0dcaa" stop-opacity="0" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient15884" x1="-112.63" x2="22.495" y1="97.438" y2="97.438" gradientTransform="rotate(-90 27.432 24.938)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0dcaa" offset="0"/>
+      <stop stop-color="#f0dcaa" stop-opacity="0" offset=".5"/>
+      <stop stop-color="#f0dcaa" stop-opacity="0" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient25651" x1="45.5" x2="155.26" y1="151.12" y2="151.12" gradientTransform="matrix(.5395 0 0 1.9046 97.725 -387.86)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a08c64" offset="0"/>
+      <stop stop-color="#a08c64" offset=".5"/>
+      <stop stop-color="#706144" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient34465" x1="-175.21" x2="-116.79" y1="92" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a0a0a0" offset="0"/>
+      <stop stop-color="#fff" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(-30.13 -5)">
+    <g transform="matrix(1.0748 0 0 1.0645 -7.4892 -5.6452)">
+      <g fill-rule="evenodd">
+        <rect x="35" y="29.87" width="130.13" height="135.13" ry="0" fill="#4b412e"/>
+        <path d="m35 30h130l-25-20h-80z" fill="#4a412d"/>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(-30.13 -5)">
+    <g transform="translate(.13033)" fill-rule="evenodd">
+      <rect x="35" y="29.87" width="130.13" height="135.13" ry="0" fill="#a08c64"/>
+      <path d="m35 30h130l-25-20h-80z" fill="#a08c64"/>
+      <path d="m59.87 10-25 20h130l-25-20h-9.2188l19.219 15h-100l19.219-15z" fill="url(#linearGradient13933)"/>
+      <path d="m34.87 29.875v135.12h130.13v-135.12zm5 0.125h120v130h-120z" fill="url(#linearGradient15884)"/>
+    </g>
+  </g>
+  <g transform="translate(-30.13 -5)" fill-rule="evenodd">
+    <rect x="50.416" y="40.416" width="99.428" height="52.918" fill="#a08c64" stroke="#4a402d" stroke-width="2"/>
+    <rect x="50.416" y="100.42" width="99.428" height="52.918" fill="#4a402d" stroke="#4a402d" stroke-width="3.3322"/>
+    <rect x="80" y="68" width="40" height="2" ry="1" fill="#4a402d"/>
+  </g>
+  <g transform="translate(-30.13 -5)">
+    <g transform="matrix(1.2756 .16846 -.16846 1.2756 -.53818 -34.275)" fill-rule="evenodd">
+      <path transform="matrix(1.2066 -.0079256 -.0065641 .9505 266.88 25.45)" d="m-116.81 68.5c-1.3294-1.6511-7.3382 54.017-5.6872 52.687 1.6511-1.3294-54.017-7.3382-52.687-5.6872 1.3294 1.6511 7.3382-54.017 5.6872-52.687-1.6511 1.3294 54.017 7.3382 52.687 5.6872z" fill="#56794d"/>
+      <g transform="rotate(-76.076 5.7569 -21.538)">
+        <path transform="matrix(.15415 1.1975 -.99182 .12767 5.63 257.49)" d="m-116.81 68.5c-1.3294-1.6511-7.3382 54.017-5.6872 52.687 1.6511-1.3294-54.017-7.3382-52.687-5.6872 1.3294 1.6511 7.3382-54.017 5.6872-52.687-1.6511 1.3294 54.017 7.3382 52.687 5.6872z" fill="url(#linearGradient34465)"/>
+        <g fill="#969696">
+          <rect x="-95.581" y="69.241" width="5.4801" height="2.1213"/>
+          <rect x="-129.58" y="73.781" width="39.598" height="2.1213"/>
+          <rect x="-129.4" y="78.201" width="39.598" height="2.1213"/>
+          <rect x="-129.22" y="82.974" width="39.598" height="2.1213"/>
+          <rect x="-129.05" y="87.393" width="39.598" height="2.1213"/>
+          <rect x="-120.26" y="92.52" width="23.688" height="2.1213"/>
+          <rect x="-128.16" y="97.293" width="39.598" height="2.1213"/>
+          <rect x="-127.81" y="102.07" width="39.598" height="2.1213"/>
+          <rect x="-119.91" y="107.02" width="24.395" height="2.1213"/>
+          <rect x="-126.57" y="111.43" width="39.598" height="2.1213"/>
+          <rect x="-97.05" y="116.74" width="10.253" height="2.1213"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(-30.13 -5)" fill-rule="evenodd">
+    <rect transform="rotate(90)" x="123.23" y="-153.86" width="57.295" height="107.65" fill="url(#linearGradient25651)" stroke="#4a402d" stroke-width="3"/>
+    <rect x="75" y="152" width="50" height="3" ry="1.5" fill="#4a402d"/>
+  </g>
+</svg>

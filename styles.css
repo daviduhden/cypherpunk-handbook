@@ -127,6 +127,14 @@ button:focus-visible {
   border-radius: 0.4em;
 }
 
+/* Utility: underlined text */
+.underline,
+.u-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-skip-ink: auto;
+}
+
 /*
  * Layout Containers
  * Center and constrain width for main sections.
@@ -242,7 +250,8 @@ nav a:hover {
   margin-right: 0.4em;
   border-radius: 0;
   border: none;
-  background: transparent;
+  background: inherit;
+  box-shadow: none;
 }
 
 /*
@@ -367,9 +376,9 @@ ul ul, ol ol, ul ol, ol ul {
 }
 
 /*
- * Aside box
+ * Domains box
  */
-aside {
+.site-domains {
   margin-top: 1.5em;
   border: thin solid var(--border);
   border-radius: var(--radius-soft);
@@ -377,12 +386,12 @@ aside {
   background: var(--panel-2);
 }
 
-aside h3 {
+.site-domains h3 {
   margin: 0 0 0.5em;
   color: var(--heading);
 }
 
-aside h4 {
+.site-domains h4 {
   margin: 0.35em 0;
   color: var(--heading);
 }
@@ -416,7 +425,7 @@ footer p sup {
   padding: 0.05em 0.4em;
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--accent) 25%, #ffffff 75%);
-  color: var(--panel);
+  color: var(--heading);
   font-weight: 800;
   font-size: 0.8em;
   text-align: center;
@@ -457,6 +466,7 @@ pre {
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
   margin: 1em 0;
+  line-height: 1.5;
 }
 
 /* Quotation styles */
@@ -550,7 +560,7 @@ img {
     font-size: clamp(1.5em, 3vw + 1em, 2.1em);
   }
 
-  aside {
+  .site-domains {
     margin: 0.625em 0;
   }
 
