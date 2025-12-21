@@ -203,14 +203,14 @@ git format-patch -1 HEAD
       <pre>
 got clone https://github.com/daviduhden/cypherpunk-handbook.git
 cd cypherpunk-handbook
-got branch -c master my-contribution
+got branch -c main my-contribution
 got update -b my-contribution
 got add articles/my-article.html
 got add data/articles.json
 got commit -m "Add article: My Article"
-got diff master my-contribution &gt; 0001-Add-article-My-Article.patch
+got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
 </pre>
-      <p>Send the generated <code>.patch</code> file uncompressed to the
+      <p>Send the generated <code>.patch</code> file and other attachments uncompressed to the
       administrator of this website via <a href=
       "mailto:david@uhden.dev">email</a>.</p>
 
