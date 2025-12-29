@@ -57,8 +57,8 @@ jobs:
           # Create tar.gz archive in PAX format
           tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
 
-          # Generate SHA256 checksum
-          sha256sum "$ARCHIVE" > "$CHECKSUM"
+          # Generate SHA256 checksum with filename only
+          (cd "$TMP_DIR" && sha256sum "$(basename "$ARCHIVE")" > "$CHECKSUM")
 
           # Write SIGNIFY_KEY to temporary file
           printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
