@@ -67,14 +67,12 @@ jobs:
           # Sign the archive
           signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
-          # Copy files to archive directory
-          cp "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$ARCHIVE_DIR/"
-
       # ----------------------------
       # Track archive file with LFS
       # ----------------------------
       - name: Track Archive with LFS
         run: |
+          set -euo pipefail
           git lfs install --local
           git lfs track "archive/*.tar.gz"
           git add .gitattributes
@@ -86,11 +84,20 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Rewrite history to remove previous archive files
-          git filter-repo --path archive/daviduhden-website.tar.gz --invert-paths --force
+          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
 
-          # Add the newly generated archive, checksum, and signature
-          git add archive/*.tar.gz archive/*.sha256 archive/*.sig
+          # Remove old archive versions from history
+          git filter-repo --path "archive/$REPO_NAME.tar.gz" --invert-paths --force
+
+          # Copy the newly generated archive, checksum, and signature into the repo
+          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz" "$GITHUB_WORKSPACE/archive/"
+          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz.sha256" "$GITHUB_WORKSPACE/archive/"
+          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz.sig" "$GITHUB_WORKSPACE/archive/"
+
+          # Add the new files explicitly to Git
+          git add "archive/$REPO_NAME.tar.gz"
+          git add "archive/$REPO_NAME.tar.gz.sha256"
+          git add "archive/$REPO_NAME.tar.gz.sig"
 
       # ----------------------------
       # Commit and push changes
@@ -98,6 +105,8 @@ jobs:
       - name: Commit and Push
         run: |
           set -euo pipefail
+
+          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
 
           # Re-add origin remote (required after git-filter-repo)
           git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
