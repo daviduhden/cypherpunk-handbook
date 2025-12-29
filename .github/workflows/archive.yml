@@ -2,7 +2,7 @@ name: Archive website (pax + gzip + signify)
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # Once per day at 00:00 UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -19,6 +19,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Initialize Git LFS
+        run: git lfs install
 
       - name: Install dependencies
         run: |
@@ -28,57 +33,38 @@ jobs:
       - name: Create Archive, Checksum, and Signature
         run: |
           set -e
-
-          echo "Running on:"
-          uname -a
-
           REPO_NAME=$(basename "$GITHUB_REPOSITORY")
           ARCHIVE_DIR="$GITHUB_WORKSPACE/archive"
           TMP_DIR="$GITHUB_WORKSPACE/tmp_archive"
 
-          mkdir -p "$ARCHIVE_DIR"
-          mkdir -p "$TMP_DIR"
+          mkdir -p "$ARCHIVE_DIR" "$TMP_DIR"
 
           ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
 
-          # Remove old files if they exist
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz archive in PAX format, excluding temporary directory
           tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
-
-          # Generate SHA256 checksum in proper format for sha256sum -c
           sha256sum "$ARCHIVE" > "$CHECKSUM"
 
-          # Write SIGNIFY_KEY secret to a temporary file (never added to repo)
           printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
           chmod 600 "$TMP_DIR/archive.sec"
 
-          # Sign the archive
           signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
-          # Copy only the archive, checksum, and signature to the repo's archive directory
-          cp "$ARCHIVE" "$ARCHIVE_DIR/"
-          cp "$CHECKSUM" "$ARCHIVE_DIR/"
-          cp "$SIGNATURE" "$ARCHIVE_DIR/"
+          cp "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$ARCHIVE_DIR/"
 
       - name: Commit and Push Changes via GitHub CLI
         run: |
           set -e
-
-          # Setup git to use GitHub CLI credentials
           gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Commit changes only if there are any
-          cd "$GITHUB_WORKSPACE"
           if [ -n "$(git status --porcelain)" ]; then
             git add archive/
             git commit -m "Archive website"
-            # Detect default branch and push
             BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
             git push origin "$BRANCH"
           else
