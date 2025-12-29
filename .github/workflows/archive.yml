@@ -17,22 +17,36 @@ jobs:
       SIGNIFY_KEY: ${{ secrets.SIGNIFY_KEY }}
 
     steps:
+      # ----------------------------
+      # Checkout (with LFS enabled)
+      # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
 
+      # ----------------------------
+      # Initialize Git LFS
+      # ----------------------------
       - name: Initialize Git LFS
-        run: git lfs install
+        run: git lfs install --local
 
+      # ----------------------------
+      # Install dependencies
+      # ----------------------------
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y rsync signify-openbsd gh
+          sudo apt-get install -y signify-openbsd gh
 
+      # ----------------------------
+      # Create archive, checksum, signature
+      # ----------------------------
       - name: Create Archive, Checksum, and Signature
         run: |
-          set -e
+          set -euo pipefail
+
           REPO_NAME=$(basename "$GITHUB_REPOSITORY")
           ARCHIVE_DIR="$GITHUB_WORKSPACE/archive"
           TMP_DIR="$GITHUB_WORKSPACE/tmp_archive"
@@ -55,12 +69,22 @@ jobs:
 
           cp "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$ARCHIVE_DIR/"
 
-      - name: Commit and Push Changes via GitHub CLI
+      # ----------------------------
+      # Commit & push (LFS-safe)
+      # ----------------------------
+      - name: Commit and Push Changes
         run: |
-          set -e
+          set -euo pipefail
+
           gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Sanity check: ensure file is tracked by LFS
+          git lfs ls-files | grep -q '^archive/' || {
+            echo "ERROR: archive files are NOT tracked by Git LFS"
+            exit 1
+          }
 
           if [ -n "$(git status --porcelain)" ]; then
             git add archive/
