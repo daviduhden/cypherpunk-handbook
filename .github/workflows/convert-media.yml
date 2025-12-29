@@ -166,7 +166,7 @@ jobs:
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
-            git commit -m "chore: normalize media assets"
+            git commit -m "Normalize media assets"
             git push
           else
             echo "No changes to commit."
@@ -180,7 +180,7 @@ jobs:
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
-            git commit -m "chore: normalize media assets"
+            git commit -m "Normalize media assets"
             git push origin HEAD:${{ github.head_ref }}
           else
             echo "No changes to commit."
