@@ -395,7 +395,7 @@ perl ./scripts/rebuild-feeds.pl
       <pre>
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz.sig
-curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.sha256
+curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz.sha256
 </pre>
       <p>SOCKS5 proxy via TOR <sup><a id="ref-1" href=
       "#fn-1">[1]</a></sup>:</p>
@@ -403,14 +403,14 @@ curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.sha256
       <pre>
 curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz
 curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sig
-curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.sha256
+curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sha256
 </pre>
       <p>HTTP proxy via I2P <sup><a id="ref-2" href="#fn-2">[2]</a></sup>:</p>
 
       <pre>
 curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz
 curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sig
-curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.sha256
+curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sha256
 </pre>
       <h4>Verifying the archive</h4>
 
@@ -422,7 +422,7 @@ curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyeg
       <p>verify using the SHA256 file.</p>
 
       <pre>
-sha256sum -c cypherpunk-handbook.sha256
+sha256sum -c cypherpunk-handbook.tar.gz.sha256
 </pre>
       <p><strong>BSD</strong>
       </p>
@@ -432,7 +432,7 @@ sha256sum -c cypherpunk-handbook.sha256
 
       <pre>
 sha256 cypherpunk-handbook.tar.gz
-cat cypherpunk-handbook.sha256
+cat cypherpunk-handbook.tar.gz.sha256
 </pre>
       <p>Verify the signed archive:</p>
 
