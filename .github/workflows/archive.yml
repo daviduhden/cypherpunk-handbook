@@ -2,7 +2,7 @@ name: Archive website (LFS + history cleanup)
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # Run daily at midnight UTC
+    - cron: '0 0 * * *'   # Daily at midnight UTC
   workflow_dispatch:
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip signify-openbsd gh
+          sudo apt-get install -y python3-pip signify-openbsd
           pip3 install --upgrade git-filter-repo
 
       # ----------------------------
@@ -54,7 +54,7 @@ jobs:
 
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
-          # Create tar.gz archive in PAX format, excluding tmp folder
+          # Create tar.gz archive in PAX format
           tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
 
           # Generate SHA256 checksum
@@ -67,7 +67,7 @@ jobs:
           # Sign the archive
           signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
-          # Copy the archive, checksum, and signature to the archive folder
+          # Copy files to archive directory
           cp "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$ARCHIVE_DIR/"
 
       # ----------------------------
@@ -86,7 +86,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Rewrite history to remove old archive files
+          # Rewrite history to remove previous archive files
           git filter-repo --path archive/daviduhden-website.tar.gz --invert-paths --force
 
           # Add the newly generated archive, checksum, and signature
@@ -99,10 +99,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Configure Git for GitHub Actions
-          gh auth setup-git
+          # Configure Git to use GH_TOKEN for authentication
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
 
           # Commit only if there are changes
           if [ -n "$(git status --porcelain)" ]; then
