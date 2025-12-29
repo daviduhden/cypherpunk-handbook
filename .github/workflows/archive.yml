@@ -1,8 +1,8 @@
-name: Archive website (LFS + clean history)
+name: Archive website (LFS + history cleanup)
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Diariamente a medianoche UTC
+    - cron: '0 0 * * *'   # Run daily at midnight UTC
   workflow_dispatch:
 
 permissions:
@@ -18,13 +18,13 @@ jobs:
 
     steps:
       # ----------------------------
-      # Checkout repo (full history + LFS)
+      # Checkout repository with full history and LFS
       # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
-          fetch-depth: 0  # necesario para reescribir historia
+          fetch-depth: 0
 
       # ----------------------------
       # Install dependencies
@@ -36,7 +36,7 @@ jobs:
           pip3 install --upgrade git-filter-repo
 
       # ----------------------------
-      # Create Archive, Checksum, Signature
+      # Create archive, checksum, and signature
       # ----------------------------
       - name: Create Archive, Checksum, and Signature
         run: |
@@ -54,17 +54,24 @@ jobs:
 
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
 
+          # Create tar.gz archive in PAX format, excluding tmp folder
           tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
+
+          # Generate SHA256 checksum
           sha256sum "$ARCHIVE" > "$CHECKSUM"
 
+          # Write SIGNIFY_KEY to temporary file
           printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
           chmod 600 "$TMP_DIR/archive.sec"
+
+          # Sign the archive
           signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
 
+          # Copy the archive, checksum, and signature to the archive folder
           cp "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$ARCHIVE_DIR/"
 
       # ----------------------------
-      # Track archive with LFS
+      # Track archive file with LFS
       # ----------------------------
       - name: Track Archive with LFS
         run: |
@@ -73,36 +80,33 @@ jobs:
           git add .gitattributes
 
       # ----------------------------
-      # Remove previous archive from history (git-filter-repo)
+      # Clean old archive files from history
       # ----------------------------
-      - name: Clean old archives from history
+      - name: Clean old archive from history
         run: |
-          # Backup branch
-          git branch -m main main-backup
+          set -euo pipefail
 
-          # Limpiar archivos antiguos de archive/
+          # Rewrite history to remove old archive files
           git filter-repo --path archive/daviduhden-website.tar.gz --invert-paths --force
 
-          # Checkout main again
-          git checkout -b main
-
-          # Copiar nuevo archivo generado
+          # Add the newly generated archive, checksum, and signature
           git add archive/*.tar.gz archive/*.sha256 archive/*.sig
 
       # ----------------------------
-      # Commit and push
+      # Commit and push changes
       # ----------------------------
       - name: Commit and Push
         run: |
           set -euo pipefail
 
+          # Configure Git for GitHub Actions
           gh auth setup-git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Commit only if there are changes
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "Archive website (updated $(date -u +"%Y-%m-%d"))"
             git push --force origin main
           else
             echo "No changes to commit."
-          fi
