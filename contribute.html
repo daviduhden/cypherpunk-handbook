@@ -58,6 +58,9 @@
 
         <li>File and patch-based contributions using got (OpenBSD
         workflow)</li>
+
+        <li>Patch creation from signed archive snapshots (Archive-based
+        workflow)</li>
       </ul>
     </section>
 
@@ -183,8 +186,8 @@ git add articles/my-article.html data/articles.json
 git commit -m "Add article: My Article"
 git format-patch -1 HEAD
 </pre>
-      <p>Send the generated <code>.patch</code> files uncompressed to the
-      <a href=
+      <p>Send the generated <code>.patch</code> file(s) and other attachments
+      uncompressed to the <a href=
       "https://smp9.simplex.im/g#3VFA09OoCs4GaCcEmNppbp_nDrxeFp9u-kfy7aa15H0"
       target="_blank" rel="noopener noreferrer">SimpleX group</a>.</p>
     </section>
@@ -210,13 +213,56 @@ got add data/articles.json
 got commit -m "Add article: My Article"
 got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
 </pre>
-      <p>Send the generated <code>.patch</code> file and other attachments
+      <p>Send the generated <code>.patch</code> file(s) and other attachments
       uncompressed to the administrator of this website via <a href=
       "mailto:david@uhden.dev">email</a>.</p>
 
       <p>The resulting patch is a standard unified diff, compatible with
       <a href="https://man.openbsd.org/patch" target="_blank" rel=
       "noopener noreferrer">patch(1)</a> and Git-based workflows.</p>
+    </section>
+
+    <section id="method-4">
+      <h3>Method 4: Contributing via archive snapshots</h3>
+
+      <p>This workflow allows contributors to work from the signed archive
+      directly rather than the Git repository. It is useful for offline or
+      anonymous contributions.</p>
+
+      <h4>Steps:</h4>
+
+      <ol>
+        <li>Download the latest signed archive and its checksum/signature from
+        <code>archive/cypherpunk-handbook.tar.gz</code>.</li>
+
+        <li>Verify the archive checksum and signature before extracting.</li>
+
+        <li>Extract the archive into a temporary working directory:
+
+          <pre>
+mkdir -p ~/cypherpunk-handbook-work
+tar -xzf cypherpunk-handbook.tar.gz -C ~/cypherpunk-handbook-work
+cd ~/cypherpunk-handbook-work
+          </pre>
+        </li>
+
+        <li>Edit or add files as needed, following the site's article templates
+        and metadata requirements.</li>
+
+        <li>Generate patch files based on the changes relative to the extracted
+        archive:
+
+          <pre>
+diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
+          </pre>
+          <p><em>Tip:</em> Use the extracted archive as <code>original/</code>
+          and your working directory as <code>modified/</code>.</p>
+        </li>
+
+        <li>Send the generated <code>.patch</code> file(s) and other
+        attachments uncompressed to the site's administrator or submission
+        point (email or SimpleX group).</li>
+      </ol>
     </section>
 
     <section id="submitting-articles">
@@ -437,7 +483,7 @@ cat cypherpunk-handbook.tar.gz.sha256
       <p>Verify the signed archive:</p>
 
       <pre>
-signify -V -p cypherpunk-handbook.pub -x cypherpunk-handbook.tar.gz.sig -m cypherpunk-handbook.tar.gz
+signify -V -p cypherpunk-handbook.pub -x cypherpunk-handbook.tar.gz.sig -m cypherpunk-handbook.tar.gz.sha256
 </pre>
       <h4>Extract the archive:</h4>
 
