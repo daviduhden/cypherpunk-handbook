@@ -18,7 +18,7 @@ jobs:
 
     steps:
       # ----------------------------
-      # Checkout repository with full history and LFS
+      # Checkout repository (full history + LFS)
       # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,46 +31,83 @@ jobs:
       # ----------------------------
       - name: Install dependencies
         run: |
+          set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y python3-pip signify-openbsd
+          sudo apt-get install -y signify-openbsd
           pip3 install --upgrade git-filter-repo
+
+      # ----------------------------
+      # Check if repository changed since last archive
+      # ----------------------------
+      - name: Check for repository changes
+        id: changes
+        run: |
+          set -euo pipefail
+
+          LAST_AUTHOR="$(git log -1 --pretty=%an)"
+          LAST_MESSAGE="$(git log -1 --pretty=%s)"
+
+          if [[ "$LAST_AUTHOR" == "github-actions[bot]" && \
+                "$LAST_MESSAGE" == Archive\ website* ]]; then
+            echo "No real changes since last archive. Skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected. Proceeding with archive."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       # ----------------------------
       # Create archive, checksum, and signature
       # ----------------------------
-      - name: Create Archive, Checksum, and Signature
+      - name: Create archive, checksum, and signature
+        if: steps.changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
-          ARCHIVE_DIR="$GITHUB_WORKSPACE/archive"
-          TMP_DIR="$GITHUB_WORKSPACE/tmp_archive"
+          REPO_NAME="$(basename "$GITHUB_REPOSITORY")"
+          WORKDIR="$GITHUB_WORKSPACE"
+          TMP_DIR="$WORKDIR/tmp_archive"
+          ARCHIVE_DIR="$WORKDIR/archive"
 
-          mkdir -p "$ARCHIVE_DIR" "$TMP_DIR"
+          mkdir -p "$TMP_DIR" "$ARCHIVE_DIR"
 
           ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
+          KEYFILE="$TMP_DIR/archive.sec"
 
-          rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE"
+          rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$KEYFILE"
 
-          # Create tar.gz archive in PAX format
-          tar --format=pax --exclude="tmp_archive" -czf "$ARCHIVE" .
+          # Create tar.gz archive (PAX format, includes .git)
+          tar \
+            --format=pax \
+            --exclude="./tmp_archive" \
+            -czf "$ARCHIVE" .
 
-          # Generate SHA256 checksum with filename only
-          (cd "$TMP_DIR" && sha256sum "$(basename "$ARCHIVE")" > "$CHECKSUM")
+          # Generate SHA256 checksum (filename only)
+          (
+            cd "$TMP_DIR"
+            sha256sum "$(basename "$ARCHIVE")" > "$(basename "$CHECKSUM")"
+          )
 
-          # Write SIGNIFY_KEY to temporary file
-          printf "%s\n" "$SIGNIFY_KEY" > "$TMP_DIR/archive.sec"
-          chmod 600 "$TMP_DIR/archive.sec"
+          # Write signify private key to a temporary file
+          printf '%s\n' "$SIGNIFY_KEY" > "$KEYFILE"
+          chmod 600 "$KEYFILE"
 
-          # Sign the archive
-          signify-openbsd -S -s "$TMP_DIR/archive.sec" -m "$ARCHIVE"
+          # Sign the checksum (NOT the archive)
+          signify-openbsd -S \
+            -s "$KEYFILE" \
+            -m "$CHECKSUM" \
+            -x "$SIGNATURE"
+
+          # Securely delete secret key material
+          shred -u "$KEYFILE"
 
       # ----------------------------
-      # Track archive file with LFS
+      # Track archive via Git LFS
       # ----------------------------
-      - name: Track Archive with LFS
+      - name: Track archive with Git LFS
+        if: steps.changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
           git lfs install --local
@@ -78,46 +115,48 @@ jobs:
           git add .gitattributes
 
       # ----------------------------
-      # Clean old archive files from history
+      # Remove old archive from history
       # ----------------------------
       - name: Clean old archive from history
+        if: steps.changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
+          REPO_NAME="$(basename "$GITHUB_REPOSITORY")"
 
-          # Remove old archive versions from history
-          git filter-repo --path "archive/$REPO_NAME.tar.gz" --invert-paths --force
+          # Remove previous archive versions from history
+          git filter-repo \
+            --path "archive/$REPO_NAME.tar.gz" \
+            --invert-paths \
+            --force
 
-          # Copy the newly generated archive, checksum, and signature into the repo
-          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz" "$GITHUB_WORKSPACE/archive/"
-          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz.sha256" "$GITHUB_WORKSPACE/archive/"
-          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz.sig" "$GITHUB_WORKSPACE/archive/"
+          # Copy new artifacts into the repository
+          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz" archive/
+          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz.sha256" archive/
+          cp "$GITHUB_WORKSPACE/tmp_archive/$REPO_NAME.tar.gz.sig" archive/
 
-          # Add the new files explicitly to Git
-          git add "archive/$REPO_NAME.tar.gz"
-          git add "archive/$REPO_NAME.tar.gz.sha256"
-          git add "archive/$REPO_NAME.tar.gz.sig"
+          git add \
+            "archive/$REPO_NAME.tar.gz" \
+            "archive/$REPO_NAME.tar.gz.sha256" \
+            "archive/$REPO_NAME.tar.gz.sig"
 
       # ----------------------------
       # Commit and push changes
       # ----------------------------
-      - name: Commit and Push
+      - name: Commit and push changes
+        if: steps.changes.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
-          REPO_NAME=$(basename "$GITHUB_REPOSITORY")
+          # Re-add origin remote (removed by git-filter-repo)
+          git remote add origin \
+            https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
 
-          # Re-add origin remote (required after git-filter-repo)
-          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-
-          # Configure Git for Actions
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Commit only if there are changes
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Archive website (updated $(date -u +"%Y-%m-%d"))"
+            git commit -m "Archive website (updated $(date -u +'%Y-%m-%d'))"
             git push --force origin main
           else
             echo "No changes to commit."
