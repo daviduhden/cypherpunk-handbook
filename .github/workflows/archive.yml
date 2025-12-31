@@ -78,9 +78,13 @@ jobs:
 
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$KEYFILE"
 
-          # Create tar.gz archive (PAX format, includes .git)
+          # Create tar.gz archive
+          # - Includes .git (full repository)
+          # - Excludes archive/ (derived artifacts)
+          # - Excludes tmp_archive/ (temporary files)
           tar \
             --format=pax \
+            --exclude="./archive" \
             --exclude="./tmp_archive" \
             -czf "$ARCHIVE" .
 
