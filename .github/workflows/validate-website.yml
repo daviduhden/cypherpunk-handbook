@@ -1,6 +1,7 @@
+---
 name: Validate & format website (validate-website.pl)
 
-on:
+'on':
   push:
     paths:
       - "**/*.html"
@@ -69,12 +70,31 @@ jobs:
           has_js=false
           has_json=false
 
-          git ls-files | grep -E '\.(html|htm)$' -m1 >/dev/null 2>&1 && has_html=true || true
-          git ls-files | grep -E '\.xml$' -m1 >/dev/null 2>&1 && has_xml=true || true
-          git ls-files | grep -E '\.svg$' -m1 >/dev/null 2>&1 && has_svg=true || true
-          git ls-files | grep -E '\.css$' -m1 >/dev/null 2>&1 && has_css=true || true
-          git ls-files | grep -E '\.(js|mjs|cjs)$' -m1 >/dev/null 2>&1 && has_js=true || true
-          git ls-files | grep -E '\.json$' -m1 >/dev/null 2>&1 && has_json=true || true
+          html_regex='\.(html|htm)$'
+          xml_regex='\.xml$'
+          svg_regex='\.svg$'
+          css_regex='\.css$'
+          js_regex='\.(js|mjs|cjs)$'
+          json_regex='\.json$'
+
+          if git ls-files | grep -E "$html_regex" -m1 >/dev/null 2>&1; then
+            has_html=true
+          fi
+          if git ls-files | grep -E "$xml_regex" -m1 >/dev/null 2>&1; then
+            has_xml=true
+          fi
+          if git ls-files | grep -E "$svg_regex" -m1 >/dev/null 2>&1; then
+            has_svg=true
+          fi
+          if git ls-files | grep -E "$css_regex" -m1 >/dev/null 2>&1; then
+            has_css=true
+          fi
+          if git ls-files | grep -E "$js_regex" -m1 >/dev/null 2>&1; then
+            has_js=true
+          fi
+          if git ls-files | grep -E "$json_regex" -m1 >/dev/null 2>&1; then
+            has_json=true
+          fi
 
           echo "has_html=$has_html" >> "$GITHUB_OUTPUT"
           echo "has_xml=$has_xml" >> "$GITHUB_OUTPUT"
@@ -83,7 +103,8 @@ jobs:
           echo "has_js=$has_js" >> "$GITHUB_OUTPUT"
           echo "has_json=$has_json" >> "$GITHUB_OUTPUT"
 
-          echo "Detected: html=$has_html xml=$has_xml svg=$has_svg css=$has_css js=$has_js"
+          echo "Detected: html=$has_html xml=$has_xml svg=$has_svg"
+          echo "Detected: css=$has_css js=$has_js"
 
       - name: Install minimal apt dependencies
         run: |
@@ -96,11 +117,17 @@ jobs:
             pkgs+=(tidy)
           fi
 
-          if [[ "${{ steps.detect.outputs.has_xml }}" == "true" || "${{ steps.detect.outputs.has_svg }}" == "true" ]]; then
+          if [[ "${{ steps.detect.outputs.has_xml }}" == "true" ]]; then
+            pkgs+=(libxml2-utils)
+          fi
+          if [[ "${{ steps.detect.outputs.has_svg }}" == "true" ]]; then
             pkgs+=(libxml2-utils)
           fi
 
-          if [[ "${{ steps.detect.outputs.has_css }}" == "true" || "${{ steps.detect.outputs.has_js }}" == "true" ]]; then
+          if [[ "${{ steps.detect.outputs.has_css }}" == "true" ]]; then
+            pkgs+=(curl unzip)
+          fi
+          if [[ "${{ steps.detect.outputs.has_js }}" == "true" ]]; then
             pkgs+=(curl unzip)
           fi
 
@@ -116,14 +143,18 @@ jobs:
           perl -v | head -n 2 || true
 
       - name: Install dprint (only if CSS/JS exist)
-        if: steps.detect.outputs.has_css == 'true' || steps.detect.outputs.has_js == 'true'
+        if: >
+          steps.detect.outputs.has_css == 'true' ||
+          steps.detect.outputs.has_js == 'true'
         run: |
           set -euo pipefail
 
           # Install Rust toolchain (non-interactive) so we can use `cargo`
           curl -sSf https://sh.rustup.rs -o /tmp/rustup.sh
           chmod +x /tmp/rustup.sh
-          RUSTUP_HOME="$HOME/.rustup" CARGO_HOME="$HOME/.cargo" sh /tmp/rustup.sh -y --no-modify-path
+          RUSTUP_HOME="$HOME/.rustup"
+          CARGO_HOME="$HOME/.cargo"
+          sh /tmp/rustup.sh -y --no-modify-path
 
           # Ensure cargo in PATH for the rest of the job
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
@@ -150,7 +181,8 @@ jobs:
           set -euo pipefail
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            BOT_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+            git config user.email "$BOT_EMAIL"
             git add -A
             git commit -m "Format website files"
             git push
@@ -159,12 +191,15 @@ jobs:
           fi
 
       - name: Commit & push changes (PR from same repo)
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: >
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         run: |
           set -euo pipefail
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            BOT_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+            git config user.email "$BOT_EMAIL"
             git add -A
             git commit -m "Format website files"
             git push origin HEAD:${{ github.head_ref }}
@@ -173,11 +208,13 @@ jobs:
           fi
 
       - name: Fail if formatting changed files (PR from fork cannot be pushed)
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        if: >
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name != github.repository
         run: |
           set -euo pipefail
           if [ -n "$(git status --porcelain)" ]; then
-            echo "PR from fork: cannot push changes back. Run the formatter locally and commit."
+            echo "PR from fork: cannot push; run formatter locally."
             git diff
             exit 1
           fi

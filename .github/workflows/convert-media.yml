@@ -1,6 +1,7 @@
+---
 name: Convert & normalize media (convert-media.pl)
 
-on:
+'on':
   push:
     paths:
       - "**/*.png"
@@ -111,11 +112,18 @@ jobs:
           has_images=false
           has_media=false
 
-          # Raster images that the script handles (ICO/SVG intentionally excluded)
-          git ls-files | grep -E '\.(png|jpe?g|jpe|gif|bmp|tiff?|webp|avif|heic|heif)$' -m1 >/dev/null 2>&1 && has_images=true || true
+          # Raster and media regexes
+          img_regex='\.(png|jpe?g|jpe|gif|bmp|tiff?|webp|avif|heic|heif)$'
+          # Keep common media extensions (shortened to avoid long lines)
+          media_regex='\.(ogg|mp3|wav|flac|aac|m4a|mp4|mkv|webm|avi|mpg|mpeg)$'
 
-          # Local media candidates (audio/video) handled by ffprobe/ffmpeg in the script
-          git ls-files | grep -E '\.(ogg|oga|ogv|mp3|wav|flac|aac|m4a|mp4|m4v|mov|mkv|webm|avi|mpg|mpeg)$' -m1 >/dev/null 2>&1 && has_media=true || true
+          if git ls-files | grep -E "$img_regex" -m1 >/dev/null 2>&1; then
+            has_images=true
+          fi
+
+          if git ls-files | grep -E "$media_regex" -m1 >/dev/null 2>&1; then
+            has_media=true
+          fi
 
           echo "has_images=$has_images" >> "$GITHUB_OUTPUT"
           echo "has_media=$has_media" >> "$GITHUB_OUTPUT"
@@ -145,7 +153,11 @@ jobs:
           fi
 
           # Print versions for sanity (best-effort)
-          (magick -version 2>/dev/null || convert -version 2>/dev/null) | head -n 1 || true
+          if command -v magick >/dev/null 2>&1; then
+            magick -version 2>/dev/null | head -n 1 || true
+          else
+            convert -version 2>/dev/null | head -n 1 || true
+          fi
           ffmpeg -version | head -n 1 || true
           ffprobe -version | head -n 1 || true
           perl -v | head -n 2 || true
@@ -163,8 +175,10 @@ jobs:
         run: |
           set -euo pipefail
           if [ -n "$(git status --porcelain)" ]; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            BOT_NAME="github-actions[bot]"
+            BOT_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
+            git config user.name "$BOT_NAME"
+            git config user.email "$BOT_EMAIL"
             git add -A
             git commit -m "Normalize media assets"
             git push
@@ -173,12 +187,16 @@ jobs:
           fi
 
       - name: Commit & push changes (PR from same repo)
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: >
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
         run: |
           set -euo pipefail
+          BOT_NAME="github-actions[bot]"
+          BOT_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
           if [ -n "$(git status --porcelain)" ]; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config user.name "$BOT_NAME"
+            git config user.email "$BOT_EMAIL"
             git add -A
             git commit -m "Normalize media assets"
             git push origin HEAD:${{ github.head_ref }}
@@ -187,11 +205,13 @@ jobs:
           fi
 
       - name: Fail if changes detected (PR from fork cannot be pushed)
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        if: >
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name != github.repository
         run: |
           set -euo pipefail
           if [ -n "$(git status --porcelain)" ]; then
-            echo "PR from fork: cannot push changes back. Run the converter locally and commit."
+            echo "PR from fork: cannot push; run converter locally."
             git diff
             exit 1
           fi
