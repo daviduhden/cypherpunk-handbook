@@ -103,7 +103,7 @@ length $slug or die_tool "Slug is required.\n";
 my $href = "./articles/$slug.html";
 
 # Prevent duplicates
-    if ( index( $content, $href ) != -1 ) {
+if ( index( $content, $href ) != -1 ) {
     logw("A link to $href already exists in $index. No change made.");
     exit 0;
 }
