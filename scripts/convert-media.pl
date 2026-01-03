@@ -219,7 +219,7 @@ sub write_atomic {
 my %skip_dir = map { $_ => 1 } qw(.git node_modules dist build .cache);
 
 my %img_ext = map { $_ => 1 } qw(
-    png jpg jpeg jpe gif bmp tiff tif webp heic heif avif
+  png jpg jpeg jpe gif bmp tiff tif webp heic heif avif
 );
 
 # Media containers/extensions we consider for ffprobe classification
@@ -297,8 +297,8 @@ if (@images) {
 }
 if (@media_candidates) {
     $ffmpeg
-      or
-      die_tool_tool("Required tool not found: 'ffmpeg' for audio/video conversion.");
+      or die_tool_tool(
+        "Required tool not found: 'ffmpeg' for audio/video conversion.");
     $ffprobe
       or die_tool_tool(
         "Required tool not found: 'ffprobe' for audio/video classification.");
@@ -330,7 +330,12 @@ sub convert_image_to_png {
     my ( $src, $dst ) = @_;
 
     my $dir = dirname($dst);
-    my ( $fh, $tmp ) = tempfile( TEMPLATE => "img-XXXXXX", SUFFIX => ".png", DIR => $dir, UNLINK => 0 );
+    my ( $fh, $tmp ) = tempfile(
+        TEMPLATE => "img-XXXXXX",
+        SUFFIX   => ".png",
+        DIR      => $dir,
+        UNLINK   => 0
+    );
     close $fh;
 
     # Note: Animated GIF -> first frame only (ImageMagick default).
@@ -449,7 +454,12 @@ sub convert_audio_to_vorbis_ogg {
     my ( $src, $dst ) = @_;
 
     my $dir = dirname($dst);
-    my ( $fh, $tmp ) = tempfile( TEMPLATE => "aud-XXXXXX", SUFFIX => ".ogg", DIR => $dir, UNLINK => 0 );
+    my ( $fh, $tmp ) = tempfile(
+        TEMPLATE => "aud-XXXXXX",
+        SUFFIX   => ".ogg",
+        DIR      => $dir,
+        UNLINK   => 0
+    );
     close $fh;
 
     my @cmd = (
@@ -516,7 +526,12 @@ sub convert_video_to_theora_ogv {
     my ( $src, $dst ) = @_;
 
     my $dir = dirname($dst);
-    my ( $fh, $tmp ) = tempfile( TEMPLATE => "vid-XXXXXX", SUFFIX => ".ogv", DIR => $dir, UNLINK => 0 );
+    my ( $fh, $tmp ) = tempfile(
+        TEMPLATE => "vid-XXXXXX",
+        SUFFIX   => ".ogv",
+        DIR      => $dir,
+        UNLINK   => 0
+    );
     close $fh;
 
     my @cmd = ( $ffmpeg, "-y", "-i", $src, "-c:v", "libtheora", "-q:v", "7", );
@@ -722,8 +737,12 @@ sub update_html_references {
 
         next if $content eq $orig;
 
-                my ( $fhw, $tmp ) =
-                    tempfile( TEMPLATE => "html-XXXXXX", SUFFIX => ".tmp", DIR => $dir, UNLINK => 0 );
+        my ( $fhw, $tmp ) = tempfile(
+            TEMPLATE => "html-XXXXXX",
+            SUFFIX   => ".tmp",
+            DIR      => $dir,
+            UNLINK   => 0
+        );
         if ( !$fhw ) {
             logw("Could not create temp file for HTML (skipping): $html");
             next;

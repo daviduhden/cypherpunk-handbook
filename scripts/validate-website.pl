@@ -42,7 +42,7 @@ use warnings;
 use FindBin;
 use File::Spec;
 use File::Find;
-use Cwd qw(abs_path);
+use Cwd          qw(abs_path);
 use Getopt::Long qw(GetOptions);
 use File::Temp   qw(tempfile);
 use IPC::Open3   qw(open3);
@@ -209,11 +209,13 @@ sub make_tmp_file_in_tmp {
         $ext  = $2;
     }
     $base =~ s/^\./-/;
+
     # File::Temp requires the TEMPLATE to end with at least 4 'X' characters.
     # Place extension via SUFFIX to keep TEMPLATE ending in Xs.
     my $template = "validate-website${base}-XXXXXX";
 
-    my ( $fh, $path ) = tempfile( $template, DIR => "/tmp", SUFFIX => $ext, UNLINK => 0 );
+    my ( $fh, $path ) =
+      tempfile( $template, DIR => "/tmp", SUFFIX => $ext, UNLINK => 0 );
     print {$fh} $content;
     close $fh;
     return $path;
@@ -267,7 +269,9 @@ logi(   "Found $total files (HTML="
       . scalar(@svg)
       . ", CSS="
       . scalar(@css) . ", JS="
-      . scalar(@js) . ", JSON=" . scalar(@json)
+      . scalar(@js)
+      . ", JSON="
+      . scalar(@json)
       . ")" );
 
 # -------------------------
@@ -277,9 +281,10 @@ my $tidy    = "tidy";
 my $xmllint = "xmllint";
 my $dprint  = "dprint";
 
-require_cmd( $tidy, "HTML formatting/validation" ) if @html;
+require_cmd( $tidy,    "HTML formatting/validation" )    if @html;
 require_cmd( $xmllint, "XML/SVG formatting/validation" ) if ( @xml || @svg );
-require_cmd( $dprint,  "CSS/JS/JSON formatting/validation" )  if ( @css || @js || @json );
+require_cmd( $dprint,  "CSS/JS/JSON formatting/validation" )
+  if ( @css || @js || @json );
 require_cmd( 'jq', "JSON formatting/validation (jq)" ) if @json;
 
 $ENV{XMLLINT_INDENT} = "  ";
@@ -292,15 +297,15 @@ my $dprint_cfg = "";
 
 if ( @css || @js || @json ) {
     $dprint_cfg = make_tmp_file_in_tmp( ".dprint.json",
-                            "{\n"
-                        . "  \"lineWidth\": 80,\n"
-                        . "  \"newLineKind\": \"lf\",\n"
-                        . "  \"plugins\": [\n"
-                        . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
-                        . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm\",\n"
-                        . "    \"https://plugins.dprint.dev/json-0.21.0.wasm\"\n"
-                        . "  ]\n"
-                        . "}\n" );
+            "{\n"
+          . "  \"lineWidth\": 80,\n"
+          . "  \"newLineKind\": \"lf\",\n"
+          . "  \"plugins\": [\n"
+          . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
+          . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm\",\n"
+          . "    \"https://plugins.dprint.dev/json-0.21.0.wasm\"\n"
+          . "  ]\n"
+          . "}\n" );
     push @tmp_paths, $dprint_cfg;
     logi("Created temporary dprint config in /tmp: $dprint_cfg") if $verbose;
 }
@@ -428,7 +433,8 @@ sub dprint_validate_and_check_or_apply {
     if ($mode_apply) {
         logi("Formatting CSS/JS with dprint...");
         for my $chunk ( chunked( $files_ref, 120 ) ) {
-            # Use run_cmd so dprint writes files in-place and inherits stdout/stderr
+
+        # Use run_cmd so dprint writes files in-place and inherits stdout/stderr
             my @cmd = ( $dprint, "fmt", "--config", $dprint_cfg, @$chunk );
             print "[cmd] @cmd\n" if $verbose;
             my $ok = run_cmd(@cmd);
@@ -445,16 +451,19 @@ sub dprint_validate_and_check_or_apply {
     logi("Checking CSS/JS formatting and validity with dprint (--check)...");
     for my $chunk ( chunked( $files_ref, 120 ) ) {
 
-                my ( $rc, $out, $err ) =
-                    run_capture( $dprint, "fmt", "--config", $dprint_cfg, "--check",
-                        @$chunk );
+        my ( $rc, $out, $err ) =
+          run_capture( $dprint, "fmt", "--config", $dprint_cfg, "--check",
+            @$chunk );
 
-                # If plugin download/resolution fails, skip dprint checks for this run.
-                if ( defined($err) && $err =~ /Error (downloading|resolving) plugin/i ) {
-                        logw("dprint plugin download/resolution failed; skipping dprint check in this run.");
-                        print STDERR $err if $verbose;
-                        return;
-                }
+        # If plugin download/resolution fails, skip dprint checks for this run.
+        if ( defined($err) && $err =~ /Error (downloading|resolving) plugin/i )
+        {
+            logw(
+"dprint plugin download/resolution failed; skipping dprint check in this run."
+            );
+            print STDERR $err if $verbose;
+            return;
+        }
 
         if ( $rc == 0 ) {
             next;    # formatted + parsed OK
@@ -526,7 +535,8 @@ if ( @css || @js || @json ) {
 
 # JSON validation with jq (ensure well-formedness and optional formatting)
 if (@json) {
-    logi( ( $mode_apply ? "Formatting" : "Checking formatting of" ) . " JSON with jq..." );
+    logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
+        . " JSON with jq..." );
     for my $f (@json) {
         my $before = read_all($f);
         if ( !defined $before ) {

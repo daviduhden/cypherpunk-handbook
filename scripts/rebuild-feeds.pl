@@ -230,6 +230,6 @@ s{<lastBuildDate>[^<]*</lastBuildDate>}{<lastBuildDate>$now</lastBuildDate>}m;
     write_utf8( $feed, $new );
     logi("Wrote $feed");
 }
-else { die_tool "Could not find </channel> in template\n" }   
+else { die_tool "Could not find </channel> in template\n" }
 
 exit 0;
