@@ -160,8 +160,8 @@ jobs:
           set -euo pipefail
 
           # Re-add origin remote (removed by git-filter-repo)
-          PROTO='https://x-access-token:'
-          REPO_PART='@github.com/${GITHUB_REPOSITORY}.git'
+          PROTO="https://x-access-token:"
+          REPO_PART="@github.com/${GITHUB_REPOSITORY}.git"
           REPO_URL="${PROTO}${GH_TOKEN}${REPO_PART}"
           git remote add origin "$REPO_URL"
 
