@@ -303,7 +303,7 @@ if ( @css || @js || @json ) {
           . "  \"plugins\": [\n"
           . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
           . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm\",\n"
-          . "    \"https://plugins.dprint.dev/json-0.21.0.wasm\"\n"
+          . "    \"https://plugins.dprint.dev/json-0.21.1.wasm\"\n"
           . "  ]\n"
           . "}\n" );
     push @tmp_paths, $dprint_cfg;
