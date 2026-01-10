@@ -1,0 +1,313 @@
+*Why OpenBSD solos?*
+(Written by FlyWithMe - A SimpleX chat user. Inspired by: why-openbsd.rocks)
+
+# Publication date: 2026/01/03 #
+
+
+This is a short summary of why OpenBSD is one of the most secure operating systems in the world, and why Windows, MacOS, IOS, Android and even Linux no matter how secure it is, will never compare to it. Yes, this includes even others BSDs, QubesOS i.e. FraudOS (see my other article about this FRAUD), Fedora Secureblue and Hardened Gentoo.
+
+As Fedora Secureblue (The most secure Linux distro by default) devs themselves say:
+
+"secureblue is for those whose first priority is using Linux, and second priority is security. secureblue does not claim to be the most secure option available on the desktop. We are limited in that regard by the current state of desktop Linux standardization, tooling, and upstream security development. What we aim for instead is to be the most secure option for those who already intend to use Linux. As such, if security is your first priority, secureblue may not be the best option for you."
+
+- Linux is limited and will never be really secure. It wasn't built for that.
+
+
+0- *Philosophy*
+"OpenBSD believes in strong security. Our aspiration is to be NUMBER ONE in the industry for security (if we are not already there). Our open software development model permits us to take a more uncompromising view towards increased security than most vendors are able to. We can make changes the vendors would not make."
+
+- This differs from all other operating systems, which were not created with the aim of being the most secure. The same goes for the Linux kernel, since the beginning it was not built with the objective of extreme security. So many things neglected in the past will eternally impact kernel security. There are 1 or 2 linux distros with this purpose but they have not rewritten the operating system from scratch and only build user space and maybe do some small kernel hardening, so they will never be as secure as OpenBSD (Or probably any BSD).
+
+
+1- *Library order randomization*
+In rc(8), re-link libc.so, libcrypto, and ld.so on startup, placing the objects in a random order at boot time to prevent "Return oriented programming" and other attacks. With randomized symbols, this is not an attack vector anymore.
+- Linux randomizes bases, but does not relink/reorder internal libc symbols with each boot — so internal offsets and gadgets within the same build remain predictable between machines/boots. Without boot relink, an opponent with a small infoleak can locate gadgets.
+
+
+2 — *arc4random(3)*
+OpenBSD has its own cryptographic random number generator.
+Wherever random input is needed, arc4random is used. arc4random is an abstraction layer for currently considered as safe ciphers and produces ChaCha20 ciphers at the moment. Arc4random is "A Replacement Call For Random", to generate very quickly high quality 32-bit pseudo-random numbers.
+- Arc4random nowdays is avaliable in userland on Linux as an API via some libraries (libc/glibc from recent versions and also libbsd) and there are ports of implementation of OpenBSD, but it is not integrated into the system and no one uses. OpenBSD provides arc4random as part of the base system, integrated with getentropy and with specific behavior/guarantees.
+
+
+3- *The first at security implementations*
+	The first widely used operating system to provide ASLR by default.
+ 	The first free operating system to provide an IPSec stack.
+ 	The first widely used operating system to enable PIE it globally by default.
+ 	The first operating system to enable Stack protector systemwide by default. 
+ 	First complete integration and adoption of IPv6, starting Jan 6, 1999. Almost fully operational Jun 6, 1999 during the first OpenBSD hackathon.
+Using OpenBSD you will always have the best security implementations and first than in all other operating systems.
+
+
+4- *Camera and audio recording*
+For privacy reasons, the OpenBSD team disabled camera and audio recording for all devices by default in the kernel. This can be toggled on/off with a simple sysctl change, without rebooting. 
+
+
+5- *Chrooted webserver by default*
+By default, HTTP daemons are chrooted in /var/www. As an OpenBSD system administrator, you don't need to configure anything to have a secured webserver installation running.
+This is also true for HTTP daemons from packages (apache2, nginx).
+
+
+6- *cron(8)*
+OpenBSD's cron(8) daemon can randomize values (~), and prevent multiple jobs from running concurrently (-s). Preventing competition avoids running conditions, simultaneous access to shared resources, and overload caused by multiple instances—reducing risk of data corruption and load spikes.
+Randomization reduces synchronized peaks (thundering herd) and makes it difficult to predict predict the execution windows by attackers.
+- Possible to configure in Linux through SystemD? (_fuck SystemD_), but it does not come by default anyway.
+
+
+7- *Defined integer overflows.*
+On OpenBSD, Clang, the default compiler on most architectures, have -fwrapv flag enabled by default. GCC also does not include -fstrict-overflow into -O2 optimization option. This tells the compiler to treat signed integer overflows as defined, preventing optimizations which remove security critical overflow checks. This is another example of sane defaults.
+
+
+8- *doas(1)*
+OpenBSD doesn't use sudo so created "doas". Doas replaced sudo because of the latter's security flaws and large, complex codebase. doas is easy to configure and use and suits most use cases. Its source code is small and elegant too.
+
+This is an example of a full and ULTRA MEGA HYPER OVERPOWER ABSOLUTE HARDENED doas.conf configuration:
+
+  permit <user> as root
+  permit root
+
+Compare this with the most simple sudo configuration and you will see....
+- Using doas on linux is possible, although with many problems in many distros. Fedora Secureblue removed suid-root, sudo, su and pkexec to use run0.
+
+
+9- *freezero(3)*
+The libc function freezero(3) allows programs to free memory that holds sensitive data, and to overwrite it with zeros.
+
+
+10- *httpd(8)*
+OpenBSD have a hardened version of Apache httpd in the base system.
+
+
+11- *KARL*
+At every install, upgrade, and boot a new kernel is generated with randomized addresses. A unique and unpredictable kernel is a huge security improvement. This technique is called Kernel Address Randomized Link (KARL). With 'Library order randomization' this is absolute epic.
+
+- Cry more Linux
+
+
+12- *Kernel & Userland*
+The kernel and userland in OpenBSD (and all BSDs) are developed together. The same people who introduce new features to the kernel control the userland.
+This way, new features can be implemented very fast into all of parts of the OS. See pledge, unveil and arc4random, for example.
+
+- Linux Kernel and GNU Core Utilities (or musl/BusyBox if you don't like using GNU) are developed independently, it would not be possible to introduce pledge to all the tools that easily for example. Making it absolutely impossible to have a harmony of security protocols in software and integrated code for increased system security between the linux kernel and linux userland, making it all a real mess in the linux world.
+ _Fuck you Linux._
+
+
+13- *LibreSSL*
+The unmaintainable and bloated OpenSSL Codebase was forked after Heartbleed was revealed. The code was thoroughly cleaned up, improved and documented. Besides new modern ciphers FRP256v1, RFC 5639 EC Brainpool, ChaCha20, Poly1305, LibreSSL is API compatible with OpenSSL but without the mess. It is actively developed by OpenBSD devs.
+- Nowdays, MacOS OpenSSL uses LibreSSL code.
+
+
+14- *License*
+You are free to use the operating system as you want and do business with it according to ISC or Berkeley style licenses. By contract the GPL is not acceptable when adding new code.
+
+This prevents infiltration and/or internal corruption of programmers to boycott and/or add backdoors. Like what has happened to the Linux kernel for many years, where Bill Gates has tried several times to boycott the project and then infiltrated dozens of programmers in its development to add backdoors and cause internal fights between developers. A license as free as BSD allows companies to freely use, close, distribute, and resell OpenBSD code.
+This license protects not only OpenBSD, but any BSD system, from the envy of others that only leads to chaos and destruction.
+- The Linux and GNU license is the GPL license, which in a perfect world where there was harmony between open-source programmers and mega-capitalist companies would be ideal, but we don't live in a perfect world.
+
+
+15- *Malloc leak detection*
+ It's a tool to detect unsafe behaviors in the OpenBSD code for Team developers. It needs to have debug symbols. This tracks memory allocations to free them properly after use, facilitating safe and native programming in the system
+
+
+16- *Documentation - manpages*
+There is probably no Operating System that is documented more and better than OpenBSD. Every single binary, library, driver or script delivered in the base system has its own manpage.
+The OpenBSD project considers lack of documentation on any function of the system to be a bug.
+- In Linux, this is ridiculous and leads the user to a huge lack of knowledge about the system itself, resulting in configuration errors. Obviously, this is terrible for security and absolutely everything else. That's why Linux users need divine interventions like the glorious Arch Wiki (praise be to the Arch developers).
+_FUCK YOU LINUX_
+
+
+17- *Meltdown and Spectre*
+To mitigate the Meltdown and Spectre, OpenBSD disable hyper-threading technology by default, citing security concerns – seemingly, Spectre-style concerns, with "a new hw.smt sysctl".
+- Fedora Secureblue do this by default too, inspired by OpenBSD of course.
+
+
+18- *Memory allocation randomization*
+Windows, macOS, iOS, Android, and Linux all have this; the difference is that OpenBSD has the world's most secure memory allocator, incomparably superior to the other operating systems. Linux's memory allocator is a joke, actually; macOS performs much better. 
+
+- Hardened_Malloc from GrapheneOS (which Fedora Secureblue uses globally, but you need to enable to every new software outside Flatpaks) which may be comparable or even higher in gross hardening than OpenBSD, is strongly inspired by the malloc implementation from OpenBSD. But as the devs themselves said:
+
+  "The main differences in the design are that it's solely focused on hardening rather than finding bugs"
+
+That is, OpenBSD gains a certain advantage by being less likely to have unfound bugs, which can lead to security vulnerabilities.
+
+
+19- *OpenSMTPD* 
+Written by OpenBSD Developers from scratch. A simple mail daemon was needed for the base system of the operating system and there were no suitable alternatives. The goals are simplicity, security and reliability with an acceptable license (ISC).
+- OpenSMTPD has a portable version available in several Linux distributions, but it is not included by default in any of them.
+
+
+20- *OpenSSH* 
+The most popular OpenBSD software is probably OpenSSH. It's the SSH standard used worldwide, being native and standard in all BSDs, macOS, and even Windows/Windows Server. From routers, switches, and devices to cloud services and hosting, they all use OpenSSH, which features post-quantum cryptography.
+
+
+21- *Firewall*
+pf is OpenBSD's very own firewall. It is simple and feature-rich and its configuration files are easy to read. It supports the use of variables, lists and tables. In fact, many commercial firewall appliances are based on it. 
+- Linux's iptables and nftables are extremely complex and overly complex compared to pf, easily leading even an advanced user to make mistakes and create significant security vulnerabilities for attacks. This is why many graphical interfaces exist to manage them, such as firewalld and ufw. In reality, iptables and nftables are absolute garbage.
+There are entire professional certification courses available to learn about iptables and nftables, it's that complex and ridiculous.
+
+
+22- *PID randomization*
+OpenBSD spawns each new process with a random, unused PID. This protects the user from attacks that predict new PID.
+- Linux kernel allocates PIDs in a semi-sequential (incremental) way, recycling when it reaches pid_max; does not randomize by historical design.
+
+
+23- *ping randomness*
+Both ping(8) and ping6(8) obfuscate the transmitted monotonic clock values by offsetting them with a random value.
+ChaCha streams are used to vary every payload. This helps the user to hide the system time from the attacker and prevents OS detection.
+
+
+24- *pledge*
+pledge allows you to limit a program's access to system calls very easily. This is a huge improvement in security. Even if a binary is compromised, its chances to misbehave are greatly reduced.
+Within only two releases, the OpenBSD Developers managed to introduce pledge to most of the binaries in the base system.
+
+
+25- *unveil*
+The unveil system call limits the filesystem open call to a given set of paths. It extends the idea of pledge: simply limiting programs to open is insufficient, because open is valid for the the whole filesystem.
+
+For example, why should a program like passwd(1) have access to your file system beyond /etc/passwd and /etc/shadow? If there is a security bug in passwd then effects would be quite limited.
+
+Browsers like Firefox, Tor, Chromium, Iridium and others are limited with unveil (and pledge) and can only have access to Downloads folder (and their respective folders on the system), not being able to even read any other system folder/archives, making the browser an impossible vault for any malware to leave. 
+
+
+26- *Privilege and users Separation*
+OpenBSD runs all of the standard base system daemons with privilege and user separation. These include for example bgpd(8), dhclient(8), dhcpd(8), dvmrpd(8), eigrpd(8), file(1), httpd(8), iked(8), ldapd(8), ldpd(8), mountd(8), npppd(8), ntpd(8), ospfd(8), ospf6d(8), pflogd(8), radiusd(8), relayd(8), ripd(8), script(1), smtpd(8), syslogd(8), tcpdump(8), tmux(1), xconsole(1), xdm(1), Xserver(1), ypldap(8), pkg_add(1), etc. 
+
+
+27- *Privilege revocation*
+Related to the work on privilege separation, some programs were refactored to drop privileges while holding onto a tricky resource such as a raw socket, reserved port, or modification-locked bpf(4) descriptor, for example ping(8), traceroute(8), etc. 
+
+
+28- *MAC addresses randomized*
+OpenBSD lets you have randomized MAC addresses via ifconfig
+
+  ifconfig iwm0 lladdr random
+
+Randomizing your MAC address improves anonymity while using your Laptop in public wifi or the like.
+- Fedora Secureblue, QubesOS (NetVM) and Tails have this, Whonix and others don't.
+
+
+29- *rcctl(8)*
+rcctl is a simple utility to maintain rc.conf.local, the system daemon configuration database for OpenBSD.
+Compared to systemd garbage or SysVinit, rcctl is very lightweight, secure, stable and easy to understand and use. SystemD is actually almost a complete operating system, absolute Red Hat devil crap.
+
+- Gentoo and other distributions (like Artix, Alpine and Void) have the advantage of not using SystemD (or SysVinit). But QubesOS, Fedora Secureblue, Tails, Whonix, Kicksecure, Arch, NixOS, and many others do.
+
+
+30- *recallocarray(3)*
+recallocarray is a libc function that ensures data is discarded before allocating new memory and checks for integer overflow from multiplication.
+
+
+31- *rpki-client(8)*
+The rpki-client utility queries the RPKI repository system with openrsync to fetch all X.509 certificates, manifests, and revocation lists under a given Trust Anchor.
+rpki-client subsequently validates each Route Origin Authorization (ROA) by constructing and verifying a certification path for the certificate associated with the ROA (including checking relevant CRLs). rpki-client produces lists of the Validated ROA Payloads (VRPs) in various formats.
+
+
+32- *Sane & secure defaults*
+OpenBSD has sane and secure defaults set in daemons and configurations.
+
+    "The system is intended to be secure by default, and many of its security features are either missing or optional in other operating systems."
+
+This means you don't have to tweak your freshly installed operating system to get services running. There is no hardening process required when you setup sshd, for example. Just as for every other daemon or component in the base system.
+
+- I think that's exactly the worst aspect of Linux: every distribution needs a lot of extra security to be minimally secure enough for you to sleep peacefully. Except for Fedora Secureblue, which already comes with enhanced security by default, although at a much lower level than OpenBSD. Furthermore, hardening done by the average, unprepared user can (and probably will) lead to many problems and perhaps even more security breaches. A secure system by default is necessary, and in the Linux world, Secureblue is the only example of this.
+
+
+33- *signify(1)*
+signify is a small and elegant tool to cryptographically sign and verify files. It was created to sign OpenBSD releases, since OpenBSD 5.5, and Binary Patches for syspatch. It uses only the Ed25519 algorithm. Think of it as an simple, easy replacement for PGP signing. 
+
+The same applies to packages: when a package is signed, pkg_add uses the appropriate key in /etc/signify to verify the signature and only unpacks/installs if the verification and checksums match. This makes it impossible to download a compromised version of OpenBSD or its binaries, even if the official repository is compromised by the NSA.
+
+- Distros linux have different implementations of this concept, such as Fedora's RPM. But signify have a defensive position against common attack modes with OpenPGP, such as less likelihood of confusion by multiple keys, subkeys, expired certificates, and legacy formats. Ed25519 has API and resistance to usage error better than the historical OpenPGP ecosystem (occurate algorithms/deficial). Fedora Secureblue is the best Linux distribution in this regard.
+
+
+34- *Stack*
+Aggressive randomisation of the stack location
+Since 7.3 (03/19/2023), this will put the stack at a random location in the upper 1/4th of the userland virtual address space providing up to 26 additional bits of randomness in the address. This aggressive randomisation of the stack location is for all 64-bit architectures except alpha.
+This should make it harder for an attacker to find the stack.
+- It is possible, through patches like PaX/grsecurity, to reinforce the security of the Linux kernel in this regard, but this requires manual intervention and is not like in OpenBSD, not even by default (does Fedora Secureblue have something like that? I know they use a hardened Linux kernel).
+
+
+35- *stack-register checking*
+A memory object should have the fewest permissions possible: typically read, write and execute. OpenBSD introduced a new permission flag known as stack.
+If you want to use memory as a stack, you must mmap it with that flag bit.
+When a system call happens, we check to see if the stack-pointer register points to such a page. If not, the program is killed. The ABI is tighter as a result. You may no longer point your stack register at non-stack memory, or your program will die.
+
+
+36- *Swap encryption by default*
+To protect sensitive information such as passwords from leaking to disk, where they can persist for many years.
+- Linux support this, but only Fedora Secureblue has by default.
+
+
+37- *Syscall From-Verification*
+The kernel checks if a syscall is executed from the address space where its corresponding process is coming from. If this is not the case, the process gets killed. This helps avoiding attackers uploading exploit code containing a raw system call sequence and instructions.
+
+
+38- *unwind(8) — validating DNS resolver*
+unwind is a validating DNS resolver. It is intended to run on client machines like workstations or laptops and only listens on localhost. unwind sends DNS queries to nameservers to answer queries and switches to resolvers learned from dhclient(8) if it detects that DNS queries are blocked by the local network. It periodically probes if DNS is no longer blocked and switches back to querying nameservers itself. I particularly use to increase my privacy to the extreme by making all DNS request local.
+- Fedora Secureblue uses unbound which also comes by default in OpenBSD, but is more complex and unnecessary in most cases, a simple configuration in unwind are several lines in unbound.
+
+
+39- *W^X Memory*
+Since 2003, memory on OpenBSD can be written to or executed, but not both. This is a major security feature that prevents malicious code from producing buffer overflows and executing what has been inserted.
+- Linux don't have as a global kernel policy; some distributions and architectures apply NX/UEP and mitigations, but W^X by process is not enforced as in OpenBSD. To achieve something similar in linux you need kernel and SELinux hardening.
+
+
+40- *WireGuard*
+OpenBSD has an in-kernel driver for WireGuard VPN communication. Including the WireGuard Protocol in the kernel improves performance while makes it easy to use for everyone in OpenBSD base.
+
+    "WireGuard® is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography."
+
+With this you can do a base and offline installation of OpenBSD and right at the beginning set up a good VPN like Mullvad for total anonymity (Mullvad Officially Supports WireGuard).
+
+
+41- *file(1)*
+File is sandboxed and runs as the _file user.
+Think of the following: You download a random file from the internet and analyze it using file. If file has a security hole (local code execution for example) and the downloaded file is configured to exploit this, it can run attacks. That's why the file utility is sandboxed and chrooted by default.
+
+
+42- *vmm(4) - hardened hypervisor*
+Theo the Raadt (the creator) has always criticized the idea of virtual machines and their security, he has always seen that the weakest and easiest point to be explored in a virtual machine is the hypervisor. Then the OpenBSD devs created their own hypervisor for the system, focused on extreme security and with the minimum possible attack vector beyond the separation of privileges. This of course leads to a lot of loss of features for virtual machines like:
+
+    graphics
+    snapshots
+    guest SMP support
+    hardware passthrough
+    live migration across hosts
+    live hardware change 
+
+Supported guest operating systems are currently limited to OpenBSD and Linux. As there is no VGA support yet, the guest OS must support serial console.
+- QEMU/KVM, Xen, VMware, VirtualBox and other hypervisors are unreliable, additional hardening with SELinux, Seccomp and namespaces are required for minimally secure use. Even SystemD is a big problem when it comes to virtual machines.
+
+
+43- *Xserver without root permissions* and *xenodm: the secure X Display manager*
+
+OpenBSD developers have worked hard to enable the non-root execution of an Xserver. Since 2014, X no longer requires special privileges and can be run as a regular user rather than root. OpenBSD has its own soft-fork of X.Org server called Xenocara, design to enhance security. In addition, Xorg's internet access is blocked by default by the firewall pf.
+
+Xenodm is a simplified fork of xdm, lightweight, more secure, rid of XDMCP support, because of many security vulnerabilities. It support only the BSDauth code used in OpenBSD. On OpenBSD xenodm is absolutely necessary to start the X server, because it no longer has setuid rights enabled by default.
+
+- The standard X11/Xorg is a complete garbage, basically a walking backdoor created by IBM in 1987 and until today has the same legacy code and vulnerabilities, in addition to connecting to the internet and requiring root access. In OpenBSD this is no longer a problem, Xenocara is absolutely amazing. 
+Something close to this was only coming up years later with the divine intervention of XLibre, but it is still not as safe as Xenocara.
+
+Although Wayland is incomparably more secure than X11, it still has had grotesque vulnerabilities that have already been exploited multiple times, mainly because Wayland relies on XWayland to be software-compatible (which Fedora Secureblue has made a point of disabling globally). Wayland is definitely not safe, and can have its so beloved "sandboxing" broken by Hyprland for example (Fedora Secureblue creator does not recommend the use of hyprland because of this). XLibre and Xenocara are far superior alternatives, but only XLibre can be used on Linux.
+
+
+44- *No proprietary blobs*
+OpenBSD has a commitment to removal/absence of non-free blobs/firmware on the system as project policy.
+- Linux kernel includes and supports many blobs, the absence of this is only possible in linux libre distros, like Hyperbola and Parabola.
+
+
+45- *RETGUARD*
+is a replacement for the stack-protector which uses a per-function random cookie (located in the read-only ELF .openbsd.randomdata section) to consistency-check the return address on the stack. Implemented for amd64 and arm64 by Todd Mortimer in OpenBSD 6.4, for mips64 in OpenBSD 6.7, and powerpc/powerpc64 in OpenBSD 6.9. amd64 system call stubs also protected in OpenBSD 7.3.
+
+
+46- *Audit Process*
+*(https://www.openbsd.org/security.html)*
+
+" The process we follow to increase security is simply a comprehensive file-by-file analysis of every critical software component. We are not so much looking for security holes, as we are looking for basic software bugs, and if years later someone discovers the problem used to be a security issue, and we fixed it because it was just a bug, well, all the better. Flaws have been found in just about every area of the system. Entire new classes of security problems have been found during our audit, and often source code which had been audited earlier needs re-auditing with these new flaws in mind. Code often gets audited multiple times, and by multiple people with different auditing skills.
+
+Some members of our security auditing team worked for Secure Networks, the company that made the industry's premier network security scanning software package Ballista (Secure Networks got purchased by Network Associates, Ballista got renamed to Cybercop Scanner, and well...) That company did a lot of security research, and thus fit in well with the OpenBSD stance. OpenBSD passed Ballista's tests with flying colours since day 1.
+
+Another facet of our security auditing process is its proactiveness. In most cases we have found that the determination of exploitability is not an issue. During our ongoing auditing process we find many bugs, and endeavor to fix them even though exploitability is not proven. We fix the bug, and we move on to find other bugs to fix. We have fixed many simple and obvious careless programming errors in code and only months later discovered that the problems were in fact exploitable. (Or, more likely someone on BUGTRAQ would report that other operating systems were vulnerable to a "newly discovered problem", and then it would be discovered that OpenBSD had been fixed in a previous release). In other cases we have been saved from full exploitability of complex step-by-step attacks because we had fixed one of the intermediate steps. An example of where we managed such a success is the lpd advisory that Secure Networks put out. „
+
+
+El Psy Kongroo!

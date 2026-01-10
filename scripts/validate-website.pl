@@ -34,12 +34,12 @@
 # Notes on "validation":
 #   - HTML: tidy is used as validator (errors/warnings -> non-zero). We treat non-zero as validation failure.
 #   - XML/SVG: xmllint --noout validates well-formedness; formatting uses xmllint --format.
-#   - CSS/JS: dprint "fmt --check" ensures formatted and parses; any error is validation failure.
+#   - CSS/JS: dprint "check" ensures formatted and parses; any error is validation failure.
 
 use strict;
 use warnings;
 
-use FindBin;
+use File::Basename qw(dirname);
 use File::Spec;
 use File::Find;
 use Cwd          qw(abs_path);
@@ -51,7 +51,8 @@ use Symbol       qw(gensym);
 # -------------------------
 # Options
 # -------------------------
-my $default_root = File::Spec->catdir( $FindBin::RealBin, '..' );
+my $script_dir   = dirname( abs_path($0) );
+my $default_root = File::Spec->catdir( $script_dir, '..' );
 
 my $root_dir   = $default_root;
 my $mode_apply = 1;               # default: apply formatting
@@ -448,12 +449,11 @@ sub dprint_validate_and_check_or_apply {
         return;
     }
 
-    logi("Checking CSS/JS formatting and validity with dprint (--check)...");
+        logi("Checking CSS/JS formatting and validity with dprint (check)...");
     for my $chunk ( chunked( $files_ref, 120 ) ) {
 
-        my ( $rc, $out, $err ) =
-          run_capture( $dprint, "fmt", "--config", $dprint_cfg, "--check",
-            @$chunk );
+                my ( $rc, $out, $err ) = run_capture( $dprint, "check", "--config",
+                        $dprint_cfg, "--list-different", @$chunk );
 
         # If plugin download/resolution fails, skip dprint checks for this run.
         if ( defined($err) && $err =~ /Error (downloading|resolving) plugin/i )
