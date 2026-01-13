@@ -22,7 +22,7 @@ jobs:
       # Checkout repository (full history + LFS)
       # ----------------------------
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           lfs: true
           fetch-depth: 0
