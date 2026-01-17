@@ -6,7 +6,6 @@
   <title>T.C.H. - The Cypherpunk Handbook</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./styles.css">
-  
 </head>
 <body>
   <header id="site-header">
@@ -93,10 +92,10 @@
       <h3>Licensing</h3>
 
       <p>All contributions must comply with the project license located at
-      <a href="./license.html">./license.html</a>. If any content (code, images,
-      or other assets) is not covered by this license, clearly declare the
-      exception at the beginning of the file and include the applicable license
-      or permission notice.</p>
+      <a href="./license.html">./license.html</a>. If any content (code,
+      images, or other assets) is not covered by this license, clearly declare
+      the exception at the beginning of the file and include the applicable
+      license or permission notice.</p>
 
       <p>Suggested exception notice format:</p>
 
@@ -183,7 +182,8 @@ git format-patch -1 HEAD
 </pre>
       <p>Send the generated <code>.patch</code> file(s) and other attachments
       uncompressed to the <a href=
-      "https://smp5.simplex.im/g#GV9GACm7l2pcvRPuCQ6pQv9wC-E0kpe_HsD2khKfgbk">SimpleX group</a>.</p>
+      "https://smp5.simplex.im/g#GV9GACm7l2pcvRPuCQ6pQv9wC-E0kpe_HsD2khKfgbk">SimpleX
+      group</a>.</p>
     </section>
 
     <section id="method-3">
@@ -212,7 +212,8 @@ got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
       "mailto:david@uhden.dev">email</a>.</p>
 
       <p>The resulting patch is a standard unified diff, compatible with
-      <a href="https://man.openbsd.org/patch">patch(1)</a> and Git-based workflows.</p>
+      <a href="https://man.openbsd.org/patch">patch(1)</a> and Git-based
+      workflows.</p>
     </section>
 
     <section id="method-4">
@@ -310,16 +311,18 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
     &lt;/section&gt;
   &lt;/header&gt;
 </pre>
-      <p>Use the provided <a href="./templates/articles.html" type="text/plain">article template</a> and update
-      the following files:</p>
+      <p>Use the provided <a href="./templates/articles.html" type=
+      "text/plain">article template</a> and update the following files:</p>
 
       <ul>
         <li>
-          <a href="./data/articles.json" type="application/json">data/articles.json</a>
+          <a href="./data/articles.json" type=
+          "application/json">data/articles.json</a>
         </li>
 
         <li>
-          <a href="./feeds/articles.xml" type="application/rss+xml">feeds/articles.xml</a>
+          <a href="./feeds/articles.xml" type=
+          "application/rss+xml">feeds/articles.xml</a>
         </li>
       </ul>
 
@@ -345,8 +348,9 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
 
       <p>Include the author name in the article header following the template
       (see the <code>&lt;p class="meta"&gt;</code> line in <a href=
-      "./templates/articles.html" type="text/plain">templates/articles.html</a> ). The author can be a
-      real name or a pseudonym; real names are optional.</p>
+      "./templates/articles.html" type="text/plain">templates/articles.html</a>
+      ). The author can be a real name or a pseudonym; real names are
+      optional.</p>
 
       <p>After updating the article file and <code>data/articles.json</code>,
       regenerate feeds or open a pull request. The maintainer will run the site
@@ -535,51 +539,58 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
       and utilities:</p>
 
       <ul>
-        <li><strong><a href="https://cli.github.com/">GitHub CLI (<code>gh</code>)</a></strong> - For
-        forking and creating PRs from the command line.</li>
+        <li><strong><a href="https://cli.github.com/">GitHub CLI
+        (<code>gh</code>)</a></strong> - For forking and creating PRs from the
+        command line.</li>
 
-        <li><strong><a href="https://git-scm.com/">Git</a></strong> - For version control and patch
-        generation.</li>
+        <li><strong><a href="https://git-scm.com/">Git</a></strong> - For
+        version control and patch generation.</li>
 
-        <li><strong><a href="https://gameoftrees.org/">Got</a></strong> - For version control and patch
-        generation on OpenBSD.</li>
+        <li><strong><a href="https://gameoftrees.org/">Got</a></strong> - For
+        version control and patch generation on OpenBSD.</li>
 
-        <li><strong><a href="https://curl.se/">curl</a></strong> - For file downloads and use of
-        HTTP and SOCKS5 proxies.</li>
+        <li><strong><a href="https://curl.se/">curl</a></strong> - For file
+        downloads and use of HTTP and SOCKS5 proxies.</li>
 
-        <li><strong><a href="https://www.gnu.org/software/tar/">GNU tar</a> / <a href=
-        "https://man.openbsd.org/tar">BSD tar</a></strong> - For the extraction of
-        <code>.tar.gz</code> archives.</li>
+        <li><strong><a href="https://www.gnu.org/software/tar/">GNU tar</a> /
+        <a href="https://man.openbsd.org/tar">BSD tar</a></strong> - For the
+        extraction of <code>.tar.gz</code> archives.</li>
 
         <li><strong><a href=
-        "https://www.gnu.org/software/coreutils/manual/html_node/sha256sum-invocation.html">sha256sum</a> / <a href=
-        "https://man.openbsd.org/sha256">sha256</a></strong> - For SHA256 checksum
-        verification (Linux / BSD).</li>
+        "https://www.gnu.org/software/coreutils/manual/html_node/sha256sum-invocation.html">
+        sha256sum</a> / <a href=
+        "https://man.openbsd.org/sha256">sha256</a></strong> - For SHA256
+        checksum verification (Linux / BSD).</li>
 
-        <li><strong><a href="https://man.openbsd.org/signify">signify</a></strong> - For signature
+        <li><strong><a href=
+        "https://man.openbsd.org/signify">signify</a></strong> - For signature
         verification (OpenBSD tool) <sup><a id="ref-3" href=
         "#fn-3">[3]</a></sup>.</li>
 
-        <li><strong><a href="https://www.perl.org/">Perl</a></strong> with <code><a href=
-        "https://metacpan.org/pod/JSON::PP">JSON::PP</a></code> - For automation scripts
-        included in <code>scripts/</code>.</li>
+        <li><strong><a href="https://www.perl.org/">Perl</a></strong> with
+        <code><a href="https://metacpan.org/pod/JSON::PP">JSON::PP</a></code> -
+        For automation scripts included in <code>scripts/</code>.</li>
 
         <li>
-          <strong>Text editor</strong> - <a href="https://man.openbsd.org/vi">Vi</a>, <a href=
-          "https://www.vim.org/">Vim</a>, <a href="https://kakoune.org/">Kakoune</a>, <a href=
-          "https://helix-editor.com/">Helix</a>, <a href="https://geany.org/">Geany</a>, <a href=
-          "https://kate-editor.org/">Kate</a>, <a href="https://vscodium.com/">VSCodium</a>, etc. - For
-          editing HTML, CSS and JS/JSON files.
+          <strong>Text editor</strong> - <a href=
+          "https://man.openbsd.org/vi">Vi</a>, <a href=
+          "https://www.vim.org/">Vim</a>, <a href=
+          "https://kakoune.org/">Kakoune</a>, <a href=
+          "https://helix-editor.com/">Helix</a>, <a href=
+          "https://geany.org/">Geany</a>, <a href=
+          "https://kate-editor.org/">Kate</a>, <a href=
+          "https://vscodium.com/">VSCodium</a>, etc. - For editing HTML, CSS
+          and JS/JSON files.
         </li>
 
-        <li><strong><a href="https://github.com/jvoisin/mat2">Mat2</a></strong> - For metadata removal from
-        images and documents.</li>
+        <li><strong><a href="https://github.com/jvoisin/mat2">Mat2</a></strong>
+        - For metadata removal from images and documents.</li>
 
-        <li><strong><a href="https://exiftool.org/">ExifTool</a></strong> - For metadata removal from
-        image files.</li>
+        <li><strong><a href="https://exiftool.org/">ExifTool</a></strong> - For
+        metadata removal from image files.</li>
 
-        <li><strong><a href="https://ffmpeg.org/">FFmpeg</a></strong> - For metadata removal from
-        video and audio files.</li>
+        <li><strong><a href="https://ffmpeg.org/">FFmpeg</a></strong> - For
+        metadata removal from video and audio files.</li>
       </ul>
     </section>
   </main>
@@ -588,13 +599,14 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
     <p><strong>Notes:</strong>
     </p>
 
-    <p id="fn-1"><sup>1</sup> <a href="https://arti.torproject.org/">Arti</a> uses port 9150 by default for
-    the local SOCKS5 proxy.<a href="#ref-1">↩</a></p>
+    <p id="fn-1"><sup>1</sup> <a href="https://arti.torproject.org/">Arti</a>
+    uses port 9150 by default for the local SOCKS5 proxy.<a href=
+    "#ref-1">↩</a></p>
 
     <p id="fn-2"><sup>2</sup> When using I2P, an <a href=
-    "https://www.stormycloud.org/i2p-outproxy/">outproxy</a> is required to reach the clearnet.
-    Without an outproxy, only I2P destinations are reachable. <a href=
-    "#ref-2">↩</a></p>
+    "https://www.stormycloud.org/i2p-outproxy/">outproxy</a> is required to
+    reach the clearnet. Without an outproxy, only I2P destinations are
+    reachable. <a href="#ref-2">↩</a></p>
 
     <p id="fn-3"><sup>3</sup> On Debian-based systems the signify tool is
     available as a package named <code>signify-openbsd</code>, the binary must
