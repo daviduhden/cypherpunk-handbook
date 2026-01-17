@@ -51,6 +51,7 @@
 
   --border: #1f273a;
   --border-2: #1f2937;
+  --border-hover: var(--border-2);
 
   --nav-bg: #111827;
   --nav-bg-hover: #1f2937;
@@ -63,6 +64,7 @@
   --shadow-img: 0 0.625em 1.875em rgba(0, 0, 0, 0.25);
 
   --max-width: 72ch;
+  --gutter: 1.25em;
   --pad-y: 2em;
   --pad-x: 1.25em;
 
@@ -140,15 +142,19 @@ button:focus-visible {
  * Center and constrain width for main sections.
  */
 header,
-nav,
 main,
 footer {
-  max-width: var(--max-width);
+  width: min(var(--max-width), 100% - var(--gutter) * 2);
+  margin: 0 auto;
+}
+
+nav {
+  width: min(var(--max-width), 100% - var(--gutter) * 2);
   margin: 0 auto;
 }
 
 header {
-  padding-bottom: 1em;
+  padding: 2em 0 1.25em;
   text-align: center;
 }
 
@@ -189,14 +195,16 @@ article header {
  * Page title
  */
 header h1 {
-  font-size: clamp(1.8em, 2.4vw + 1em, 2.4em);
+  margin: 0 0 0.75em;
+  font-size: clamp(1.6em, 2.5vw + 1em, 2.25em);
+  line-height: 1.2;
   font-weight: 700;
   color: var(--heading);
 }
 
 header h2 {
   margin: 0 0 1em;
-  font-size: clamp(1.1em, 1.2vw + 0.9em, 1.45em);
+  font-size: clamp(1.05em, 1.1vw + 0.85em, 1.35em);
   font-weight: 600;
   color: var(--muted);
   letter-spacing: 0.01em;
@@ -231,6 +239,8 @@ nav a {
   border-radius: var(--radius-pill);
   background: var(--nav-bg);
   color: var(--heading);
+  margin: 0 0.35em;
+  font-weight: 600;
 }
 
 nav a:hover {
@@ -282,6 +292,18 @@ section h2 {
 section p,
 main p {
   margin: 0.35em 0 0.85em;
+}
+
+audio {
+  display: block;
+  margin: 1em auto;
+  max-width: 100%;
+}
+
+/* Footer: justify list text for readability */
+footer ul,
+footer ol {
+  text-align: justify;
 }
 
 /* List indentation: make lists visually indented from normal paragraph text */
@@ -529,10 +551,6 @@ img {
 
   nav ul li {
     margin: 0.625em 0;
-  }
-
-  header h1 {
-    font-size: clamp(1.9em, 4vw + 1em, 2.6em);
   }
 
   section h2 {
