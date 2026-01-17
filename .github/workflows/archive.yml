@@ -93,7 +93,8 @@ jobs:
             --exclude="./.gitattributes" \
             --exclude="./archive" \
             --exclude="./tmp_archive" \
-            -czf "$ARCHIVE" .
+            --use-compress-program="gzip -9" \
+            -cf "$ARCHIVE" .
 
           # Generate SHA256 checksum (filename only)
           (

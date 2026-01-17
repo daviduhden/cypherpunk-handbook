@@ -303,7 +303,7 @@ if ( @css || @js || @json ) {
           . "  \"newLineKind\": \"lf\",\n"
           . "  \"plugins\": [\n"
           . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
-          . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm\",\n"
+          . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.2.wasm\",\n"
           . "    \"https://plugins.dprint.dev/json-0.21.1.wasm\"\n"
           . "  ]\n"
           . "}\n" );
@@ -449,11 +449,11 @@ sub dprint_validate_and_check_or_apply {
         return;
     }
 
-        logi("Checking CSS/JS formatting and validity with dprint (check)...");
+    logi("Checking CSS/JS formatting and validity with dprint (check)...");
     for my $chunk ( chunked( $files_ref, 120 ) ) {
 
-                my ( $rc, $out, $err ) = run_capture( $dprint, "check", "--config",
-                        $dprint_cfg, "--list-different", @$chunk );
+        my ( $rc, $out, $err ) = run_capture( $dprint, "check", "--config",
+            $dprint_cfg, "--list-different", @$chunk );
 
         # If plugin download/resolution fails, skip dprint checks for this run.
         if ( defined($err) && $err =~ /Error (downloading|resolving) plugin/i )
