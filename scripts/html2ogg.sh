@@ -66,7 +66,7 @@ read -r LANG_OPT
 case "$LANG_OPT" in
 1)
 	VOICE="es-es"
-	SPEED=145
+	SPEED=140
 	OUT="output_es.ogg"
 	;;
 2)

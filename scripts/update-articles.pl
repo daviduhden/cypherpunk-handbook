@@ -109,7 +109,7 @@ if ( index( $content, $href ) != -1 ) {
 }
 
 my $link_html =
-qq{<li>\n              <a href="$href" target="_blank" rel="noopener noreferrer">}
+    qq{<li>\n              <a href="$href">}
   . esc_html($title)
   . qq{</a>\n            </li>\n\n};
 
