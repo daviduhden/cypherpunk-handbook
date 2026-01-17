@@ -67,18 +67,19 @@ case "$LANG_OPT" in
 1)
 	VOICE="es-es"
 	SPEED=140
-	OUT="output_es.ogg"
 	;;
 2)
 	VOICE="en-gb"
 	SPEED=140
-	OUT="output_en.ogg"
 	;;
 *)
 	echo "❌ Invalid option"
 	exit 1
 	;;
 esac
+
+# Output file name: derive from input HTML (e.g. articles/systems.html -> articles/systems.ogg)
+OUT="${HTML%.*}.ogg"
 
 # -----------------------------
 # Temporary WAV file
@@ -92,7 +93,7 @@ echo "▶️ Converting HTML to audio..."
 
 pandoc "$HTML" -t plain --wrap=none | espeak-ng -v "$VOICE" -s "$SPEED" -p 50 -w "$TMP_WAV"
 
-ffmpeg -y -loglevel error -i "$TMP_WAV" -c:a libvorbis -q:a 5 "$OUT"
+ffmpeg -y -loglevel error -i "$TMP_WAV" -ac 2 -c:a vorbis -q:a 5 -strict -2 "$OUT"
 
 # -----------------------------
 # Cleanup
