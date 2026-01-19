@@ -464,7 +464,7 @@ sub convert_audio_to_vorbis_ogg {
 
     my @cmd = (
         $ffmpeg,     "-y",   "-i", $src, "-vn", "-c:a",
-        "libvorbis", "-q:a", "5",  $tmp
+        "vorbis", "-q:a", "5", "-strict", "-2",  $tmp
     );
 
     my $ok = run_cmd(@cmd);
@@ -537,7 +537,7 @@ sub convert_video_to_theora_ogv {
     my @cmd = ( $ffmpeg, "-y", "-i", $src, "-c:v", "libtheora", "-q:v", "7", );
 
     if ( ffprobe_has_audio($src) ) {
-        push @cmd, ( "-c:a", "libvorbis", "-q:a", "5" );
+        push @cmd, ( "-c:a", "vorbis", "-q:a", "5", "-strict", "-2" );
     }
     else {
         push @cmd, ("-an");
