@@ -15,9 +15,9 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 # FORMAT + VALIDATE website files (HTML, XML, SVG, CSS, JS) using only:
-#   - tidy     (compiled)  : HTML format + basic validation (as supported by tidy)
-#   - xmllint  (compiled)  : XML/SVG format + well-formedness validation
-#   - dprint   (compiled)  : CSS/JS format + parse/format check (as supported by dprint)
+#   - tidy       : HTML format + basic validation (as supported by tidy)
+#   - xmllint    : XML/SVG format + well-formedness validation
+#   - dprint     : CSS/JS format + parse/format check (as supported by dprint)
 #
 # Usage:
 #   validate-website.pl [--root DIR] [--apply|--check] [--no-color] [--verbose]
@@ -121,6 +121,14 @@ if ($use_color) {
 sub logi { print "${GREEN}✅ [INFO]${RESET} $_[0]\n"; }
 sub logw { print STDERR "${YELLOW}⚠️ [WARN]${RESET} $_[0]\n"; }
 sub loge { print STDERR "${RED}❌ [ERROR]${RESET} $_[0]\n"; }
+
+my $os_name = `uname -s 2>/dev/null`;
+chomp $os_name;
+if ( $os_name eq "OpenBSD" ) {
+    logi(
+"OpenBSD packages: JSON::PP -> p5-JSON; tidy -> tidy; xmllint -> libxml; dprint -> not ported; rsvg-convert -> librsvg; pandoc -> pandoc; ffmpeg -> ffmpeg; espeak-ng -> espeak"
+    );
+}
 
 sub die_tool {
     my ($msg) = @_;
