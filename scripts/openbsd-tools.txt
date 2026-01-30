@@ -1,0 +1,12 @@
+JSON::PP = p5-JSON
+tidy = tidy
+xmllint = libxml
+dprint = not ported
+rsvg-convert = librsvg
+pandoc = pandoc
+ffmpeg = ffmpeg
+espeak-ng = espeak
+
+
+
+
