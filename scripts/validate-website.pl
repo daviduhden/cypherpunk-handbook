@@ -124,7 +124,8 @@ sub loge { print STDERR "${RED}❌ [ERROR]${RESET} $_[0]\n"; }
 
 my $os_name = `uname -s 2>/dev/null`;
 chomp $os_name;
-if ( $os_name eq "OpenBSD" ) {
+my $is_openbsd = ( $os_name eq "OpenBSD" ) ? 1 : 0;
+if ($is_openbsd) {
     logi(
 "OpenBSD packages: JSON::PP -> p5-JSON; tidy -> tidy; xmllint -> libxml; dprint -> not ported; rsvg-convert -> librsvg; pandoc -> pandoc; ffmpeg -> ffmpeg; espeak-ng -> espeak"
     );
@@ -293,7 +294,7 @@ my $dprint  = "dprint";
 require_cmd( $tidy,    "HTML formatting/validation" )    if @html;
 require_cmd( $xmllint, "XML/SVG formatting/validation" ) if ( @xml || @svg );
 require_cmd( $dprint,  "CSS/JS/JSON formatting/validation" )
-  if ( @css || @js || @json );
+  if ( ( @css || @js || @json ) && !$is_openbsd );
 require_cmd( 'jq', "JSON formatting/validation (jq)" ) if @json;
 
 $ENV{XMLLINT_INDENT} = "  ";
@@ -305,18 +306,25 @@ my @tmp_paths;
 my $dprint_cfg = "";
 
 if ( @css || @js || @json ) {
-    $dprint_cfg = make_tmp_file_in_tmp( ".dprint.json",
-            "{\n"
-          . "  \"lineWidth\": 80,\n"
-          . "  \"newLineKind\": \"lf\",\n"
-          . "  \"plugins\": [\n"
-          . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
-          . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.2.wasm\",\n"
-          . "    \"https://plugins.dprint.dev/json-0.21.1.wasm\"\n"
-          . "  ]\n"
-          . "}\n" );
-    push @tmp_paths, $dprint_cfg;
-    logi("Created temporary dprint config in /tmp: $dprint_cfg") if $verbose;
+    if ($is_openbsd) {
+        logw("OpenBSD: skipping dprint for CSS/JS/JSON (not ported)")
+          if $verbose;
+    }
+    else {
+        $dprint_cfg = make_tmp_file_in_tmp( ".dprint.json",
+                "{\n"
+              . "  \"lineWidth\": 80,\n"
+              . "  \"newLineKind\": \"lf\",\n"
+              . "  \"plugins\": [\n"
+              . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
+              . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.2.wasm\",\n"
+              . "    \"https://plugins.dprint.dev/json-0.21.1.wasm\"\n"
+              . "  ]\n"
+              . "}\n" );
+        push @tmp_paths, $dprint_cfg;
+        logi("Created temporary dprint config in /tmp: $dprint_cfg")
+          if $verbose;
+    }
 }
 
 END { unlink $_ for @tmp_paths; }
@@ -537,8 +545,13 @@ if (@svg) {
 
 # CSS/JS/JSON (via dprint)
 if ( @css || @js || @json ) {
-    my @pfiles = ( @css, @js, @json );
-    dprint_validate_and_check_or_apply( \@pfiles );
+    if ($is_openbsd) {
+        logw("OpenBSD: skipping dprint for CSS/JS/JSON (not ported)");
+    }
+    else {
+        my @pfiles = ( @css, @js, @json );
+        dprint_validate_and_check_or_apply( \@pfiles );
+    }
 }
 
 # JSON validation with jq (ensure well-formedness and optional formatting)
