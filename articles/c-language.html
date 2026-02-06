@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>T.C.H. — The C language and its biggest problem; proving its
+  insecurity.</title>
+  <link rel="icon" href="./../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./../styles.css">
+  <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
+  "./../feeds/articles.xml">
+</head>
+<body>
+  <header id="site-header">
+    <h1>The Cypherpunk Handbook</h1>
+
+    <h2>Article</h2>
+  </header>
+
+  <nav id="site-nav">
+    <ul>
+      <li>
+        <a href="./../index.html">Home</a>
+      </li>
+
+      <li>
+        <a href="./../manifesto.html">Manifesto</a>
+      </li>
+
+      <li>
+        <a href="./../contact.html">Contact</a>
+      </li>
+
+      <li>
+        <a href="./../contribute.html">Contribute</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main id="site-main">
+    <article class="article-content">
+      <header id="article-header">
+        <p class="kicker">Programming</p>
+
+        <h1>The C language and its biggest problem; proving its
+        insecurity.</h1>
+
+        <p class="meta">Written by FlyWithMe (A Simplex chat user) -
+        <time datetime="2026-02-02">Updated February 2, 2026</time></p>
+      </header>
+
+      <section>
+        <p class="lede">C is not a safe language, although it is possible to
+        create secure software with it. Regardless of the programmer's skill or
+        the amount of code reviews performed, it is impossible, using C, to
+        create software with perfect memory management. Although formally
+        verified software is possible, it is almost non-existent; only 2
+        examples can be found, such as the seL4 microkernel and the CompCert
+        compiler.</p>
+
+        <p>The fact is that formal verification is extremely difficult and
+        costly to perform, so it should not be considered a solution, but
+        rather a remote possibility.</p>
+
+        <p>And for those who mistakenly or arrogantly claim, out of ignorance
+        or vanity, that these bugs and vulnerabilities caused by improper
+        memory management are rare and obsolete, I present a factual and
+        statistical analysis of the case.</p>
+
+        <h2>Analysis: Memory Management Vulnerabilities in CVE (2015-2025)</h2>
+
+        <h3>Total Data:</h3>
+
+        <p>Based on the CVEDetails.com database and NIST NVD data, all
+        registered CVEs from 2015 to December 20, 2025 were analyzed.</p>
+
+        <p><strong>CVEs analysed: 107,173</strong>
+        </p>
+
+        <h3>Vulnerabilities of Memory Management:</h3>
+
+        <ul>
+          <li>Category: Overflow (buffer, stack). Total CVEs: 15,882</li>
+
+          <li>Category: Memory Corruption (heap, use-after-free,
+          out-of-bounds). Total CVEs: 20,777</li>
+
+          <li>Total: 36,659</li>
+        </ul>
+
+        <h3>Percentage of Memory Management Vulnerabilities</h3>
+
+        <p><strong>36,659 ÷ 107,173 × 100 = 34.20%</strong>
+        </p>
+
+        <p>Therefore, 34.20% of all software vulnerabilities registered between
+        2015 and 2025 are related to memory management errors (buffer
+        overflows, heap overflows, use-after-free, out-of-bounds
+        reads/writes).</p>
+
+        <h3>Distribution by Year</h3>
+
+        <p>The annual analysis reveals significant fluctuations:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Memory Vulnerabilities</th>
+              <th>Total CVEs</th>
+              <th>Percentage</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>2015</td>
+              <td>1,436</td>
+              <td>3,758</td>
+              <td>38.22%</td>
+            </tr>
+
+            <tr>
+              <td>2016</td>
+              <td>1,514</td>
+              <td>3,355</td>
+              <td>45.13%</td>
+            </tr>
+
+            <tr>
+              <td>2017</td>
+              <td>4,011</td>
+              <td>10,458</td>
+              <td>38.35%</td>
+            </tr>
+
+            <tr>
+              <td>2018</td>
+              <td>3,808</td>
+              <td>10,644</td>
+              <td>35.74%</td>
+            </tr>
+
+            <tr>
+              <td>2019</td>
+              <td>3,209</td>
+              <td>9,081</td>
+              <td>35.35%</td>
+            </tr>
+
+            <tr>
+              <td>2020</td>
+              <td>3,066</td>
+              <td>8,248</td>
+              <td>37.18%</td>
+            </tr>
+
+            <tr>
+              <td>2021</td>
+              <td>4,184</td>
+              <td>10,414</td>
+              <td>40.18%</td>
+            </tr>
+
+            <tr>
+              <td>2022</td>
+              <td>4,685</td>
+              <td>12,198</td>
+              <td>38.39%</td>
+            </tr>
+
+            <tr>
+              <td>2023</td>
+              <td>3,741</td>
+              <td>12,568</td>
+              <td>29.76%</td>
+            </tr>
+
+            <tr>
+              <td>2024</td>
+              <td>4,171</td>
+              <td>15,377</td>
+              <td>27.12%</td>
+            </tr>
+
+            <tr>
+              <td>2025</td>
+              <td>2,834</td>
+              <td>11,478</td>
+              <td>24.68%</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Important context</h2>
+
+        <p>It is important to note that this overall proportion of 34.20%
+        varies significantly depending on the type of software and programming
+        language:</p>
+
+        <p>For compiled code in C/C++: The ratio rises to 66-75%. Studies of
+        large organizations confirm:</p>
+
+        <ul>
+          <li>"Microsoft": 70% of CVEs are related to memory management</li>
+
+          <li>"Google": 70% of bugs in Chromium are memory; 90% on Android</li>
+
+          <li>Apple: 60-70% of vulnerabilities in iOS and macOS</li>
+
+          <li>Linux Kernel: 66% of vulnerabilities</li>
+
+          <li>"Project Zero (Google)": 75% of the CVEs exploited in the wild
+          world were from memory; 67% of zero-days in 2021</li>
+        </ul>
+
+        <p><strong>For memory-safe languages (Java, Python, C#): The proportion
+        is less than 5%.</strong>
+        </p>
+      </section>
+
+      <section>
+        <h2>Temporal trend</h2>
+
+        <p>The above trend chart shows that while the "absolute number" of
+        memory vulnerabilities remains high, the "relative percentage" has
+        decreased from approximately 38-45% (2015-2016) to 24-29% (2024-2025).
+        This is because other categories of vulnerabilities (particularly XSS,
+        which grew to 31.18% of the total) are increasing faster.</p>
+      </section>
+
+      <section>
+        <h2>Conclusion</h2>
+
+        <p>Of the "107.173 software vulnerabilities" registered between 2015
+        and 2025, "36,659 (34.20%) are related to memory management errors".
+        This global percentage hides the most worrying reality: in compiled
+        software that dominates critical infrastructures (C/C++), approximately
+        2 in 3 vulnerabilities (66-70%) are caused by memory management errors,
+        reinforcing the ongoing appeals of CISA, NSA and other agencies for the
+        adoption of memory-safe languages.</p>
+      </section>
+
+      <section>
+        <h2>References</h2>
+
+        <ul>
+          <li>[1] <a href=
+          "https://runsafesecurity.com/blog/memory-safety-vulnerabilities/">Types
+          of Memory Safety Vulnerabilities &amp; How to Address …</a>
+          </li>
+
+          <li>[2] <a href=
+          "https://www.hackthebox.com/blog/most-popular-cybersecurity-vulnerabilities-and-exploits-from-2022">
+            99 of the most popular cybersecurity vulnerabilities &amp; …</a>
+          </li>
+
+          <li>[3] <a href="https://cve.akaoma.com">CVE Threat Database |
+          Real-Time Security Insights</a>
+          </li>
+
+          <li>[4] <a href=
+          "https://www.zdnet.com/article/microsoft-70-percent-of-all-security-bugs-are-memory-safety-issues/">
+            Microsoft: 70 percent of all security bugs are memory safety …</a>
+          </li>
+
+          <li>[5] <a href=
+          "https://industrialcyber.co/cisa/global-security-agencies-push-for-memory-safe-roadmaps-to-address-software-vulnerabilities-boost-cybersecurity/">
+            Global security agencies push for memory safe roadmaps …</a>
+          </li>
+
+          <li>[6] <a href=
+          "https://www.nsa.gov/Press-Room/News-Highlights/Article/Article/3215760/nsa-releases-guidance-on-how-to-protect-against-software-memory-safety-issues/">
+            NSA Releases Guidance on How to Protect Against …</a>
+          </li>
+
+          <li>[7] <a href=
+          "https://media.defense.gov/2023/Dec/06/2003352724/-1/-1/0/THE-CASE-FOR-MEMORY-SAFE-ROADMAPS-TLP-CLEAR.PDF">
+            The Case for Memory Safe Roadmaps</a>
+          </li>
+
+          <li>[8] <a href=
+          "https://www.theregister.com/2025/06/27/cisa_nsa_call_formemory_safe_languages/">
+            CISA, NSA repeat call for memory safe programming …</a>
+          </li>
+
+          <li>[9] <a href=
+          "https://developer.okta.com/blog/2022/03/18/programming-security-and-why-rust">
+            Why Safe Programming Matters and Why a Language Like …</a>
+          </li>
+
+          <li>[10] <a href=
+          "https://industrialcyber.co/secure-by-design/nsa-cisa-guidance-push-for-adoption-of-memory-safe-languages-in-software-development-to-boost-resilience/">
+            NSA, CISA guidance push for adoption of memory safe …</a>
+          </li>
+
+          <li>[11] <a href=
+          "https://malwaretech.com/2019/04/analysis-of-a-vb-script-heap-overflow.html">
+            Analysis of a VB Script Heap Overflow (CVE-2019-0666)</a>
+          </li>
+
+          <li>[12] <a href=
+          "https://www.reddit.com/r/cpp/comments/1fpcc0p/eliminating_memory_safety_vulnerabilities_at_the/">
+            Eliminating Memory Safety Vulnerabilities at the Source</a>
+          </li>
+
+          <li>[13] <a href=
+          "https://www.cvedetails.com/cve/CVE-2023-0051/">CVE-2023-0051 :
+          Heap-based Buffer Overflow in GitHub …</a>
+          </li>
+
+          <li>[14] <a href="https://www.cvedetails.com">CVE security
+          vulnerability database. Security vulnerabilities …</a>
+          </li>
+
+          <li>[15] <a href=
+          "https://www.kaspersky.com/blog/the-long-road-to-memory-safety/46511/">
+            The Long Road to Safe RAM Handling</a>
+          </li>
+
+          <li>[16] <a href=
+          "https://www.intertecsystems.com/threat-report-and-advisories/software-update-advisories/chrome-buffer-overflow-vulnerabilities-allow-arbitrary-code-execution/">
+            Chrome Buffer Overflow Vulnerabilities</a>
+          </li>
+
+          <li>[17] <a href=
+          "https://www.kaggle.com/datasets/andrewkronser/cve-common-vulnerabilities-and-exposures">
+            CVE (Common Vulnerabilities and Exposures)</a>
+          </li>
+
+          <li>[18] <a href=
+          "https://socprime.com/blog/cve-2025-14174-vulnerability/">CVE-2025-14174
+          Vulnerability: A New Memory Corruption …</a>
+          </li>
+
+          <li>[19] <a href=
+          "https://deepstrike.io/blog/vulnerability-statistics-2025">Vulnerabilities
+          Statistics 2025: CVE Surge &amp; Exploit Speed</a>
+          </li>
+
+          <li>[20] <a href=
+          "https://blog.opencve.io/posts/cve-statistics/">Discover CVE
+          Statistics</a>
+          </li>
+
+          <li>[21] <a href=
+          "https://www.bitsight.com/blog/2025-predictions-for-cve-vulnerabilities">
+            2025 Predictions for CVE Vulnerabilities Across the Web |
+            Bitsight</a>
+          </li>
+
+          <li>[22] <a href=
+          "https://openssf.org/blog/2025/04/28/announcing-the-release-of-the-memory-safety-continuum/">
+            Announcing the Release of “The Memory Safety Continuum”</a>
+          </li>
+
+          <li>[23] <a href=
+          "https://www.vulncheck.com/blog/state-of-exploitation-1h-2025">A look
+          Into The 1H-2025 Vulnerability Exploitation &amp; Threat Activity</a>
+          </li>
+
+          <li>[24] <a href="https://www.cve.org/about/Metrics">Metrics</a>
+          </li>
+
+          <li>[25] <a href=
+          "https://securelist.com/vulnerabilities-and-exploits-in-q2-2025/117333/">
+            Exploitation Statistics</a>
+          </li>
+
+          <li>[26] <a href=
+          "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=930038">Classifying
+          Memory Bugs Using Bugs Framework Approach</a>
+          </li>
+
+          <li>[27] <a href=
+          "https://www.cybersecurity-help.cz/vdb/SB2022110933">Multiple
+          vulnerabilities in Dell EMC Unity Family</a>
+          </li>
+
+          <li>[28] <a href=
+          "https://www.reddit.com/r/programming/comments/aprgkf/microsoft_70_percent_of_all_security_bugs_are/">
+            Microsoft: 70 percent of all security bugs are memory safety …</a>
+          </li>
+
+          <li>[29] <a href=
+          "https://www.cvedetails.com/cwe-details/119/Improper-Restriction-of-Operations-within-the-Bounds-of-a-Me.html">
+            CWE 119 Improper Restriction of Operations within the …</a>
+          </li>
+
+          <li>[30] <a href=
+          "https://www.appsecengineer.com/blog/defending-against-memory-corruption-attacks-in-c-based-applications">
+            Defending Against Memory Corruption Attacks in C-Based …</a>
+          </li>
+
+          <li>[31] <a href="https://tcm-sec.com/owasp-top-10-prediction-2025/">
+            OWASP Top 10 Prediction | 2025</a>
+          </li>
+
+          <li>[32] <a href="https://arxiv.org/html/2511.18966v1">LLM-CSEC:
+          Empirical Evaluation of Security in C/C++ …</a>
+          </li>
+
+          <li>[33] <a href=
+          "https://runsafesecurity.com/blog/memory-safety-kevs-increasing/">Memory
+          Safety KEVs Are Increasing Across Industries</a>
+          </li>
+
+          <li>[34] <a href=
+          "https://www.reddit.com/r/rust/comments/t33ddj/the_biggest_source_of_vulnerabilities_in/">
+            The biggest source of vulnerabilities in cryptographic libraries is
+            memory safety bugs, not cryptography bugs</a>
+          </li>
+
+          <li>[35] <a href=
+          "https://zerothreat.ai/blog/cybersecurity-vulnerability-statistics">
+            Top Cybersecurity Vulnerability Statistics</a>
+          </li>
+
+          <li>[36] <a href=
+          "https://securelist.com/vulnerabilities-and-exploits-in-q4-2024/115761/">
+            Vulnerability landscape analysis for Q4 2024</a>
+          </li>
+
+          <li>[37] <a href=
+          "https://www.rapid7.com/blog/post/2018/04/30/cve-100k-by-the-numbers/">
+            CVE 100K: By The Numbers</a>
+          </li>
+
+          <li>[38] <a href=
+          "https://www.greenbone.net/en/blog/may-2024-threat-tracking-global-cve-disclosures-continue-to-heat-up/">
+            May 2024 Threat Tracking: Global CVE Disclosures …</a>
+          </li>
+
+          <li>[39] <a href=
+          "https://www.edgescan.com/wp-content/uploads/2024/03/2023-Vulnerability-Statistics-Report.pdf">
+            2023 Vulnerability Statistics Report</a>
+          </li>
+
+          <li>[40] <a href=
+          "https://nvd.nist.gov/general/visualizations/vulnerability-visualizations/cwe-over-time">
+            CWE Over Time - NVD</a>
+          </li>
+
+          <li>[41] <a href=
+          "https://en.wikipedia.org/wiki/National_Vulnerability_Database">National
+          Vulnerability Database - Wikipedia</a>
+          </li>
+
+          <li>[42] <a href=
+          "https://www.redhat.com/en/blog/guide-security-technologies-red-hat-enterprise-linux">
+            A guide to security technologies in Red Hat Enterprise Linux</a>
+          </li>
+
+          <li>[43] <a href=
+          "https://repub.eur.nl/pub/136974/thesis-Jian-Jiang.pdf">Vulnerabilities,
+          Cybersecurity, and the Role of Law and …</a>
+          </li>
+
+          <li>[44] <a href=
+          "https://www.fortinet.com/lat/resources/cyberglossary/national-vulnerability-database-nvd">
+            What is the National Vulnerability Database (NVD)? - Fortinet</a>
+          </li>
+
+          <li>[45] <a href=
+          "https://www.harness.io/blog/ci-cd-security-an-overview">What is
+          CI/CD security?</a>
+          </li>
+
+          <li>[46] <a href=
+          "https://www.reddit.com/r/sysadmin/comments/1bjelgw/nvd_stopped_adding_information_on_most_cves_since/">
+            NVD stopped adding information on most CVEs since February</a>
+          </li>
+
+          <li>[47] <a href=
+          "https://cwe.mitre.org/data/published/cwe_v4.16.pdf">CWE Version 4.16
+          - Mitre</a>
+          </li>
+
+          <li>[48] <a href=
+          "https://dspace.mit.edu/bitstream/handle/1721.1/155457/3634737.3657012.pdf?sequence=1&amp;isAllowed=y">
+            An Empirical Analysis of Vulnerabilities in Cryptographic …</a>
+          </li>
+
+          <li>[49] <a href=
+          "https://www.usenix.org/system/files/sec23fall-prepub-581-zhang-bin.pdf">
+            Automated Exploitable Heap Layout Generation for …</a>
+          </li>
+
+          <li>[50] <a href=
+          "https://download.vusec.net/papers/quicksafe_sp26.pdf">QuickSafe:
+          Targeted Hardening Against Memory Corruption</a>
+          </li>
+
+          <li>[51] <a href=
+          "https://cwe.mitre.org/data/definitions/122.html">CWE-122: Heap-based
+          Buffer Overflow</a>
+          </li>
+
+          <li>[52] <a href=
+          "https://www.reddit.com/r/programming/comments/apm5g6/microsoft_70_percent_of_all_security_bugs_are/">
+            Microsoft: 70 percent of all security bugs are memory safety …</a>
+          </li>
+
+          <li>[53] <a href=
+          "https://academic.oup.com/cybersecurity/article/10/1/tyae015/7744932">
+            A risk estimation study of native code vulnerabilities in Android
+            …</a>
+          </li>
+
+          <li>[54] <a href=
+          "https://www.keysight.com/blogs/en/tech/nwvs/2021/01/03/getting-to-the-bottom-of-cve-2018-0825-heap-overflow-buffer">
+            Getting to the Bottom of CVE-2018-0825 Heap Overflow …</a>
+          </li>
+
+          <li>[55] <a href=
+          "https://media.defense.gov/2025/Jun/23/2003742198/-1/-1/0/CSI_MEMORY_SAFE_LANGUAGES_REDUCING_VULNERABILITIES_IN_MODERN_SOFTWARE_DEVELOPMENT.PDF">
+            Memory Safe Languages: Reducing Vulnerabilities in …</a>
+          </li>
+
+          <li>[56] <a href=
+          "https://openjicareport.jica.go.jp/pdf/12126066_02.pdf">CHAPTER 3
+          FACILITY REQUIREMENTS AND MASTER …</a>
+          </li>
+
+          <li>[57] <a href=
+          "https://mofep.gov.gh/sites/default/files/composite-budget/2025/BE/Techiman.pdf">
+            COMPOSITE BUDGET FOR 2025-2028 PROGRAMME …</a>
+          </li>
+
+          <li>[58] <a href="http://arxiv.org/pdf/2504.03863.pdf">The Secret
+          Life of CVEs</a>
+          </li>
+
+          <li>[59] <a href="https://nvd.nist.gov/vuln/cvmap/report/21080">CWE
+          Statistics for Autodesk as of 11/20/2025 - NVD CNA Status</a>
+          </li>
+
+          <li>[60] <a href=
+          "https://www.thebluemountains.ca/sites/default/files/2022-01/Final-Asset-Management-Plan.pdf">
+            Final Asset Management Plan</a>
+          </li>
+
+          <li>[61] <a href=
+          "https://arxiv.org/pdf/2107.04940.pdf">arXiv:2107.04940v1 [cs.CR] 11
+          Jul 2021</a>
+          </li>
+
+          <li>[62] <a href=
+          "https://www.cvedetails.com/vulnerabilities-by-types.php">Vulnerabilities
+          By Types/Categories</a>
+          </li>
+
+          <li>[63] <a href=
+          "https://documents.worldbank.org/curated/en/103491468023674784/pdf/E19720v10Repla10Sokhna0ESIA0P100047.pdf">
+            E1972 v1</a>
+          </li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2025 The Cypherpunk Handbook Authors. All Rights Reserved.</p>
+
+    <p><strong><a href="./../license.html">LICENSE</a></strong>
+    </p>
+    <img src="./../images/anarchy.png" alt="freedom" class="icon">
+    <h4 class="motto">LIVE FREE OR DIE</h4>
+    <img src="./../images/anarchy.png" alt="freedom" class="icon">
+  </footer>
+</body>
+</html>
