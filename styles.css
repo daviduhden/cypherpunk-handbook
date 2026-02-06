@@ -294,6 +294,52 @@ main p {
   margin: 0.35em 0 0.85em;
 }
 
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0 1.4em;
+  font-size: 0.98em;
+  background: color-mix(in srgb, var(--panel) 90%, black 10%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-soft);
+  overflow: hidden;
+}
+
+caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 600;
+  color: var(--heading);
+  margin-bottom: 0.5em;
+}
+
+thead th {
+  background: color-mix(in srgb, var(--panel-2) 85%, black 15%);
+  color: var(--heading);
+  text-align: left;
+  font-weight: 600;
+  padding: 0.7em 0.8em;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody td {
+  padding: 0.6em 0.8em;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--panel-2) 92%, black 8%);
+}
+
+tbody tr:hover {
+  background: color-mix(in srgb, var(--panel-2) 80%, var(--link) 20%);
+}
+
+th, td {
+  vertical-align: top;
+}
+
 audio {
   display: block;
   margin: 1em auto;
