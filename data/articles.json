@@ -1,7 +1,17 @@
 {
-  "article-sample": {
-    "en": "article-sample.html",
-    "pubdate": "",
-    "title_en": "Sample Article"
+  "c-language": {
+    "en": "c-language.html",
+    "pubdate": "2026-02-02",
+    "title_en": "The C language and its biggest problem; proving its insecurity."
+  },
+  "openbsd": {
+    "en": "openbsd.html",
+    "pubdate": "2026-02-02",
+    "title_en": "Why OpenBSD solos?"
+  },
+  "qubes-os": {
+    "en": "qubes-os.html",
+    "pubdate": "2026-02-02",
+    "title_en": "When the subject is purely security, QubesOS is not reliable!"
   }
 }
