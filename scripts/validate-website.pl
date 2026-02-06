@@ -125,11 +125,6 @@ sub loge { print STDERR "${RED}❌ [ERROR]${RESET} $_[0]\n"; }
 my $os_name = `uname -s 2>/dev/null`;
 chomp $os_name;
 my $is_openbsd = ( $os_name eq "OpenBSD" ) ? 1 : 0;
-if ($is_openbsd) {
-    logi(
-"OpenBSD packages: JSON::PP -> p5-JSON; tidy -> tidy; xmllint -> libxml; dprint -> not ported; rsvg-convert -> librsvg; pandoc -> pandoc; ffmpeg -> ffmpeg; espeak-ng -> espeak"
-    );
-}
 
 sub die_tool {
     my ($msg) = @_;
@@ -316,7 +311,7 @@ if ( @css || @js || @json ) {
               . "  \"lineWidth\": 80,\n"
               . "  \"newLineKind\": \"lf\",\n"
               . "  \"plugins\": [\n"
-              . "    \"https://plugins.dprint.dev/typescript-0.95.13.wasm\",\n"
+              . "    \"https://plugins.dprint.dev/typescript-0.95.15.wasm\",\n"
               . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.2.wasm\",\n"
               . "    \"https://plugins.dprint.dev/json-0.21.1.wasm\"\n"
               . "  ]\n"
