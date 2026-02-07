@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2025 David Uhden Collado
+# Copyright (c) 2025-2026 David Uhden Collado
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -27,11 +27,17 @@ fi
 # Exit immediately if a command fails
 set -e
 
+DIR=${1:-.}
+if [ ! -d "$DIR" ]; then
+	echo "❌ Directory not found: $DIR" >&2
+	exit 1
+fi
+
 # Target width in pixels
 WIDTH=500
 
 # Find all SVG files recursively
-find . -type f -name '*.svg' -print |
+find "$DIR" -type f -name '*.svg' -print |
 	while IFS= read -r svg; do
 		# Build output PNG path (same directory, same base name)
 		png=$(printf '%s\n' "$svg" | sed 's/\.svg$/.png/')
