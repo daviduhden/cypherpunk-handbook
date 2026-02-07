@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2025 David Uhden Collado
+# Copyright (c) 2025-2026 David Uhden Collado
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -42,12 +42,12 @@ fi
 # -----------------------------
 # Argument check
 # -----------------------------
-if [ -z "$1" ]; then
-	echo "Usage: $0 file.html"
+if [ $# -lt 1 ]; then
+	echo "Usage: $0 file.html" >&2
 	exit 1
 fi
 
-HTML="$1"
+HTML=$1
 
 if [ ! -f "$HTML" ]; then
 	echo "❌ File not found: $HTML"
@@ -82,17 +82,22 @@ esac
 OUT="${HTML%.*}.ogg"
 
 # -----------------------------
-# Temporary WAV file (POSIX-safe)
+# Temporary WAV file
 # -----------------------------
-umask 077
-TMP_WAV="/tmp/voice$$.wav"
+TMP_WAV=
 i=0
-while [ -e "$TMP_WAV" ]; do
+while :; do
+	TMP_WAV=${TMPDIR:-/tmp}/voice$$-$i.wav
+	if (umask 077 && : >"$TMP_WAV") 2>/dev/null; then
+		break
+	fi
 	i=$((i + 1))
-	TMP_WAV="/tmp/voice$$.$i.wav"
 done
 
-trap 'rm -f "$TMP_WAV"' EXIT
+cleanup() {
+	rm -f "$TMP_WAV"
+}
+trap cleanup EXIT HUP INT TERM
 
 # -----------------------------
 # Conversion pipeline
@@ -103,29 +108,4 @@ pandoc "$HTML" -t plain --wrap=none | espeak-ng -v "$VOICE" -s "$SPEED" -p 50 -w
 
 ffmpeg -y -loglevel error -i "$TMP_WAV" -ac 2 -c:a vorbis -q:a 5 -strict -2 "$OUT"
 
-# -----------------------------
-# Split if file exceeds 50 MB
-# -----------------------------
-MAX_BYTES=$((50 * 1024 * 1024))
-OUT_SIZE=$(wc -c <"$OUT" | tr -d ' ')
-
-if [ "$OUT_SIZE" -gt "$MAX_BYTES" ]; then
-	if ! command -v ffprobe >/dev/null 2>&1; then
-		echo "❌ ffprobe is not installed (required to split large files)"
-		exit 1
-	fi
-
-	DURATION=$(ffprobe -v error -show_entries format=duration -of default=nk=1:nw=1 "$OUT")
-
-	# segment_time = duration * max_bytes / out_size, with a safety factor
-	SEGMENT_TIME=$(awk -v d="$DURATION" -v max="$MAX_BYTES" -v size="$OUT_SIZE" 'BEGIN { t = d * max / size; t = t * 0.95; if (t < 1) t = 1; printf "%.2f", t }')
-
-	OUT_BASE="${OUT%.*}_part%02d.ogg"
-	ffmpeg -y -loglevel error -i "$OUT" -c copy -f segment -segment_time "$SEGMENT_TIME" -reset_timestamps 1 "$OUT_BASE"
-
-	rm -f "$OUT"
-
-	echo "⚠️ Output exceeded 50MB. Split into parts: ${OUT%.*}_part00.ogg, ${OUT%.*}_part01.ogg, ..."
-else
-	echo "✅ Audio successfully generated: $OUT"
-fi
+echo "✅ Audio successfully generated: $OUT"

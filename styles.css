@@ -60,17 +60,15 @@
   --radius-soft: 0.75em;
   --radius-pill: 999em;
 
-  --shadow: 0 0.75em 2em rgba(0, 0, 0, 0.24);
-  --shadow-img: 0 0.625em 1.875em rgba(0, 0, 0, 0.25);
+  --shadow: 0 0.75em 2em #0000003d;
+  --shadow-img: 0 0.625em 1.875em #00000040;
 
   --max-width: 72ch;
   --gutter: 1.25em;
   --pad-y: 2em;
   --pad-x: 1.25em;
 
-  --focus-ring:
-    0 0 0 0.2em rgba(59, 130, 246, 0.35),
-    0 0 0 0.4em rgba(124, 58, 237, 0.12);
+  --focus-ring: 0 0 0 0.2em #3b82f659, 0 0 0 0.4em #7c3aed1f;
 }
 
 /*
@@ -315,7 +313,7 @@ caption {
 }
 
 thead th {
-  background: color-mix(in srgb, var(--panel-2) 85%, black 15%);
+  background: color-mix(in srgb, var(--panel-2) 85%, #000000 15%);
   color: var(--heading);
   text-align: left;
   font-weight: 600;
@@ -329,7 +327,7 @@ tbody td {
 }
 
 tbody tr:nth-child(even) {
-  background: color-mix(in srgb, var(--panel-2) 92%, black 8%);
+  background: color-mix(in srgb, var(--panel-2) 92%, #000000 8%);
 }
 
 tbody tr:hover {
@@ -338,12 +336,6 @@ tbody tr:hover {
 
 th, td {
   vertical-align: top;
-}
-
-audio {
-  display: block;
-  margin: 1em auto;
-  max-width: 100%;
 }
 
 /* Footer: justify list text for readability */
@@ -400,7 +392,7 @@ ul ul, ol ol, ul ol, ol ul {
 .article-column {
   padding: 0.6em;
   border-radius: calc(var(--radius-soft) * 0.9);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+  background: linear-gradient(180deg, #ffffff03, transparent);
   border: 1px solid color-mix(in srgb, var(--border) 85%, transparent 15%);
 }
 
