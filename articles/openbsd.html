@@ -1231,9 +1231,65 @@ ifconfig iwm0 lladdr random</pre>
             problem, but I don't really know.</p>
           </li>
         </ul>
-
-        <p>El Psy Kongroo!</p>
       </section>
+
+      <section>
+        <h2>49 - Less attack surface</h2>
+
+        <p>Currently in 2026-02-16, the entire OpenBSD operating system (src +
+        xenocara) has 35,590,098 lines of code. The OpenBSD kernel (src/sys)
+        has a total of 7,906,769 lines of code.</p>
+
+        <p>Does this look like a lot? Yes. Is that too much? For me, yes. But
+        let's make a comparison:</p>
+
+        <ul>
+          <li>The Linux kernel alone has more than 40 million lines of code:
+          <a href=
+          "https://commandlinux.com/statistics/linux-kernel-contributors-lines-of-code-statistics/">
+            https://commandlinux.com/statistics/linux-kernel-contributors-lines-of-code-statistics/</a>
+          </li>
+
+          <li>Debian 7.0 in 2012 had 419 million lines of code: <a href=
+          "https://en.wikipedia.org/wiki/Source_lines_of_code#Example">https://en.wikipedia.org/wiki/Source_lines_of_code#Example</a>
+          Currently it must have surpassed the billion LoC: <a href=
+          "https://sources.debian.org/stats/#sloc_current">https://sources.debian.org/stats/#sloc_current</a>
+          </li>
+        </ul>
+
+        <p>Windows should be beyond the billion and probably macOS too. FreeBSD
+        and NetBSD have more lines of code than OpenBSD, but most likely less
+        than the Linux kernel or a Linux distro.</p>
+
+        <p>More lines of code = more attack surface, more bugs, more
+        vulnerabilities. The philosophy and development of OpenBSD focuses on
+        minimalism and security, the devs understand that a clean and
+        minimalist code will lower the attack surface and do so.</p>
+
+        <p>By using a Linux distro, whatever it may be, even if it's Gentoo or
+        Linux from Scratch, you'll be dealing with tens and even hundreds of
+        millions of lines of code, maybe billions of lines of code. This
+        represents an incomparably larger attack surface than OpenBSD. Only the
+        Linux kernel has a larger attack surface than the entire OpenBSD
+        operating system. This is even worse when using Windows 10/11, only God
+        knows how many billion lines of proprietary code are there.</p>
+
+        <p>When using OpenBSD you will already have a smaller attack surface by
+        default than any other monolithic or hybrid kernel operating system.
+        This increases not only security for users, but the ease of
+        implementing more security mitigations in OpenBSD on the part of
+        programing. Maintenance becomes easier, the quality of the code
+        increases and consequently the reliability also increases. There is no
+        downside when it comes to security and reliability.</p>
+
+        <p>Even the total of official OpenBSD websites (www) have a low number
+        of lines of code, 312.465 in total (2026-02-26). Improving privacy and
+        user experience overall and not just the operating system itself. While
+        Microsoft, Apple and many Linux distros websites are heavy and full of
+        JavaScript and telemetry.</p>
+      </section>
+
+      <p>El Psy Kongroo!</p>
     </article>
   </main>
 
