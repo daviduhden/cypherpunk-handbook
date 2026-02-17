@@ -9,6 +9,13 @@
     <lastBuildDate>Thu, 06 Feb 2026 00:00:00 GMT</lastBuildDate>
     <!-- items inserted here -->
     <item>
+      <title>Why OpenBSD solos?</title>
+      <link>./../articles/openbsd.html</link>
+      <description/>
+      <pubDate>Mon, 17 Feb 2026 00:00:00 GMT</pubDate>
+      <guid>./../articles/openbsd.html</guid>
+    </item>
+    <item>
       <title>When the subject is purely security, QubesOS is not reliable!</title>
       <link>./../articles/qubes-os.html</link>
       <description/>
@@ -16,25 +23,11 @@
       <guid>./../articles/qubes-os.html</guid>
     </item>
     <item>
-      <title>Why OpenBSD solos?</title>
-      <link>./../articles/openbsd.html</link>
-      <description/>
-      <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
-      <guid>./../articles/openbsd.html</guid>
-    </item>
-    <item>
       <title>The C language and its biggest problem; proving its insecurity.</title>
       <link>./../articles/c-language.html</link>
       <description/>
       <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
       <guid>./../articles/c-language.html</guid>
-    </item>
-    <item>
-      <title>Sample Article</title>
-      <link>./../articles/article-sample.html</link>
-      <description/>
-      <pubDate>Thu, 18 Dec 2025 14:29:27 GMT</pubDate>
-      <guid>./../articles/article-sample.html</guid>
     </item>
   </channel>
 </rss>
