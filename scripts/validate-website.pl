@@ -505,118 +505,118 @@ sub dprint_validate_and_check_or_apply {
     }
 }
 
-# -------------------------
-# Run
-# -------------------------
-# HTML
-if (@html) {
-    logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
-        . " HTML with tidy..." );
-    tidy_format_or_check_one($_) for @html;
+sub run_validations {
+    if (@html) {
+        logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
+            . " HTML with tidy..." );
+        tidy_format_or_check_one($_) for @html;
 
-    logi("Validating HTML with tidy (as supported)...");
-    tidy_validate_one($_) for @html;
-}
-
-# XML
-if (@xml) {
-    logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
-        . " XML with xmllint..." );
-    xmllint_format_or_check_one( $_, "XML" ) for @xml;
-
-    logi("Validating XML well-formedness with xmllint...");
-    xmllint_validate_one( $_, "XML" ) for @xml;
-}
-
-# SVG
-if (@svg) {
-    logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
-        . " SVG with xmllint..." );
-    xmllint_format_or_check_one( $_, "SVG" ) for @svg;
-
-    logi("Validating SVG well-formedness with xmllint...");
-    xmllint_validate_one( $_, "SVG" ) for @svg;
-}
-
-# CSS/JS/JSON (via dprint)
-if ( @css || @js || @json ) {
-    if ($is_openbsd) {
-        logw("OpenBSD: skipping dprint for CSS/JS/JSON (not ported)");
+        logi("Validating HTML with tidy (as supported)...");
+        tidy_validate_one($_) for @html;
     }
-    else {
-        my @pfiles = ( @css, @js, @json );
-        dprint_validate_and_check_or_apply( \@pfiles );
+
+    if (@xml) {
+        logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
+            . " XML with xmllint..." );
+        xmllint_format_or_check_one( $_, "XML" ) for @xml;
+
+        logi("Validating XML well-formedness with xmllint...");
+        xmllint_validate_one( $_, "XML" ) for @xml;
     }
-}
 
-# JSON validation with jq (ensure well-formedness and optional formatting)
-if (@json) {
-    logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
-        . " JSON with jq..." );
-    for my $f (@json) {
-        my $before = read_all($f);
-        if ( !defined $before ) {
-            loge("Could not read JSON file: $f");
-            mark_validate_failed($f);
-            next;
-        }
+    if (@svg) {
+        logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
+            . " SVG with xmllint..." );
+        xmllint_format_or_check_one( $_, "SVG" ) for @svg;
 
-        my ( $rc, $out, $err ) = run_capture( 'jq', '.', $f );
-        if ( $rc != 0 ) {
-            loge("jq validation/parse failed (exit $rc): $f");
-            mark_validate_failed($f);
-            print STDERR $err if $verbose;
-            next;
-        }
+        logi("Validating SVG well-formedness with xmllint...");
+        xmllint_validate_one( $_, "SVG" ) for @svg;
+    }
 
-        if ($mode_apply) {
-            if ( $out ne $before ) {
-                write_all( $f, $out ) or do {
-                    loge("Failed to write formatted JSON file: $f");
-                    mark_validate_failed($f);
-                };
-            }
+    if ( @css || @js || @json ) {
+        if ($is_openbsd) {
+            logw("OpenBSD: skipping dprint for CSS/JS/JSON (not ported)");
         }
         else {
-            if ( $out ne $before ) {
-                mark_format_needed($f);
+            my @pfiles = ( @css, @js, @json );
+            dprint_validate_and_check_or_apply( \@pfiles );
+        }
+    }
+
+    if (@json) {
+        logi( ( $mode_apply ? "Formatting" : "Checking formatting of" )
+            . " JSON with jq..." );
+        for my $f (@json) {
+            my $before = read_all($f);
+            if ( !defined $before ) {
+                loge("Could not read JSON file: $f");
+                mark_validate_failed($f);
+                next;
+            }
+
+            my ( $rc, $out, $err ) = run_capture( 'jq', '.', $f );
+            if ( $rc != 0 ) {
+                loge("jq validation/parse failed (exit $rc): $f");
+                mark_validate_failed($f);
+                print STDERR $err if $verbose;
+                next;
+            }
+
+            if ($mode_apply) {
+                if ( $out ne $before ) {
+                    write_all( $f, $out ) or do {
+                        loge("Failed to write formatted JSON file: $f");
+                        mark_validate_failed($f);
+                    };
+                }
+            }
+            else {
+                if ( $out ne $before ) {
+                    mark_format_needed($f);
+                }
             }
         }
     }
 }
 
-# -------------------------
-# Summary / exit
-# -------------------------
-my @fmt = sort keys %format_needed;
-my @bad = sort keys %validate_failed;
+sub summarize_and_exit {
+    my @fmt = sort keys %format_needed;
+    my @bad = sort keys %validate_failed;
 
-if ( !$mode_apply && @fmt ) {
-    loge(   "Formatting is not clean (--check): "
-          . scalar(@fmt)
-          . " file(s) would change." );
-    for my $i ( 0 .. $#fmt ) {
-        last if $i > 199;
-        print STDERR "  - $fmt[$i]\n";
+    if ( !$mode_apply && @fmt ) {
+        loge(   "Formatting is not clean (--check): "
+              . scalar(@fmt)
+              . " file(s) would change." );
+        for my $i ( 0 .. $#fmt ) {
+            last if $i > 199;
+            print STDERR "  - $fmt[$i]\n";
+        }
     }
-}
 
-if (@bad) {
-    loge( "Validation failed: " . scalar(@bad) . " file(s)." );
-    for my $i ( 0 .. $#bad ) {
-        last if $i > 199;
-        print STDERR "  - $bad[$i]\n";
+    if (@bad) {
+        loge( "Validation failed: " . scalar(@bad) . " file(s)." );
+        for my $i ( 0 .. $#bad ) {
+            last if $i > 199;
+            print STDERR "  - $bad[$i]\n";
+        }
     }
+
+    if ( ( !$mode_apply && @fmt ) || @bad ) {
+        exit 2;
+    }
+
+    logi(
+        $mode_apply
+        ? "Done. Formatting applied and validation passed."
+        : "Done. Formatting clean and validation passed."
+    );
+
+    exit 0;
 }
 
-if ( ( !$mode_apply && @fmt ) || @bad ) {
-    exit 2;
+sub main {
+    run_validations();
+    summarize_and_exit();
 }
 
-logi(
-    $mode_apply
-    ? "Done. Formatting applied and validation passed."
-    : "Done. Formatting clean and validation passed."
-);
-
-exit 0;
+main();

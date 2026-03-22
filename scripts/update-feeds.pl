@@ -114,61 +114,71 @@ sub prompt {
     return length($in) ? $in : $d;
 }
 
-my $slug = prompt( 'Slug (without .html)', '' );
-$slug =~ s/^\s+|\s+$//g;
-die_tool "slug required" unless length $slug;
-my $title = prompt( 'Title',       '' );
-my $desc  = prompt( 'Description', '' );
+sub run_update {
+    my $slug = prompt( 'Slug (without .html)', '' );
+    $slug =~ s/^\s+|\s+$//g;
+    die_tool "slug required" unless length $slug;
+    my $title = prompt( 'Title',       '' );
+    my $desc  = prompt( 'Description', '' );
 
-# try to extract <time datetime> from article
-my $article_path = File::Spec->catfile( $articles_dir, "$slug.html" );
-my $found_iso    = undef;
-if ( -e $article_path ) {
-    my $html = read_file($article_path) // '';
-    if ( $html =~ /\<time[^>]*datetime\s*=\s*"([^"]+)"/i ) { $found_iso = $1 }
-}
-my $pub_iso =
-  $found_iso || prompt( 'Publication date ISO (YYYY-MM-DDTHH:MM:SSZ)', '' );
-my $pub_epoch = iso_to_epoch($pub_iso) || time();
-my $pub_rfc   = strftime( '%a, %d %b %Y %H:%M:%S GMT', gmtime($pub_epoch) );
+    my $article_path = File::Spec->catfile( $articles_dir, "$slug.html" );
+    my $found_iso    = undef;
+    if ( -e $article_path ) {
+        my $html = read_file($article_path) // '';
+        if ( $html =~ /\<time[^>]*datetime\s*=\s*"([^"]+)"/i ) {
+            $found_iso = $1;
+        }
+    }
 
-# update feed immediate insert (not canonical)
-my $link = "./../articles/$slug.html";
-my $item =
-    "    <item>\n"
-  . "      <title>"
-  . xml_escape($title)
-  . "</title>\n"
-  . "      <link>$link</link>\n"
-  . "      <description>"
-  . xml_escape($desc)
-  . "</description>\n"
-  . "      <pubDate>$pub_rfc</pubDate>\n"
-  . "      <guid>$link</guid>\n"
-  . "    </item>\n";
-my $content = read_file($feed) // die_tool "Feed template missing: $feed\n";
-$content =~ s{<pubDate>[^<]*</pubDate>}{<pubDate>$pub_rfc</pubDate>}m;
-$content =~
+    my $pub_iso =
+      $found_iso || prompt( 'Publication date ISO (YYYY-MM-DDTHH:MM:SSZ)', '' );
+    my $pub_epoch = iso_to_epoch($pub_iso) || time();
+    my $pub_rfc   = strftime( '%a, %d %b %Y %H:%M:%S GMT', gmtime($pub_epoch) );
+
+    my $link = "./../articles/$slug.html";
+    my $item =
+        "    <item>\n"
+      . "      <title>"
+      . xml_escape($title)
+      . "</title>\n"
+      . "      <link>$link</link>\n"
+      . "      <description>"
+      . xml_escape($desc)
+      . "</description>\n"
+      . "      <pubDate>$pub_rfc</pubDate>\n"
+      . "      <guid>$link</guid>\n"
+      . "    </item>\n";
+
+    my $content = read_file($feed) // die_tool "Feed template missing: $feed\n";
+    $content =~ s{<pubDate>[^<]*</pubDate>}{<pubDate>$pub_rfc</pubDate>}m;
+    $content =~
 s{<lastBuildDate>[^<]*</lastBuildDate>}{<lastBuildDate>$pub_rfc</lastBuildDate>}m;
-$content =~ s{(</lastBuildDate>\s*\n)}{$1\n$item}m
-  or $content =~ s{(</channel>)}{$item$1}m;
-write_file( $feed, $content );
+    $content =~ s{(</lastBuildDate>\s*\n)}{$1\n$item}m
+      or $content =~ s{(</channel>)}{$item$1}m;
+    write_file( $feed, $content );
 
-# update data/articles.json
-my $articles = {};
-if ( -e $data_file ) {
-    my $j = read_file($data_file);
-    eval { $articles = JSON::PP->new->utf8->decode($j); 1 } or $articles = {};
+    my $articles = {};
+    if ( -e $data_file ) {
+        my $j = read_file($data_file);
+        eval { $articles = JSON::PP->new->utf8->decode($j); 1 }
+          or $articles = {};
+    }
+    $articles->{$slug} =
+      { en => "$slug.html", title_en => $title, pubdate => $pub_iso };
+    my $out = JSON::PP->new->utf8->canonical->pretty->encode($articles);
+    write_file( $data_file, $out );
+
+    my $rebuild = File::Spec->catfile( $root, 'scripts', 'rebuild-feeds.pl' );
+    if ( -x $rebuild ) {
+        system( $^X, $rebuild ) == 0 or logw("rebuild failed");
+    }
+
+    logi("Updated cypherpunk-handbook feed and data mapping.");
 }
-$articles->{$slug} =
-  { en => "$slug.html", title_en => $title, pubdate => $pub_iso };
-my $out = JSON::PP->new->utf8->canonical->pretty->encode($articles);
-write_file( $data_file, $out );
 
-# call rebuild if exists
-my $rebuild = File::Spec->catfile( $root, 'scripts', 'rebuild-feeds.pl' );
-if ( -x $rebuild ) { system( $^X, $rebuild ) == 0 or logw("rebuild failed") }
+sub main {
+    run_update();
+}
 
-logi("Updated cypherpunk-handbook feed and data mapping.");
-
+main();
 exit 0;

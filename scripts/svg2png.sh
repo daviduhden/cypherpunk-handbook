@@ -19,40 +19,53 @@
 # Usage: svg2png.sh directory
 # -----------------------------
 
-if ! command -v rsvg-convert >/dev/null 2>&1; then
-	echo "❌ rsvg-convert is not installed"
-	exit 1
-fi
-
 # Exit immediately if a command fails
 set -e
 
-DIR=${1:-.}
-if [ ! -d "$DIR" ]; then
-	echo "❌ Directory not found: $DIR" >&2
-	exit 1
-fi
+require_cmd() {
+	if ! command -v "$1" >/dev/null 2>&1; then
+		echo "❌ $1 is not installed"
+		exit 1
+	fi
+}
 
-# Target width in pixels
-WIDTH=500
+parse_args() {
+	DIR=${1:-.}
+	if [ ! -d "$DIR" ]; then
+		echo "❌ Directory not found: $DIR" >&2
+		exit 1
+	fi
+}
 
-# Find all SVG files recursively
-find "$DIR" -type f -name '*.svg' -print |
-	while IFS= read -r svg; do
-		# Build output PNG path (same directory, same base name)
-		png=$(printf '%s\n' "$svg" | sed 's/\.svg$/.png/')
+convert_one_svg() {
+	svg=$1
+	png=$(printf '%s\n' "$svg" | sed 's/\.svg$/.png/')
 
-		# Skip conversion if PNG already exists
-		if [ -e "$png" ]; then
-			printf '⏭️ Skipping (already exists): %s\n' "$png"
-			continue
-		fi
+	if [ -e "$png" ]; then
+		printf '⏭️ Skipping (already exists): %s\n' "$png"
+		return 0
+	fi
 
-		printf '🖼️ Converting: %s -> %s\n' "$svg" "$png"
-		# Convert SVG to PNG using rsvg-convert
-		rsvg-convert \
-			--width="$WIDTH" \
-			--format=png \
-			--output="$png" \
-			"$svg"
-	done
+	printf '🖼️ Converting: %s -> %s\n' "$svg" "$png"
+	rsvg-convert \
+		--width="$WIDTH" \
+		--format=png \
+		--output="$png" \
+		"$svg"
+}
+
+run_conversion() {
+	find "$DIR" -type f -name '*.svg' -print |
+		while IFS= read -r svg; do
+			convert_one_svg "$svg"
+		done
+}
+
+main() {
+	WIDTH=500
+	require_cmd rsvg-convert
+	parse_args "$@"
+	run_conversion
+}
+
+main "$@"

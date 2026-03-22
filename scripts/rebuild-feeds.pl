@@ -168,14 +168,7 @@ my $data_file    = File::Spec->catfile( $root, 'data',  'articles.json' );
 my $feed         = File::Spec->catfile( $root, 'feeds', 'articles.xml' );
 my $articles_dir = File::Spec->catdir( $root, 'articles' );
 
-my $json_text = read_utf8($data_file) // '{}';
-my $articles  = eval { JSON::PP->new->utf8->decode($json_text) } || {};
-
-# canonicalize
-my $sorted = {};
-for my $k ( sort keys %$articles ) { $sorted->{$k} = $articles->{$k} }
-my $json_out = JSON::PP->new->utf8->canonical->pretty->encode($sorted);
-write_utf8( $data_file, $json_out );
+my $sorted;
 
 sub build_items {
     my @arr;
@@ -208,11 +201,30 @@ sub build_items {
     return join( "\n", map { $_->{xml} } @arr );
 }
 
-my $content = read_utf8($feed) // die_tool "Feed template not found: $feed\n";
-if ( $content !~ /<channel>/ ) { die_tool "Invalid feed template: $feed\n" }
-my $prefix = $content;
-my $idx    = index( $content, '</channel>' );
-if ( $idx != -1 ) {
+sub load_and_sort_articles {
+    my $json_text = read_utf8($data_file) // '{}';
+    my $articles  = eval { JSON::PP->new->utf8->decode($json_text) } || {};
+
+    $sorted = {};
+    for my $k ( sort keys %$articles ) { $sorted->{$k} = $articles->{$k} }
+
+    my $json_out = JSON::PP->new->utf8->canonical->pretty->encode($sorted);
+    write_utf8( $data_file, $json_out );
+}
+
+sub rebuild_feed_file {
+    my $content = read_utf8($feed)
+      // die_tool "Feed template not found: $feed\n";
+    if ( $content !~ /<channel>/ ) {
+        die_tool "Invalid feed template: $feed\n";
+    }
+
+    my $prefix = $content;
+    my $idx    = index( $content, '</channel>' );
+    if ( $idx == -1 ) {
+        die_tool "Could not find </channel> in template\n";
+    }
+
     $prefix = substr( $content, 0, $idx );
     my $tail = substr( $content, $idx );
     my $now  = rfc2822_from_ts_locale( time(), 'en' );
@@ -220,16 +232,25 @@ if ( $idx != -1 ) {
     $prefix =~
 s{<lastBuildDate>[^<]*</lastBuildDate>}{<lastBuildDate>$now</lastBuildDate>}m;
 
-# remove any existing <item> blocks from the prefix/template to avoid duplicates
     $prefix =~ s{<item>.*?</item>\s*}{}gs;
     $prefix =~ s/\s+$//s;
     $prefix .= "\n\n";
+
     my $items = build_items();
     my $new   = $prefix . $items . "\n" . $tail;
     $new =~ s/\n{3,}/\n\n/g;
     write_utf8( $feed, $new );
     logi("Wrote $feed");
 }
-else { die_tool "Could not find </channel> in template\n" }
 
+sub run_rebuild {
+    load_and_sort_articles();
+    rebuild_feed_file();
+}
+
+sub main {
+    run_rebuild();
+}
+
+main();
 exit 0;

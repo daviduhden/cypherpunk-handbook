@@ -88,57 +88,48 @@ my $script_path = abs_path($0);
 my $root        = File::Spec->catdir( dirname($script_path), '..' );
 my $index       = File::Spec->catfile( $root, 'index.html' );
 
-my $content = read_file($index);
+sub run_update {
+    my $content = read_file($index);
 
-logi("This will insert a new article link into $index");
+    logi("This will insert a new article link into $index");
 
-my $category = lc prompt( 'Category (desktop/mobile)', 'desktop' );
-$category =~ /^(desktop|mobile)$/
-  or die_tool "Category must be 'desktop' or 'mobile'.\n";
+    my $category = lc prompt( 'Category (desktop/mobile)', 'desktop' );
+    $category =~ /^(desktop|mobile)$/
+      or die_tool "Category must be 'desktop' or 'mobile'.\n";
 
-my $title = prompt( 'Link text/title', 'New Article' );
-my $slug  = prompt( 'Slug (filename without .html, e.g. android-privacy)', '' );
-length $slug or die_tool "Slug is required.\n";
+    my $title = prompt( 'Link text/title', 'New Article' );
+    my $slug =
+      prompt( 'Slug (filename without .html, e.g. android-privacy)', '' );
+    length $slug or die_tool "Slug is required.\n";
 
-my $href = "./articles/$slug.html";
+    my $href = "./articles/$slug.html";
 
-# Prevent duplicates
-if ( index( $content, $href ) != -1 ) {
-    logw("A link to $href already exists in $index. No change made.");
-    exit 0;
-}
-
-my $link_html =
-    qq{<li>\n              <a href="$href">}
-  . esc_html($title)
-  . qq{</a>\n            </li>\n\n};
-
-if ( $category eq 'desktop' ) {
-
-# Find Desktop Systems column: <h3>Desktop Systems</h3> followed by <ul class="article-list"> ... </ul>
-    if ( $content =~
-/(\Q<h3>Desktop Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/s
-      )
-    {
-        my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-        $inner .= "\n            " . $link_html;
-        $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
-        write_file( $index, $content );
-        logi("Inserted link into Desktop Systems list.");
-        exit 0;
+    if ( index( $content, $href ) != -1 ) {
+        logw("A link to $href already exists in $index. No change made.");
+        return 0;
     }
-    else {
+
+    my $link_html =
+        qq{<li>\n              <a href="$href">}
+      . esc_html($title)
+      . qq{</a>\n            </li>\n\n};
+
+    if ( $category eq 'desktop' ) {
+        if ( $content =~
+/(\Q<h3>Desktop Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/s
+          )
+        {
+            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
+            $inner .= "\n            " . $link_html;
+            $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
+            write_file( $index, $content );
+            logi("Inserted link into Desktop Systems list.");
+            return 0;
+        }
         die_tool "Could not locate Desktop Systems list in $index.\n";
     }
-}
-else {
-    # mobile: either Overview (top-level) or topic list
-    my $inserted = 0;
 
-# If user wants Overview (title equals 'Overview' or asks), add top-level link if no such link exists
     if ( lc($title) eq 'overview' ) {
-
-        # Find Mobile Systems article-list and insert the link as first <li>
         if ( $content =~
 /(\Q<h3>Mobile Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/s
           )
@@ -148,11 +139,10 @@ else {
             $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
             write_file( $index, $content );
             logi("Inserted Overview link into Mobile Systems.");
-            exit 0;
+            return 0;
         }
     }
 
-    # Otherwise try to insert into topic-list
     if ( $content =~
 /(\Q<h3>Mobile Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>.*?<ul[^>]*class="topic-list"[^>]*>)(.*?)(<\/ul>)/s
       )
@@ -162,8 +152,14 @@ else {
         $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
         write_file( $index, $content );
         logi("Inserted link into Mobile Systems topics.");
-        exit 0;
+        return 0;
     }
 
     die_tool "Could not locate Mobile Systems topic list in $index.\n";
 }
+
+sub main {
+    run_update();
+}
+
+main();
