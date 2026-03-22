@@ -21,91 +21,86 @@
 
 set -e
 
-# -----------------------------
-# Dependency checks
-# -----------------------------
-if ! command -v pandoc >/dev/null 2>&1; then
-	echo "❌ pandoc is not installed"
-	exit 1
-fi
-
-if ! command -v espeak-ng >/dev/null 2>&1; then
-	echo "❌ espeak-ng is not installed"
-	exit 1
-fi
-
-if ! command -v ffmpeg >/dev/null 2>&1; then
-	echo "❌ ffmpeg is not installed"
-	exit 1
-fi
-
-# -----------------------------
-# Argument check
-# -----------------------------
-if [ $# -lt 1 ]; then
-	echo "Usage: $0 file.html" >&2
-	exit 1
-fi
-
-HTML=$1
-
-if [ ! -f "$HTML" ]; then
-	echo "❌ File not found: $HTML"
-	exit 1
-fi
-
-# -----------------------------
-# Language selection
-# -----------------------------
-echo "Which language do you want the text to be read in?"
-echo "1) Spanish (Spain)"
-echo "2) English (United Kingdom)"
-printf "Choose 1 or 2: "
-read -r LANG_OPT
-
-case "$LANG_OPT" in
-1)
-	VOICE="es-es"
-	SPEED=140
-	;;
-2)
-	VOICE="en-gb"
-	SPEED=140
-	;;
-*)
-	echo "❌ Invalid option"
-	exit 1
-	;;
-esac
-
-# Output file name: derive from input HTML (e.g. articles/systems.html -> articles/systems.ogg)
-OUT="${HTML%.*}.ogg"
-
-# -----------------------------
-# Temporary WAV file
-# -----------------------------
-TMP_WAV=
-i=0
-while :; do
-	TMP_WAV=${TMPDIR:-/tmp}/voice$$-$i.wav
-	if (umask 077 && : >"$TMP_WAV") 2>/dev/null; then
-		break
+require_cmd() {
+	if ! command -v "$1" >/dev/null 2>&1; then
+		echo "❌ $1 is not installed"
+		exit 1
 	fi
-	i=$((i + 1))
-done
+}
+
+check_dependencies() {
+	require_cmd pandoc
+	require_cmd espeak-ng
+	require_cmd ffmpeg
+}
+
+parse_args() {
+	if [ $# -lt 1 ]; then
+		echo "Usage: $0 file.html" >&2
+		exit 1
+	fi
+
+	HTML=$1
+	if [ ! -f "$HTML" ]; then
+		echo "❌ File not found: $HTML"
+		exit 1
+	fi
+}
+
+select_language() {
+	echo "Which language do you want the text to be read in?"
+	echo "1) Spanish (Spain)"
+	echo "2) English (United Kingdom)"
+	printf "Choose 1 or 2: "
+	read -r LANG_OPT
+
+	case "$LANG_OPT" in
+	1)
+		VOICE="es-es"
+		SPEED=140
+		;;
+	2)
+		VOICE="en-gb"
+		SPEED=140
+		;;
+	*)
+		echo "❌ Invalid option"
+		exit 1
+		;;
+	esac
+}
+
+create_temp_wav() {
+	TMP_WAV=
+	i=0
+	while :; do
+		TMP_WAV=${TMPDIR:-/tmp}/voice$$-$i.wav
+		if (umask 077 && : >"$TMP_WAV") 2>/dev/null; then
+			break
+		fi
+		i=$((i + 1))
+	done
+}
+
+convert_html_to_ogg() {
+	OUT="${HTML%.*}.ogg"
+	echo "▶️ Converting HTML to audio..."
+	pandoc "$HTML" -t plain --wrap=none | espeak-ng -v "$VOICE" -s "$SPEED" -p 50 -w "$TMP_WAV"
+	ffmpeg -y -loglevel error -i "$TMP_WAV" -ac 2 -c:a vorbis -q:a 5 -strict -2 "$OUT"
+	echo "✅ Audio successfully generated: $OUT"
+}
 
 cleanup() {
 	rm -f "$TMP_WAV"
 }
 trap cleanup EXIT HUP INT TERM
 
-# -----------------------------
-# Conversion pipeline
-# -----------------------------
-echo "▶️ Converting HTML to audio..."
+main() {
+	check_dependencies
+	parse_args "$@"
+	select_language
+	create_temp_wav
+	convert_html_to_ogg
+}
 
-pandoc "$HTML" -t plain --wrap=none | espeak-ng -v "$VOICE" -s "$SPEED" -p 50 -w "$TMP_WAV"
-
-ffmpeg -y -loglevel error -i "$TMP_WAV" -ac 2 -c:a vorbis -q:a 5 -strict -2 "$OUT"
-
-echo "✅ Audio successfully generated: $OUT"
+main "$@"
