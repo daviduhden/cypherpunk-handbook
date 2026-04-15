@@ -250,11 +250,18 @@ nav a {
   color: var(--heading);
   margin: 0 0.35em;
   font-weight: 600;
-  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
 }
 
 nav a:hover {
-  background: linear-gradient(180deg, var(--nav-bg-hover), color-mix(in srgb, var(--blue-dark) 52%, var(--nav-bg-hover) 48%));
+  background: linear-gradient(
+    180deg,
+    var(--nav-bg-hover),
+    color-mix(in srgb, var(--blue-dark) 52%, var(--nav-bg-hover) 48%)
+  );
   border-color: color-mix(in srgb, var(--border-2) 42%, var(--blue-light) 58%);
   box-shadow: 0 0 0.8em #3ee6ff21, inset 0 0 0.4em #3ee6ff1f;
 }
@@ -289,7 +296,9 @@ main {
   border: thin solid var(--border);
   border-radius: var(--radius);
   padding: 1.75em;
-  box-shadow: var(--shadow), 0 0 1.1em #3ee6ff1a;
+  box-shadow:
+    var(--shadow),
+    0 0 1.1em #3ee6ff1a;
 }
 
 /*
@@ -412,7 +421,12 @@ ul ul, ol ol, ul ol, ol ul {
 .article-column {
   padding: 0.6em;
   border-radius: calc(var(--radius-soft) * 0.9);
-  background: linear-gradient(160deg, #5ad7ff0d, #ffffff03 40%, transparent 100%);
+  background: linear-gradient(
+    160deg,
+    #5ad7ff0d,
+    #ffffff03 40%,
+    transparent 100%
+  );
   border: 1px solid color-mix(in srgb, var(--border) 85%, transparent 15%);
 }
 
@@ -533,7 +547,8 @@ blockquote {
   margin: 0 0 1em;
   padding: 0.9em 1.05em;
   background: var(--panel-2);
-  border-left: 4px solid color-mix(in srgb, var(--blue-light) 58%, var(--accent) 42%);
+  border-left: 4px solid
+    color-mix(in srgb, var(--blue-light) 58%, var(--accent) 42%);
   border-radius: calc(var(--radius) * 0.35);
   color: var(--muted);
   font-style: italic;
