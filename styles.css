@@ -38,23 +38,28 @@
   /* Dark site palette (local to cypherpunk-handbook) */
   color-scheme: dark;
 
-  --bg: #0b1220;
-  --panel: #0f172a;
-  --panel-2: #0b1423;
+  --bg: #120b1f;
+  --panel: #171029;
+  --panel-2: #140d24;
 
-  --text: #e2e8f0;
-  --muted: #cbd5e1;
-  --heading: #e5e7eb;
+  --text: #ece7ff;
+  --muted: #cfc5ea;
+  --heading: #f3edff;
 
-  --link: #3b82f6;
-  --link-hover: #5b8cff;
+  --link: #b084ff;
+  --link-hover: #cbb0ff;
 
-  --border: #1f273a;
-  --border-2: #1f2937;
+  --accent: #a855f7;
+  --accent-2: #d8b4fe;
+  --blue-dark: #102a63;
+  --blue-light: #3ee6ff;
+
+  --border: #2b2040;
+  --border-2: #34244f;
   --border-hover: var(--border-2);
 
-  --nav-bg: #111827;
-  --nav-bg-hover: #1f2937;
+  --nav-bg: #1a1230;
+  --nav-bg-hover: #241844;
 
   --radius: 0.875em;
   --radius-soft: 0.75em;
@@ -68,7 +73,7 @@
   --pad-y: 2em;
   --pad-x: 1.25em;
 
-  --focus-ring: 0 0 0 0.2em #3b82f659, 0 0 0 0.4em #7c3aed1f;
+  --focus-ring: 0 0 0 0.22em #3ee6ff70, 0 0 0 0.46em #a855f75c;
 }
 
 /*
@@ -78,7 +83,11 @@
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   line-height: 1.6;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 12% 18%, #3ee6ff2e 0, transparent 42%),
+    radial-gradient(circle at 88% 5%, #2a56c538 0, transparent 36%),
+    radial-gradient(circle at 52% 100%, #1b3f8b30 0, transparent 38%),
+    var(--bg);
   color: var(--text);
   padding: var(--pad-y) var(--pad-x);
 }
@@ -116,8 +125,9 @@ a {
 }
 
 a:hover {
-  color: var(--link-hover);
+  color: color-mix(in srgb, var(--link-hover) 52%, var(--blue-light) 48%);
   text-decoration: underline;
+  text-shadow: 0 0 0.45em #3ee6ff4f;
 }
 
 a:focus-visible,
@@ -198,6 +208,7 @@ header h1 {
   line-height: 1.2;
   font-weight: 700;
   color: var(--heading);
+  text-shadow: 0 0 0.7em #3ee6ff2b;
 }
 
 header h2 {
@@ -239,11 +250,19 @@ nav a {
   color: var(--heading);
   margin: 0 0.35em;
   font-weight: 600;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
 nav a:hover {
-  background: var(--nav-bg-hover);
-  border-color: color-mix(in srgb, var(--border-2) 70%, var(--link) 30%);
+  background: linear-gradient(180deg, var(--nav-bg-hover), color-mix(in srgb, var(--blue-dark) 52%, var(--nav-bg-hover) 48%));
+  border-color: color-mix(in srgb, var(--border-2) 42%, var(--blue-light) 58%);
+  box-shadow: 0 0 0.8em #3ee6ff21, inset 0 0 0.4em #3ee6ff1f;
+}
+
+nav a:active,
+nav a[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--blue-light) 72%, var(--accent) 28%);
+  box-shadow: 0 0 1em #3ee6ff33, inset 0 0 0.45em #3ee6ff29;
 }
 
 /*
@@ -270,7 +289,7 @@ main {
   border: thin solid var(--border);
   border-radius: var(--radius);
   padding: 1.75em;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), 0 0 1.1em #3ee6ff1a;
 }
 
 /*
@@ -283,8 +302,9 @@ section {
 section h2 {
   font-size: clamp(1.35em, 1.6vw + 1em, 1.9em);
   margin: 0 0 0.65em;
-  color: var(--heading);
+  color: color-mix(in srgb, var(--heading) 84%, var(--blue-light) 16%);
   line-height: 1.2;
+  text-shadow: 0 0 0.55em #3ee6ff1f;
 }
 
 section p,
@@ -331,7 +351,7 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr:hover {
-  background: color-mix(in srgb, var(--panel-2) 80%, var(--link) 20%);
+  background: color-mix(in srgb, var(--panel-2) 64%, var(--blue-dark) 36%);
 }
 
 th, td {
@@ -392,7 +412,7 @@ ul ul, ol ol, ul ol, ol ul {
 .article-column {
   padding: 0.6em;
   border-radius: calc(var(--radius-soft) * 0.9);
-  background: linear-gradient(180deg, #ffffff03, transparent);
+  background: linear-gradient(160deg, #5ad7ff0d, #ffffff03 40%, transparent 100%);
   border: 1px solid color-mix(in srgb, var(--border) 85%, transparent 15%);
 }
 
@@ -513,7 +533,7 @@ blockquote {
   margin: 0 0 1em;
   padding: 0.9em 1.05em;
   background: var(--panel-2);
-  border-left: 4px solid var(--border);
+  border-left: 4px solid color-mix(in srgb, var(--blue-light) 58%, var(--accent) 42%);
   border-radius: calc(var(--radius) * 0.35);
   color: var(--muted);
   font-style: italic;
