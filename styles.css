@@ -500,7 +500,8 @@ footer p sup {
   margin-right: 0.45em;
   padding: 0 0.38em;
   border-radius: var(--radius-pill);
-  border: 1px solid color-mix(in srgb, var(--blue-light) 55%, var(--accent) 45%);
+  border: 1px solid
+    color-mix(in srgb, var(--blue-light) 55%, var(--accent) 45%);
   background: linear-gradient(
     160deg,
     color-mix(in srgb, var(--blue-dark) 72%, var(--panel) 28%),
