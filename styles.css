@@ -492,16 +492,27 @@ footer p:has(sup) {
 }
 
 footer p sup {
-  display: inline-block;
-  min-width: 1.4em;
-  margin-right: 0.4em;
-  padding: 0.05em 0.4em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.55em;
+  min-height: 1.55em;
+  margin-right: 0.45em;
+  padding: 0 0.38em;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--accent) 25%, #ffffff 75%);
-  color: var(--heading);
+  border: 1px solid color-mix(in srgb, var(--blue-light) 55%, var(--accent) 45%);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--blue-dark) 72%, var(--panel) 28%),
+    color-mix(in srgb, var(--accent) 35%, var(--blue-dark) 65%)
+  );
+  color: #eefdff;
   font-weight: 800;
-  font-size: 0.8em;
+  font-size: 0.76em;
+  line-height: 1;
   text-align: center;
+  vertical-align: baseline;
+  box-shadow: 0 0 0.55em #3ee6ff30;
 }
 
 /* Footer motto: keep icon tight with heading text */
