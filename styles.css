@@ -319,6 +319,7 @@ section h2 {
 section p,
 main p {
   margin: 0.35em 0 0.85em;
+  text-align: justify;
 }
 
 /* Tables */
