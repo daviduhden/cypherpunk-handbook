@@ -445,9 +445,9 @@
         and see what you get with this demonic piece of junk. My challenge to
         everyone reading this is to try to get the score of each service to at
         least "OK" without completely breaking the system. I've never seen any
-        idiot SystemD defender open their mouth to defend it after discovering
-        the existence of this command. But the first phase of trauma will
-        always be denial.</p>
+        SystemD defender open their mouth to defend it after discovering the
+        existence of this command. But the first phase of trauma will always be
+        denial.</p>
 
         <p>SystemD is extremely complex and full of modules; it's software that
         tries to do many things at once. A compromised SystemD is a compromised
@@ -468,7 +468,7 @@
         attack surfaces. It's almost like a complete operating system; in fact,
         a kernel plus systemd is already a complete operating system.</p>
 
-        <p>More about this topic and why it is so garbage:</p>
+        <p>More about this topic and why it is so problematic:</p>
 
         <ul>
           <li>SystemD is trash:
@@ -550,8 +550,8 @@
         installer, you need to remove mapbs=1 and noexitboot=1 To get suspend
         to work, you need to add mem_sleep_default=deep to the kernel= line in
         /boot/efi/EFI/qubes/xen.cfg." + "Runs only with kernel 3.9 read more"
-        (Holy shit, that's crazy) + "AEM works with TPM v1.2 mode, but not
-        v2.0." (Wtf. AEM = Anti Evil Maid) + "Hyperthreading must be disabled
+        (This is extreme) + "AEM works with TPM v1.2 mode, but not v2.0."
+        (Seriously. AEM = Anti Evil Maid) + "Hyperthreading must be disabled
         (only on i5), actvated TPM slows down the system" + "Intel graphics
         unusable with enabled VT-d" + "Suspend doesn't work on 3.7.6 kernel,
         but work on 3.7.4" + "Bios Legacy Mode" + "Upgrade to rc4 broke
@@ -634,10 +634,10 @@
         CPU's virtualization technology microcode, nor on 11 specific
         devices.</p>
 
-        <p>And it gets even worse when dom0 can only use Fedora, meaning, "holy
-        shit, it got 1000 times worse!", compromising the Fedora repositories
-        makes any update to dom0 a total system breaking point. There is no
-        salvation for QubesOS.</p>
+        <p>And it gets even worse when dom0 can only use Fedora, meaning, "it
+        got 1000 times worse!", compromising the Fedora repositories makes any
+        update to dom0 a total system breaking point. There is no salvation for
+        QubesOS.</p>
       </section>
 
       <section>
@@ -663,7 +663,7 @@
         PTT/ME interactions) is compromised, TPM attestation/sealing can be
         subverted and used to hide persistent tampering from the user.</p>
 
-        <p>This shit is more a backdoor than anything else. TPM
+        <p>This is more a backdoor than anything else. TPM
         manufactures/suppliers have a unique identification key (EK) that, if
         linked to a actual identity or shared with thrid parties could allow
         device identification or linking. And these keys can be easily
@@ -690,7 +690,7 @@
           and using AEM requires attaching a USB drive directly to dom0.</p>
         </blockquote>
 
-        <p>What the actually fuck? Hahahahahaa, this OS is a contradiction in
+        <p>What is this, exactly? Hahahahahaa, this OS is a contradiction in
         itself.</p>
 
         <blockquote>
@@ -709,8 +709,8 @@
           Evil Maid attacks, on the other hand.</p>
         </blockquote>
 
-        <p>If you want to fuck me, at least pay for dinner! You're not giving
-        me any plausible options?</p>
+        <p>If you expect me to accept this, at least offer a fair trade-off!
+        You're not giving me any plausible options?</p>
       </section>
 
       <section>
@@ -723,8 +723,8 @@
           BIOS and deploying Anti Evil Maid.</p>
         </blockquote>
 
-        <p>This is so fucked, QubesOS needs Intel ME (a literal backdoor) to
-        have minimal protection against Anti Evil Maid.</p>
+        <p>This is deeply flawed, QubesOS needs Intel ME (a literal backdoor)
+        to have minimal protection against Anti Evil Maid.</p>
 
         <p>Intel Management Engine (ME) runs at a more privileged level than
         the OS kernel, it can be considered "Ring -3" (Below the CPU or kernel
@@ -1016,9 +1016,9 @@
         <p>QubesOS is a system that places all its security on top of its
         virtual machines, on top of a hypervisor that its own devs didn't even
         create, Xen is maintained by other, completely different developers.
-        But what about the rest of the system? Fuck it, right? Why have a
+        But what about the rest of the system? Ignore it, right? Why have a
         consistent, stable and functional system if I can stick 20 virtual
-        machines up my ass? Fuck everything else, right?</p>
+        machines up my ass? Ignore everything else, right?</p>
 
         <p>Why use operating systems in virtual machines on a bad hypervisor
         (Xen) on a weak, unstable and inconsistent system by default when I can
@@ -1159,7 +1159,7 @@
 
         <p>This applies to any and all software development. There is no way to
         end this, if you think that isolation BY SOFTWARE, (and even by
-        hypervisor, which is worse) is a solution, then you are being stupid
+        hypervisor, which is worse) is a solution, then you are being mistaken
         and contradictory.</p>
 
         <blockquote>
@@ -1171,7 +1171,7 @@
         </blockquote>
 
         <p>She talks as if her project had not gone through logic and design
-        before implementation, I know that in Qubes OS it was done in a stupid
+        before implementation, I know that in Qubes OS it was done in a poor
         way, but she treats this project of hers as something that transcends
         reality and physical form, being above men and mortal understanding. In
         the end, your idea is just another project, another drawing, another
@@ -1260,9 +1260,9 @@
         Page-Table Isolation (KPTI), eBPF/XDP&hellip; This woman is crazy if
         she thinks a virtual machine is the only form of isolation.</p>
 
-        <p>And if the problem is the monolithic kernel, why the hell didn't you
-        make Qubes OS based on a micro-kernel but on the Linux kernel? Because
-        you don't have the ability to program a kernel or because you think the
+        <p>And if the problem is the monolithic kernel, why didn't you make
+        Qubes OS based on a micro-kernel but on the Linux kernel? Because you
+        don't have the ability to program a kernel or because you think the
         only way to isolate is through virtual machines? Or both?</p>
 
         <p>I acknowledge that a microkernel or even a hybrid kernel can be much
@@ -1277,7 +1277,7 @@
           by the virtualization technology.</p>
         </blockquote>
 
-        <p>Holy fuck. Here we go again.</p>
+        <p>Here we go again.</p>
 
         <blockquote>
           <p>Thin bare-metal hypervisor, like e.g. Xen, can act like a micro
@@ -1320,8 +1320,8 @@
           exploitation very hard or even impossible.</p>
         </blockquote>
 
-        <p>"This is a disadvantage as it can make exploiting bugs very
-        difficult or IMPOSSIBLE", holy shit what a genius thought.</p>
+        <p>This is a disadvantage as it can make exploiting bugs very difficult
+        or IMPOSSIBLE", what a questionable thought.</p>
 
         <blockquote>
           <p>But if one is concerned also about e.g. DoS attacks, then Security
@@ -1330,9 +1330,9 @@
 
         <p>Servers are the ones who have to worry about this, you can't open
         your mouth to talk about it when your operating system is absolutely
-        useless in this area. Also, how can a fucking DoS attack affect the
-        desktop user? How can this maliciously compromise the operating system
-        or hardware? That's a spurious correlation that you just threw up.</p>
+        useless in this area. Also, how can a DoS attack affect the desktop
+        user? How can this maliciously compromise the operating system or
+        hardware? That's a spurious correlation that you just threw up.</p>
 
         <p>If a DoS attack is carried out against your ISP, home network, or
         online services you use, nothing can be done, and it is up to the
@@ -1417,7 +1417,8 @@
         understand her saying this about Linux, given that it is just a kernel
         and that in 2012 Secureblue and many subsequent security
         implementations on/of Linux did not yet exist, but generalizing BSDs as
-        if they were all the same is tremendously dishonest or stupid.</p>
+        if they were all the same is tremendously dishonest or poorly
+        reasoned.</p>
 
         <p>OpenBSD had existed for many, many years and apparently it was
         either unaware of its existence or had never tried to study it to find
@@ -1447,7 +1448,7 @@
         already much larger than the entire TempleOS. Furthermore, the attack
         surface of Qubes OS is not just Xen, but everything (devices,
         management tools, hypercalls etc.), since not even the /boot partition
-        can be encrypted in this crap system, and what do you do to mitigate
+        can be encrypted in this fragile system, and what do you do to mitigate
         this? Nothing, they rely on unreliable proprietary firmware like Intel
         ME and TPM that only increase the attack surface.</p>
 
@@ -1521,9 +1522,9 @@
           desktop OS on top ofa baremetal hypervisor</p>
         </blockquote>
 
-        <p>Where the fuck did she get that? Qubes OS is not secure at all
-        compared to other Linux systems and putting all of this on top of a
-        hypervisor makes things worse.</p>
+        <p>Where did she get that from? Qubes OS is not secure at all compared
+        to other Linux systems and putting all of this on top of a hypervisor
+        makes things worse.</p>
 
         <p>"everything that is needed to build a reasonably secure desktop OS"
         And she herself says that she doesn't believe in security mitigations,
@@ -1674,11 +1675,11 @@
           the entire system.)</p>
         </blockquote>
 
-        <p>Look how these idiots don't believe in security through correction,
+        <p>Look how these people don't believe in security through correction,
         kernel isolation and randomization, but believe in Xen as their god, a
         tool they didn't even create. They place all their hopes on other
         developers' tools and put them on a pedestal as if they were
-        untouchable; that's stupid.</p>
+        untouchable; that's poorly reasoned.</p>
 
         <blockquote>
           <p>Physical separation can be a natural complement to physical
@@ -1726,9 +1727,9 @@
         <p>And is Qubes OS unconventional? Using a conventional Fedora/Debian
         template, using the conventional Linux kernel for dom0 and domUs (or
         windows, which is worse), using conventional GNU libraries and
-        programs? I know that Qubes OS is unique in that it's a huge piece of
-        crap, but that doesn't make it anything other than just another
-        GNU/Linux system.</p>
+        programs? I know that Qubes OS is unique in that it's a huge mess, but
+        that doesn't make it anything other than just another GNU/Linux
+        system.</p>
 
         <p>With hardware-based partitioning, you can use much more secure Linux
         systems, or even other secure or non-secure operating systems, without
@@ -1739,13 +1740,13 @@
           now and is becoming increasingly common.</p>
         </blockquote>
 
-        <p>What the hell? Unless through physical attack (social engineering,
+        <p>What exactly? Unless through physical attack (social engineering,
         hardware firmware backdoor or exploit) in which QubesOS is also totally
-        vulnerable, or a compromised router, how the hell is malware going to
-        reach an offline (or through the Tor network) computer? Or even through
-        a physical internet separation? What kind of malware is this? It must
-        be some kind of supernatural being; I'd like to see an example of
-        malware that could do this, reach air-gapped devices.</p>
+        vulnerable, or a compromised router, how is malware going to reach an
+        offline (or through the Tor network) computer? Or even through a
+        physical internet separation? What kind of malware is this? It must be
+        some kind of supernatural being; I'd like to see an example of malware
+        that could do this, reach air-gapped devices.</p>
 
         <p>If you're talking about advanced attacks performed on theoretical
         academic research, like: AirHopper/GSMem/USBee - exfiltrate data by
@@ -1818,7 +1819,7 @@
         <p>"We believe", "We believe", "We believe"&hellip; You know, it seems
         to me that you're all lunatics who deny reality and live only in your
         imaginary worlds of belief. And what about the "compatibility" thing?
-        This damn system isn't even compatible with the hardware, get out of
+        This system isn't even compatible with the hardware, get out of
         here!</p>
 
         <blockquote>
@@ -1856,8 +1857,8 @@
           to secure the middle (i.e., the infrastructure)</p>
         </blockquote>
 
-        <p>How the hell can you be secure at the endpoint if you have to go
-        through the insecure midpoint first? What kind of nonsense is that?</p>
+        <p>How can you be secure at the endpoint if you have to go through the
+        insecure midpoint first? What kind of nonsense is that?</p>
 
         <blockquote>
           <p>since one of our primary goals is to free users from being forced
@@ -2309,7 +2310,7 @@
 
         <p>Gentoo can be considered the perfect Linux operating system, but
         only if you perform a proper installation and configuration. Please,
-        read the fucking manual.</p>
+        read the manual carefully.</p>
 
         <ul>
           <li>Handbook for a good installation: <a href=
@@ -2643,10 +2644,10 @@
 
           <li>
             <p><strong>NixOS</strong> has everything to be a very secure Linux
-            system, if it weren't for that damned SystemD. All the system's
-            default configuration and behavior remains in one file, making the
-            system reproducible, declarative and stable. It also has an
-            incredible repository and package manager. <a href=
+            system, if it weren't for that problematic SystemD. All the
+            system's default configuration and behavior remains in one file,
+            making the system reproducible, declarative and stable. It also has
+            an incredible repository and package manager. <a href=
             "https://nixos.org/">https://nixos.org</a> However, a light shines
             in this Linux distro: SixOS. "sixos: a nix os without systemd":</p>
 
