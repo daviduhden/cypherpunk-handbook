@@ -300,6 +300,18 @@ $ENV{XMLLINT_INDENT} = "  ";
 my @tmp_paths;
 my $dprint_cfg = "";
 
+sub dprint_config_update {
+    my ($cfg) = @_;
+    return unless defined $cfg && length $cfg;
+
+    my ( $rc, $out, $err ) =
+      run_capture( $dprint, "config", "update", "--config", $cfg );
+    if ( $rc != 0 ) {
+        logw("dprint config update failed; continuing with existing config.");
+        print STDERR $err if $verbose;
+    }
+}
+
 if ( @css || @js || @json ) {
     if ($is_openbsd) {
         logw("OpenBSD: skipping dprint for CSS/JS/JSON (not ported)")
@@ -317,6 +329,7 @@ if ( @css || @js || @json ) {
               . "  ]\n"
               . "}\n" );
         push @tmp_paths, $dprint_cfg;
+        dprint_config_update($dprint_cfg);
         logi("Created temporary dprint config in /tmp: $dprint_cfg")
           if $verbose;
     }
