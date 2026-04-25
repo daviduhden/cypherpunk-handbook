@@ -141,7 +141,7 @@ button:focus-visible {
 .underline,
 .u-underline {
   text-decoration: underline;
-  text-decoration-thickness: 1px;
+  text-decoration-thickness: max(0.06em, 0.04lh);
   text-decoration-skip-ink: auto;
 }
 
@@ -329,7 +329,7 @@ table {
   margin: 1em 0 1.4em;
   font-size: 0.98em;
   background: color-mix(in srgb, var(--panel) 90%, black 10%);
-  border: 1px solid var(--border);
+  border: thin solid var(--border);
   border-radius: var(--radius-soft);
   overflow: hidden;
 }
@@ -348,12 +348,12 @@ thead th {
   text-align: left;
   font-weight: 600;
   padding: 0.7em 0.8em;
-  border-bottom: 1px solid var(--border);
+  border-bottom: thin solid var(--border);
 }
 
 tbody td {
   padding: 0.6em 0.8em;
-  border-bottom: 1px solid var(--border);
+  border-bottom: thin solid var(--border);
 }
 
 tbody tr:nth-child(even) {
@@ -428,7 +428,7 @@ ul ul, ol ol, ul ol, ol ul {
     #ffffff03 40%,
     transparent 100%
   );
-  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent 15%);
+  border: thin solid color-mix(in srgb, var(--border) 85%, transparent 15%);
 }
 
 .article-column h3 {
@@ -501,7 +501,7 @@ footer p sup {
   margin-right: 0.45em;
   padding: 0 0.38em;
   border-radius: var(--radius-pill);
-  border: 1px solid
+  border: thin solid
     color-mix(in srgb, var(--blue-light) 55%, var(--accent) 45%);
   background: linear-gradient(
     160deg,
@@ -570,7 +570,7 @@ blockquote {
   margin: 0 0 1em;
   padding: 0.9em 1.05em;
   background: var(--panel-2);
-  border-left: 4px solid
+  border-left: clamp(0.18em, 0.35vw, 0.32em) solid
     color-mix(in srgb, var(--blue-light) 58%, var(--accent) 42%);
   border-radius: calc(var(--radius) * 0.35);
   color: var(--muted);
