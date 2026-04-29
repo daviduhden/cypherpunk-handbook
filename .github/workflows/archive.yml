@@ -76,7 +76,7 @@ jobs:
           ARCHIVE="$TMP_DIR/$REPO_NAME.tar.gz"
           CHECKSUM="$TMP_DIR/$REPO_NAME.tar.gz.sha256"
           SIGNATURE="$TMP_DIR/$REPO_NAME.tar.gz.sig"
-          KEYFILE="$TMP_DIR/archive.sec"
+          KEYFILE="$TMP_DIR/$REPO_NAME.sec"
 
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$KEYFILE"
 

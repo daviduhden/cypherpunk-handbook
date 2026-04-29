@@ -10,33 +10,34 @@
   "./../feeds/articles.xml">
 </head>
 <body>
+  <a class="skip-link" href="#site-main">Skip to main content</a>
   <header id="site-header">
     <h1>The Cypherpunk Handbook</h1>
 
     <h2>Article</h2>
   </header>
 
-  <nav id="site-nav">
+  <nav id="site-nav" aria-label="Primary navigation">
     <ul>
       <li>
-        <a href="./../index.html">Home</a>
+        <a href="./../index.html" rel="home">Home</a>
       </li>
 
       <li>
-        <a href="./../manifesto.html">Manifesto</a>
+        <a href="./../manifesto.html" rel="contents">Manifesto</a>
       </li>
 
       <li>
-        <a href="./../contact.html">Contact</a>
+        <a href="./../contact.html" rel="author">Contact</a>
       </li>
 
       <li>
-        <a href="./../contribute.html">Contribute</a>
+        <a href="./../contribute.html" rel="help">Contribute</a>
       </li>
     </ul>
   </nav>
 
-  <main id="site-main">
+  <main id="site-main" tabindex="-1">
     <article class="article-content">
       <header id="article-header">
         <p class="kicker">Operating systems</p>
@@ -47,16 +48,222 @@
         by: why-openbsd.rocks) - <time datetime="2026-02-17">Updated February
         17, 2026</time></p>
 
-        <p class="lede">This is a short summary of why OpenBSD is one of the
-        most secure operating systems in the world, and why Windows, MacOS,
-        IOS, Android and even Linux no matter how secure it is, will never
-        compare to it. Yes, this includes even others BSDs, QubesOS, Fedora
-        Secureblue and Hardened Gentoo.</p>
+        <p class="lede">This article summarizes why OpenBSD is presented as one
+        of the most secure operating systems in the world, and why Windows,
+        macOS, iOS, Android, and Linux, regardless of hardening level, are
+        argued here to be less secure. The comparison also includes other BSDs,
+        QubesOS, Fedora Secureblue, and Hardened Gentoo.</p>
       </header>
 
+      <nav class="toc" aria-label="Table of contents">
+        <h2>Contents</h2>
+
+        <ol>
+          <li>
+            <a href="#obsd-0">0 - Philosophy</a>
+          </li>
+
+          <li>
+            <a href="#obsd-1">1 - Library order randomization</a>
+          </li>
+
+          <li>
+            <a href="#obsd-2">2 - arc4random(3)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-3">3 - The first at security implementations</a>
+          </li>
+
+          <li>
+            <a href="#obsd-4">4 - Camera and audio recording</a>
+          </li>
+
+          <li>
+            <a href="#obsd-5">5 - Chrooted webserver by default</a>
+          </li>
+
+          <li>
+            <a href="#obsd-6">6 - cron(8)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-7">7 - Defined integer overflows.</a>
+          </li>
+
+          <li>
+            <a href="#obsd-8">8 - doas(1)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-9">9 - freezero(3)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-10">10 - httpd(8)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-11">11 - KARL</a>
+          </li>
+
+          <li>
+            <a href="#obsd-12">12 - Kernel &amp; Userland</a>
+          </li>
+
+          <li>
+            <a href="#obsd-13">13 - LibreSSL</a>
+          </li>
+
+          <li>
+            <a href="#obsd-14">14 - License</a>
+          </li>
+
+          <li>
+            <a href="#obsd-15">15 - Malloc leak detection</a>
+          </li>
+
+          <li>
+            <a href="#obsd-16">16 - Documentation - manpages</a>
+          </li>
+
+          <li>
+            <a href="#obsd-17">17 - Meltdown and Spectre</a>
+          </li>
+
+          <li>
+            <a href="#obsd-18">18 - Memory allocation randomization</a>
+          </li>
+
+          <li>
+            <a href="#obsd-19">19 - OpenSMTPD</a>
+          </li>
+
+          <li>
+            <a href="#obsd-20">20 - OpenSSH</a>
+          </li>
+
+          <li>
+            <a href="#obsd-21">21 - Firewall</a>
+          </li>
+
+          <li>
+            <a href="#obsd-22">22 - PID randomization</a>
+          </li>
+
+          <li>
+            <a href="#obsd-23">23 - ping randomness</a>
+          </li>
+
+          <li>
+            <a href="#obsd-24">24 - pledge</a>
+          </li>
+
+          <li>
+            <a href="#obsd-25">25 - unveil</a>
+          </li>
+
+          <li>
+            <a href="#obsd-26">26 - Privilege and users Separation</a>
+          </li>
+
+          <li>
+            <a href="#obsd-27">27 - Privilege revocation</a>
+          </li>
+
+          <li>
+            <a href="#obsd-28">28 - MAC addresses randomized</a>
+          </li>
+
+          <li>
+            <a href="#obsd-29">29 - rcctl(8)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-30">30 - recallocarray(3)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-31">31 - rpki-client(8)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-32">32 - Sane &amp; secure defaults</a>
+          </li>
+
+          <li>
+            <a href="#obsd-33">33 - signify(1)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-34">34 - Stack</a>
+          </li>
+
+          <li>
+            <a href="#obsd-35">35 - stack-register checking</a>
+          </li>
+
+          <li>
+            <a href="#obsd-36">36 - Swap encryption by default</a>
+          </li>
+
+          <li>
+            <a href="#obsd-37">37 - Syscall From-Verification</a>
+          </li>
+
+          <li>
+            <a href="#obsd-38">38 - unwind(8) validating DNS resolver</a>
+          </li>
+
+          <li>
+            <a href="#obsd-39">39 - W^X Memory</a>
+          </li>
+
+          <li>
+            <a href="#obsd-40">40 - WireGuard</a>
+          </li>
+
+          <li>
+            <a href="#obsd-41">41 - file(1)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-42">42 - vmm(4) - hardened hypervisor</a>
+          </li>
+
+          <li>
+            <a href="#obsd-43">43 - Xserver without root permissions and
+            xenodm</a>
+          </li>
+
+          <li>
+            <a href="#obsd-44">44 - No proprietary blobs</a>
+          </li>
+
+          <li>
+            <a href="#obsd-45">45 - RETGUARD</a>
+          </li>
+
+          <li>
+            <a href="#obsd-46">46 - Audit Process</a>
+          </li>
+
+          <li>
+            <a href="#obsd-47">47 - Project Goals</a>
+          </li>
+
+          <li>
+            <a href="#obsd-48">48 - Politics-free</a>
+          </li>
+
+          <li>
+            <a href="#obsd-49">49 - Less attack surface</a>
+          </li>
+        </ol>
+      </nav>
+
       <section>
-        <p>As Fedora Secureblue (The most secure Linux distro by default) devs
-        themselves say:</p>
+        <p>As Fedora Secureblue developers themselves say:</p>
 
         <blockquote>
           <p>Secureblue is for those whose first priority is using Linux, and
@@ -74,7 +281,7 @@
           for that.</li>
         </ul>
 
-        <h2>0 - Philosophy</h2>
+        <h2 id="obsd-0">0 - Philosophy</h2>
 
         <blockquote>
           <p>OpenBSD believes in strong security. Our aspiration is to be
@@ -98,7 +305,7 @@
       </section>
 
       <section>
-        <h2>1 - Library order randomization</h2>
+        <h2 id="obsd-1">1 - Library order randomization</h2>
 
         <p>In rc(8), re-link libc.so, libcrypto, and ld.so on startup, placing
         the objects in a random order at boot time to prevent "Return oriented
@@ -114,7 +321,7 @@
       </section>
 
       <section>
-        <h2>2 - arc4random(3)</h2>
+        <h2 id="obsd-2">2 - arc4random(3)</h2>
 
         <p>OpenBSD has its own cryptographic random number generator. Wherever
         random input is needed, arc4random is used. arc4random is an
@@ -125,7 +332,7 @@
       </section>
 
       <section>
-        <h2>3 - The first at security implementations</h2>
+        <h2 id="obsd-3">3 - The first at security implementations</h2>
 
         <ul>
           <li>The first operating system to integrate post-quantum encryption
@@ -152,7 +359,7 @@
       </section>
 
       <section>
-        <h2>4 - Camera and audio recording</h2>
+        <h2 id="obsd-4">4 - Camera and audio recording</h2>
 
         <p>For privacy reasons, the OpenBSD team disabled camera and audio
         recording for all devices by default in the kernel. This can be toggled
@@ -160,7 +367,7 @@
       </section>
 
       <section>
-        <h2>5 - Chrooted webserver by default</h2>
+        <h2 id="obsd-5">5 - Chrooted webserver by default</h2>
 
         <p>By default, HTTP daemons are chrooted in /var/www. As an OpenBSD
         system administrator, you don't need to configure anything to have a
@@ -169,7 +376,7 @@
       </section>
 
       <section>
-        <h2>6 - cron(8)</h2>
+        <h2 id="obsd-6">6 - cron(8)</h2>
 
         <p>OpenBSD's cron(8) daemon can randomize values (~), and prevent
         multiple jobs from running concurrently (-s). Preventing competition
@@ -187,7 +394,7 @@
       </section>
 
       <section>
-        <h2>7 - Defined integer overflows.</h2>
+        <h2 id="obsd-7">7 - Defined integer overflows.</h2>
 
         <p>On OpenBSD, Clang, the default compiler on most architectures, have
         -fwrapv flag enabled by default. GCC also does not include
@@ -198,7 +405,7 @@
       </section>
 
       <section>
-        <h2>8 - doas(1)</h2>
+        <h2 id="obsd-8">8 - doas(1)</h2>
 
         <p>OpenBSD doesn't use sudo so created "doas". Doas replaced sudo
         because of the latter's security flaws and large, complex codebase.
@@ -222,7 +429,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>9 - freezero(3)</h2>
+        <h2 id="obsd-9">9 - freezero(3)</h2>
 
         <p>The libc function freezero(3) allows programs to free memory that
         holds sensitive data, and to overwrite it with zeros.</p>
@@ -233,14 +440,14 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>10 - httpd(8)</h2>
+        <h2 id="obsd-10">10 - httpd(8)</h2>
 
         <p>OpenBSD have a hardened version of Apache httpd in the base
         system.</p>
       </section>
 
       <section>
-        <h2>11 - KARL</h2>
+        <h2 id="obsd-11">11 - KARL</h2>
 
         <p>At every install, upgrade, and boot a new kernel is generated with
         randomized addresses. A unique and unpredictable kernel is a huge
@@ -255,7 +462,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>12 - Kernel &amp; Userland</h2>
+        <h2 id="obsd-12">12 - Kernel &amp; Userland</h2>
 
         <p>The kernel and userland in OpenBSD (and all BSDs) are developed
         together. The same people who introduce new features to the kernel
@@ -280,7 +487,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>13 - LibreSSL</h2>
+        <h2 id="obsd-13">13 - LibreSSL</h2>
 
         <p>The unmaintainable and bloated OpenSSL Codebase was forked after
         Heartbleed was revealed. The code was thoroughly cleaned up, improved
@@ -294,7 +501,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>14 - License</h2>
+        <h2 id="obsd-14">14 - License</h2>
 
         <p>You are free to use the operating system as you want and do business
         with it according to ISC or Berkeley style licenses. By contract the
@@ -325,7 +532,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>15 - Malloc leak detection</h2>
+        <h2 id="obsd-15">15 - Malloc leak detection</h2>
 
         <p>It's a tool to detect unsafe behaviors in the OpenBSD code for Team
         developers. It needs to have debug symbols. This tracks memory
@@ -339,7 +546,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>16 - Documentation - manpages</h2>
+        <h2 id="obsd-16">16 - Documentation - manpages</h2>
 
         <p>There is probably no Operating System that is documented more and
         better than OpenBSD. Every single binary, library, driver or script
@@ -360,7 +567,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>17 - Meltdown and Spectre</h2>
+        <h2 id="obsd-17">17 - Meltdown and Spectre</h2>
 
         <p>To mitigate the Meltdown and Spectre, OpenBSD disable
         hyper-threading technology by default, citing security concerns &ndash;
@@ -373,7 +580,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>18 - Memory allocation randomization</h2>
+        <h2 id="obsd-18">18 - Memory allocation randomization</h2>
 
         <p>All those OSes (Windows, Linux, MacOS, Android etc.) provide malloc
         implementations, but OpenBSD's malloc is widely regarded as one of the
@@ -398,7 +605,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>19 - OpenSMTPD</h2>
+        <h2 id="obsd-19">19 - OpenSMTPD</h2>
 
         <p>Written by OpenBSD Developers from scratch. A simple mail daemon was
         needed for the base system of the operating system and there were no
@@ -412,7 +619,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>20 - OpenSSH</h2>
+        <h2 id="obsd-20">20 - OpenSSH</h2>
 
         <p>The most popular OpenBSD software is probably OpenSSH. It's the SSH
         standard used worldwide, being native and standard in all BSDs, macOS,
@@ -422,7 +629,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>21 - Firewall</h2>
+        <h2 id="obsd-21">21 - Firewall</h2>
 
         <p>pf is OpenBSD's very own firewall. It is simple and feature-rich and
         its configuration files are easy to read. It supports the use of
@@ -431,26 +638,26 @@ permit root</pre>
 
         <ul>
           <li>
-            <p>Linux's iptables and nftables are extremely complex and overly
-            complex compared to PF, easily leading even an advanced user to
-            make mistakes and create significant security vulnerabilities for
-            attack. That's why there are many frontends to manage them, like
-            firewalld and ufw. In reality, iptables and nftables are absolute
-            garbage, with horrible and dirty syntax. There are full
-            professional certification courses available to learn about
-            iptables and nftables, it's that complex and ridiculous.</p>
+            <p>Linux's iptables and nftables are extremely complex compared to
+            PF, which can lead even advanced users to make mistakes and create
+            significant security exposure. That's why there are many frontends
+            to manage them, like firewalld and ufw. In this article's view,
+            iptables and nftables have difficult, cumbersome syntax. There are
+            full professional certification courses just to learn them, which
+            illustrates that complexity.</p>
           </li>
 
           <li>
-            <p>The Windows firewall is rubbish, the user has no real control,
-            everything is managed through a lame GUI that is more of a
-            hindrance than a help. But it does its job by blocking malware or
-            blocking everything for no reason.</p>
+            <p>The Windows firewall is presented here as weak for advanced
+            control: users have limited direct control, and most behavior is
+            managed through a GUI that can feel restrictive. Even so, it can
+            still block malware and other traffic.</p>
           </li>
 
           <li>
-            <p>The MacOS firewall is very good. Safe, simple and the user has
-            control. After all, the firewall is OpenBSD's pf LOL.</p>
+            <p>The macOS firewall is rated very positively in this section:
+            safe, simple, and user-controlled. It is based on OpenBSD's
+            <code>pf</code>.</p>
           </li>
 
           <li>
@@ -468,7 +675,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>22 - PID randomization</h2>
+        <h2 id="obsd-22">22 - PID randomization</h2>
 
         <p>OpenBSD spawns each new process with a random, unused PID. This
         protects the user from attacks that predict new PID.</p>
@@ -481,7 +688,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>23 - ping randomness</h2>
+        <h2 id="obsd-23">23 - ping randomness</h2>
 
         <p>Both ping(8) and ping6(8) obfuscate the transmitted monotonic clock
         values by offsetting them with a random value. ChaCha streams are used
@@ -494,7 +701,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>24 - pledge</h2>
+        <h2 id="obsd-24">24 - pledge</h2>
 
         <p>pledge allows you to limit a program's access to system calls very
         easily. This is a huge improvement in security. Even if a binary is
@@ -522,7 +729,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>25 - unveil</h2>
+        <h2 id="obsd-25">25 - unveil</h2>
 
         <p>The unveil system call limits the filesystem open call to a given
         set of paths. It extends the idea of pledge: simply limiting programs
@@ -555,7 +762,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>26 - Privilege and users Separation</h2>
+        <h2 id="obsd-26">26 - Privilege and users Separation</h2>
 
         <p>OpenBSD runs all of the standard base system daemons with privilege
         and user separation. These include for example bgpd(8), dhclient(8),
@@ -585,7 +792,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>27 - Privilege revocation</h2>
+        <h2 id="obsd-27">27 - Privilege revocation</h2>
 
         <p>Related to the work on privilege separation, some programs were
         refactored to drop privileges while holding onto a tricky resource such
@@ -600,7 +807,7 @@ permit root</pre>
       </section>
 
       <section>
-        <h2>28 - MAC addresses randomized</h2>
+        <h2 id="obsd-28">28 - MAC addresses randomized</h2>
 
         <p>OpenBSD lets you have randomized MAC addresses via ifconfig</p>
 
@@ -616,13 +823,15 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>29 - rcctl(8)</h2>
+        <h2 id="obsd-29">29 - rcctl(8)</h2>
 
-        <p>rcctl is a simple utility to maintain rc.conf.local, the system
-        daemon configuration database for OpenBSD. Compared to systemd garbage
-        or SysVinit, rcctl is very lightweight, secure, stable and easy to
-        understand and use. SystemD is actually almost a complete operating
-        system, with heavy Red Hat-driven bloat.</p>
+        <p><code>rcctl</code> is a simple utility to maintain
+        <code>rc.conf.local</code>, the system daemon configuration database
+        for OpenBSD. Compared with systemd or SysVinit, this section argues
+        that <code>rcctl</code> is more lightweight, secure, stable, and easier
+        to understand and use. It also argues that systemd behaves almost like
+        a full operating system, with substantial Red Hat-driven
+        complexity.</p>
 
         <ul>
           <li>Gentoo and other distributions (like Artix, Alpine and Void) have
@@ -633,7 +842,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>30 - recallocarray(3)</h2>
+        <h2 id="obsd-30">30 - recallocarray(3)</h2>
 
         <p>recallocarray is a libc function that ensures data is discarded
         before allocating new memory and checks for integer overflow from
@@ -645,7 +854,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>31 - rpki-client(8)</h2>
+        <h2 id="obsd-31">31 - rpki-client(8)</h2>
 
         <p>The rpki-client utility queries the RPKI repository system with
         openrsync to fetch all X.509 certificates, manifests, and revocation
@@ -662,7 +871,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>32 - Sane &amp; secure defaults</h2>
+        <h2 id="obsd-32">32 - Sane &amp; secure defaults</h2>
 
         <p>OpenBSD has sane and secure defaults set in daemons and
         configurations.</p>
@@ -695,7 +904,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>33 - signify(1)</h2>
+        <h2 id="obsd-33">33 - signify(1)</h2>
 
         <p>signify is a small and elegant tool to cryptographically sign and
         verify files. It was created to sign OpenBSD releases, since OpenBSD
@@ -727,7 +936,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>34 - Stack</h2>
+        <h2 id="obsd-34">34 - Stack</h2>
 
         <p>Aggressive randomisation of the stack location since version 7.3
         (2023), this will put the stack at a random location in the upper 1/4th
@@ -746,7 +955,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>35 - stack-register checking</h2>
+        <h2 id="obsd-35">35 - stack-register checking</h2>
 
         <p>A memory object should have the fewest permissions possible:
         typically read, write and execute. OpenBSD introduced a new permission
@@ -763,7 +972,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>36 - Swap encryption by default</h2>
+        <h2 id="obsd-36">36 - Swap encryption by default</h2>
 
         <p>To protect sensitive information such as passwords from leaking to
         disk, where they can persist for many years.</p>
@@ -774,14 +983,14 @@ ifconfig iwm0 lladdr random</pre>
 
           <li>GrapheneOS seems to have that, but it's more dynamic.</li>
 
-          <li>MacOS swap and sleep image are encrypted when FileVault
-          (full-disk encryption) is enabled. Windows BitLocker doesn't work,
-          it's garbage.</li>
+          <li>macOS swap and sleep image are encrypted when FileVault
+          (full-disk encryption) is enabled. This section rates Windows
+          BitLocker negatively in reliability.</li>
         </ul>
       </section>
 
       <section>
-        <h2>37 - Syscall From-Verification</h2>
+        <h2 id="obsd-37">37 - Syscall From-Verification</h2>
 
         <p>The kernel checks if a syscall is executed from the address space
         where its corresponding process is coming from. If this is not the
@@ -795,7 +1004,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>38 - unwind(8) validating DNS resolver</h2>
+        <h2 id="obsd-38">38 - unwind(8) validating DNS resolver</h2>
 
         <p>unwind is a validating DNS resolver. It is intended to run on client
         machines like workstations or laptops and only listens on localhost.
@@ -814,7 +1023,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>39 - W^X Memory</h2>
+        <h2 id="obsd-39">39 - W^X Memory</h2>
 
         <p>Since 2003, memory on OpenBSD can be written to or executed, but not
         both. This is a major security feature that prevents malicious code
@@ -829,7 +1038,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>40 - WireGuard</h2>
+        <h2 id="obsd-40">40 - WireGuard</h2>
 
         <p>OpenBSD has an in-kernel driver for WireGuard VPN communication.
         Including the WireGuard Protocol in the kernel improves performance
@@ -852,7 +1061,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>41 - file(1)</h2>
+        <h2 id="obsd-41">41 - file(1)</h2>
 
         <p>File is sandboxed and runs as the _file user. Think of the
         following: You download a random file from the internet and analyze it
@@ -867,7 +1076,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>42 - vmm(4) - hardened hypervisor</h2>
+        <h2 id="obsd-42">42 - vmm(4) - hardened hypervisor</h2>
 
         <p>Theo the Raadt (the creator) has always criticized the idea of
         virtual machines and their security, he has always seen that the
@@ -909,8 +1118,8 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>43 - Xserver without root permissions and xenodm: the secure X
-        Display manager</h2>
+        <h2 id="obsd-43">43 - Xserver without root permissions and xenodm: the
+        secure X Display manager</h2>
 
         <p>OpenBSD developers have worked hard to enable the non-root execution
         of an Xserver. Since 2014, X no longer requires special privileges and
@@ -926,13 +1135,12 @@ ifconfig iwm0 lladdr random</pre>
         enabled by default.</p>
 
         <ul>
-          <li>The standard X11/Xorg is a complete garbage, basically a walking
-          backdoor created by IBM in 1987 and until today has the same legacy
-          code and vulnerabilities, in addition to connecting to the internet
-          and requiring root access. In OpenBSD this is no longer a problem,
-          Xenocara is absolutely amazing. Something close to this was only
-          coming up years later with the divine intervention of XLibre, but it
-          is still not as safe as Xenocara yet.</li>
+          <li>The standard X11/Xorg stack is rated very negatively in this
+          section: it is described as legacy-heavy and vulnerability-prone,
+          with significant historical baggage. In OpenBSD, the article views
+          Xenocara as a major improvement. It also notes XLibre as a later
+          effort in that direction, while arguing it still does not match
+          Xenocara's security profile.</li>
         </ul>
 
         <p>Although Wayland is incomparably more secure than X11, it still has
@@ -947,7 +1155,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>44 - No proprietary blobs</h2>
+        <h2 id="obsd-44">44 - No proprietary blobs</h2>
 
         <p>OpenBSD has a commitment to removal/absence of non-free
         blobs/firmware on the system as project policy.</p>
@@ -966,7 +1174,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>45 - RETGUARD</h2>
+        <h2 id="obsd-45">45 - RETGUARD</h2>
 
         <p>is a replacement for the stack-protector which uses a per-function
         random cookie (located in the read-only ELF .openbsd.randomdata
@@ -987,7 +1195,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>46 - Audit Process</h2>
+        <h2 id="obsd-46">46 - Audit Process</h2>
 
         <p><a href=
         "https://www.openbsd.org/security.html">https://www.openbsd.org/security.html</a>
@@ -1033,7 +1241,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>47 - Project Goals</h2>
+        <h2 id="obsd-47">47 - Project Goals</h2>
 
         <p>OpenBSD's goals are clear, precise and greatly increase user
         confidence.</p>
@@ -1130,7 +1338,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>48 - Politics-free</h2>
+        <h2 id="obsd-48">48 - Politics-free</h2>
 
         <blockquote>
           <p>Be as politics-free as possible; solutions should be decided on
@@ -1170,12 +1378,11 @@ ifconfig iwm0 lladdr random</pre>
           </li>
 
           <li>
-            <p>None of this changes represents a real improvement in code
-            efficiency. Linus, why don't you bother fixing your rubbish kernel
-            full of decades-old bugs and vulnerabilities instead of wasting
-            time on something so useless? And that was just one of the
-            examples, Linux is full of this kind of thing. It seems that Linux
-            naturally attracts futile programmers.</p>
+            <p>None of these changes represents a real improvement in code
+            efficiency. The criticism here is that effort should focus first on
+            fixing longstanding kernel bugs and vulnerabilities instead of
+            prioritizing terminology updates. This is presented as one example
+            of a broader pattern in Linux development priorities.</p>
           </li>
 
           <li>
@@ -1234,7 +1441,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section>
-        <h2>49 - Less attack surface</h2>
+        <h2 id="obsd-49">49 - Less attack surface</h2>
 
         <p>Currently in 2026-02-16, the entire OpenBSD operating system (src +
         xenocara) has 35,590,098 lines of code. The OpenBSD kernel (src/sys)

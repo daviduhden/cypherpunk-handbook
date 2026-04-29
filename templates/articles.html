@@ -10,33 +10,34 @@
   "./../feeds/articles.xml">
 </head>
 <body>
+  <a class="skip-link" href="#site-main">Skip to main content</a>
   <header id="site-header">
     <h1>The Cypherpunk Handbook</h1>
 
     <h2>Article</h2>
   </header>
 
-  <nav id="site-nav">
+  <nav id="site-nav" aria-label="Primary navigation">
     <ul>
       <li>
-        <a href="./../index.html">Home</a>
+        <a href="./../index.html" rel="home">Home</a>
       </li>
 
       <li>
-        <a href="./../manifesto.html">Manifesto</a>
+        <a href="./../manifesto.html" rel="contents">Manifesto</a>
       </li>
 
       <li>
-        <a href="./../contact.html">Contact</a>
+        <a href="./../contact.html" rel="author">Contact</a>
       </li>
 
       <li>
-        <a href="./../contribute.html">Contribute</a>
+        <a href="./../contribute.html" rel="help">Contribute</a>
       </li>
     </ul>
   </nav>
 
-  <main id="site-main">
+  <main id="site-main" tabindex="-1">
     <article>
       <header id="article-header">
         <p class="kicker">CATEGORY OR TAG</p>
@@ -47,7 +48,7 @@
         "2025-01-01">DATE</time></p>
 
         <p class="lede">One or two sentences that set reader expectations and
-        state the value of the article.</p>
+        explain the value of the article.</p>
 
         <section>
           <h2>TL;DR</h2>
@@ -62,15 +63,33 @@
         </section>
       </header>
 
+      <nav class="toc" aria-label="Table of contents">
+        <h2>Contents</h2>
+
+        <ol>
+          <li>
+            <a href="#context">Context</a>
+          </li>
+
+          <li>
+            <a href="#main-content">Main Content</a>
+          </li>
+
+          <li>
+            <a href="#references">References</a>
+          </li>
+        </ol>
+      </nav>
+
       <section>
-        <h2>Context</h2>
+        <h2 id="context">Context</h2>
 
         <p>Describe the audience, assumptions, and scope. Clarify what is
         intentionally out of scope.</p>
       </section>
 
       <section>
-        <h2>Main Content</h2>
+        <h2 id="main-content">Main Content</h2>
 
         <p>Develop your argument, walkthrough, or tutorial. Prefer short
         paragraphs and actionable steps.</p>
@@ -95,7 +114,7 @@ console.log("Hello world");
       </section>
 
       <section>
-        <h2>References</h2>
+        <h2 id="references">References</h2>
 
         <ul>
           <li>

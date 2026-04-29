@@ -11,33 +11,34 @@
   "./../feeds/articles.xml">
 </head>
 <body>
+  <a class="skip-link" href="#site-main">Skip to main content</a>
   <header id="site-header">
     <h1>The Cypherpunk Handbook</h1>
 
     <h2>Article</h2>
   </header>
 
-  <nav id="site-nav">
+  <nav id="site-nav" aria-label="Primary navigation">
     <ul>
       <li>
-        <a href="./../index.html">Home</a>
+        <a href="./../index.html" rel="home">Home</a>
       </li>
 
       <li>
-        <a href="./../manifesto.html">Manifesto</a>
+        <a href="./../manifesto.html" rel="contents">Manifesto</a>
       </li>
 
       <li>
-        <a href="./../contact.html">Contact</a>
+        <a href="./../contact.html" rel="author">Contact</a>
       </li>
 
       <li>
-        <a href="./../contribute.html">Contribute</a>
+        <a href="./../contribute.html" rel="help">Contribute</a>
       </li>
     </ul>
   </nav>
 
-  <main id="site-main">
+  <main id="site-main" tabindex="-1">
     <article class="article-content">
       <header id="article-header">
         <p class="kicker">Programming</p>
@@ -48,36 +49,62 @@
         <p class="meta">Written by FlyWithMe (A SimpleX chat user) -
         <time datetime="2026-02-02">Updated February 2, 2026</time></p>
 
-        <p class="lede">C is not a safe language, although it is possible to
-        create secure software with it. Regardless of the programmer's skill or
-        the amount of code reviews performed, it is impossible, using C, to
-        create software with perfect memory management. Although formally
-        verified software is possible, it is almost non-existent; only 2
-        examples can be found, such as the seL4 microkernel and the CompCert
-        compiler.</p>
+        <p class="lede">C is not a memory-safe language, even though secure
+        software can be built with it. Regardless of programmer skill or the
+        number of code reviews, writing C software with perfect memory
+        management is not realistic. Formally verified software is possible,
+        but it is extremely rare; two examples are the seL4 microkernel and the
+        CompCert compiler.</p>
 
-        <p class="lede">The fact is that formal verification is extremely
-        difficult and costly to perform, so it should not be considered a
-        solution, but rather a remote possibility.</p>
+        <p class="lede">In practice, formal verification is extremely difficult
+        and expensive, so it should not be treated as a general solution, but
+        as a remote possibility.</p>
 
-        <p class="lede">And for those who mistakenly or arrogantly claim, out
-        of ignorance or vanity, that these bugs and vulnerabilities caused by
-        improper memory management are rare and obsolete, I present a factual
-        and statistical analysis of the case.</p>
+        <p class="lede">For those who claim that vulnerabilities caused by
+        improper memory management are rare or obsolete, this article presents
+        a factual and statistical analysis.</p>
       </header>
 
-      <section>
-        <h2>Analysis: Memory Management Vulnerabilities in CVE (2015-2025)</h2>
+      <nav class="toc" aria-label="Table of contents">
+        <h2>Contents</h2>
 
-        <h3>Total Data:</h3>
+        <ol>
+          <li>
+            <a href="#c-analysis">Analysis: Memory Management Vulnerabilities
+            in CVE (2015-2025)</a>
+          </li>
+
+          <li>
+            <a href="#c-context">Important context</a>
+          </li>
+
+          <li>
+            <a href="#c-trend">Temporal trend</a>
+          </li>
+
+          <li>
+            <a href="#c-conclusion">Conclusion</a>
+          </li>
+
+          <li>
+            <a href="#c-references">References</a>
+          </li>
+        </ol>
+      </nav>
+
+      <section>
+        <h2 id="c-analysis">Analysis: Memory Management Vulnerabilities in CVE
+        (2015-2025)</h2>
+
+        <h3>Total data</h3>
 
         <p>Based on the CVEDetails.com database and NIST NVD data, all
         registered CVEs from 2015 to December 20, 2025 were analyzed.</p>
 
-        <p><strong>CVEs analysed: 107,173</strong>
+        <p><strong>CVEs analyzed: 107,173</strong>
         </p>
 
-        <h3>Vulnerabilities of Memory Management:</h3>
+        <h3>Memory-management vulnerabilities</h3>
 
         <ul>
           <li>Category: Overflow (buffer, stack). Total CVEs: 15,882</li>
@@ -88,17 +115,17 @@
           <li>Total: 36,659</li>
         </ul>
 
-        <h3>Percentage of Memory Management Vulnerabilities</h3>
+        <h3>Percentage of memory-management vulnerabilities</h3>
 
         <p><strong>36,659 ÷ 107,173 × 100 = 34.20%</strong>
         </p>
 
-        <p>Therefore, 34.20% of all software vulnerabilities registered between
-        2015 and 2025 are related to memory management errors (buffer
+        <p>In other words, 34.20% of all software vulnerabilities registered
+        between 2015 and 2025 are related to memory management errors (buffer
         overflows, heap overflows, use-after-free, out-of-bounds
         reads/writes).</p>
 
-        <h3>Distribution by Year</h3>
+        <h3>Distribution by year</h3>
 
         <p>The annual analysis reveals significant fluctuations:</p>
 
@@ -194,14 +221,13 @@
       </section>
 
       <section>
-        <h2>Important context</h2>
+        <h2 id="c-context">Important context</h2>
 
-        <p>It is important to note that this overall proportion of 34.20%
-        varies significantly depending on the type of software and programming
-        language:</p>
+        <p>This overall proportion of 34.20% varies significantly depending on
+        software type and programming language:</p>
 
-        <p>For compiled code in C/C++: The ratio rises to 66-75%. Studies of
-        large organizations confirm:</p>
+        <p>For compiled C/C++ code, the ratio rises to 66-75%. Studies from
+        large organizations report:</p>
 
         <ul>
           <li>"Microsoft": 70% of CVEs are related to memory management</li>
@@ -222,7 +248,7 @@
       </section>
 
       <section>
-        <h2>Temporal trend</h2>
+        <h2 id="c-trend">Temporal trend</h2>
 
         <p>The above trend chart shows that while the "absolute number" of
         memory vulnerabilities remains high, the "relative percentage" has
@@ -232,7 +258,7 @@
       </section>
 
       <section>
-        <h2>Conclusion</h2>
+        <h2 id="c-conclusion">Conclusion</h2>
 
         <p>Of the "107.173 software vulnerabilities" registered between 2015
         and 2025, "36,659 (34.20%) are related to memory management errors".
@@ -244,7 +270,7 @@
       </section>
 
       <section>
-        <h2>References</h2>
+        <h2 id="c-references">References</h2>
 
         <ul>
           <li>[1] <a href=

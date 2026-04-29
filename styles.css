@@ -68,12 +68,17 @@
   --shadow: 0 0.75em 2em #0000003d;
   --shadow-img: 0 0.625em 1.875em #00000040;
 
-  --max-width: 72ch;
+  --max-width: 76ch;
   --gutter: 1.25em;
   --pad-y: 2em;
   --pad-x: 1.25em;
 
   --focus-ring: 0 0 0 0.22em #3ee6ff70, 0 0 0 0.46em #a855f75c;
+}
+
+html {
+  font-size: clamp(16px, 0.3vw + 15px, 18px);
+  text-size-adjust: 100%;
 }
 
 /*
@@ -82,7 +87,7 @@
  */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  line-height: 1.6;
+  line-height: 1.7;
   background:
     radial-gradient(circle at 12% 18%, #3ee6ff2e 0, transparent 42%),
     radial-gradient(circle at 88% 5%, #2a56c538 0, transparent 36%),
@@ -90,6 +95,27 @@ body {
     var(--bg);
   color: var(--text);
   padding: var(--pad-y) var(--pad-x);
+  text-rendering: optimizeLegibility;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75em;
+  top: -9999px;
+  z-index: 1000;
+  padding: 0.5em 0.7em;
+  border: thin solid var(--border-2);
+  border-radius: var(--radius-soft);
+  background: var(--panel);
+  color: var(--heading);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 0.75em;
+  box-shadow: var(--focus-ring);
 }
 
 /* Ensure very long words can break and wrap to the next line for readability */
@@ -121,13 +147,19 @@ code {
  */
 a {
   color: var(--link);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+  text-decoration-thickness: 0.08em;
 }
 
 a:hover {
   color: color-mix(in srgb, var(--link-hover) 52%, var(--blue-light) 48%);
-  text-decoration: underline;
+  text-decoration-thickness: 0.1em;
   text-shadow: 0 0 0.45em #3ee6ff4f;
+}
+
+nav a {
+  text-decoration: none;
 }
 
 a:focus-visible,
@@ -295,7 +327,7 @@ main {
   background: var(--panel);
   border: thin solid var(--border);
   border-radius: var(--radius);
-  padding: 1.75em;
+  padding: clamp(1.1em, 2vw, 1.75em);
   box-shadow:
     var(--shadow),
     0 0 1.1em #3ee6ff1a;
@@ -316,10 +348,16 @@ section h2 {
   text-shadow: 0 0 0.55em #3ee6ff1f;
 }
 
+section h3 {
+  margin: 1em 0 0.45em;
+  font-size: clamp(1.1em, 1vw + 0.95em, 1.35em);
+  line-height: 1.3;
+}
+
 section p,
 main p {
-  margin: 0.35em 0 0.85em;
-  text-align: justify;
+  margin: 0.45em 0 0.95em;
+  text-align: start;
 }
 
 /* Tables */
@@ -368,10 +406,16 @@ th, td {
   vertical-align: top;
 }
 
+table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
 /* Footer: justify list text for readability */
 footer ul,
 footer ol {
-  text-align: justify;
+  text-align: start;
 }
 
 /* List indentation: make lists visually indented from normal paragraph text */
@@ -380,9 +424,46 @@ ul, ol {
   margin: 0.5em 0 0.9em;
 }
 
+li + li {
+  margin-top: 0.28em;
+}
+
 /* Nested lists get an additional indent to show hierarchy */
 ul ul, ol ol, ul ol, ol ul {
   padding-left: 1.4em;
+}
+
+.toc {
+  margin: 0.8em 0 1.2em;
+  padding: 0.8em 1em;
+  border: thin solid var(--border-2);
+  border-radius: var(--radius-soft);
+  background: color-mix(in srgb, var(--panel-2) 85%, #000000 15%);
+}
+
+.toc h2 {
+  margin-bottom: 0.45em;
+}
+
+.toc ol {
+  margin: 0.2em 0 0;
+  column-count: 2;
+  column-gap: 1.5em;
+}
+
+.toc li {
+  break-inside: avoid;
+  margin: 0.2em 0;
+}
+
+@media (max-width: 60em) {
+  .toc ol {
+    column-count: 1;
+  }
+
+  table {
+    white-space: normal;
+  }
 }
 
 /*
@@ -489,7 +570,7 @@ footer p {
 
 /* Keep footnote paragraphs left-aligned (those that contain <sup>) */
 footer p:has(sup) {
-  text-align: justify;
+  text-align: start;
 }
 
 footer p sup {
@@ -555,6 +636,25 @@ pre {
   margin: 1em 0;
   line-height: 1.5;
   box-shadow: inset 0 0 1.1em #39ff1422, 0 0 0.85em #39ff1418;
+  tab-size: 2;
+  font-size: 0.95em;
+}
+
+dl {
+  margin: 0.35em 0 0.85em;
+}
+
+dt {
+  margin-top: 0.7em;
+  font-weight: 700;
+}
+
+dd {
+  margin-left: 1.2em;
+}
+
+address {
+  font-style: normal;
 }
 
 pre code {
@@ -666,5 +766,63 @@ img {
     scroll-behavior: auto !important;
     transition: none !important;
     animation: none !important;
+  }
+}
+
+@media print, (forced-colors: active) {
+  body {
+    background: #000;
+    color: #fff;
+    line-height: 1.8;
+  }
+
+  main,
+  header,
+  footer,
+  .toc,
+  .articles,
+  .article-column {
+    background: transparent;
+    border-color: currentcolor;
+    box-shadow: none;
+    text-shadow: none;
+  }
+
+  nav ul {
+    display: block;
+  }
+
+  nav li {
+    margin: 0.25em 0;
+  }
+
+  nav a {
+    display: inline;
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  img {
+    border: none;
+    box-shadow: none;
+  }
+
+  a,
+  a:visited {
+    color: LinkText;
+    text-decoration: underline;
+    text-shadow: none;
+  }
+
+  pre,
+  code {
+    background: transparent;
+    color: inherit;
+    border-color: currentcolor;
+    box-shadow: none;
+    text-shadow: none;
   }
 }
