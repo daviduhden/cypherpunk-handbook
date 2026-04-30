@@ -2,16 +2,16 @@
   "c-language": {
     "en": "c-language.html",
     "pubdate": "2026-02-02",
-    "title_en": "The C language and its biggest problem; proving its insecurity."
+    "title_en": "The C language and its biggest problem: evidence of its insecurity."
   },
   "openbsd": {
     "en": "openbsd.html",
     "pubdate": "2026-02-02",
-    "title_en": "Why OpenBSD solos?"
+    "title_en": "Why OpenBSD stands alone"
   },
   "qubes-os": {
     "en": "qubes-os.html",
     "pubdate": "2026-02-02",
-    "title_en": "When the subject is purely security, QubesOS is not reliable!"
+    "title_en": "When it comes strictly to security, Qubes OS is not reliable."
   }
 }

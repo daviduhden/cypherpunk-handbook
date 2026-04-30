@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. — Why OpenBSD solos?</title>
+  <title>T.C.H. — Why OpenBSD stands alone</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
@@ -42,21 +42,21 @@
       <header id="article-header">
         <p class="kicker">Operating systems</p>
 
-        <h1>Why OpenBSD solos?</h1>
+        <h1>Why OpenBSD stands alone</h1>
 
-        <p class="meta">Written by FlyWithMe - A SimpleX chat user. (Inspired
-        by: why-openbsd.rocks) - <time datetime="2026-02-17">Updated February
-        17, 2026</time></p>
+        <p class="meta">Written by FlyWithMe (a SimpleX chat user). Inspired by
+        why-openbsd.rocks — <time datetime="2026-02-17">Updated February 17,
+        2026</time></p>
 
         <p class="lede">This article summarizes why OpenBSD is presented as one
         of the most secure operating systems in the world, and why Windows,
         macOS, iOS, Android, and Linux, regardless of hardening level, are
         argued here to be less secure. The comparison also includes other BSDs,
-        QubesOS, Fedora Secureblue, and Hardened Gentoo.</p>
+        Qubes OS, Fedora Secureblue, and Hardened Gentoo.</p>
       </header>
 
-      <nav class="toc" aria-label="Table of contents">
-        <h2>Contents</h2>
+      <nav class="toc" aria-labelledby="obsd-contents-heading">
+        <h2 id="obsd-contents-heading">Contents</h2>
 
         <ol>
           <li>
@@ -72,7 +72,7 @@
           </li>
 
           <li>
-            <a href="#obsd-3">3 - The first at security implementations</a>
+            <a href="#obsd-3">3 - First in security implementations</a>
           </li>
 
           <li>
@@ -80,7 +80,7 @@
           </li>
 
           <li>
-            <a href="#obsd-5">5 - Chrooted webserver by default</a>
+            <a href="#obsd-5">5 - Chrooted web server by default</a>
           </li>
 
           <li>
@@ -88,7 +88,7 @@
           </li>
 
           <li>
-            <a href="#obsd-7">7 - Defined integer overflows.</a>
+            <a href="#obsd-7">7 - Defined integer overflows</a>
           </li>
 
           <li>
@@ -164,7 +164,7 @@
           </li>
 
           <li>
-            <a href="#obsd-26">26 - Privilege and users Separation</a>
+            <a href="#obsd-26">26 - Privilege and user separation</a>
           </li>
 
           <li>
@@ -208,7 +208,7 @@
           </li>
 
           <li>
-            <a href="#obsd-37">37 - Syscall From-Verification</a>
+            <a href="#obsd-37">37 - Syscall origin verification</a>
           </li>
 
           <li>
@@ -232,7 +232,7 @@
           </li>
 
           <li>
-            <a href="#obsd-43">43 - Xserver without root permissions and
+            <a href="#obsd-43">43 - X server without root permissions and
             xenodm</a>
           </li>
 
@@ -296,7 +296,7 @@
           created with the aim of being the most secure. The same goes for the
           Linux kernel, since the beginning it was not built with the objective
           of extreme security. So many things neglected in the past will
-          eternally impact kernel security. There are 1 or 2 linux distros with
+          eternally impact kernel security. There are 1 or 2 Linux distros with
           this purpose but they have not rewritten the operating system from
           scratch and only build user space and maybe do some small kernel
           hardening, so they will never be as secure as OpenBSD (Or probably
@@ -304,7 +304,7 @@
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-1">
         <h2 id="obsd-1">1 - Library order randomization</h2>
 
         <p>In rc(8), re-link libc.so, libcrypto, and ld.so on startup, placing
@@ -320,19 +320,18 @@
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-2">
         <h2 id="obsd-2">2 - arc4random(3)</h2>
 
         <p>OpenBSD has its own cryptographic random number generator. Wherever
         random input is needed, arc4random is used. arc4random is an
-        abstraction layer for currently considered as safe ciphers and produces
-        ChaCha20 ciphers at the moment. Arc4random is "A Replacement Call For
-        Random", to generate very quickly high quality 32-bit pseudo-random
-        numbers.</p>
+        abstraction layer over ciphers currently considered safe and currently
+        uses ChaCha20. The name means "A Replacement Call for Random," and it
+        generates high-quality 32-bit pseudorandom numbers quickly.</p>
       </section>
 
-      <section>
-        <h2 id="obsd-3">3 - The first at security implementations</h2>
+      <section aria-labelledby="obsd-3">
+        <h2 id="obsd-3">3 - First in security implementations</h2>
 
         <ul>
           <li>The first operating system to integrate post-quantum encryption
@@ -354,63 +353,63 @@
           hackathon.</li>
         </ul>
 
-        <p>Using OpenBSD you will always have the best security implementations
-        and first than in all other operating systems.</p>
+        <p>With OpenBSD, you will consistently get leading security
+        implementations earlier than on other operating systems.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-4">
         <h2 id="obsd-4">4 - Camera and audio recording</h2>
 
         <p>For privacy reasons, the OpenBSD team disabled camera and audio
         recording for all devices by default in the kernel. This can be toggled
-        on/off with a simple sysctl change, without rebooting.</p>
+        on and off with a simple sysctl change, without rebooting.</p>
       </section>
 
-      <section>
-        <h2 id="obsd-5">5 - Chrooted webserver by default</h2>
+      <section aria-labelledby="obsd-5">
+        <h2 id="obsd-5">5 - Chrooted web server by default</h2>
 
         <p>By default, HTTP daemons are chrooted in /var/www. As an OpenBSD
         system administrator, you don't need to configure anything to have a
-        secured webserver installation running. This is also true for HTTP
+        secure web server installation running. This is also true for HTTP
         daemons from packages (apache2, nginx).</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-6">
         <h2 id="obsd-6">6 - cron(8)</h2>
 
-        <p>OpenBSD's cron(8) daemon can randomize values (~), and prevent
-        multiple jobs from running concurrently (-s). Preventing competition
-        avoids running conditions, simultaneous access to shared resources, and
-        overload caused by multiple instances reducing risk of data corruption
-        and load spikes. Randomization reduces synchronized peaks (thundering
-        herd) and makes it difficult to predict predict the execution windows
-        by attackers.</p>
+        <p>OpenBSD's cron(8) daemon can randomize values (~) and prevent
+        multiple jobs from running concurrently (-s). Preventing conflicts
+        avoids race conditions, simultaneous access to shared resources, and
+        overload caused by multiple instances, reducing the risk of data
+        corruption and load spikes. Randomization reduces synchronized peaks
+        (the thundering herd problem) and makes it difficult for attackers to
+        predict execution windows.</p>
 
         <ul>
-          <li>Possible to configure in Linux through SystemD (<strong>Strongly
-          opposed to SystemD.</strong>), but it does not come by default
+          <li>Possible to configure in Linux through systemd (<strong>Strongly
+          opposed to systemd.</strong>), but it does not come by default
           anyway.</li>
         </ul>
       </section>
 
-      <section>
-        <h2 id="obsd-7">7 - Defined integer overflows.</h2>
+      <section aria-labelledby="obsd-7">
+        <h2 id="obsd-7">7 - Defined integer overflows</h2>
 
-        <p>On OpenBSD, Clang, the default compiler on most architectures, have
-        -fwrapv flag enabled by default. GCC also does not include
-        -fstrict-overflow into -O2 optimization option. This tells the compiler
-        to treat signed integer overflows as defined, preventing optimizations
-        which remove security critical overflow checks. This is another example
-        of sane defaults.</p>
+        <p>On OpenBSD, Clang, the default compiler on most architectures, has
+        the -fwrapv flag enabled by default. GCC also does not include
+        -fstrict-overflow in the -O2 optimization option. This tells the
+        compiler to treat signed integer overflows as defined, preventing
+        optimizations that remove security-critical overflow checks. This is
+        another example of sane defaults.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-8">
         <h2 id="obsd-8">8 - doas(1)</h2>
 
-        <p>OpenBSD doesn't use sudo so created "doas". Doas replaced sudo
+        <p>OpenBSD does not use sudo, so it created "doas." doas replaced sudo
         because of the latter's security flaws and large, complex codebase.
-        doas is easy to configure and use and suits most use cases. Its source
-        code is small and elegant too.</p>
+        doas is easy to configure and use, and it suits most use cases. Its
+        source code is small and elegant.</p>
 
         <p>This is an example of a full and ULTRA MEGA HYPER OVERPOWER ABSOLUTE
         HARDENED doas.conf configuration:</p>
@@ -418,17 +417,17 @@
         <pre>
 permit &lt;user&gt; as root
 permit root</pre>
-        <p>Compare this with the most simple sudo configuration and you will
+        <p>Compare this with the simplest sudo configuration and you will
         see.</p>
 
         <ul>
-          <li>Using doas on linux is possible, although with many problems in
+          <li>Using doas on Linux is possible, although with many problems in
           many distros. Fedora Secureblue removed suid-root, sudo, su and
           pkexec to use run0, reinforcing sudo insecurity.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-9">
         <h2 id="obsd-9">9 - freezero(3)</h2>
 
         <p>The libc function freezero(3) allows programs to free memory that
@@ -439,54 +438,54 @@ permit root</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-10">
         <h2 id="obsd-10">10 - httpd(8)</h2>
 
-        <p>OpenBSD have a hardened version of Apache httpd in the base
+        <p>OpenBSD has a hardened version of Apache httpd in the base
         system.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-11">
         <h2 id="obsd-11">11 - KARL</h2>
 
-        <p>At every install, upgrade, and boot a new kernel is generated with
+        <p>At every install, upgrade, and boot, a new kernel is generated with
         randomized addresses. A unique and unpredictable kernel is a huge
         security improvement. This technique is called Kernel Address
-        Randomized Link (KARL). With &lsquo;Library order randomization' this
-        is absolute epic.</p>
+        Randomized Link (KARL). Combined with &lsquo;Library order
+        randomization,&rsquo; this is absolutely epic.</p>
 
         <ul>
-          <li>Cry more Linux. MacOS, Windows and Linux has KASLR (kernel base
+          <li>Cry more Linux. macOS, Windows, and Linux have KASLR (kernel base
           address randomization), but not KARL which is better.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-12">
         <h2 id="obsd-12">12 - Kernel &amp; Userland</h2>
 
         <p>The kernel and userland in OpenBSD (and all BSDs) are developed
         together. The same people who introduce new features to the kernel
         control the userland. This way, new features can be implemented very
-        fast into all of parts of the OS. See pledge, unveil and arc4random,
+        quickly across all parts of the OS. See pledge, unveil, and arc4random,
         for example.</p>
 
         <ul>
           <li>Linux Kernel and GNU Core Utilities (or musl/BusyBox if you don't
-          like using GNU) are developed independently, it would not be possible
-          to introduce pledge (or something like SELinux/AppArmor) to all the
-          tools that easily for example. Making it absolutely impossible to
-          have a harmony of security protocols in software and integrated code
-          for increased system security between the linux kernel and linux
-          userland, making it all a real mess in the linux world. MacOS and
-          Windows have concise development, but focus on features rather than
-          security, especially Windows, where legacy code chaos reigns.</li>
+          like using GNU) are developed independently, so it would not be
+          possible to introduce pledge (or something like SELinux/AppArmor) to
+          all the tools as easily, for example. This makes it absolutely
+          impossible to have harmony in security protocols and integrated code
+          between the Linux kernel and Linux userland, making the Linux world a
+          real mess. macOS and Windows have more unified development, but they
+          focus on features rather than security, especially Windows, where
+          legacy-code chaos reigns.</li>
 
-          <li>Windows, MacOS and BSDs do not have this problem. <strong>Linux
+          <li>Windows, macOS, and BSDs do not have this problem. <strong>Linux
           falls behind here.</strong></li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-13">
         <h2 id="obsd-13">13 - LibreSSL</h2>
 
         <p>The unmaintainable and bloated OpenSSL Codebase was forked after
@@ -496,11 +495,11 @@ permit root</pre>
         but without the mess. It is actively developed by OpenBSD devs.</p>
 
         <ul>
-          <li>Nowdays, MacOS OpenSSL uses LibreSSL code.</li>
+          <li>Nowadays, macOS OpenSSL uses LibreSSL code.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-14">
         <h2 id="obsd-14">14 - License</h2>
 
         <p>You are free to use the operating system as you want and do business
@@ -526,12 +525,12 @@ permit root</pre>
           <li>The Linux and GNU license is the GPL license, which in a perfect
           world where there was harmony between open-source programmers and
           mega-capitalist companies would be ideal, but we don't live in a
-          perfect world. MacOS and Windows use proprietary code while OpenBSD
+          perfect world. macOS and Windows use proprietary code while OpenBSD
           is 100% open source.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-15">
         <h2 id="obsd-15">15 - Malloc leak detection</h2>
 
         <p>It's a tool to detect unsafe behaviors in the OpenBSD code for Team
@@ -540,12 +539,13 @@ permit root</pre>
         native programming in the system.</p>
 
         <ul>
-          <li>Linux, MacOS and Windows have tools in their ecosystems for this,
-          but none are integrated into the operating system by default.</li>
+          <li>Linux, macOS, and Windows have tools in their ecosystems for
+          this, but none are integrated into the operating system by
+          default.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-16">
         <h2 id="obsd-16">16 - Documentation - manpages</h2>
 
         <p>There is probably no Operating System that is documented more and
@@ -566,12 +566,12 @@ permit root</pre>
         </p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-17">
         <h2 id="obsd-17">17 - Meltdown and Spectre</h2>
 
-        <p>To mitigate the Meltdown and Spectre, OpenBSD disable
-        hyper-threading technology by default, citing security concerns &ndash;
-        seemingly, Spectre-style concerns, with "a new hw.smt sysctl".</p>
+        <p>To mitigate Meltdown and Spectre, OpenBSD disables hyper-threading
+        technology by default, citing security concerns &ndash; seemingly,
+        Spectre-style concerns, with "a new hw.smt sysctl".</p>
 
         <ul>
           <li>Besides OpenBSD, Fedora Secureblue is the only OS that does this,
@@ -579,10 +579,10 @@ permit root</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-18">
         <h2 id="obsd-18">18 - Memory allocation randomization</h2>
 
-        <p>All those OSes (Windows, Linux, MacOS, Android etc.) provide malloc
+        <p>All those OSes (Windows, Linux, macOS, Android, etc.) provide malloc
         implementations, but OpenBSD's malloc is widely regarded as one of the
         most security‑focused and well‑audited defaults.</p>
 
@@ -590,7 +590,7 @@ permit root</pre>
           <li>
             <p>GrapheneOS's hardened_malloc is heavily inspired by OpenBSD's
             design and offers stronger hardening than typical Linux defaults.
-            Fedora Secureblue use hardened_malloc globally. But as the
+            Fedora Secureblue uses hardened_malloc globally. But as the
             GrapheneOS devs themselves said:</p>
 
             <blockquote>
@@ -604,7 +604,7 @@ permit root</pre>
         have unfound bugs, which can lead to security vulnerabilities.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-19">
         <h2 id="obsd-19">19 - OpenSMTPD</h2>
 
         <p>Written by OpenBSD Developers from scratch. A simple mail daemon was
@@ -618,17 +618,17 @@ permit root</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-20">
         <h2 id="obsd-20">20 - OpenSSH</h2>
 
         <p>The most popular OpenBSD software is probably OpenSSH. It's the SSH
         standard used worldwide, being native and standard in all BSDs, macOS,
         and even Windows/Windows Server. From routers, switches, and devices to
         cloud services and hosting, they all use OpenSSH, which has
-        post-quantum cryptography by default since Abril 2022.</p>
+        post-quantum cryptography by default since April 2022.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-21">
         <h2 id="obsd-21">21 - Firewall</h2>
 
         <p>pf is OpenBSD's very own firewall. It is simple and feature-rich and
@@ -674,7 +674,7 @@ permit root</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-22">
         <h2 id="obsd-22">22 - PID randomization</h2>
 
         <p>OpenBSD spawns each new process with a random, unused PID. This
@@ -682,12 +682,12 @@ permit root</pre>
 
         <ul>
           <li>Linux kernel allocates PIDs in a semi-sequential (incremental)
-          way, recycling when it reaches pid_max; does not randomize by
-          historical design. The same goes for Windows and MacOS.</li>
+          way, recycling when it reaches pid_max; it does not randomize them by
+          historical design. The same goes for Windows and macOS.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-23">
         <h2 id="obsd-23">23 - ping randomness</h2>
 
         <p>Both ping(8) and ping6(8) obfuscate the transmitted monotonic clock
@@ -696,11 +696,11 @@ permit root</pre>
         the attacker and prevents OS detection.</p>
 
         <ul>
-          <li>Neither Windows, Linux or MacOS have this.</li>
+          <li>Neither Windows, Linux, nor macOS has this.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-24">
         <h2 id="obsd-24">24 - pledge</h2>
 
         <p>pledge allows you to limit a program's access to system calls very
@@ -711,10 +711,10 @@ permit root</pre>
         binaries must be pledged.</p>
 
         <ul>
-          <li>Linux has seccomp can emulate pledge's syscall‑restriction part,
-          but seccomp is low‑level, hard to write correctly by hand, brittle
-          across libc/kernel/libc behavior changes and needs tools (like
-          libseccomp) to avoid mistakes; writing policies for this is
+          <li>Linux has seccomp, which can emulate pledge's syscall‑restriction
+          part, but seccomp is low‑level, hard to write correctly by hand,
+          brittle across libc/kernel/libc behavior changes and needs tools
+          (like libseccomp) to avoid mistakes; writing policies for this is
           error‑prone.</li>
 
           <li>Seccomp was never actually usable, and It's very insecure:
@@ -722,18 +722,18 @@ permit root</pre>
           "https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html">https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html</a>
           </li>
 
-          <li>Windows has no direct pledge analogue. MacOS has sandbox_init /
+          <li>Windows has no direct pledge analogue. macOS has sandbox_init /
           Seatbelt, more integrated for GUI apps but more complex for arbitrary
           CLI programs.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-25">
         <h2 id="obsd-25">25 - unveil</h2>
 
         <p>The unveil system call limits the filesystem open call to a given
         set of paths. It extends the idea of pledge: simply limiting programs
-        to open is insufficient, because open is valid for the the whole
+        to open is insufficient, because open is valid for the whole
         filesystem.</p>
 
         <p>For example, why should a program like passwd(1) have access to your
@@ -757,19 +757,19 @@ permit root</pre>
           something common in the Linux world, only leads to more
           insecurity.</li>
 
-          <li>Windows has no direct unveil analogue, nor MacOS.</li>
+          <li>Windows has no direct unveil analogue, nor does macOS.</li>
         </ul>
       </section>
 
-      <section>
-        <h2 id="obsd-26">26 - Privilege and users Separation</h2>
+      <section aria-labelledby="obsd-26">
+        <h2 id="obsd-26">26 - Privilege and user separation</h2>
 
         <p>OpenBSD runs all of the standard base system daemons with privilege
         and user separation. These include for example bgpd(8), dhclient(8),
         dhcpd(8), dvmrpd(8), eigrpd(8), file(1), httpd(8), iked(8), ldapd(8),
         ldpd(8), mountd(8), npppd(8), ntpd(8), ospfd(8), ospf6d(8), pflogd(8),
         radiusd(8), relayd(8), ripd(8), script(1), smtpd(8), syslogd(8),
-        tcpdump(8), tmux(1), xconsole(1), xdm(1), Xserver(1), ypldap(8),
+        tcpdump(8), tmux(1), xconsole(1), xdm(1), X server(1), ypldap(8),
         pkg_add(1), etc.</p>
 
         <ul>
@@ -780,9 +780,9 @@ permit root</pre>
           complex and require extra configuration, per‑service work, or policy
           management.</li>
 
-          <li>A lot of complexity that only leads to more problems, Windows in
-          theory has a much stronger separation of privileges than Linux and
-          MacOS, but it has never proven to be functional and reliable, on the
+          <li>A lot of complexity only leads to more problems. In theory,
+          Windows has much stronger privilege separation than Linux and macOS,
+          but it has never proven to be functional and reliable; on the
           contrary.</li>
 
           <li>No Linux other than Secureblue and GrapheneOS have good
@@ -791,7 +791,7 @@ permit root</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-27">
         <h2 id="obsd-27">27 - Privilege revocation</h2>
 
         <p>Related to the work on privilege separation, some programs were
@@ -800,13 +800,14 @@ permit root</pre>
         descriptor, for example ping(8), traceroute(8), etc.</p>
 
         <ul>
-          <li>Linux tried to implement this but it never worked, is complex and
-          never by default in any distro other than Secureblue. MacOS doesn't
-          seem to have it, and on Windows it's definitely useless.</li>
+          <li>Linux tried to implement this, but it never worked; it is complex
+          and is never enabled by default in any distro other than Secureblue.
+          macOS doesn't seem to have it, and on Windows it's definitely
+          useless.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-28">
         <h2 id="obsd-28">28 - MAC addresses randomized</h2>
 
         <p>OpenBSD lets you have randomized MAC addresses via ifconfig</p>
@@ -814,7 +815,7 @@ permit root</pre>
         <pre>
 ifconfig iwm0 lladdr random</pre>
         <p>Randomizing your MAC address improves anonymity while using your
-        Laptop in public wifi or the like.</p>
+        laptop in public Wi-Fi or similar networks.</p>
 
         <ul>
           <li>Fedora Secureblue, QubesOS (per NetVM) and Tails have this,
@@ -822,7 +823,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-29">
         <h2 id="obsd-29">29 - rcctl(8)</h2>
 
         <p><code>rcctl</code> is a simple utility to maintain
@@ -835,13 +836,13 @@ ifconfig iwm0 lladdr random</pre>
 
         <ul>
           <li>Gentoo and other distributions (like Artix, Alpine and Void) have
-          the advantage of not using SystemD (or SysVinit). But QubesOS, Fedora
-          Secureblue, Tails, Whonix, Kicksecure, Arch, NixOS, and many others
-          use it.</li>
+          the advantage of not using systemd (or SysVinit). But Qubes OS,
+          Fedora Secureblue, Tails, Whonix, Kicksecure, Arch, NixOS, and many
+          others use it.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-30">
         <h2 id="obsd-30">30 - recallocarray(3)</h2>
 
         <p>recallocarray is a libc function that ensures data is discarded
@@ -849,11 +850,11 @@ ifconfig iwm0 lladdr random</pre>
         multiplication.</p>
 
         <ul>
-          <li>Linux, Windows and MacOS: No.</li>
+          <li>Linux, Windows, and macOS: No.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-31">
         <h2 id="obsd-31">31 - rpki-client(8)</h2>
 
         <p>The rpki-client utility queries the RPKI repository system with
@@ -866,11 +867,11 @@ ifconfig iwm0 lladdr random</pre>
 
         <ul>
           <li>OpenBSD thing. But it is available for installation on Linux and
-          macOS, although no linux distro uses it.</li>
+          macOS, although no Linux distro uses it.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-32">
         <h2 id="obsd-32">32 - Sane &amp; secure defaults</h2>
 
         <p>OpenBSD has sane and secure defaults set in daemons and
@@ -884,7 +885,7 @@ ifconfig iwm0 lladdr random</pre>
 
         <p>This means you don't have to tweak your freshly installed operating
         system to get services running. There is no hardening process required
-        when you setup sshd, for example. Just as for every other daemon or
+        when you set up sshd, for example. Just as for every other daemon or
         component in the base system.</p>
 
         <ul>
@@ -903,13 +904,13 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-33">
         <h2 id="obsd-33">33 - signify(1)</h2>
 
         <p>signify is a small and elegant tool to cryptographically sign and
         verify files. It was created to sign OpenBSD releases, since OpenBSD
         5.5, and Binary Patches for syspatch. It uses only the Ed25519
-        algorithm. Think of it as an simple, easy replacement for PGP
+        algorithm. Think of it as a simple, easy replacement for PGP
         signing.</p>
 
         <p>The same applies to packages: when a package is signed, pkg_add uses
@@ -920,22 +921,22 @@ ifconfig iwm0 lladdr random</pre>
         NSA.</p>
 
         <ul>
-          <li>Linux have GnuPG/OpenPGP. But signify have a defensive position
-          against common attack modes with GnuPG/OpenPGP, such as less
-          likelihood of confusion by multiple keys, subkeys, expired
-          certificates, and legacy formats. Ed25519 has API and resistance to
-          usage error better than the historical OpenPGP ecosystem (occurate
-          algorithms/deficial). Fedora is the best distro in this regard; it
-          handles OpenPGP well.</li>
+          <li>Linux has GnuPG/OpenPGP. But signify has a more defensive
+          position against common attack modes in GnuPG/OpenPGP, such as a
+          lower likelihood of confusion involving multiple keys, subkeys,
+          expired certificates, and legacy formats. Ed25519 also has an API and
+          resistance to usage errors that are better than those of the
+          historical OpenPGP ecosystem. Fedora is the best distro in this
+          regard; it handles OpenPGP well.</li>
 
-          <li>GnuPG/OpenPGP is largue and complex, signify is simple and secure
+          <li>GnuPG/OpenPGP is large and complex; signify is simple and secure
           by default on OpenBSD.</li>
 
           <li>Signify is available for installation on Linux and macOS.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-34">
         <h2 id="obsd-34">34 - Stack</h2>
 
         <p>Aggressive randomisation of the stack location since version 7.3
@@ -954,7 +955,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-35">
         <h2 id="obsd-35">35 - stack-register checking</h2>
 
         <p>A memory object should have the fewest permissions possible:
@@ -967,18 +968,18 @@ ifconfig iwm0 lladdr random</pre>
         die.</p>
 
         <ul>
-          <li>MacOS, Windows and Linux: No.</li>
+          <li>macOS, Windows, and Linux: No.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-36">
         <h2 id="obsd-36">36 - Swap encryption by default</h2>
 
         <p>To protect sensitive information such as passwords from leaking to
         disk, where they can persist for many years.</p>
 
         <ul>
-          <li>Linux support this (It must be done manually), but only Fedora
+          <li>Linux supports this (it must be done manually), but only Fedora
           Secureblue has by default.</li>
 
           <li>GrapheneOS seems to have that, but it's more dynamic.</li>
@@ -989,31 +990,31 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
-        <h2 id="obsd-37">37 - Syscall From-Verification</h2>
+      <section aria-labelledby="obsd-37">
+        <h2 id="obsd-37">37 - Syscall origin verification</h2>
 
-        <p>The kernel checks if a syscall is executed from the address space
-        where its corresponding process is coming from. If this is not the
-        case, the process gets killed. This helps avoiding attackers uploading
-        exploit code containing a raw system call sequence and
+        <p>The kernel checks whether a syscall is executed from the address
+        space that its corresponding process comes from. If this is not the
+        case, the process is killed. This helps prevent attackers from using
+        uploaded exploit code containing a raw system call sequence and
         instructions.</p>
 
         <ul>
-          <li>Linux, Windows and MacOS: No.</li>
+          <li>Linux, Windows, and macOS: No.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-38">
         <h2 id="obsd-38">38 - unwind(8) validating DNS resolver</h2>
 
         <p>unwind is a validating DNS resolver. It is intended to run on client
         machines like workstations or laptops and only listens on localhost.
         unwind sends DNS queries to nameservers to answer queries and switches
         to resolvers learned from dhclient(8) if it detects that DNS queries
-        are blocked by the local network. It periodically probes if DNS is no
-        longer blocked and switches back to querying nameservers itself. I
-        particularly use to increase my privacy to the extreme by making all
-        DNS request local.</p>
+        are blocked by the local network. It periodically checks whether DNS is
+        no longer blocked and switches back to querying nameservers itself. I
+        use it specifically to maximize my privacy by keeping all DNS requests
+        local.</p>
 
         <ul>
           <li>Fedora Secureblue uses unbound which also comes by default in
@@ -1022,7 +1023,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-39">
         <h2 id="obsd-39">39 - W^X Memory</h2>
 
         <p>Since 2003, memory on OpenBSD can be written to or executed, but not
@@ -1031,27 +1032,27 @@ ifconfig iwm0 lladdr random</pre>
         inserted.</p>
 
         <ul>
-          <li>Linux, Windows and MacOS don't have as a global kernel policy;
-          some linux distributions and architectures apply NX/UEP and
+          <li>Linux, Windows, and macOS don't have this as a global kernel
+          policy; some Linux distributions and architectures apply NX/UEP and
           mitigations, but W^X by process is not enforced as in OpenBSD.</li>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-40">
         <h2 id="obsd-40">40 - WireGuard</h2>
 
         <p>OpenBSD has an in-kernel driver for WireGuard VPN communication.
-        Including the WireGuard Protocol in the kernel improves performance
-        while makes it easy to use for everyone in OpenBSD base.</p>
+        Including the WireGuard protocol in the kernel improves performance,
+        which makes it easy for everyone to use in the OpenBSD base system.</p>
 
         <blockquote>
           <p>WireGuard&reg; is an extremely simple yet fast and modern VPN that
           utilizes state-of-the-art cryptography.</p>
         </blockquote>
 
-        <p>With this you can do a base and offline installation of OpenBSD and
-        right at the beginning set up a good VPN like Mullvad or IVPN for total
-        anonymity (Mullvad and IVPN Officially Supports WireGuard).</p>
+        <p>With this, you can do a base and offline installation of OpenBSD
+        and, right at the beginning, set up a good VPN like Mullvad or IVPN for
+        total anonymity (Mullvad and IVPN officially support WireGuard).</p>
 
         <ul>
           <li>WireGuard is integrated into the OpenBSD kernel; obviously,
@@ -1060,7 +1061,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-41">
         <h2 id="obsd-41">41 - file(1)</h2>
 
         <p>File is sandboxed and runs as the _file user. Think of the
@@ -1075,7 +1076,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-42">
         <h2 id="obsd-42">42 - vmm(4) - hardened hypervisor</h2>
 
         <p>Theo the Raadt (the creator) has always criticized the idea of
@@ -1109,7 +1110,7 @@ ifconfig iwm0 lladdr random</pre>
           <li>QEMU/KVM, Xen, Hyper-V, VMware, VirtualBox, and other hypervisors
           are unreliable and were not built from scratch up with a focus on
           security first. Furthermore, everything in the operating system can
-          make VM management insecure, such as SystemD itself.</li>
+          make VM management insecure, such as systemd itself.</li>
 
           <li>Hardware passthrough greatly increases the attack surface.
           Additional hardware technology (such as IOMMU) is required for
@@ -1117,22 +1118,22 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
-        <h2 id="obsd-43">43 - Xserver without root permissions and xenodm: the
+      <section aria-labelledby="obsd-43">
+        <h2 id="obsd-43">43 - X server without root permissions and xenodm: the
         secure X Display manager</h2>
 
         <p>OpenBSD developers have worked hard to enable the non-root execution
-        of an Xserver. Since 2014, X no longer requires special privileges and
-        can be run as a regular user rather than root. OpenBSD has its own
-        soft-fork of X.Org server called Xenocara, design to enhance security.
+        of an X server. Since 2014, X no longer requires special privileges and
+        can be run as a regular user rather than root. OpenBSD has its own soft
+        fork of the X.Org server called Xenocara, designed to enhance security.
         In addition, Xorg's internet access is blocked by default by the
         firewall pf.</p>
 
-        <p>Xenodm is a simplified fork of xdm, lightweight, more secure, rid of
-        XDMCP support, because of many security vulnerabilities. It support
-        only the BSDauth code used in OpenBSD. On OpenBSD xenodm is absolutely
-        necessary to start the X server, because it no longer has setuid rights
-        enabled by default.</p>
+        <p>Xenodm is a simplified fork of xdm: lightweight, more secure, and
+        stripped of XDMCP support because of many security vulnerabilities. It
+        supports only the BSDauth code used in OpenBSD. On OpenBSD, xenodm is
+        absolutely necessary to start the X server, because it no longer has
+        setuid rights enabled by default.</p>
 
         <ul>
           <li>The standard X11/Xorg stack is rated very negatively in this
@@ -1154,18 +1155,18 @@ ifconfig iwm0 lladdr random</pre>
         but only XLibre can be used on Linux.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-44">
         <h2 id="obsd-44">44 - No proprietary blobs</h2>
 
         <p>OpenBSD has a commitment to removal/absence of non-free
         blobs/firmware on the system as project policy.</p>
 
         <ul>
-          <li>Linux kernel includes many binary blobs, the absence of this is
-          only possible in linux libre distros, like Hyperbola, Trisquel and
+          <li>Linux kernel includes many binary blobs; the absence of this is
+          only possible in Linux-libre distros, like Hyperbola, Trisquel, and
           Parabola.</li>
 
-          <li>Windows and MacOS are proprietary software.</li>
+          <li>Windows and macOS are proprietary software.</li>
 
           <li>Other BSDs like NetBSD and FreeBSD also have the advantage of not
           having proprietary blobs by default, but installation is
@@ -1173,18 +1174,18 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-45">
         <h2 id="obsd-45">45 - RETGUARD</h2>
 
-        <p>is a replacement for the stack-protector which uses a per-function
-        random cookie (located in the read-only ELF .openbsd.randomdata
-        section) to consistency-check the return address on the stack.
-        Implemented for amd64 and arm64 by Todd Mortimer in OpenBSD 6.4, for
-        mips64 in OpenBSD 6.7, and powerpc/powerpc64 in OpenBSD 6.9. amd64
-        system call stubs also protected in OpenBSD 7.3.</p>
+        <p>RETGUARD is a replacement for the stack protector that uses a
+        per-function random cookie (located in the read-only ELF
+        .openbsd.randomdata section) to consistency-check the return address on
+        the stack. Implemented for amd64 and arm64 by Todd Mortimer in OpenBSD
+        6.4, for mips64 in OpenBSD 6.7, and powerpc/powerpc64 in OpenBSD 6.9.
+        amd64 system call stubs also protected in OpenBSD 7.3.</p>
 
         <ul>
-          <li>Linux and MacOS: No.</li>
+          <li>Linux and macOS: No.</li>
 
           <li>Windows utilizes CFG, DEP/NX, Control Flow Application Technology
           (CET) support on newer CPUs (hardware shadow stacks), and SEH/unwind
@@ -1194,7 +1195,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-46">
         <h2 id="obsd-46">46 - Audit Process</h2>
 
         <p><a href=
@@ -1240,7 +1241,7 @@ ifconfig iwm0 lladdr random</pre>
         </blockquote>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-47">
         <h2 id="obsd-47">47 - Project Goals</h2>
 
         <p>OpenBSD's goals are clear, precise and greatly increase user
@@ -1329,7 +1330,7 @@ ifconfig iwm0 lladdr random</pre>
           desktop user (at least those who don't care about performance
           LOL).</li>
 
-          <li>MacOS is pretty predictable. Nothing changes and Apple products
+          <li>macOS is pretty predictable. Nothing changes and Apple products
           only become more and more expensive.</li>
 
           <li>NetBSD and FreeBSD also have clear goals, although almost
@@ -1337,7 +1338,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-48">
         <h2 id="obsd-48">48 - Politics-free</h2>
 
         <blockquote>
@@ -1387,7 +1388,7 @@ ifconfig iwm0 lladdr random</pre>
 
           <li>
             <p>In the Linux world (beyond the kernel), for example, we have
-            insane cases like SystemD "detect-fash":</p>
+            insane cases like systemd "detect-fash":</p>
 
             <ul>
               <li>
@@ -1440,7 +1441,7 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
       </section>
 
-      <section>
+      <section aria-labelledby="obsd-49">
         <h2 id="obsd-49">49 - Less attack surface</h2>
 
         <p>Currently in 2026-02-16, the entire OpenBSD operating system (src +
@@ -1453,8 +1454,8 @@ ifconfig iwm0 lladdr random</pre>
         <ul>
           <li>The Linux kernel alone has more than 40 million lines of code:
           <a href=
-          "https://commandlinux.com/statistics/linux-kernel-contributors-lines-of-code-statistics/">
-            https://commandlinux.com/statistics/linux-kernel-contributors-lines-of-code-statistics/</a>
+          "https://commandlinux.com/statistics/Linux-kernel-contributors-lines-of-code-statistics/">
+            https://commandlinux.com/statistics/Linux-kernel-contributors-lines-of-code-statistics/</a>
           </li>
 
           <li>Debian 7.0 in 2012 had 419 million lines of code: <a href=
@@ -1484,10 +1485,10 @@ ifconfig iwm0 lladdr random</pre>
         <p>When using OpenBSD you will already have a smaller attack surface by
         default than any other monolithic or hybrid kernel operating system.
         This increases not only security for users, but the ease of
-        implementing more security mitigations in OpenBSD on the part of
-        programing. Maintenance becomes easier, the quality of the code
-        increases and consequently the reliability also increases. There is no
-        downside when it comes to security and reliability.</p>
+        implementing more security mitigations in OpenBSD on the programming
+        side. Maintenance becomes easier, the quality of the code increases and
+        consequently the reliability also increases. There is no downside when
+        it comes to security and reliability.</p>
 
         <p>Even the total of official OpenBSD websites (www) have a low number
         of lines of code, 312.465 in total (2026-02-26). Improving privacy and
