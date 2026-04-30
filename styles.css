@@ -402,6 +402,34 @@ tbody tr:hover {
   background: color-mix(in srgb, var(--panel-2) 64%, var(--blue-dark) 36%);
 }
 
+.c-language-table {
+  min-width: 36rem;
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 0 0 0.06em
+    color-mix(in srgb, var(--border-2) 65%, transparent 35%);
+}
+
+.c-language-table thead th {
+  font-size: 0.82em;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.c-language-table td:nth-child(1),
+.c-language-table th:nth-child(1) {
+  text-align: center;
+}
+
+.c-language-table td:nth-child(n+2),
+.c-language-table th:nth-child(n+2) {
+  text-align: right;
+}
+
+.c-language-table tbody td:last-child {
+  font-weight: 700;
+  color: color-mix(in srgb, var(--blue-light) 62%, var(--heading) 38%);
+}
+
 th, td {
   vertical-align: top;
 }
