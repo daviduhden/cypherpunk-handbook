@@ -4,30 +4,27 @@
     <title>Cypherpunk Handbook - Articles</title>
     <link>./../index.html</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <language>en-us</language>
-    <pubDate>Thu, 06 Feb 2026 00:00:00 GMT</pubDate>
-    <lastBuildDate>Thu, 06 Feb 2026 00:00:00 GMT</lastBuildDate>
-    <!-- items inserted here -->
+    <lastBuildDate>Tue, 17 Feb 2026 00:00:00 GMT</lastBuildDate>
     <item>
-      <title>Why OpenBSD solos?</title>
+      <title>Why OpenBSD stands alone</title>
       <link>./../articles/openbsd.html</link>
-      <description/>
-      <pubDate>Mon, 17 Feb 2026 00:00:00 GMT</pubDate>
+      <description>This article summarizes why OpenBSD is presented as one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux, regardless of hardening level, are argued here to be less secure. The comparison also includes other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
+      <pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate>
       <guid>./../articles/openbsd.html</guid>
     </item>
     <item>
-      <title>When the subject is purely security, QubesOS is not reliable!</title>
-      <link>./../articles/qubes-os.html</link>
-      <description/>
-      <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
-      <guid>./../articles/qubes-os.html</guid>
-    </item>
-    <item>
-      <title>The C language and its biggest problem; proving its insecurity.</title>
+      <title>The C language and its biggest problem: evidence of its insecurity.</title>
       <link>./../articles/c-language.html</link>
-      <description/>
+      <description>C is not a memory-safe language, even though secure software can be built with it. Regardless of programmer skill or the number of code reviews, writing C software with perfect memory management is not realistic. Formally verified software is possible, but it is extremely rare; two examples are the seL4 microkernel and the CompCert compiler.</description>
       <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
       <guid>./../articles/c-language.html</guid>
+    </item>
+    <item>
+      <title>When it comes strictly to security, Qubes OS is not reliable.</title>
+      <link>./../articles/qubes-os.html</link>
+      <description>This article offers constructive criticism of the Linux distribution Qubes OS (or XenOS), highlighting its weaknesses and strengths and suggesting possible improvements. It also proposes alternatives that are more robust and reliable, especially in security terms, for different types of users.</description>
+      <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
+      <guid>./../articles/qubes-os.html</guid>
     </item>
   </channel>
 </rss>
