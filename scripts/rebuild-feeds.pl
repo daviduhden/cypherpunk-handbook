@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use utf8;
 
 use File::Find;
 use File::Spec;
@@ -12,6 +13,9 @@ my $script_dir   = ( File::Spec->splitpath($0) )[1];
 my $root_dir     = File::Spec->catdir( $script_dir, '..' );
 my $feeds_dir    = File::Spec->catdir( $root_dir,   'feeds' );
 my $articles_dir = File::Spec->catdir( $root_dir,   'articles' );
+
+binmode STDOUT, ':encoding(UTF-8)';
+binmode STDERR, ':encoding(UTF-8)';
 
 sub die_tool { die "❌ [ERROR] $_[0]\n"; }
 sub logi     { print "✅ [INFO] $_[0]\n"; }
@@ -109,18 +113,32 @@ sub detect_feeds {
 sub extract_metadata {
     my ($path) = @_;
     my $html = read_file($path);
+    my ($article_header) = $html =~
+      m{<header[^>]*\bid\s*=\s*["']article-header["'][^>]*>(.*?)</header>}is;
+    my $content_scope = defined $article_header ? $article_header : $html;
 
     my ($lang) = $html =~ /<html[^>]*\blang\s*=\s*"([^"]+)"/i;
     $lang = defined $lang && $lang =~ /^es/i ? 'es' : 'en';
 
-    my ($title) = $html =~ /<h1[^>]*>\s*(.*?)\s*<\/h1>/is;
+    my ($title) = $content_scope =~ /<h1[^>]*>\s*(.*?)\s*<\/h1>/is;
     $title //= 'Untitled';
     $title =~ s/<[^>]+>//g;
     $title =~ s/\s+/ /g;
     $title =~ s/^\s+|\s+$//g;
 
-    my ($desc) = $html =~ /<p[^>]*>\s*(.*?)\s*<\/p>/is;
-    $desc //= '';
+    my ($desc) =
+      $html =~
+      /<meta[^>]*\bname\s*=\s*["']description["'][^>]*\bcontent\s*=\s*["'](.*?)["'][^>]*>/is;
+    $desc = '' unless defined $desc && length $desc;
+    if ( !length $desc ) {
+        ($desc) = $content_scope =~
+          /<p[^>]*\bclass\s*=\s*["'][^"']*\blede\b[^"']*["'][^>]*>\s*(.*?)\s*<\/p>/is;
+        $desc //= '';
+    }
+    if ( !length $desc ) {
+        ($desc) = $content_scope =~ /<p[^>]*>\s*(.*?)\s*<\/p>/is;
+        $desc //= '';
+    }
     $desc =~ s/<[^>]+>//g;
     $desc =~ s/\s+/ /g;
     $desc =~ s/^\s+|\s+$//g;
@@ -225,4 +243,3 @@ sub main {
 }
 
 main();
-
