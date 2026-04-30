@@ -1,2 +1,2 @@
 untrusted comment: verify with cypherpunk-handbook.pub
-RWQO6UVpxkLnIWGT9jPjZT2TG5HR6vcP3ZnXBsQeJxN7P1iS33sTeBj65Y3HtQCdsGSRnWnSpvAwqHx+t2c+llXGQDS4gZFwewo=
+RWQO6UVpxkLnIV59iJtejz0wUaruNqmNEu5DLJG+/dcIJjCg8XFP5W+UqSnqB4QA2ZFHdc0lxeAikq9uSmlzn3wXOBLA12r4PAs=
