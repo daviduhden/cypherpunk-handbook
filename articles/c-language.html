@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. — The C language and its biggest problem; proving its
+  <title>T.C.H. — The C language and its biggest problem: evidence of its
   insecurity.</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
@@ -43,10 +43,10 @@
       <header id="article-header">
         <p class="kicker">Programming</p>
 
-        <h1>The C language and its biggest problem; proving its
+        <h1>The C language and its biggest problem: evidence of its
         insecurity.</h1>
 
-        <p class="meta">Written by FlyWithMe (A SimpleX chat user) -
+        <p class="meta">Written by FlyWithMe (A SimpleX chat user) —
         <time datetime="2026-02-02">Updated February 2, 2026</time></p>
 
         <p class="lede">C is not a memory-safe language, even though secure
@@ -65,13 +65,13 @@
         a factual and statistical analysis.</p>
       </header>
 
-      <nav class="toc" aria-label="Table of contents">
-        <h2>Contents</h2>
+      <nav class="toc" aria-labelledby="c-contents-heading">
+        <h2 id="c-contents-heading">Contents</h2>
 
         <ol>
           <li>
             <a href="#c-analysis">Analysis: Memory Management Vulnerabilities
-            in CVE (2015-2025)</a>
+            in CVEs (2015-2025)</a>
           </li>
 
           <li>
@@ -92,8 +92,8 @@
         </ol>
       </nav>
 
-      <section>
-        <h2 id="c-analysis">Analysis: Memory Management Vulnerabilities in CVE
+      <section aria-labelledby="c-analysis">
+        <h2 id="c-analysis">Analysis: Memory Management Vulnerabilities in CVEs
         (2015-2025)</h2>
 
         <h3>Total data</h3>
@@ -220,7 +220,7 @@
         </table>
       </section>
 
-      <section>
+      <section aria-labelledby="c-context">
         <h2 id="c-context">Important context</h2>
 
         <p>This overall proportion of 34.20% varies significantly depending on
@@ -232,22 +232,23 @@
         <ul>
           <li>"Microsoft": 70% of CVEs are related to memory management</li>
 
-          <li>"Google": 70% of bugs in Chromium are memory; 90% on Android</li>
+          <li>"Google": 70% of bugs in Chromium are memory-related; 90% on
+          Android</li>
 
           <li>Apple: 60-70% of vulnerabilities in iOS and macOS</li>
 
           <li>Linux Kernel: 66% of vulnerabilities</li>
 
           <li>"Project Zero (Google)": 75% of the CVEs exploited in the wild
-          world were from memory; 67% of zero-days in 2021</li>
+          were memory-related; 67% of zero-days in 2021</li>
         </ul>
 
-        <p><strong>For memory-safe languages (Java, Python, C#): The proportion
+        <p><strong>For memory-safe languages (Java, Python, C#), the proportion
         is less than 5%.</strong>
         </p>
       </section>
 
-      <section>
+      <section aria-labelledby="c-trend">
         <h2 id="c-trend">Temporal trend</h2>
 
         <p>The above trend chart shows that while the "absolute number" of
@@ -257,19 +258,19 @@
         which grew to 31.18% of the total) are increasing faster.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="c-conclusion">
         <h2 id="c-conclusion">Conclusion</h2>
 
-        <p>Of the "107.173 software vulnerabilities" registered between 2015
-        and 2025, "36,659 (34.20%) are related to memory management errors".
-        This global percentage hides the most worrying reality: in compiled
-        software that dominates critical infrastructures (C/C++), approximately
+        <p>Of the 107,173 software vulnerabilities registered between 2015 and
+        2025, 36,659 (34.20%) are related to memory management errors. This
+        global percentage hides the most concerning reality: in compiled
+        software that dominates critical infrastructure (C/C++), approximately
         2 in 3 vulnerabilities (66-70%) are caused by memory management errors,
-        reinforcing the ongoing appeals of CISA, NSA and other agencies for the
-        adoption of memory-safe languages.</p>
+        reinforcing the ongoing calls by CISA, the NSA, and other agencies for
+        adopting memory-safe languages.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="c-references">
         <h2 id="c-references">References</h2>
 
         <ul>
@@ -298,12 +299,12 @@
           </li>
 
           <li>[6] <a href=
-          "https://www.nsa.gov/Press-Room/News-Highlights/Article/Article/3215760/nsa-releases-guidance-on-how-to-protect-against-software-memory-safety-issues/">
+          "https://www.cisa.gov/news-events/alerts/2023/12/06/cisa-releases-joint-guide-software-manufacturers-case-memory-safe-roadmaps">
             NSA Releases Guidance on How to Protect Against …</a>
           </li>
 
           <li>[7] <a href=
-          "https://media.defense.gov/2023/Dec/06/2003352724/-1/-1/0/THE-CASE-FOR-MEMORY-SAFE-ROADMAPS-TLP-CLEAR.PDF">
+          "https://www.cisa.gov/sites/default/files/2023-12/The-Case-for-Memory-Safe-Roadmaps-508c.pdf">
             The Case for Memory Safe Roadmaps</a>
           </li>
 
@@ -323,22 +324,22 @@
           </li>
 
           <li>[11] <a href=
-          "https://malwaretech.com/2019/04/analysis-of-a-vb-script-heap-overflow.html">
-            Analysis of a VB Script Heap Overflow (CVE-2019-0666)</a>
+          "https://nvd.nist.gov/vuln/detail/CVE-2019-0666">Analysis of a VB
+          Script Heap Overflow (CVE-2019-0666)</a>
           </li>
 
           <li>[12] <a href=
-          "https://www.reddit.com/r/cpp/comments/1fpcc0p/eliminating_memory_safety_vulnerabilities_at_the/">
+          "https://web.archive.org/web/20240608183005/https://www.reddit.com/r/cpp/comments/1fpcc0p/eliminating_memory_safety_vulnerabilities_at_the/">
             Eliminating Memory Safety Vulnerabilities at the Source</a>
           </li>
 
           <li>[13] <a href=
-          "https://www.cvedetails.com/cve/CVE-2023-0051/">CVE-2023-0051 :
+          "https://www.cve.org/CVERecord?id=CVE-2023-0051">CVE-2023-0051 :
           Heap-based Buffer Overflow in GitHub …</a>
           </li>
 
-          <li>[14] <a href="https://www.cvedetails.com">CVE security
-          vulnerability database. Security vulnerabilities …</a>
+          <li>[14] <a href="https://www.cve.org/">CVE security vulnerability
+          database. Security vulnerabilities …</a>
           </li>
 
           <li>[15] <a href=
@@ -346,9 +347,8 @@
             The Long Road to Safe RAM Handling</a>
           </li>
 
-          <li>[16] <a href=
-          "https://www.intertecsystems.com/threat-report-and-advisories/software-update-advisories/chrome-buffer-overflow-vulnerabilities-allow-arbitrary-code-execution/">
-            Chrome Buffer Overflow Vulnerabilities</a>
+          <li>[16] <a href="https://chromereleases.googleblog.com/">Chrome
+          Buffer Overflow Vulnerabilities</a>
           </li>
 
           <li>[17] <a href=
@@ -406,13 +406,13 @@
           </li>
 
           <li>[28] <a href=
-          "https://www.reddit.com/r/programming/comments/aprgkf/microsoft_70_percent_of_all_security_bugs_are/">
+          "https://web.archive.org/web/20190208111621/https://www.reddit.com/r/programming/comments/aprgkf/microsoft_70_percent_of_all_security_bugs_are/">
             Microsoft: 70 percent of all security bugs are memory safety …</a>
           </li>
 
           <li>[29] <a href=
-          "https://www.cvedetails.com/cwe-details/119/Improper-Restriction-of-Operations-within-the-Bounds-of-a-Me.html">
-            CWE 119 Improper Restriction of Operations within the …</a>
+          "https://cwe.mitre.org/data/definitions/119.html">CWE 119 Improper
+          Restriction of Operations within the …</a>
           </li>
 
           <li>[30] <a href=
@@ -434,7 +434,7 @@
           </li>
 
           <li>[34] <a href=
-          "https://www.reddit.com/r/rust/comments/t33ddj/the_biggest_source_of_vulnerabilities_in/">
+          "https://web.archive.org/web/20220304171307/https://www.reddit.com/r/rust/comments/t33ddj/the_biggest_source_of_vulnerabilities_in/">
             The biggest source of vulnerabilities in cryptographic libraries is
             memory safety bugs, not cryptography bugs</a>
           </li>
@@ -495,7 +495,7 @@
           </li>
 
           <li>[46] <a href=
-          "https://www.reddit.com/r/sysadmin/comments/1bjelgw/nvd_stopped_adding_information_on_most_cves_since/">
+          "https://web.archive.org/web/20240325180033/https://www.reddit.com/r/sysadmin/comments/1bjelgw/nvd_stopped_adding_information_on_most_cves_since/">
             NVD stopped adding information on most CVEs since February</a>
           </li>
 
@@ -505,8 +505,8 @@
           </li>
 
           <li>[48] <a href=
-          "https://dspace.mit.edu/bitstream/handle/1721.1/155457/3634737.3657012.pdf?sequence=1&amp;isAllowed=y">
-            An Empirical Analysis of Vulnerabilities in Cryptographic …</a>
+          "https://api.crossref.org/works/10.1145/3634737.3657012">An Empirical
+          Analysis of Vulnerabilities in Cryptographic …</a>
           </li>
 
           <li>[49] <a href=
@@ -525,23 +525,22 @@
           </li>
 
           <li>[52] <a href=
-          "https://www.reddit.com/r/programming/comments/apm5g6/microsoft_70_percent_of_all_security_bugs_are/">
+          "https://web.archive.org/web/20190207092722/https://www.reddit.com/r/programming/comments/apm5g6/microsoft_70_percent_of_all_security_bugs_are/">
             Microsoft: 70 percent of all security bugs are memory safety …</a>
           </li>
 
           <li>[53] <a href=
-          "https://academic.oup.com/cybersecurity/article/10/1/tyae015/7744932">
-            A risk estimation study of native code vulnerabilities in Android
-            …</a>
+          "https://api.crossref.org/works/10.1093/cybsec/tyae015">A risk
+          estimation study of native code vulnerabilities in Android …</a>
           </li>
 
           <li>[54] <a href=
-          "https://www.keysight.com/blogs/en/tech/nwvs/2021/01/03/getting-to-the-bottom-of-cve-2018-0825-heap-overflow-buffer">
-            Getting to the Bottom of CVE-2018-0825 Heap Overflow …</a>
+          "https://nvd.nist.gov/vuln/detail/CVE-2018-0825">Getting to the
+          Bottom of CVE-2018-0825 Heap Overflow …</a>
           </li>
 
           <li>[55] <a href=
-          "https://media.defense.gov/2025/Jun/23/2003742198/-1/-1/0/CSI_MEMORY_SAFE_LANGUAGES_REDUCING_VULNERABILITIES_IN_MODERN_SOFTWARE_DEVELOPMENT.PDF">
+          "https://www.cisa.gov/resources-tools/resources/memory-safe-languages-reducing-vulnerabilities-modern-software-development">
             Memory Safe Languages: Reducing Vulnerabilities in …</a>
           </li>
 
@@ -574,8 +573,8 @@
           </li>
 
           <li>[62] <a href=
-          "https://www.cvedetails.com/vulnerabilities-by-types.php">Vulnerabilities
-          By Types/Categories</a>
+          "https://nvd.nist.gov/vuln/categories">Vulnerabilities By
+          Types/Categories</a>
           </li>
 
           <li>[63] <a href=

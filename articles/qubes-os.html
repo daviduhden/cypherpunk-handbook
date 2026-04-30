@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. - When the subject is purely security, QubesOS is not
-  reliable!</title>
+  <title>T.C.H. — When it comes strictly to security, Qubes OS is not
+  reliable.</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
@@ -43,9 +43,9 @@
       <header id="article-header">
         <p class="kicker">Security</p>
 
-        <h1>When the subject is purely security, QubesOS is not reliable!</h1>
+        <h1>When it comes strictly to security, Qubes OS is not reliable.</h1>
 
-        <p class="meta">Written by FlyWithMe (A SimpleX chat user) -
+        <p class="meta">Written by FlyWithMe (a SimpleX chat user) —
         <time datetime="2026-02-02">Updated February 2, 2026</time></p>
 
         <p class="lede">This article offers constructive criticism of the Linux
@@ -55,8 +55,8 @@
         terms, for different types of users.</p>
       </header>
 
-      <nav class="toc" aria-label="Table of contents">
-        <h2>Contents</h2>
+      <nav class="toc" aria-labelledby="qubes-contents-heading">
+        <h2 id="qubes-contents-heading">Contents</h2>
 
         <ol>
           <li>
@@ -133,15 +133,15 @@
           </li>
 
           <li>
-            <a href="#qubes-reco">My recommendations instead of QubesOS</a>
+            <a href="#qubes-reco">My recommendations instead of Qubes OS</a>
           </li>
         </ol>
       </nav>
 
-      <section>
+      <section aria-labelledby="qubes-1">
         <h2 id="qubes-1">1 - Xen hypervisor</h2>
 
-        <p>QubesOS runs virtual machines on Xen, a type-1 hypervisor. Because
+        <p>Qubes OS runs virtual machines on Xen, a type-1 hypervisor. Because
         Xen runs directly on hardware, virtualization does not automatically
         mean stronger security than bare metal. The hypervisor isolates and
         manages VMs, but it also becomes a central point of trust. If the
@@ -169,7 +169,7 @@
         <p>Xen supports hardware-assisted virtualization (HVM) with Intel VT-x
         and AMD-V. Full virtualization can run unmodified guest operating
         systems and usually provides stronger isolation characteristics than
-        paravirtualization. The article argues that QubesOS relies too much on
+        paravirtualization. The article argues that Qubes OS relies too much on
         paravirtualized paths in common templates, and that this is a security
         weakness.</p>
 
@@ -181,13 +181,13 @@
         <p>Several attacks on Qubes OS originate in an AppVM, and some
         historical exploits have used Xen vulnerabilities to escape the guest
         and compromise Dom0 or other VMs. However, not all attacks go through
-        Xen-there are also vectors via firmware (ME/PSP), drivers, IOMMU, or
-        flaws in Dom0 and SystemVMs. The most important link in the system is
-        also the most vulnerable, so vulnerable that support for the use of
+        Xen&mdash;there are also vectors via firmware (ME/PSP), drivers, IOMMU,
+        or flaws in Dom0 and SystemVMs. The most important link in the system
+        is also the most vulnerable, so vulnerable that support for using
         OpenBSD for dom0 and domU has been officially proposed and debated,
-        with everyone agreeing that it would be very good and extremely
-        beneficial for the security of QubesOS, but this does not happen due to
-        the incompatibility of OpenBSD with Linux and other software.</p>
+        with broad agreement that it would be very good and extremely
+        beneficial for the security of Qubes OS. However, this does not happen
+        because OpenBSD is incompatible with Linux and other software.</p>
 
         <p><a href=
         "https://github.com/QubesOS/qubes-issues/issues/4551">https://github.com/QubesOS/qubes-issues/issues/4551</a>
@@ -218,7 +218,7 @@
         same underlying platform (in this case, Xen). Even Hyper-V (the Windows
         hypervisor) has had far fewer CVEs and VM leaks than Xen in recent
         years. The Windows virtualizer security model is arguably more mature,
-        especially on supported enterprise hardware, than QubesOS.</p>
+        especially on supported enterprise hardware, than Qubes OS.</p>
 
         <p>I could write another 10,000 lines about why hypervisors/virtual
         machines are unreliable and insecure, addressing everything from
@@ -361,36 +361,34 @@
           </li>
         </ul>
 
-        <p>The argument most used by the developers of QubesOS is the argument
-        of denial (the first stage of trauma). They say "A hypervisor scape is
-        rare", "these attacks are difficult to make", "you have no reason to
-        worry about it". But the truth is that most hypervisors only benefit
-        from such "security by obscurity", since most malware that infects
-        computers do not aim to exploit a virtual machine because the chances
-        of being inside a virtual machine are lower than in an host operating
-        system, in the same way that most malware is designed to affect Windows
-        and not Linux systems.</p>
+        <p>The argument most often used by the developers of Qubes OS is a
+        dismissive one. They say, "A hypervisor escape is rare," "these attacks
+        are difficult to carry out," and "you have no reason to worry about
+        it." But the text argues that most hypervisors benefit from a kind of
+        "security by obscurity," since most malware that infects computers does
+        not aim to exploit a virtual machine because the chance of being inside
+        one is lower than on a host operating system, just as most malware is
+        designed to affect Windows rather than Linux systems.</p>
 
-        <p>The attackers naturally do not target hypervisors, but from the
-        moment this begins to become more famous and more users adopt (and is
-        getting, QubesOS and virtual machines is growing a lot) will be a path
-        of no return to the destruction of most hypervisors, especially Xen.
-        And this is mainly due to the fact QubesOS/Xen does not try to hide
-        from the guests VMs that they are VMs. From this we go to the topic
-        number 2.</p>
+        <p>Attackers do not naturally target hypervisors now, but the text
+        argues that if this approach becomes more popular and more users adopt
+        it, it will set hypervisors&mdash;especially Xen&mdash;on an
+        irreversible path toward heavier targeting. This is mainly because
+        Qubes OS/Xen does not try to hide from guest VMs that they are
+        virtualized. From here, we move to topic number 2.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-2">
         <h2 id="qubes-2">2 - Lack of VM spoofing</h2>
 
         <p>In many VM setups, guest systems can easily detect that they are
         virtualized. On Windows, this can be visible through registry keys,
         drivers, processes, and other system artifacts.</p>
 
-        <p>But it is totally possible to mask this and there are even scripts
-        and tutorials on the internet that aim to hide from inside a VM any
-        information about it (On Linux this can be more easy to do because of
-        control):</p>
+        <p>But it is entirely possible to mask this, and there are even scripts
+        and tutorials on the internet that aim to hide any such information
+        from inside a VM (on Linux this can be easier to do because of the
+        level of control):</p>
 
         <ul>
           <li>
@@ -404,16 +402,16 @@
           </li>
         </ul>
 
-        <p>The article argues that QubesOS does not prioritize this type of
+        <p>The article argues that Qubes OS does not prioritize this type of
         concealment, so malware can detect the VM context early and adapt its
         behavior accordingly.</p>
 
-        <p>Taking into account that qubes templates are modified images of
-        operating systems, it should not be absurd to implement spoofing.
-        QubesOS can improve on this if the devs want.</p>
+        <p>Taking into account that Qubes templates are modified images of
+        operating systems, it should not be absurd to implement spoofing. Qubes
+        OS can improve on this if the devs want.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-3">
         <h2 id="qubes-3">3 - Linux-based attack surface</h2>
 
         <p>Qubes OS uses Fedora-based dom0 and Linux kernels. The article's
@@ -421,7 +419,7 @@
         itself, guarantee a stronger baseline than a well-hardened non-Qubes
         system.</p>
 
-        <p>The QubesOS dom0 is maintained on a base, outdated and relatively
+        <p>The Qubes OS dom0 is maintained on a base, outdated and relatively
         unprotected/unstable version of Fedora. The base Linux does not have
         decent security mitigations, protections against memory
         vulnerabilities, and many other problems that come with the Linux
@@ -430,46 +428,46 @@
         operating systems kernels.</p>
 
         <p>A hacked 'sys-net' can spy on the memory of the rest of your qubes.
-        QubesOS devs are always in denial saying things like: "Well those
+        Qubes OS devs are always in denial saying things like: "Well those
         buffer overflows and mem attacks are rare", but this is false, in fact,
         66-70% of vulnerabilities in software written in C are related to poor
         memory management.</p>
 
         <p>See my other article proving this: <a href="./c-language.html">The C
-        language and its biggest problem; proving its insecurity</a></p>
+        language and its biggest problem: evidence of its insecurity.</a></p>
 
         <p>The broader claim is that attackers target the weakest link. In this
         view, compartmentalization helps only if underlying privileged
         components are robust and quickly patched.</p>
 
-        <p>QubesOS can improve this with security kernel patches, such as
-        Grsecurity/PaX and/or linux-hardened kernel support, LKRG, compilation
+        <p>Qubes OS can improve this with security kernel patches, such as
+        Grsecurity/PaX and/or Linux-hardened kernel support, LKRG, compilation
         with hardening flags, FORTIFY, PIE, RELRO. And Mandatory Access Control
         (MAC), such as TOMOYO and SELinux (Fedora templates support SELinux on
-        QubesOS, but outdated, without a good setup (policies) by default, and
+        Qubes OS, but outdated, without a good setup (policies) by default, and
         no support for enforcing without breaking the entire system).</p>
 
         <p><a href="https://secureblue.dev/">Fedora Secureblue</a>&nbsp;is an
         example of the bare minimum that must be done to be considered "a
         reasonably secure operating system", implement kernel patches, changes
         several system files and have a powerful MAC added with limited
-        namespaces. Something that QubesOS doesn't do.</p>
+        namespaces. Something that Qubes OS doesn't do.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-4">
         <h2 id="qubes-4">4 - Operational complexity</h2>
 
         <p>Qubes OS is operationally complex, even for advanced users. The
         article's position is that higher complexity increases human-error
         risk, which can reduce both security and anonymity.</p>
 
-        <p>QubesOS is NOT secure by default, and NEVER will be.</p>
+        <p>Qubes OS is NOT secure by default, and NEVER will be.</p>
 
         <p>In short, this section argues that more moving parts generally mean
         more opportunities for mistakes and misconfiguration.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-5">
         <h2 id="qubes-5">5 - Systemd attack surface</h2>
 
         <p>This section criticizes systemd for size and complexity. One
@@ -484,7 +482,7 @@
         <ul>
           <li>5. systemd Utilities</li>
 
-          <li>3. and 4. systemd Deamons and systemd Targets</li>
+          <li>3. and 4. systemd daemons and systemd targets</li>
 
           <li>1. systemd Core</li>
 
@@ -498,7 +496,7 @@
         <p>More about this topic and why it is so problematic:</p>
 
         <ul>
-          <li>Critical views on SystemD:
+          <li>Critical views on systemd:
             <ul>
               <li>
                 <a href="https://nosystemd.org/">https://nosystemd.org</a>
@@ -512,28 +510,28 @@
           </li>
 
           <li>Suckless devs about this disease: <a href=
-          "http://suckless.org/sucks/systemd">http://suckless.org/sucks/systemd</a>
+          "http://suckless.org/sucks/systemd/">http://suckless.org/sucks/systemd/</a>
           </li>
 
           <li>Broken by default: <a href=
           "http://ewontfix.com/14/">http://ewontfix.com/14</a>
           </li>
 
-          <li>The world after SystemD: <a href=
+          <li>The world after systemd: <a href=
           "https://the-world-after-systemd.ungleich.ch/">https://the-world-after-systemd.ungleich.ch</a>
           </li>
         </ul>
 
-        <p>QubesOS can improve this by supporting templates from systems
-        without SystemD, such as Artix, Gentoo, Alpine or BSDs. This not only
-        for domU, but for dom0 as well.</p>
+        <p>Qubes OS can improve this by supporting templates from systems
+        without systemd, such as Artix, Gentoo, Alpine or BSDs. This should
+        apply not only to domU, but to dom0 as well.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-6">
         <h2 id="qubes-6">6 - Hardware support and compatibility
         limitations</h2>
 
-        <p>The article argues that QubesOS hardware compatibility is narrow in
+        <p>The article argues that Qubes OS hardware compatibility is narrow in
         practice, especially when requiring stable IOMMU, SLAT, and
         virtualization features without workarounds.</p>
 
@@ -582,7 +580,7 @@
         but work on 3.7.4" + "Bios Legacy Mode" + "Upgrade to rc4 broke
         networking" + "Needed graphics, UEFI workarounds, read more, read more
         Added TB served devices to sys-net." + "needs older WiFi driver"
-        (Needing an outdated version again.) + "AEM workaround; Compile wifi
+        (Needing an outdated version again.) + "AEM workaround; compile Wi-Fi
         driver, read more" + "needs kernel downgrade to 3.7.4" + "No IOMMU
         &ndash; not recommended for Qubes OS!" (For security reasons) + "Issues
         with UEFI boot and sys-usb; Cannot wake from sleep; read more"</p>
@@ -592,15 +590,15 @@
         downgrading the kernel, drivers, or operating system version to
         function "correctly".</p>
 
-        <p>This is a widespread problem, and QubesOS is decades away from
+        <p>This is a widespread problem, and Qubes OS is decades away from
         having reasonable (stable and reliable) hardware compatibility; this
         would require a great deal of effort or even a replacement of
         developers if the issue at hand is competence. This is not a problem
         inherent to Linux systems, but rather to Qubes OS.</p>
 
-        <p>So if you don't have any of these following 11 devices know that you
-        won't have full support and compatibility with "all of Qubes' features"
-        (i.e. Basic security features)</p>
+        <p>So, if you do not have one of the following 11 devices, know that
+        you will not have full support and compatibility with "all of Qubes'
+        features" (i.e., basic security features).</p>
 
         <p><a href=
         "https://doc.qubes-os.org/en/latest/user/hardware/certified-hardware/certified-hardware.html#qubes-certified-computers">
@@ -618,20 +616,21 @@
           on your system, leaving you vulnerable.</p>
         </blockquote>
 
-        <p>And this is because QubesOS strongly needs the &lsquo;Virtualization
-        Technology' of CPUs to function, such as Intel VT-x, Intel VT-d, AMD-V
-        and AMD-Vi. The basis of this OS is the proprietary microcode to
-        support virtualization of CPUs from vendors, any vulnerability in this
-        hardware/microcode fully affects QubesOS. This is so pathetic it's sad,
-        the OS needs proprietary CPU code to function and be secure.</p>
+        <p>And this is because Qubes OS strongly needs the
+        &lsquo;Virtualization Technology' of CPUs to function, such as Intel
+        VT-x, Intel VT-d, AMD-V and AMD-Vi. The basis of this OS is the
+        proprietary microcode to support virtualization of CPUs from vendors,
+        any vulnerability in this hardware/microcode fully affects Qubes OS.
+        This is so pathetic it's sad, the OS needs proprietary CPU code to
+        function and be secure.</p>
 
-        <p>The security of QubesOS does not come from the OS, but from the
+        <p>The security of Qubes OS does not come from the OS, but from the
         competence of Intel and AMD programmers, this only increases the attack
         surface of the operating system and Xen, instead of reducing it as they
         mistakenly claim. And that cannot be changed.</p>
 
         <p>One major and serious problem that no one seems to realize is that
-        QubesOS, being "an operating system for only 11 selected hardware
+        Qubes OS, being "an operating system for only 11 selected hardware
         devices," makes it extremely vulnerable to coordinated and focused
         attacks, such as hardware backdoors. Look, if you know that a specific
         group of people (the ones you want to target) use specific devices from
@@ -644,16 +643,16 @@
         arrested).</p>
 
         <p><a href=
-        "https://www.pcmag.com/news/fbi-sold-criminals-fake-encrypted-phones-that-actually-copied-their-messages?test_uuid=04IpBmWGZleS0I0J3epvMrC&amp;test_variant=A">
-        https://www.pcmag.com/news/fbi-sold-criminals-fake-encrypted-phones-that-actually-copied-their-messages?test_uuid=04IpBmWGZleS0I0J3epvMrC&amp;test_variant=A</a>
+        "https://www.justice.gov/usao-sdca/pr/fbi-s-encrypted-phone-platform-infiltrated-hundreds-criminal-syndicates-result-massive">
+        https://www.justice.gov/usao-sdca/pr/fbi-s-encrypted-phone-platform-infiltrated-hundreds-criminal-syndicates-result-massive</a>
         </p>
 
-        <p>So, besides QubesOS having such significant hardware limitations, it
-        makes backdoor implementation even easier because it's an operating
+        <p>So, besides Qubes OS having such significant hardware limitations,
+        it makes backdoor implementation even easier because it's an operating
         system that relies on Intel and AMD's microcode/virtualization
         technology. Compromising that would compromise all users of this
-        operating system. I'm not saying QubesOS is the only OS vulnerable to
-        hardware backdoors; in fact, all OSs are, but QubesOS is the MOST
+        operating system. I'm not saying Qubes OS is the only OS vulnerable to
+        hardware backdoors; in fact, all OSs are, but Qubes OS is the MOST
         vulnerable to this type of thing. A Linux or BSD user who doesn't use
         virtual machines doesn't need to worry about backdoors in the specific
         CPU's virtualization technology microcode, nor on 11 specific
@@ -662,13 +661,13 @@
         <p>And it gets even worse when dom0 can only use Fedora, meaning, "it
         got 1000 times worse!", compromising the Fedora repositories makes any
         update to dom0 a total system breaking point. There is no salvation for
-        QubesOS.</p>
+        Qubes OS.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-7">
         <h2 id="qubes-7">7 - TPM 1.2/2.0 requirements</h2>
 
-        <p>QubesOS needs support for TPM 1.2 to implement the basics of AEM
+        <p>Qubes OS needs support for TPM 1.2 to implement the basics of AEM
         (Anti Evil Maid), because without it the system is ridiculously
         vulnerable to physical attacks, it is even funny that a system that
         says it is so safe for its defenders becomes weak as a sheet of paper
@@ -688,25 +687,25 @@
         PTT/ME interactions) is compromised, TPM attestation/sealing can be
         subverted and used to hide persistent tampering from the user.</p>
 
-        <p>This is more a backdoor than anything else. TPM
-        manufactures/suppliers have a unique identification key (EK) that, if
-        linked to a actual identity or shared with thrid parties could allow
-        device identification or linking. And these keys can be easily
-        discovered through the operating system (especially windows), a malware
-        programmed for this can totally deanonymize a QubesOS user through the
-        TPM unique ID, which are hardware identifiers. That is, if you did not
-        buy your device in an 100% anonymous way, it's over! Not to mention all
-        other remote vulnerabilities involving TPM.</p>
+        <p>This is more of a backdoor than anything else. TPM
+        manufacturers/suppliers have a unique identification key (EK) that, if
+        linked to an actual identity or shared with third parties, could allow
+        device identification or correlation. These keys can be easily
+        discovered through the operating system (especially Windows), and
+        malware programmed for this could totally deanonymize a Qubes OS user
+        through the TPM unique ID, which consists of hardware identifiers. That
+        is, if you did not buy your device in a 100% anonymous way, it's over.
+        Not to mention all the other remote vulnerabilities involving TPM.</p>
 
-        <p>This could easily be mitigated if QubesOS did not support TPM or the
-        most TPM-based features (like OpenBSD, which TPM "Functionality is
+        <p>This could easily be mitigated if Qubes OS did not support TPM or
+        most TPM-based features (like OpenBSD, whose TPM "Functionality is
         limited to instructing the device to save its state before a system
-        suspend."), so it would be impossible to access such keys without being
-        physically. And TPM 2.0 is even worse than 1.2, much more code and
-        complexity (In other words, much more attack surface.).</p>
+        suspend."), so it would be impossible to access such keys without
+        physical access. And TPM 2.0 is even worse than 1.2: much more code and
+        complexity (in other words, much more attack surface).</p>
 
         <p>More on this topic from an authority in the field: <a href=
-        "https://youtu.be/t1eX_vvAlUc">https://youtu.be/t1eX_vvAlUc</a></p>
+        "https://www.youtube.com/watch?v=t1eX_vvAlUc&amp;feature=youtu.be">https://www.youtube.com/watch?v=t1eX_vvAlUc&amp;feature=youtu.be</a></p>
 
         <blockquote>
           <p>Qubes security guidelines dictate that USB devices should never be
@@ -739,7 +738,7 @@
         high-risk steps.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-8">
         <h2 id="qubes-8">8 - Intel ME dependency</h2>
 
         <blockquote>
@@ -801,7 +800,7 @@
         </ol>
 
         <p>More on this topic from an authority in the field: <a href=
-        "https://youtu.be/B4cOQOXjxew">https://youtu.be/B4cOQOXjxew</a></p>
+        "https://www.youtube.com/watch?v=B4cOQOXjxew&amp;feature=youtu.be">https://www.youtube.com/watch?v=B4cOQOXjxew&amp;feature=youtu.be</a></p>
 
         <p>The truth is that a physical attack on the device is game over; no
         TPM, or even less so Intel ME, can protect you against that, against
@@ -829,7 +828,7 @@
           except the /boot partition.</p>
         </blockquote>
 
-        <p>And that's why QubesOS is so vulnerable to physical attacks and
+        <p>And that's why Qubes OS is so vulnerable to physical attacks and
         needs two backdoors to "be secure." Meanwhile, there are several Linux
         systems that support encryption of the /boot partition, or could
         support it with the correct file system. Other operating systems also
@@ -837,47 +836,49 @@
         default).</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-9">
         <h2 id="qubes-9">9 - Weak fit for server workloads</h2>
 
-        <p>This section argues that QubesOS is a poor fit for server use. The
+        <p>This section argues that Qubes OS is a poor fit for server use. The
         core claim is that systems aimed at high security should also perform
         well in reliability-focused server contexts.</p>
 
-        <p>Ever wondered why server-oriented operating systems are so much more
-        secure compared to others that aren't? Windows Server is incomparably
-        more secure than regular Windows, Red Hat Linux is much more secure
-        than Fedora, the same for Ubuntu Server; FreeBSD is incredibly secure,
-        OpenBSD is the most secure BSD and one of the most secure operating
-        systems of all time. And they all have something in common: they were
-        made for servers. One of the biggest pieces of evidence that an
-        operating system isn't secure is the fact that it's bad or useless for
-        servers. (RHEL, FreeBSD, and OpenBSD can also be used for
-        desktops).</p>
+        <p>Ever wondered why server-oriented operating systems are often
+        presented as much more secure than ones that are not? Windows Server is
+        described here as incomparably more secure than regular Windows, Red
+        Hat Linux as much more secure than Fedora, and Ubuntu Server in a
+        similar way. FreeBSD is described as incredibly secure, while OpenBSD
+        is described as the most secure BSD and one of the most secure
+        operating systems of all time. In this section, they all have something
+        in common: they were made for servers. One of the biggest pieces of
+        evidence offered here that an operating system is not secure is the
+        fact that it is bad or useless for servers. (RHEL, FreeBSD, and OpenBSD
+        can also be used for desktops.)</p>
 
-        <p>Being good for servers is not just something optional for a system
-        that aims for security, it is about having availability, integrity,
-        scalability, stability and reliability. Good server operating systems
-        naturally need to have many qualities that favor security, a system
-        like QubesOS that is not even stable in terms of hardware cannot and
-        should not consider itself worthy of entering a security debate.</p>
+        <p>Being good for servers is not just optional for a system that aims
+        for security; it is about having availability, integrity, scalability,
+        stability, and reliability. Good server operating systems naturally
+        need many qualities that favor security. In this view, a system like
+        Qubes OS that is not even stable in terms of hardware cannot and should
+        not consider itself worthy of entering a security debate.</p>
 
-        <p>After all, the qubes were made to be disposable and not permanent,
-        besides QubesOS is not a stable system in this analysis, all this
-        opposes what a server needs. QubesOS is worthless for safe, available,
-        reliable and stable storage in the long term. The main security tool of
-        QubesOS is the fact that the qubes are disposable is a great way to
-        admit that the system is not safe from attacks directly on it. It is
-        literally the devs admitting: "Qubes OS is safe because if you install
-        malware, you can try to shut down the virtual machine before the
-        malware compromises the system.". It's like running in the rain to
-        avoid getting wet or at least less wet.</p>
+        <p>After all, the qubes were made to be disposable, not permanent. In
+        this analysis, Qubes OS is also not a stable system, and all of this
+        runs against what a server needs. Qubes OS is described here as
+        worthless for safe, available, reliable, and stable long-term storage.
+        The main security tool of Qubes OS&mdash;the fact that the qubes are
+        disposable&mdash;is presented here as an admission that the system is
+        not safe from attacks directed at it. It is framed as the developers
+        admitting, "Qubes OS is safe because if you install malware, you can
+        try to shut down the virtual machine before the malware compromises the
+        system." It's like running in the rain to avoid getting wet, or at
+        least to get less wet.</p>
 
-        <p>From this perspective, QubesOS would need a major redesign to be a
+        <p>From this perspective, Qubes OS would need a major redesign to be a
         credible server-focused platform.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-10">
         <h2 id="qubes-10">10 - Networking exposure: trust in NetVMs and the
         split‑driver model</h2>
 
@@ -904,7 +905,7 @@
         attackers, NetVM is the main target and the most exposed and vulnerable
         part of the system.</p>
 
-        <p>QubesOS can improve this by running alternative NetVMs
+        <p>Qubes OS can improve this by running alternative NetVMs
         (OpenBSD/Hardened Linux/pfSense/OPNsense). The user can improve this by
         moving parts of the network stack to an external appliance (physical
         router/firewall or separate hardware VM) to reduce local exposure, but
@@ -912,7 +913,7 @@
         something better.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-11">
         <h2 id="qubes-11">11 - Forensics, logging, and incident response
         limitations</h2>
 
@@ -926,7 +927,7 @@
         storage; by default logs are scattered across multiple filesystems in
         different security domains and may be discarded with disposable qubes.
         Isolated qubes with differing trust levels can intentionally block or
-        tamper with logging for plausible deniability (something that QubesOS
+        tamper with logging for plausible deniability (something that Qubes OS
         is terrible at proving compared to other alternatives like Tails).</p>
 
         <p>This makes it impossible for the user to even discover if their
@@ -957,7 +958,7 @@
         better.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-12">
         <h2 id="qubes-12">12 - High-threat-model and enterprise support
         limitations</h2>
 
@@ -1002,14 +1003,14 @@
         <ul>
           <li>
             <a href=
-            "https://docs.redhat.com/en/documentation/red_hat_satellite/6.2/html/installation_guide">
-            https://docs.redhat.com/en/documentation/red_hat_satellite/6.2/html/installation_guide</a>
+            "https://docs.redhat.com/en/documentation/red_hat_satellite/6.2/html/installation_guide/index">
+            https://docs.redhat.com/en/documentation/red_hat_satellite/6.2/html/installation_guide/index</a>
           </li>
 
           <li>
             <a href=
-            "https://www.reddit.com/r/redhat/comments/c7ycrf/what_are_your_satellite_server_specs/">
-            https://www.reddit.com/r/redhat/comments/c7ycrf/what_are_your_satellite_server_specs/</a>
+            "https://web.archive.org/web/20190704073438/https://www.reddit.com/r/redhat/comments/c7ycrf/what_are_your_satellite_server_specs/">
+            https://web.archive.org/web/20190704073438/https://www.reddit.com/r/redhat/comments/c7ycrf/what_are_your_satellite_server_specs/</a>
           </li>
         </ul>
 
@@ -1027,7 +1028,7 @@
         and scalable choice.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-13">
         <h2 id="qubes-13">13 - Security through virtualization, but is that
         all?</h2>
 
@@ -1037,8 +1038,8 @@
         a security model cannot depend on one strong component while leaving
         too much complexity elsewhere.</p>
 
-        <p>In this view, QubesOS places too much trust in virtualization and in
-        a hypervisor maintained by a separate upstream project. The section
+        <p>In this view, Qubes OS places too much trust in virtualization and
+        in a hypervisor maintained by a separate upstream project. The section
         argues that this should be weighed against system-wide stability,
         update coordination, and maintainability.</p>
 
@@ -1051,9 +1052,9 @@
         why does using Whonix on a weak and unofficially supported hypervisor
         make you think you would be safer or more anonymous? Use Fedora
         Secureblue, Alpine, Gento Hardened and other operating systems that are
-        much more secure than QubesOS for this, it's a much smarter thing to
+        much more secure than Qubes OS for this, it's a much smarter thing to
         do. In addition to being able to use any operating system without
-        problems through full virtualization; QubesOS templates are modified
+        problems through full virtualization; Qubes OS templates are modified
         images of OSes made to try to be compatible with Xen. There is no logic
         in saying that this would be safer than using the same operating system
         without modification and natively.</p>
@@ -1070,24 +1071,24 @@
         https://doc.qubes-os.org/en/latest/introduction/faq.html#what-about-privacy-in-non-whonix-qubes</a>
         </p>
 
-        <p>Yet another statement proving that everything QubesOS "possesses"
+        <p>Yet another statement proving that everything Qubes OS "possesses"
         doesn't belong to them; nothing inherent in this operating system is
         their own, and they aren't even ashamed to admit it. That's because
         Whonix is ​​the only VM system that protects against VM fingerprinting
         and advanced deanonymization attacks.</p>
 
         <p>This only increases the complexity of maintaining and organizing the
-        operating system, since Xen, Whonix, Fedora and other softwares used in
+        operating system, since Xen, Whonix, Fedora, and other software used in
         Qubes OS are maintained by different developers with different
         purposes. If any bugs or security vulnerabilities are discovered in
-        Xen, for example, the Qubes OS developers will be incapable to fix
+        Xen, for example, the Qubes OS developers will be incapable of fixing
         them.</p>
 
         <p>So, once again, why use Qubes OS for this when you can utilize far
         more OSes in virtual machines on more secure and stable systems?</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-14">
         <h2 id="qubes-14">14 - Security by correctness, isolation, and
         randomization &gt;&gt;&gt;&gt; security by virtualization; plus a
         response to Joanna Rutkowska</h2>
@@ -1118,7 +1119,7 @@
         the security model.</p>
 
         <p>To save time, I will directly refute Joanna Rutkowska, the "creator"
-        of QubesOS. <a href=
+        of Qubes OS. <a href=
         "https://blog.invisiblethings.org/2008/09/02/three-approaches-to-computer-security.html">
         https://blog.invisiblethings.org/2008/09/02/three-approaches-to-computer-security.html</a></p>
 
@@ -1151,9 +1152,9 @@
           etc.</p>
         </blockquote>
 
-        <p>And the same go for the Xen hypervisor and templates. To be reliable
-        (which they are not) they need secure code and developer training.
-        Where did you get that virtualization security eliminates the
+        <p>And the same goes for the Xen hypervisor and templates. To be
+        reliable (which they are not) they need secure code and developer
+        training. Where did you get that virtualization security eliminates the
         requirement for secure code? All software needs secure code to be
         secure. Qubes OS uses the Linux kernel and is vulnerable to the same
         insecurities.</p>
@@ -1189,7 +1190,7 @@
           cases, not a computer science problem).</p>
         </blockquote>
 
-        <p>This section argues that QubesOS should be evaluated like any other
+        <p>This section argues that Qubes OS should be evaluated like any other
         software project: by design quality, implementation quality, and
         operational outcomes, rather than by architectural claims alone. The
         text also argues that its design choices are treated as if they
@@ -1474,7 +1475,7 @@
         ME and TPM that only increase the attack surface.</p>
 
         <p>In fact, everything related to hardware can increase the attack
-        surface of QubesOS, as it is the OS that most requires specific
+        surface of Qubes OS, as it is the OS that most requires specific
         hardware firmware and vendor patches to be minimally secure and
         stable.</p>
 
@@ -1499,8 +1500,8 @@
         validate. In other words, more complexity, more attack surface. Not to
         mention Pass‑through.</p>
 
-        <p>Practical security depends on the threat model (thing that QubesOS
-        is horrible), updates (thing that QubesOS is horrible), total attack
+        <p>Practical security depends on the threat model (thing that Qubes OS
+        is horrible), updates (thing that Qubes OS is horrible), total attack
         surface (hardware + firmware + software) and not just whether it is
         monolithic or not. The Qubes architecture reduces a certain type of
         risk (compartmentalization), but it does not eliminate risk and
@@ -1569,10 +1570,10 @@
         (OpenBSD) are other examples of type 1 hypervisors that are more secure
         than Xen.</p>
 
-        <p>Paravirtualization is much less secure than full virtualization as I
-        already said in the first topic of the article, this is literally a
-        negative point of Xen, and QubesOS only supports full virtualization
-        (through HVM) for Windows tamplates, everything else is
+        <p>Paravirtualization is much less secure than full virtualization, as
+        I already said in the first topic of the article. This is literally a
+        negative point of Xen, and Qubes OS only supports full virtualization
+        (through HVM) for Windows templates; everything else is
         paravirtualization.</p>
 
         <blockquote>
@@ -1587,7 +1588,7 @@
         believe that she isolated herself from reality by somehow entering
         Xen.</p>
 
-        <p>The argument here is that ChromeOS is more secure than QubesOS in
+        <p>The argument here is that ChromeOS is more secure than Qubes OS in
         several practical areas. The system and kernel files are located on an
         immutable partition that cannot be changed by apps or malware. It is
         sandboxing by design, each browser tab, app and service runs isolated
@@ -1620,7 +1621,7 @@
         <p>Of course not.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-15">
         <h2 id="qubes-15">15 - Reviewing the developers' arguments</h2>
 
         <p><a href=
@@ -1645,7 +1646,7 @@
           effectively compromised.</p>
         </blockquote>
 
-        <p>Absolutely true. This is true for QubesOS too; if dom0 (or even
+        <p>Absolutely true. This is true for Qubes OS too; if dom0 (or even
         NetVM) is compromised, it's all over. It is intellectual dishonesty on
         the part of the developers to pretend that this statement does not
         apply to Qubes OS.</p>
@@ -1762,12 +1763,12 @@
         </blockquote>
 
         <p>What exactly? Unless through physical attack (social engineering,
-        hardware firmware backdoor or exploit) in which QubesOS is also totally
-        vulnerable, or a compromised router, how is malware going to reach an
-        offline (or through the Tor network) computer? Or even through a
-        physical internet separation? What kind of malware is this? It must be
-        some kind of supernatural being; I'd like to see an example of malware
-        that could do this, reach air-gapped devices.</p>
+        hardware firmware backdoor or exploit) in which Qubes OS is also
+        totally vulnerable, or a compromised router, how is malware going to
+        reach an offline (or through the Tor network) computer? Or even through
+        a physical internet separation? What kind of malware is this? It must
+        be some kind of supernatural being; I'd like to see an example of
+        malware that could do this, reach air-gapped devices.</p>
 
         <p>If you're talking about advanced attacks performed on theoretical
         academic research, like: AirHopper/GSMem/USBee - exfiltrate data by
@@ -1937,7 +1938,7 @@
         (e.g., updating packages in the template) can be abused by an attacker
         in an AppVM to perform actions that affect the template or influence
         qubes that receive data from it. And obviously, exploits in the
-        hypervisor, dom0, or other attack surfaces of QubesOS can allow
+        hypervisor, dom0, or other attack surfaces of Qubes OS can allow
         privilege escalation to alter templates or other qubes.</p>
 
         <p>Finally, a cloned template does not automatically receive patches
@@ -1970,7 +1971,7 @@
         architecture claims point by point.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-16">
         <h2 id="qubes-16">16 - Terrible against zero-day attacks</h2>
 
         <blockquote>
@@ -2021,9 +2022,9 @@
         parts" architecture increases the total surface area compared to
         systems with deliberately smaller TCBs.</p>
 
-        <p>Third, modern mitigaters (ASLR, KARL, KPTI, retpoline, SELinux,
+        <p>Third, modern mitigations (ASLR, KARL, KPTI, retpoline, SELinux,
         namespaces, etc.) reduce or obfuscate the kernel's attack surface
-        through isolation or randomization. Taking into account that QubesOS
+        through isolation or randomization. Taking into account that Qubes OS
         developers do not believe in security through randomization, kernel
         mitigations and code correction, this system has nothing that reduces
         or obfuscates its attack surface, as it does not even have VM spoofing,
@@ -2044,7 +2045,7 @@
         surfaces, but the reality is that all new software and hardware
         vulnerabilities are zero-day; every week, every month dozens or
         hundreds of zero-day vulnerabilities emerge that require fast and
-        predictable patches, something that the QubesOS devs do not believe or
+        predictable patches, something that the Qubes OS devs do not believe or
         cannot do (e.g., Xen is developed and maintained by other developers).
         So enterprise operating systems like RHEL, AlmaLinux, Rocky Linux,
         Ubuntu, FreeBSD; or operating systems focused on bug and vulnerability
@@ -2062,7 +2063,7 @@
         code/smaller attack surface, and mitigations offer greater structural
         resistance to zero-day attacks.</p>
 
-        <p>"QubesOS allows you to use OpenBSD and all these other operating
+        <p>"Qubes OS allows you to use OpenBSD and all these other operating
         systems inside qubes", you might say, and no, it doesn't. The only
         officially supported templates are Fedora and Debian, there are
         templates for other OSes maintained by the community, but they are not
@@ -2081,7 +2082,7 @@
         "https://doc.qubes-os.org/en/latest/user/templates/templates.html">https://doc.qubes-os.org/en/latest/user/templates/templates.html</a>
         </p>
 
-        <p>QubesOS is not even stable by default and yet they offer even more
+        <p>Qubes OS is not even stable by default and yet they offer even more
         unstable ways to use it? How would this increase security (especially
         against zero-days)? You can't take this operating system seriously, not
         if you're like me and value security first.</p>
@@ -2099,7 +2100,7 @@
 
         <h1>Conclusion</h1>
 
-        <p>QubesOS is not the best and not even a good alternative for those
+        <p>Qubes OS is not the best and not even a good alternative for those
         seeking security, nor anonymity because without security you can't
         maintain anonymity for a long time. This OS is for those who seek for a
         quick and easy control/dispatch of virtual machines, whether for
@@ -2108,13 +2109,13 @@
         for work, or for both.</p>
 
         <p>Some criticisms in this article may also apply to other systems, but
-        the claim here is that QubesOS combines many of these concerns at once.
-        The following section presents alternatives the author considers
+        the claim here is that Qubes OS combines many of these concerns at
+        once. The following section presents alternatives the author considers
         stronger for security and isolation goals.</p>
 
         <p>For anonymity only, Tails is superior; but Whonix is stronger for
         security. You can use Whonix in any Linux system, systems that may even
-        be safer than QubesOS and through the KVM that is a more secure
+        be safer than Qubes OS and through the KVM that is a more secure
         virtualizer than Xen, as previously stated.</p>
 
         <p>Qubes OS's compartmentalization approach achieves useful
@@ -2151,18 +2152,19 @@
         for experimental compartmentalization.</p>
       </section>
 
-      <section>
+      <section aria-labelledby="qubes-points">
         <h2 id="qubes-points">Points to consider</h2>
 
-        <p>I know that VMs bring compartmentalization at the OS level, it
-        brings great ease in many aspects. But the sandbox at the user level is
-        more safe in addition to being much less complex. An escape from this
-        sandboxing limit an attacker to the user's context; an escape typically
-        only grants user privileges, not hardware control. While a breach or
-        control of the Hypervisor takes the attacker to the hardware.</p>
+        <p>I know that VMs bring compartmentalization at the OS level, and that
+        they make many things easier. But user-level sandboxing is safer while
+        also being much less complex. An escape from this kind of sandboxing
+        limits an attacker to the user's context; such an escape typically
+        grants only user privileges, not hardware control. By contrast, a
+        breach of or control over the hypervisor takes the attacker to the
+        hardware.</p>
 
         <p>There is no such thing as perfect security, much less perfect
-        isolation, but there is security greater than QubesOS.</p>
+        isolation, but there is security greater than Qubes OS.</p>
 
         <p>I personally don't have much faith in virtual machines when it comes
         to security, and I think you shouldn't either. But in my opinion, the
@@ -2194,14 +2196,14 @@
         <p>Other than that, use KVM or even Hyper-V, it will serve you well and
         historically it's safer than Xen.</p>
 
-        <p>Other criticisms of QubesOS made by other people that you might want
-        to see, but that doesn't mean I agree 100% with them (and may
+        <p>Other criticisms of Qubes OS made by other people that you might
+        want to see, but that doesn't mean I agree 100% with them (and may
         contradict what was said in this article):</p>
 
         <ul>
           <li>
             <a href=
-            "https://www.pentest.es/Demystifying_QubesOS_Security.pdf">https://www.pentest.es/Demystifying_QubesOS_Security.pdf</a>
+            "https://www.pentest.es/Demystifying_Qubes_OS_Security.pdf">https://www.pentest.es/Demystifying_Qubes_OS_Security.pdf</a>
           </li>
 
           <li>
@@ -2221,8 +2223,8 @@
         </ul>
       </section>
 
-      <section>
-        <h2 id="qubes-reco">My recommendations instead of QubesOS</h2>
+      <section aria-labelledby="qubes-reco">
+        <h2 id="qubes-reco">My recommendations instead of Qubes OS</h2>
 
         <h3>1 - OpenBSD</h3>
 
@@ -2244,7 +2246,7 @@
 
         <p>For a better understanding of why OpenBSD is so secure compared to
         other operating systems, read my other article: <a href=
-        "./openbsd-solos.html"></a>Why OpenBSD solos?</p>
+        "./openbsd.html">Why OpenBSD stands alone</a></p>
 
         <p>OpenBSD is perfect for servers, after all it was created for that,
         but it's also excellent for desktops (I use it myself for daily
@@ -2270,7 +2272,7 @@
         subsystem. This allows you to isolate the base system, services,
         network and Linux binaries in a very secure way, without depending on a
         hypervisor. You can achieve much more compartmentalization than with
-        QubesOS and in a much simpler way, without spending many resources.
+        Qubes OS and in a much simpler way, without spending many resources.
         <a href=
         "https://docs.freebsd.org/en/books/handbook/jails/">https://docs.freebsd.org/en/books/handbook/jails/</a></p>
 
@@ -2293,7 +2295,7 @@
           </li>
 
           <li>
-            <p>And for QubesOS enthusiasts: <a href=
+            <p>And for Qubes OS enthusiasts: <a href=
             "https://github.com/BawdyAnarchist/quBSD">https://github.com/BawdyAnarchist/quBSD</a></p>
           </li>
         </ul>
@@ -2316,8 +2318,8 @@
           </li>
         </ul>
 
-        <p>FreeBSD is not secure by default. Knowledge about it security tools
-        (firewalls, jails, capsium, etc.) is necessary.</p>
+        <p>FreeBSD is not secure by default. Knowledge of its security tools
+        (firewalls, jails, Capsicum, etc.) is necessary.</p>
 
         <h3>3 - Gentoo Hardened</h3>
 
@@ -2384,7 +2386,7 @@
         OpenBSD. This is the most secure Linux system by default. <a href=
         "https://secureblue.dev/">https://secureblue.dev</a></p>
 
-        <p>Its only drawback is its use of SystemD, but this is undoubtedly
+        <p>Its only drawback is its use of systemd, but this is undoubtedly
         outweighed by Secureblue impressive features. <a href=
         "https://secureblue.dev/features">https://secureblue.dev/features</a></p>
 
@@ -2458,7 +2460,7 @@
         <ul>
           <li>Alpine have hardened_malloc (GrapheneOS malloc) native support,
           install it. <a href=
-          "https://wiki.alpinelinux.org/wiki/Hardened_mallocficial">https://wiki.alpinelinux.org/wiki/Hardened_mallocficial</a>
+          "https://wiki.alpinelinux.org/wiki/Hardened_malloc">https://wiki.alpinelinux.org/wiki/Hardened_malloc</a>
           </li>
 
           <li>For some hardening: <a href=
@@ -2468,7 +2470,7 @@
 
         <h3>7 - Artix Linux Hardened</h3>
 
-        <p>Artix is Arch Linux but good (doesn't have SystemD).</p>
+        <p>Artix is Arch Linux but good (doesn't have systemd).</p>
 
         <blockquote>
           <p>Artix uses real init systems, because PID1 must be simple, secure
@@ -2512,7 +2514,7 @@
           <li>By using this Linux distribution you will be blessed with the
           divine Arch Wiki. The best and most complete documentation in the
           Linux world. <a href=
-          "https://wiki.archlinux.org">https://wiki.archlinux.org</a>
+          "https://wiki.archlinux.org/title/Main_page">https://wiki.archlinux.org/title/Main_page</a>
           </li>
 
           <li>For proper hardening (you will take some days):
@@ -2611,8 +2613,8 @@
         <ul>
           <li>
             <a href=
-            "https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux">
-            https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux</a>
+            "https://www.redhat.com/en/technologies/Linux-platforms/enterprise-Linux">
+            https://www.redhat.com/en/technologies/Linux-platforms/enterprise-Linux</a>
           </li>
 
           <li>
@@ -2653,7 +2655,7 @@
             <p><strong>GrapheneOS</strong> is a privacy and security focused
             mobile OS with Android app compatibility developed as a non-profit
             open source project. GrapheneOS is also much more reliable and
-            secure than QubesOS (and every linux distro) but is for phones.
+            secure than Qubes OS (and every Linux distro) but is for phones.
             <a href="https://grapheneos.org/">https://grapheneos.org</a> It is
             possible to completely separate profiles, with each profile
             containing its own libraries and programs in the system, and it is
@@ -2664,7 +2666,7 @@
 
           <li>
             <p><strong>NixOS</strong> has everything to be a very secure Linux
-            system, if it weren't for that problematic SystemD. All the
+            system, if it weren't for that problematic systemd. All the
             system's default configuration and behavior remains in one file,
             making the system reproducible, declarative and stable. It also has
             an incredible repository and package manager. <a href=
@@ -2708,7 +2710,7 @@
           <li>
             <p><strong>Linux from Scratch (LFS)</strong>: Stay away from this,
             it's extremely complex and unrewarding. You can't achieve much more
-            security than Gentoo, and even its official guide uses SystemD as a
+            security than Gentoo, and even its official guide uses systemd as a
             base (It's possible to do it without them, but only experimentally
             and without many guides.). Maintenance would be very difficult and
             extremely risky; it's literally creating your own Linux distro.
@@ -2743,7 +2745,7 @@
           </li>
         </ul>
 
-        <p>And for a general linux hardening guide (can be outdated):</p>
+        <p>And for a general Linux hardening guide (can be outdated):</p>
 
         <ul>
           <li>
@@ -2755,12 +2757,16 @@
 
         <p>Also read my 2 other articles, previously mentioned:</p>
 
-        <p><a href="./c-language.html">1 - The C language and its biggest
-        problem; proving its insecurity</a>
-        </p>
+        <ol>
+          <li>
+            <a href="./c-language.html">The C language and its biggest problem:
+            evidence of its insecurity.</a>
+          </li>
 
-        <p><a href="./openbsd-solos.html">2 - "Why OpenBSD solos?":</a>
-        </p>
+          <li>
+            <a href="./openbsd.html">Why OpenBSD stands alone</a>
+          </li>
+        </ol>
 
         <blockquote>
           <p>An idiot admires complexity, a genius admires simplicity. For an
