@@ -1,5 +1,32 @@
 #!/usr/bin/perl
 
+# Copyright (c) 2025-2026 David Uhden Collado
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+# REBUILD feed files by scanning the articles directory from scratch.
+# Parses article headers/metadata, sorts entries by publication date and then
+# regenerates feed content to keep output consistent and deterministic.
+#
+# Usage:
+#   rebuild-feeds.pl
+#
+# Behavior:
+#   - Detects supported feed files under ../feeds
+#   - Reads metadata from ../articles/*.html
+#   - Generates locale-aware pubDate values (EN/ES)
+#   - Rewrites feed files in UTF-8 with escaped XML content
+
 use strict;
 use warnings;
 use utf8;

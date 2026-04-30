@@ -1,5 +1,36 @@
 #!/usr/bin/perl
 
+# Copyright (c) 2025-2026 David Uhden Collado
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+# UPDATE RSS/ATOM-like feed entries from article metadata and publication date.
+# Scans article pages, extracts title/date/description/link and inserts a new
+# <item> in the selected feed while preserving XML escaping and language format.
+#
+# Usage:
+#   update-feeds.pl [--replace]
+#
+# Options:
+#   --replace   If an item with the same link already exists, replace it.
+#               Without this flag, existing links are kept and reported.
+#
+# Behavior:
+#   - Detects available feed targets under ../feeds
+#   - Prompts for language/feed file and article slug
+#   - Builds RFC2822 pubDate and normalized GUID/link values
+#   - Writes the updated feed file in UTF-8
+
 use strict;
 use warnings;
 
@@ -244,4 +275,3 @@ sub main {
 }
 
 main();
-

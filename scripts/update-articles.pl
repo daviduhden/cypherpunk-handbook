@@ -13,10 +13,19 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-# Small helper to update the Articles section in cypherpunk-handbook/index.html
-# Usage: update-articles.pl
-# Prompts for: category (desktop|mobile), title, slug (without .html), where to insert
+#
+# UPDATE article listings/pages from local templates and structured metadata.
+# Prompts for category/title/slug, builds a safe article link, and injects it
+# into the matching section of index.html while preserving existing markup.
+#
+# Usage:
+#   update-articles.pl
+#
+# Behavior:
+#   - Uses ../index.html as the edit target
+#   - Validates category and prevents duplicate article links
+#   - Inserts mobile "overview" links at the top when applicable
+#   - Writes updated HTML back to disk with explicit error reporting
 
 use strict;
 use warnings;
