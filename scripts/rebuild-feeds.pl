@@ -138,8 +138,8 @@ sub detect_feeds {
 }
 
 sub extract_metadata {
-    my ($path) = @_;
-    my $html = read_file($path);
+    my ($path)           = @_;
+    my $html             = read_file($path);
     my ($article_header) = $html =~
       m{<header[^>]*\bid\s*=\s*["']article-header["'][^>]*>(.*?)</header>}is;
     my $content_scope = defined $article_header ? $article_header : $html;
@@ -155,11 +155,11 @@ sub extract_metadata {
 
     my ($desc) =
       $html =~
-      /<meta[^>]*\bname\s*=\s*["']description["'][^>]*\bcontent\s*=\s*["'](.*?)["'][^>]*>/is;
+/<meta[^>]*\bname\s*=\s*["']description["'][^>]*\bcontent\s*=\s*["'](.*?)["'][^>]*>/is;
     $desc = '' unless defined $desc && length $desc;
     if ( !length $desc ) {
         ($desc) = $content_scope =~
-          /<p[^>]*\bclass\s*=\s*["'][^"']*\blede\b[^"']*["'][^>]*>\s*(.*?)\s*<\/p>/is;
+/<p[^>]*\bclass\s*=\s*["'][^"']*\blede\b[^"']*["'][^>]*>\s*(.*?)\s*<\/p>/is;
         $desc //= '';
     }
     if ( !length $desc ) {
