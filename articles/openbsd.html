@@ -42,7 +42,7 @@
       <header id="article-header">
         <p class="kicker">Operating systems</p>
 
-        <h1>Why OpenBSD stands alone</h1>
+        <h2>Why OpenBSD stands alone</h2>
 
         <p class="meta">Written by FlyWithMe (a SimpleX chat user). Inspired by
         why-openbsd.rocks — <time datetime="2026-02-17">Updated February 17,
@@ -50,9 +50,9 @@
 
         <p class="lede">This article summarizes why OpenBSD is presented as one
         of the most secure operating systems in the world, and why Windows,
-        macOS, iOS, Android, and Linux, regardless of hardening level, are
-        argued here to be less secure. The comparison also includes other BSDs,
-        Qubes OS, Fedora Secureblue, and Hardened Gentoo.</p>
+        macOS, iOS, Android, and Linux—regardless of hardening level—are argued
+        here to be less secure. The comparison also includes other BSDs, Qubes
+        OS, Fedora Secureblue, and Hardened Gentoo.</p>
       </header>
 
       <nav class="toc" aria-labelledby="obsd-contents-heading">
@@ -245,11 +245,11 @@
           </li>
 
           <li>
-            <a href="#obsd-46">46 - Audit Process</a>
+            <a href="#obsd-46">46 - Audit process</a>
           </li>
 
           <li>
-            <a href="#obsd-47">47 - Project Goals</a>
+            <a href="#obsd-47">47 - Project goals</a>
           </li>
 
           <li>
@@ -257,7 +257,7 @@
           </li>
 
           <li>
-            <a href="#obsd-49">49 - Less attack surface</a>
+            <a href="#obsd-49">49 - Smaller attack surface</a>
           </li>
         </ol>
       </nav>
@@ -277,8 +277,8 @@
         </blockquote>
 
         <ul>
-          <li>Linux is limited and will never be really secure. It wasn't built
-          for that.</li>
+          <li>Linux is limited and, in this view, will never be truly secure.
+          It was not built for that.</li>
         </ul>
 
         <h2 id="obsd-0">0 - Philosophy</h2>
@@ -294,7 +294,7 @@
         <ul>
           <li>This differs from all other operating systems, which were not
           created with the aim of being the most secure. The same goes for the
-          Linux kernel, since the beginning it was not built with the objective
+          Linux kernel: from the beginning, it was not built with the objective
           of extreme security. So many things neglected in the past will
           eternally impact kernel security. There are 1 or 2 Linux distros with
           this purpose but they have not rewritten the operating system from
@@ -307,10 +307,10 @@
       <section aria-labelledby="obsd-1">
         <h2 id="obsd-1">1 - Library order randomization</h2>
 
-        <p>In rc(8), re-link libc.so, libcrypto, and ld.so on startup, placing
-        the objects in a random order at boot time to prevent "Return oriented
-        programming" and other attacks. With randomized symbols, this is not an
-        attack vector anymore.</p>
+        <p>In rc(8), libc.so, libcrypto, and ld.so are relinked on startup,
+        placing the objects in a random order at boot time to prevent
+        "Return-oriented programming" and other attacks. With randomized
+        symbols, this is not an attack vector anymore.</p>
 
         <ul>
           <li>Linux randomizes bases, but does not relink/reorder internal libc
@@ -342,10 +342,10 @@
 
           <li>The first free operating system to provide an IPSec stack.</li>
 
-          <li>The first widely used operating system to enable PIE it globally
-          by default.</li>
+          <li>The first widely used operating system to enable PIE globally by
+          default.</li>
 
-          <li>The first operating system to enable Stack protector systemwide
+          <li>The first operating system to enable stack protector system-wide
           by default.</li>
 
           <li>First complete integration and adoption of IPv6, starting Jan 6,
@@ -386,9 +386,9 @@
         predict execution windows.</p>
 
         <ul>
-          <li>Possible to configure in Linux through systemd (<strong>Strongly
-          opposed to systemd.</strong>), but it does not come by default
-          anyway.</li>
+          <li>This can be configured in Linux through systemd (<strong>strongly
+          opposed to systemd.</strong>), but it does not come enabled by
+          default.</li>
         </ul>
       </section>
 
@@ -417,8 +417,8 @@
         <pre>
 permit &lt;user&gt; as root
 permit root</pre>
-        <p>Compare this with the simplest sudo configuration and you will
-        see.</p>
+        <p>Compare this with the simplest sudo configuration and you will see
+        the difference.</p>
 
         <ul>
           <li>Using doas on Linux is possible, although with many problems in
@@ -455,8 +455,9 @@ permit root</pre>
         randomization,&rsquo; this is absolutely epic.</p>
 
         <ul>
-          <li>Cry more Linux. macOS, Windows, and Linux have KASLR (kernel base
-          address randomization), but not KARL which is better.</li>
+          <li>Linux can only envy this. macOS, Windows, and Linux have KASLR
+          (kernel base address randomization), but not KARL, which this section
+          considers better.</li>
         </ul>
       </section>
 
@@ -488,11 +489,12 @@ permit root</pre>
       <section aria-labelledby="obsd-13">
         <h2 id="obsd-13">13 - LibreSSL</h2>
 
-        <p>The unmaintainable and bloated OpenSSL Codebase was forked after
+        <p>The unmaintainable and bloated OpenSSL codebase was forked after
         Heartbleed was revealed. The code was thoroughly cleaned up, improved
-        and documented. Besides new modern ciphers FRP256v1, RFC 5639 EC
-        Brainpool, ChaCha20, Poly1305, LibreSSL is API compatible with OpenSSL
-        but without the mess. It is actively developed by OpenBSD devs.</p>
+        and documented. Besides adding modern ciphers such as FRP256v1, RFC
+        5639 EC Brainpool, ChaCha20, and Poly1305, LibreSSL is API-compatible
+        with OpenSSL but without the same complexity. It is actively developed
+        by OpenBSD devs.</p>
 
         <ul>
           <li>Nowadays, macOS OpenSSL uses LibreSSL code.</li>
@@ -503,9 +505,10 @@ permit root</pre>
         <h2 id="obsd-14">14 - License</h2>
 
         <p>You are free to use the operating system as you want and do business
-        with it according to ISC or Berkeley style licenses. By contract the
-        GPL is not acceptable when adding new code. BSD license is a freer
-        license than the GPL, which restricts the use of code.</p>
+        with it according to ISC or Berkeley style licenses. By project policy,
+        the GPL is not acceptable when adding new code. The BSD license is
+        presented here as freer than the GPL, which is described as more
+        restrictive in code use.</p>
 
         <p>This prevents infiltration and/or internal corruption of programmers
         to boycott and/or add backdoors. Like what has happened to the Linux
@@ -533,10 +536,10 @@ permit root</pre>
       <section aria-labelledby="obsd-15">
         <h2 id="obsd-15">15 - Malloc leak detection</h2>
 
-        <p>It's a tool to detect unsafe behaviors in the OpenBSD code for Team
-        developers. It needs to have debug symbols. This tracks memory
-        allocations to free them properly after use, facilitating safe and
-        native programming in the system.</p>
+        <p>It is a tool used by the team to detect unsafe behavior in OpenBSD
+        code. It requires debug symbols. It tracks memory allocations so they
+        can be properly freed after use, supporting safer native programming in
+        the system.</p>
 
         <ul>
           <li>Linux, macOS, and Windows have tools in their ecosystems for
@@ -548,11 +551,10 @@ permit root</pre>
       <section aria-labelledby="obsd-16">
         <h2 id="obsd-16">16 - Documentation - manpages</h2>
 
-        <p>There is probably no Operating System that is documented more and
-        better than OpenBSD. Every single binary, library, driver or script
-        delivered in the base system has its own manpage. The OpenBSD project
-        considers lack of documentation on any function of the system to be a
-        bug.</p>
+        <p>There is probably no operating system documented more thoroughly
+        than OpenBSD. Every binary, library, driver, or script delivered in the
+        base system has its own man page. The OpenBSD project considers lack of
+        documentation on any function of the system to be a bug.</p>
 
         <ul>
           <li>In Linux, this is ridiculous and leads the user to a huge lack of
@@ -600,17 +602,17 @@ permit root</pre>
           </li>
         </ul>
 
-        <p>That is, OpenBSD gains a certain advantage by being less likely to
-        have unfound bugs, which can lead to security vulnerabilities.</p>
+        <p>That is, OpenBSD gains a potential advantage by being less likely to
+        have undiscovered bugs that could become security vulnerabilities.</p>
       </section>
 
       <section aria-labelledby="obsd-19">
         <h2 id="obsd-19">19 - OpenSMTPD</h2>
 
-        <p>Written by OpenBSD Developers from scratch. A simple mail daemon was
+        <p>Written from scratch by OpenBSD developers. A simple mail daemon was
         needed for the base system of the operating system and there were no
-        suitable alternatives. The goals are simplicity, security and
-        reliability with an acceptable license (ISC).</p>
+        suitable alternatives. The goals are simplicity, security, and
+        reliability under an acceptable license (ISC).</p>
 
         <ul>
           <li>OpenSMTPD has a portable version available in several Linux
@@ -712,13 +714,13 @@ permit root</pre>
 
         <ul>
           <li>Linux has seccomp, which can emulate pledge's syscall‑restriction
-          part, but seccomp is low‑level, hard to write correctly by hand,
-          brittle across libc/kernel/libc behavior changes and needs tools
-          (like libseccomp) to avoid mistakes; writing policies for this is
+          part, but seccomp is low-level, hard to write correctly by hand, and
+          brittle across libc/kernel behavior changes and needs tools (like
+          libseccomp) to avoid mistakes; writing policies for this is
           error‑prone.</li>
 
-          <li>Seccomp was never actually usable, and It's very insecure:
-          <a href=
+          <li>Seccomp is presented here as not practically usable and very
+          insecure: <a href=
           "https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html">https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html</a>
           </li>
 
@@ -731,14 +733,14 @@ permit root</pre>
       <section aria-labelledby="obsd-25">
         <h2 id="obsd-25">25 - unveil</h2>
 
-        <p>The unveil system call limits the filesystem open call to a given
-        set of paths. It extends the idea of pledge: simply limiting programs
-        to open is insufficient, because open is valid for the whole
+        <p>The unveil system call limits filesystem open calls to a defined set
+        of paths. It extends the idea of pledge: simply limiting programs to
+        open is insufficient, because open is valid for the whole
         filesystem.</p>
 
         <p>For example, why should a program like passwd(1) have access to your
         file system beyond /etc/passwd and /etc/shadow? If there is a security
-        bug in passwd then effects would be quite limited.</p>
+        bug in passwd, the effects would be more limited.</p>
 
         <p>The browsers: Firefox, Firefox ESR, Tor, Chromium and Iridium are
         limited with unveil (and pledge) and can only have access to Downloads
@@ -810,7 +812,7 @@ permit root</pre>
       <section aria-labelledby="obsd-28">
         <h2 id="obsd-28">28 - MAC addresses randomized</h2>
 
-        <p>OpenBSD lets you have randomized MAC addresses via ifconfig</p>
+        <p>OpenBSD lets you use randomized MAC addresses via ifconfig.</p>
 
         <pre>
 ifconfig iwm0 lladdr random</pre>
@@ -866,8 +868,8 @@ ifconfig iwm0 lladdr random</pre>
         Validated ROA Payloads (VRPs) in various formats.</p>
 
         <ul>
-          <li>OpenBSD thing. But it is available for installation on Linux and
-          macOS, although no Linux distro uses it.</li>
+          <li>This is an OpenBSD feature. It is available for installation on
+          Linux and macOS, although no Linux distro uses it by default.</li>
         </ul>
       </section>
 
@@ -1019,7 +1021,7 @@ ifconfig iwm0 lladdr random</pre>
         <ul>
           <li>Fedora Secureblue uses unbound which also comes by default in
           OpenBSD, but is more complex and unnecessary in most cases, a simple
-          configuration in unwind are several lines in unbound.</li>
+          unwind configuration may require several lines in unbound.</li>
         </ul>
       </section>
 
@@ -1079,13 +1081,13 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-42">
         <h2 id="obsd-42">42 - vmm(4) - hardened hypervisor</h2>
 
-        <p>Theo the Raadt (the creator) has always criticized the idea of
-        virtual machines and their security, he has always seen that the
-        weakest and easiest point to be explored in a virtual machine is the
-        hypervisor. Then the OpenBSD devs created their own hypervisor for the
-        system, focused on extreme security and with the minimum possible
-        attack vector beyond the separation of privileges. This of course leads
-        to a lot of loss of features for virtual machines like:</p>
+        <p>Theo de Raadt (the creator) has long criticized virtual machines and
+        their security model, arguing that the hypervisor is often the weakest
+        and easiest point to exploit. Then the OpenBSD devs created their own
+        hypervisor for the system, focused on extreme security and with the
+        minimum possible attack vector beyond the separation of privileges.
+        This of course leads to a lot of loss of features for virtual machines
+        like:</p>
 
         <ul>
           <li>Graphics</li>
@@ -1108,8 +1110,8 @@ ifconfig iwm0 lladdr random</pre>
 
         <ul>
           <li>QEMU/KVM, Xen, Hyper-V, VMware, VirtualBox, and other hypervisors
-          are unreliable and were not built from scratch up with a focus on
-          security first. Furthermore, everything in the operating system can
+          are unreliable and were not built from scratch with security as the
+          first priority. Furthermore, everything in the operating system can
           make VM management insecure, such as systemd itself.</li>
 
           <li>Hardware passthrough greatly increases the attack surface.
@@ -1314,7 +1316,7 @@ ifconfig iwm0 lladdr random</pre>
           </ol>
         </blockquote>
 
-        <p>This makes OpenBSD predictable, reliable, stable, verifiable and
+        <p>This makes OpenBSD predictable, reliable, stable, verifiable, and
         therefore secure.</p>
 
         <ul>
@@ -1444,7 +1446,7 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-49">
         <h2 id="obsd-49">49 - Less attack surface</h2>
 
-        <p>Currently in 2026-02-16, the entire OpenBSD operating system (src +
+        <p>As of 2026-02-16, the entire OpenBSD operating system (src +
         xenocara) has 35,590,098 lines of code. The OpenBSD kernel (src/sys)
         has a total of 7,906,769 lines of code.</p>
 
@@ -1465,14 +1467,15 @@ ifconfig iwm0 lladdr random</pre>
           </li>
         </ul>
 
-        <p>Windows should be beyond the billion and probably macOS too. FreeBSD
-        and NetBSD have more lines of code than OpenBSD, but most likely less
-        than the Linux kernel or a Linux distro.</p>
+        <p>Windows is likely beyond one billion lines, and probably macOS as
+        well. FreeBSD and NetBSD have more lines of code than OpenBSD, but most
+        likely less than the Linux kernel or a Linux distro.</p>
 
-        <p>More lines of code = more attack surface, more bugs, more
+        <p>More lines of code means more attack surface, more bugs, and more
         vulnerabilities. The philosophy and development of OpenBSD focuses on
         minimalism and security, the devs understand that a clean and
-        minimalist code will lower the attack surface and do so.</p>
+        minimalist code lowers attack surface, and the developers actively
+        follow that approach.</p>
 
         <p>By using a Linux distro, whatever it may be, even if it's Gentoo or
         Linux from Scratch, you'll be dealing with tens and even hundreds of
@@ -1508,7 +1511,7 @@ ifconfig iwm0 lladdr random</pre>
     <p><strong><a href="./../license.html">LICENSE</a></strong>
     </p>
     <img src="./../images/anarchy.png" alt="freedom" class="icon">
-    <h4 class="motto">LIVE FREE OR DIE</h4>
+    <p class="motto">LIVE FREE OR DIE</p>
     <img src="./../images/anarchy.png" alt="freedom" class="icon">
   </footer>
 </body>

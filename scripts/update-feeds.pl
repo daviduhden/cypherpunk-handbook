@@ -36,7 +36,6 @@ use warnings;
 
 use File::Spec;
 use Getopt::Long;
-use POSIX       qw(strftime);
 use Time::Local qw(timegm);
 
 my $replace_existing = 0;
@@ -46,6 +45,7 @@ my $root_dir =
   File::Spec->catdir( ( File::Spec->splitpath($0) )[1] || '.', '..' );
 my $feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
 my $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
+my $site_url     = 'https://handbook.uhden.dev';
 
 sub logi     { print "✅ [INFO] $_[0]\n"; }
 sub logw     { print STDERR "⚠️ [WARN] $_[0]\n"; }
@@ -119,23 +119,11 @@ sub iso_to_epoch {
 }
 
 sub rfc2822_from_ts_locale {
-    my ( $t, $lang ) = @_;
-    $lang ||= 'en';
+    my ($t)     = @_;
     my @wday_en = qw(Sun Mon Tue Wed Thu Fri Sat);
     my @mon_en  = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-    my @wday_es = qw(dom lun mar mié jue vie sáb);
-    my @mon_es  = qw(ene feb mar abr may jun jul ago sep oct nov dic);
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday ) = gmtime($t);
     $year += 1900;
-
-    if ( $lang eq 'es' ) {
-        return sprintf(
-            '%s, %02d %s %d %02d:%02d:%02d GMT',
-            lc( $wday_es[$wday] ),
-            $mday, lc( $mon_es[$mon] ),
-            $year, $hour, $min, $sec
-        );
-    }
     return sprintf( '%s, %02d %s %d %02d:%02d:%02d GMT',
         $wday_en[$wday], $mday, $mon_en[$mon], $year, $hour, $min, $sec );
 }
@@ -170,29 +158,32 @@ sub detect_feeds {
 }
 
 sub update_feed {
-    my (%args) = @_;
-    my $path   = $args{path};
-    my $slug   = $args{slug};
-    my $pub    = $args{pub_rfc};
-    my $item   = join '',
+    my (%args)        = @_;
+    my $path          = $args{path};
+    my $slug          = $args{slug};
+    my $pub           = $args{pub_rfc};
+    my $link          = "/articles/$slug.html";
+    my @link_variants = ( $link, "$site_url$link" );
+    my $link_re       = join '|', map { quotemeta($_) } @link_variants;
+    my $item          = join '',
       "    <item>\n",
       "      <title>", xml_escape( $args{title} ), "</title>\n",
-      "      <link>./../articles/$slug.html</link>\n",
+      "      <link>$link</link>\n",
       "      <description>", xml_escape( $args{description} ),
       "</description>\n",
       "      <pubDate>$pub</pubDate>\n",
-      "      <guid>./../articles/$slug.html</guid>\n",
+      "      <guid isPermaLink=\"false\">$link</guid>\n",
       "    </item>\n\n";
 
     my $content = read_file($path);
-    my $link    = "./../articles/$slug.html";
 
-    if ( $content =~ /\Q$link\E/ ) {
+    if ( $content =~ m{<link>\s*(?:$link_re)\s*</link>}s ) {
         if ( !$replace_existing ) {
             logw("Feed already has $link in $path (use --replace to replace)");
             return;
         }
-        $content =~ s{<item>.*?<link>\Q$link\E.*?</item>\s*}{}gs;
+        $content =~
+          s{<item>.*?<link>\s*(?:$link_re)\s*</link>.*?</item>\s*}{}gs;
     }
 
     $content =~ s{<pubDate>[^<]*</pubDate>}{<pubDate>$pub</pubDate>}m;
@@ -246,7 +237,7 @@ sub main {
         logw("Invalid/empty ISO date, using current time.");
     }
 
-    my $pub_rfc_en = rfc2822_from_ts_locale( $pub_epoch, 'en' );
+    my $pub_rfc_en = rfc2822_from_ts_locale($pub_epoch);
     update_feed(
         path        => $feeds->{en},
         slug        => $slug_en,
@@ -256,7 +247,7 @@ sub main {
     );
 
     if ($has_es) {
-        my $pub_rfc_es = rfc2822_from_ts_locale( $pub_epoch, 'es' );
+        my $pub_rfc_es = rfc2822_from_ts_locale($pub_epoch);
         update_feed(
             path        => $feeds->{es},
             slug        => $slug_es,
