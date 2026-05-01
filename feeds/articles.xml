@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
-    <title>Cypherpunk Handbook - Articles</title>
-    <link>./../index.html</link>
+    <title>The Cypherpunk Handbook - Articles</title>
+    <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
     <lastBuildDate>Tue, 17 Feb 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Why OpenBSD stands alone</title>
-      <link>./../articles/openbsd.html</link>
-      <description>This article summarizes why OpenBSD is presented as one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux, regardless of hardening level, are argued here to be less secure. The comparison also includes other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
+      <link>/articles/openbsd.html</link>
+      <description>This article summarizes why OpenBSD is presented as one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux—regardless of hardening level—are argued here to be less secure. The comparison also includes other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
       <pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate>
-      <guid>./../articles/openbsd.html</guid>
+      <guid isPermaLink="false">/articles/openbsd.html</guid>
     </item>
     <item>
-      <title>The C language and its biggest problem: evidence of its insecurity.</title>
-      <link>./../articles/c-language.html</link>
-      <description>C is not a memory-safe language, even though secure software can be built with it. Regardless of programmer skill or the number of code reviews, writing C software with perfect memory management is not realistic. Formally verified software is possible, but it is extremely rare; two examples are the seL4 microkernel and the CompCert compiler.</description>
+      <title>The C language’s biggest problem: evidence of its insecurity</title>
+      <link>/articles/c-language.html</link>
+      <description>C is not a memory-safe language, even though it is possible to build secure software with it. Regardless of programmer skill or the number of code reviews, writing C software with flawless memory management is unrealistic. Formally verified software is possible, but it is extremely rare; two examples are the seL4 microkernel and the CompCert compiler.</description>
       <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
-      <guid>./../articles/c-language.html</guid>
+      <guid isPermaLink="false">/articles/c-language.html</guid>
     </item>
     <item>
-      <title>When it comes strictly to security, Qubes OS is not reliable.</title>
-      <link>./../articles/qubes-os.html</link>
-      <description>This article offers constructive criticism of the Linux distribution Qubes OS (or XenOS), highlighting its weaknesses and strengths and suggesting possible improvements. It also proposes alternatives that are more robust and reliable, especially in security terms, for different types of users.</description>
+      <title>From a strict security perspective, Qubes OS is not reliable</title>
+      <link>/articles/qubes-os.html</link>
+      <description>This article provides constructive criticism of the Linux distribution Qubes OS (or XenOS), highlighting its weaknesses and strengths while suggesting possible improvements. It also proposes alternatives that are more robust and reliable, especially from a security standpoint, for different types of users.</description>
       <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
-      <guid>./../articles/qubes-os.html</guid>
+      <guid isPermaLink="false">/articles/qubes-os.html</guid>
     </item>
   </channel>
 </rss>

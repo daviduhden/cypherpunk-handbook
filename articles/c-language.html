@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. — The C language and its biggest problem: evidence of its
-  insecurity.</title>
+  <title>T.C.H. — The C language’s biggest problem: evidence of its
+  insecurity</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
@@ -43,26 +43,25 @@
       <header id="article-header">
         <p class="kicker">Programming</p>
 
-        <h1>The C language and its biggest problem: evidence of its
-        insecurity.</h1>
+        <h2>The C language’s biggest problem: evidence of its insecurity</h2>
 
         <p class="meta">Written by FlyWithMe (A SimpleX chat user) —
         <time datetime="2026-02-02">Updated February 2, 2026</time></p>
 
-        <p class="lede">C is not a memory-safe language, even though secure
-        software can be built with it. Regardless of programmer skill or the
-        number of code reviews, writing C software with perfect memory
-        management is not realistic. Formally verified software is possible,
-        but it is extremely rare; two examples are the seL4 microkernel and the
-        CompCert compiler.</p>
+        <p class="lede">C is not a memory-safe language, even though it is
+        possible to build secure software with it. Regardless of programmer
+        skill or the number of code reviews, writing C software with flawless
+        memory management is unrealistic. Formally verified software is
+        possible, but it is extremely rare; two examples are the seL4
+        microkernel and the CompCert compiler.</p>
 
         <p class="lede">In practice, formal verification is extremely difficult
-        and expensive, so it should not be treated as a general solution, but
-        as a remote possibility.</p>
+        and expensive, so it should be treated not as a general solution, but
+        as a limited possibility.</p>
 
         <p class="lede">For those who claim that vulnerabilities caused by
-        improper memory management are rare or obsolete, this article presents
-        a factual and statistical analysis.</p>
+        improper memory management are rare or obsolete, this article provides
+        a factual statistical analysis.</p>
       </header>
 
       <nav class="toc" aria-labelledby="c-contents-heading">
@@ -98,8 +97,8 @@
 
         <h3>Total data</h3>
 
-        <p>Based on the CVEDetails.com database and NIST NVD data, all
-        registered CVEs from 2015 to December 20, 2025 were analyzed.</p>
+        <p>Using data from CVEDetails.com and NIST NVD, all registered CVEs
+        from 2015 through December 20, 2025, were analyzed.</p>
 
         <p><strong>CVEs analyzed: 107,173</strong>
         </p>
@@ -121,126 +120,133 @@
         </p>
 
         <p>In other words, 34.20% of all software vulnerabilities registered
-        between 2015 and 2025 are related to memory management errors (buffer
-        overflows, heap overflows, use-after-free, out-of-bounds
+        between 2015 and 2025 are related to memory-management errors (buffer
+        overflows, heap overflows, use-after-free, and out-of-bounds
         reads/writes).</p>
 
         <h3>Distribution by year</h3>
 
-        <p>The annual analysis reveals significant fluctuations:</p>
+        <p>The yearly analysis shows significant fluctuations:</p>
 
-        <table class="c-language-table">
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Memory Vulnerabilities</th>
-              <th>Total CVEs</th>
-              <th>Percentage</th>
-            </tr>
-          </thead>
+        <div class="table-scroll" role="region" aria-label=
+        "Memory management vulnerabilities by year" tabindex="0">
+          <table class="c-language-table">
+            <caption>
+              Memory-management vulnerabilities by year (2015-2025)
+            </caption>
 
-          <tbody>
-            <tr>
-              <td>2015</td>
-              <td>1,436</td>
-              <td>3,758</td>
-              <td>38.22%</td>
-            </tr>
+            <thead>
+              <tr>
+                <th scope="col">Year</th>
+                <th scope="col">Memory Vulnerabilities</th>
+                <th scope="col">Total CVEs</th>
+                <th scope="col">Percentage</th>
+              </tr>
+            </thead>
 
-            <tr>
-              <td>2016</td>
-              <td>1,514</td>
-              <td>3,355</td>
-              <td>45.13%</td>
-            </tr>
+            <tbody>
+              <tr>
+                <td>2015</td>
+                <td>1,436</td>
+                <td>3,758</td>
+                <td>38.22%</td>
+              </tr>
 
-            <tr>
-              <td>2017</td>
-              <td>4,011</td>
-              <td>10,458</td>
-              <td>38.35%</td>
-            </tr>
+              <tr>
+                <td>2016</td>
+                <td>1,514</td>
+                <td>3,355</td>
+                <td>45.13%</td>
+              </tr>
 
-            <tr>
-              <td>2018</td>
-              <td>3,808</td>
-              <td>10,644</td>
-              <td>35.74%</td>
-            </tr>
+              <tr>
+                <td>2017</td>
+                <td>4,011</td>
+                <td>10,458</td>
+                <td>38.35%</td>
+              </tr>
 
-            <tr>
-              <td>2019</td>
-              <td>3,209</td>
-              <td>9,081</td>
-              <td>35.35%</td>
-            </tr>
+              <tr>
+                <td>2018</td>
+                <td>3,808</td>
+                <td>10,644</td>
+                <td>35.74%</td>
+              </tr>
 
-            <tr>
-              <td>2020</td>
-              <td>3,066</td>
-              <td>8,248</td>
-              <td>37.18%</td>
-            </tr>
+              <tr>
+                <td>2019</td>
+                <td>3,209</td>
+                <td>9,081</td>
+                <td>35.35%</td>
+              </tr>
 
-            <tr>
-              <td>2021</td>
-              <td>4,184</td>
-              <td>10,414</td>
-              <td>40.18%</td>
-            </tr>
+              <tr>
+                <td>2020</td>
+                <td>3,066</td>
+                <td>8,248</td>
+                <td>37.18%</td>
+              </tr>
 
-            <tr>
-              <td>2022</td>
-              <td>4,685</td>
-              <td>12,198</td>
-              <td>38.39%</td>
-            </tr>
+              <tr>
+                <td>2021</td>
+                <td>4,184</td>
+                <td>10,414</td>
+                <td>40.18%</td>
+              </tr>
 
-            <tr>
-              <td>2023</td>
-              <td>3,741</td>
-              <td>12,568</td>
-              <td>29.76%</td>
-            </tr>
+              <tr>
+                <td>2022</td>
+                <td>4,685</td>
+                <td>12,198</td>
+                <td>38.39%</td>
+              </tr>
 
-            <tr>
-              <td>2024</td>
-              <td>4,171</td>
-              <td>15,377</td>
-              <td>27.12%</td>
-            </tr>
+              <tr>
+                <td>2023</td>
+                <td>3,741</td>
+                <td>12,568</td>
+                <td>29.76%</td>
+              </tr>
 
-            <tr>
-              <td>2025</td>
-              <td>2,834</td>
-              <td>11,478</td>
-              <td>24.68%</td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <td>2024</td>
+                <td>4,171</td>
+                <td>15,377</td>
+                <td>27.12%</td>
+              </tr>
+
+              <tr>
+                <td>2025</td>
+                <td>2,834</td>
+                <td>11,478</td>
+                <td>24.68%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section aria-labelledby="c-context">
         <h2 id="c-context">Important context</h2>
 
-        <p>This overall proportion of 34.20% varies significantly depending on
-        software type and programming language:</p>
+        <p>This overall proportion of 34.20% varies significantly by software
+        type and programming language:</p>
 
-        <p>For compiled C/C++ code, the ratio rises to 66-75%. Studies from
-        large organizations report:</p>
+        <p>For compiled C/C++ code, the ratio rises to 66–75%. Studies from
+        large organizations report the following:</p>
 
         <ul>
-          <li>"Microsoft": 70% of CVEs are related to memory management</li>
+          <li>"Microsoft": 70% of CVEs are related to memory management.</li>
 
           <li>"Google": 70% of bugs in Chromium are memory-related; 90% on
-          Android</li>
+          Android.</li>
 
-          <li>Apple: 60-70% of vulnerabilities in iOS and macOS</li>
+          <li>Apple: 60–70% of vulnerabilities in iOS and macOS.</li>
 
-          <li>Linux Kernel: 66% of vulnerabilities</li>
+          <li>Linux Kernel: 66% of vulnerabilities.</li>
 
-          <li>"Project Zero (Google)": 75% of the CVEs exploited in the wild
-          were memory-related; 67% of zero-days in 2021</li>
+          <li>"Project Zero (Google)": 75% of CVEs exploited in the wild were
+          memory-related; 67% of zero-days in 2021.</li>
         </ul>
 
         <p><strong>For memory-safe languages (Java, Python, C#), the proportion
@@ -251,23 +257,23 @@
       <section aria-labelledby="c-trend">
         <h2 id="c-trend">Temporal trend</h2>
 
-        <p>The above trend chart shows that while the "absolute number" of
+        <p>The trend chart above shows that while the "absolute number" of
         memory vulnerabilities remains high, the "relative percentage" has
-        decreased from approximately 38-45% (2015-2016) to 24-29% (2024-2025).
-        This is because other categories of vulnerabilities (particularly XSS,
-        which grew to 31.18% of the total) are increasing faster.</p>
+        dropped from approximately 38–45% (2015–2016) to 24–29% (2024–2025).
+        This is because other vulnerability categories (particularly XSS, which
+        grew to 31.18% of the total) are increasing faster.</p>
       </section>
 
       <section aria-labelledby="c-conclusion">
         <h2 id="c-conclusion">Conclusion</h2>
 
         <p>Of the 107,173 software vulnerabilities registered between 2015 and
-        2025, 36,659 (34.20%) are related to memory management errors. This
+        2025, 36,659 (34.20%) are related to memory-management errors. This
         global percentage hides the most concerning reality: in compiled
         software that dominates critical infrastructure (C/C++), approximately
-        2 in 3 vulnerabilities (66-70%) are caused by memory management errors,
-        reinforcing the ongoing calls by CISA, the NSA, and other agencies for
-        adopting memory-safe languages.</p>
+        two out of three vulnerabilities (66–70%) are caused by
+        memory-management errors, reinforcing ongoing calls by CISA, the NSA,
+        and other agencies to adopt memory-safe languages.</p>
       </section>
 
       <section aria-labelledby="c-references">
@@ -573,7 +579,7 @@
     <p><strong><a href="./../license.html">LICENSE</a></strong>
     </p>
     <img src="./../images/anarchy.png" alt="freedom" class="icon">
-    <h4 class="motto">LIVE FREE OR DIE</h4>
+    <p class="motto">LIVE FREE OR DIE</p>
     <img src="./../images/anarchy.png" alt="freedom" class="icon">
   </footer>
 </body>

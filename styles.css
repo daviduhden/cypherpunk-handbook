@@ -1,7 +1,7 @@
 /*!
  * Cascading Style Sheet (CSS) for The Cypherpunk Handbook
  *
- * Copyright (c) 2025 The Cypherpunk Handbook Authors
+ * Copyright (c) 2025-2026 The Cypherpunk Handbook Authors
  *
  * Permission to use, copy, modify, and distribute this cascading style sheet
  * for any purpose with or without fee is hereby granted, provided that the
@@ -79,6 +79,7 @@
 html {
   font-size: clamp(16px, 0.3vw + 15px, 18px);
   text-size-adjust: 100%;
+  max-width: 100%;
 }
 
 /*
@@ -96,6 +97,8 @@ body {
   color: var(--text);
   padding: var(--pad-y) var(--pad-x);
   text-rendering: optimizeLegibility;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .skip-link {
@@ -150,6 +153,8 @@ a {
   text-decoration: underline;
   text-underline-offset: 0.12em;
   text-decoration-thickness: 0.08em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 a:hover {
@@ -184,13 +189,29 @@ button:focus-visible {
 header,
 main,
 footer {
-  width: min(var(--max-width), 100% - var(--gutter) * 2);
+  width: min(var(--max-width), 100%);
   margin: 0 auto;
+  max-width: 100%;
+  min-width: 0;
 }
 
 nav {
-  width: min(var(--max-width), 100% - var(--gutter) * 2);
+  width: min(var(--max-width), 100%);
   margin: 0 auto;
+}
+
+main,
+section,
+article,
+aside,
+div,
+figure,
+ul,
+ol,
+dl,
+li {
+  max-width: 100%;
+  min-width: 0;
 }
 
 header {
@@ -328,6 +349,8 @@ main {
   border: thin solid var(--border);
   border-radius: var(--radius);
   padding: clamp(1.1em, 2vw, 1.75em);
+  max-width: 100%;
+  min-width: 0;
   box-shadow:
     var(--shadow),
     0 0 1.1em #3ee6ff1a;
@@ -341,10 +364,10 @@ section {
 }
 
 section h2 {
-  font-size: clamp(1.35em, 1.6vw + 1em, 1.9em);
-  margin: 0 0 0.65em;
+  margin: 0 0 0.5em;
+  font-size: clamp(1.25em, 1.2vw + 1em, 1.6em);
   color: color-mix(in srgb, var(--heading) 84%, var(--blue-light) 16%);
-  line-height: 1.2;
+  line-height: 1.25;
   text-shadow: 0 0 0.55em #3ee6ff1f;
 }
 
@@ -357,7 +380,9 @@ section h3 {
 section p,
 main p {
   margin: 0.45em 0 0.95em;
-  text-align: start;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
 }
 
 /* Tables */
@@ -369,7 +394,27 @@ table {
   background: color-mix(in srgb, var(--panel) 90%, black 10%);
   border: thin solid var(--border);
   border-radius: var(--radius-soft);
-  overflow: hidden;
+  table-layout: auto;
+}
+
+.table-wrap,
+.table-scroll {
+  max-width: 100%;
+  margin: 1em 0 1.4em;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
+  border: thin solid var(--border);
+  border-radius: var(--radius-soft);
+  background: color-mix(in srgb, var(--panel) 90%, black 10%);
+}
+
+.table-wrap table,
+.table-scroll table {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  min-width: 100%;
 }
 
 caption {
@@ -403,7 +448,6 @@ tbody tr:hover {
 }
 
 .c-language-table {
-  min-width: 36rem;
   font-variant-numeric: tabular-nums;
   box-shadow: inset 0 0 0 0.06em
     color-mix(in srgb, var(--border-2) 65%, transparent 35%);
@@ -432,12 +476,7 @@ tbody tr:hover {
 
 th, td {
   vertical-align: top;
-}
-
-table {
-  display: block;
-  overflow-x: auto;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 /* Footer: justify list text for readability */
@@ -489,8 +528,9 @@ ul ul, ol ol, ul ol, ol ul {
     column-count: 1;
   }
 
-  table {
-    white-space: normal;
+  .table-wrap table,
+  .table-scroll table {
+    min-width: 0;
   }
 }
 
@@ -596,12 +636,13 @@ footer p {
   text-align: center;
 }
 
-/* Keep footnote paragraphs left-aligned (those that contain <sup>) */
-footer p:has(sup) {
+#footnotes p,
+#footnotes li {
   text-align: start;
 }
 
-footer p sup {
+#footnotes p sup,
+#footnotes li sup {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -627,11 +668,9 @@ footer p sup {
 }
 
 /* Footer motto: keep icon tight with heading text */
-footer h4,
 footer .motto {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   margin: 0.35em 0;
 }
 
@@ -769,6 +808,11 @@ img {
  * Responsive Styles
  */
 @media (max-width: 48em) {
+  section p,
+  main p {
+    text-align: start;
+  }
+
   nav ul {
     flex-direction: column;
   }
@@ -852,5 +896,55 @@ img {
     border-color: currentcolor;
     box-shadow: none;
     text-shadow: none;
+  }
+}
+
+@media tty, speech {
+  body {
+    background: #000;
+    color: #fff;
+    padding: 1em;
+    line-height: 1.8;
+  }
+
+  main,
+  header,
+  footer,
+  #footnotes,
+  .toc,
+  .articles,
+  .article-column,
+  nav a,
+  .table-wrap,
+  .table-scroll,
+  table,
+  pre,
+  code {
+    background: transparent !important;
+    border-color: currentcolor !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .icon[aria-hidden="true"] {
+    display: none !important;
+  }
+
+  nav ul {
+    display: block;
+  }
+
+  nav a {
+    display: inline;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  section p,
+  main p,
+  article header {
+    text-align: start;
+    text-justify: auto;
   }
 }

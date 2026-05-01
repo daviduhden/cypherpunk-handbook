@@ -40,22 +40,22 @@
       <h2>How to contribute</h2>
 
       <p>Contributions are welcome. This project values clear, well-sourced,
-      and practical content that follows consistent editorial, technical, and
+      practical content that follows consistent editorial, technical, and
       licensing standards.</p>
 
-      <p>You can contribute through one of the following workflows:</p>
+      <p>You can contribute through any of the following workflows:</p>
 
       <ul>
-        <li>GitHub-based contributions (Pull Requests using <code>gh</code> /
+        <li>GitHub-based contributions (pull requests using <code>gh</code> /
         <code>git</code>)</li>
 
-        <li>File and patch-based contributions using git (anonymous
+        <li>File- and patch-based contributions using Git (anonymous
         workflow)</li>
 
-        <li>File and patch-based contributions using got (OpenBSD
+        <li>File- and patch-based contributions using got (OpenBSD
         workflow)</li>
 
-        <li>Patch creation from signed archive snapshots (Archive-based
+        <li>Patch creation from signed archive snapshots (archive-based
         workflow)</li>
       </ul>
     </section>
@@ -66,16 +66,17 @@
       <ul>
         <li>Keep content concise, precise, and actionable.</li>
 
-        <li>Use a respectful, formal, and neutral tone.</li>
+        <li>Use a respectful, formal, neutral tone.</li>
 
         <li>Avoid commercial endorsements or promotional language.</li>
 
-        <li>Write in US English; include translations whenever possible.</li>
+        <li>Write in US English, and include translations whenever
+        possible.</li>
 
-        <li>Use the repository templates when available (see
+        <li>Use repository templates when available (see
         <strong>templates/</strong>).</li>
 
-        <li>Cite reliable sources and include links for tools, commands,
+        <li>Cite reliable sources, and include links for tools, commands,
         standards, and references.</li>
 
         <li>Do not include personal data, credentials, or sensitive
@@ -92,11 +93,11 @@
     <section id="licensing">
       <h3>Licensing</h3>
 
-      <p>All contributions must comply with the project license located at
-      <a href="./license.html">./license.html</a>. If any content (code,
-      images, or other assets) is not covered by this license, clearly declare
-      the exception at the beginning of the file and include the applicable
-      license or permission notice.</p>
+      <p>All contributions must comply with the project license at <a href=
+      "./license.html">./license.html</a>. If any content (code, images, or
+      other assets) is not covered by this license, clearly declare the
+      exception at the beginning of the file and include the applicable license
+      or permission notice.</p>
 
       <p>Suggested exception notice format:</p>
 
@@ -111,7 +112,7 @@ some-code/snippet.c &mdash; used with permission from upstream (MIT)
       <h3>Method 1: Contributing via GitHub (gh / git)</h3>
 
       <p>This workflow is intended for contributors with GitHub accounts who
-      prefer online collaboration through pull requests (PRs).</p>
+      prefer collaborating online through pull requests (PRs).</p>
 
       <ol>
         <li>Fork the repository on GitHub.</li>
@@ -120,9 +121,9 @@ some-code/snippet.c &mdash; used with permission from upstream (MIT)
 
         <li>Create a dedicated branch for your changes.</li>
 
-        <li>Commit your work with a clear, descriptive message.</li>
+        <li>Commit your work with a clear, descriptive commit message.</li>
 
-        <li>Open a pull request summarizing the contribution.</li>
+        <li>Open a pull request that summarizes your contribution.</li>
       </ol>
 
       <p><strong>Recommended workflow using GitHub CLI:</strong>
@@ -162,9 +163,9 @@ git push origin my-article
       <ul>
         <li>Send files directly to the SimpleX group.</li>
 
-        <li>Files must be attached uncompressed.</li>
+        <li>Files must be attached without compression.</li>
 
-        <li>Archive formats (zip, tar, tar.gz, etc.) will be ignored.</li>
+        <li>Archive formats (zip, tar, tar.gz, etc.) are ignored.</li>
 
         <li>All formatting, metadata, and licensing requirements must be
         met.</li>
@@ -190,9 +191,8 @@ git format-patch -1 HEAD
     <section id="method-3">
       <h3>Method 3: Contributing via got (Game of Trees)</h3>
 
-      <p>This workflow is intended for contributors using
-      <strong>OpenBSD</strong> who prefer a patch-based process without relying
-      on GitHub accounts.</p>
+      <p>This workflow is intended for contributors on <strong>OpenBSD</strong>
+      who prefer a patch-based process without relying on GitHub accounts.</p>
 
       <p><strong>Submitting Git-compatible patches using got
       (preferred)</strong>
@@ -220,9 +220,9 @@ got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
     <section id="method-4">
       <h3>Method 4: Contributing via archive snapshots</h3>
 
-      <p>This workflow lets contributors work directly from the signed archive
-      instead of the Git repository. It is useful for offline or anonymous
-      contributions.</p>
+      <p>This workflow allows contributors to work directly from the signed
+      archive instead of the Git repository. It is useful for offline or
+      anonymous contributions.</p>
 
       <h4>Steps:</h4>
 
@@ -241,7 +241,7 @@ cd ~/cypherpunk-handbook-work
 </pre>
         </li>
 
-        <li>Edit or add files as needed, following the site's article templates
+        <li>Edit or add files as needed, following the site’s article templates
         and metadata requirements.</li>
 
         <li>Generate patch files based on the changes relative to the extracted
@@ -263,7 +263,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
     <section id="submitting-articles">
       <h3>Submitting Articles</h3>
 
-      <p>To publish a new article, create an HTML file under
+      <p>To publish a new article, create an HTML file in
       <strong>articles/</strong> and include a header with the following
       elements:</p>
 
@@ -272,7 +272,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
         article, inside a <code>&lt;p class="kicker"&gt;</code> element.</li>
 
         <li><strong>title</strong>: the main article title inside a
-        <code>&lt;h1&gt;</code> element.</li>
+        <code>&lt;h2&gt;</code> element.</li>
 
         <li><strong>meta</strong>: author information and last updated date
         inside a <code>&lt;p class="meta"&gt;</code> element, using a
@@ -293,7 +293,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
   &lt;header id="article-header"&gt;
     &lt;p class="kicker"&gt;CATEGORY OR TAG&lt;/p&gt;
 
-    &lt;h1&gt;Article Title&lt;/h1&gt;
+    &lt;h2&gt;Article Title&lt;/h2&gt;
 
     &lt;p class="meta"&gt;By AUTHOR - Updated 
       &lt;time datetime="2025-01-01"&gt;DATE&lt;/time&gt;
@@ -330,7 +330,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
       <h4>data/articles.json Structure</h4>
 
       <p>The site uses <strong>data/articles.json</strong> as an index for
-      articles and feeds. Each top-level key is an article identifier (slug).
+      articles and feeds. Each top-level key is an article ID (slug).
       Example:</p>
 
       <pre>
@@ -350,7 +350,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
       <p>Include the author name in the article header following the template
       (see the <code>&lt;p class="meta"&gt;</code> line in <a href=
       "./templates/articles.html" type="text/plain">templates/articles.html</a>
-      ). The author can be a real name or a pseudonym; real names are
+      ). The author can use a real name or a pseudonym; real names are
       optional.</p>
 
       <p>After updating the article file and <code>data/articles.json</code>,
@@ -361,11 +361,11 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
     <section id="strip-metadata">
       <h3>Stripping metadata from files</h3>
 
-      <p>Before submitting articles, images, videos, audio, or other assets, it
-      is recommended to remove any potentially sensitive metadata. For most
-      file types, including <strong>SVG</strong> and <strong>PDF</strong>,
+      <p>Before submitting articles, images, videos, audio, or other assets, we
+      recommend removing potentially sensitive metadata. For most file types,
+      including <strong>SVG</strong> and <strong>PDF</strong>,
       <strong>mat2</strong> (Metadata Anonymisation Toolkit 2) is the preferred
-      tool. Video and audio files can be cleaned using
+      tool. Video and audio files can be cleaned with
       <strong>ffmpeg</strong>.</p>
 
       <ul>
@@ -405,14 +405,14 @@ ffmpeg -i input.mp3 -map_metadata -1 -c copy output.mp3
         </li>
       </ul>
 
-      <p>Always verify that the new file has metadata removed and that it
-      remains intact before submission.</p>
+      <p>Always verify that metadata was removed from the new file and that the
+      file remains intact before submission.</p>
     </section>
 
     <section id="automation">
       <h3>Automation</h3>
-      Perl scripts located in <strong>scripts/</strong> can be used to update
-      and rebuild the site.
+      Perl scripts in <strong>scripts/</strong> can be used to update and
+      rebuild the site.
 
       <pre>
 perl ./scripts/update-guides.pl
@@ -425,8 +425,8 @@ perl ./scripts/rebuild-feeds.pl
     <section id="downloads">
       <h3>Downloading Archives &amp; Using Proxies</h3>
       A signed archive of the repository is available at
-      <strong>archive/cypherpunk-handbook.tar.gz</strong>, updated every 24
-      hours. The archive comes with a <code>SHA256</code> hash and a
+      <strong>archive/cypherpunk-handbook.tar.gz</strong> and is updated every
+      24 hours. The archive comes with a <code>SHA256</code> hash and a
       <code>signify</code> signature.
       <h4>Downloading the archive using <code>curl</code></h4>
 
@@ -459,7 +459,7 @@ curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyeg
       <p><strong>Linux</strong>
       </p>
 
-      <p>verify using the SHA256 file.</p>
+      <p>Verify using the SHA256 file.</p>
 
       <pre>
 sha256sum -c cypherpunk-handbook.tar.gz.sha256
@@ -467,7 +467,7 @@ sha256sum -c cypherpunk-handbook.tar.gz.sha256
       <p><strong>BSD</strong>
       </p>
 
-      <p>Compute SHA256 and compare manually with the value in the SHA256
+      <p>Compute SHA256 and compare it manually with the value in the SHA256
       file.</p>
 
       <pre>
@@ -529,20 +529,20 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
 </pre>
       <p class="underline">Global configuration (~/.gitconfig) affects all
       subsequent <code>git pull</code>, <code>git push</code>, and other
-      commands. Temporary <code>-c</code> settings only apply to the specific
+      commands. Temporary <code>-c</code> settings apply only to the specific
       command.</p>
     </section>
 
     <section id="tools-used">
       <h3>Tools Used</h3>
 
-      <p>This guide and the workflows mentioned use the following common tools
-      and utilities:</p>
+      <p>This guide and the workflows described here use the following common
+      tools and utilities:</p>
 
       <ul>
         <li><strong><a href="https://cli.github.com/">GitHub CLI
-        (<code>gh</code>)</a></strong> - For forking and creating PRs from the
-        command line.</li>
+        (<code>gh</code>)</a></strong> - For forking repositories and creating
+        PRs from the command line.</li>
 
         <li><strong><a href="https://git-scm.com/">Git</a></strong> - For
         version control and patch generation.</li>
@@ -551,11 +551,11 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
         version control and patch generation on OpenBSD.</li>
 
         <li><strong><a href="https://curl.se/">curl</a></strong> - For file
-        downloads and use of HTTP and SOCKS5 proxies.</li>
+        downloads and using HTTP and SOCKS5 proxies.</li>
 
         <li><strong><a href="https://www.gnu.org/software/tar/">GNU tar</a> /
-        <a href="https://man.openbsd.org/tar">BSD tar</a></strong> - For the
-        extraction of <code>.tar.gz</code> archives.</li>
+        <a href="https://man.openbsd.org/tar">BSD tar</a></strong> - For
+        extracting <code>.tar.gz</code> archives.</li>
 
         <li><strong><a href=
         "https://www.gnu.org/software/coreutils/manual/html_node/sha256sum-invocation.html">
@@ -565,7 +565,7 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
 
         <li><strong><a href=
         "https://man.openbsd.org/signify">signify</a></strong> - For signature
-        verification (OpenBSD tool) <sup><a id="ref-3" href=
+        verification (OpenBSD utility) <sup><a id="ref-3" href=
         "#fn-3">[3]</a></sup>.</li>
 
         <li><strong><a href="https://www.perl.org/">Perl</a></strong> with
@@ -596,26 +596,23 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
     </section>
   </main>
 
-  <footer id="footnotes">
-    <aside>
-      <p><strong>Notes:</strong>
-      </p>
+  <aside id="footnotes" aria-label="Notes">
+    <p><strong>Notes:</strong>
+    </p>
 
-      <p id="fn-1"><sup>1</sup> <a href="https://arti.torproject.org/">Arti</a>
-      uses port 9150 by default for the local SOCKS5 proxy.<a href=
-      "#ref-1">↩</a></p>
+    <p id="fn-1"><sup>1</sup> <a href="https://arti.torproject.org/">Arti</a>
+    uses port 9150 by default for the local SOCKS5 proxy.<a href=
+    "#ref-1">↩</a></p>
 
-      <p id="fn-2"><sup>2</sup> When using I2P, an <a href=
-      "https://www.stormycloud.org/i2p-outproxy/">outproxy</a> is required to
-      reach the clearnet. Without an outproxy, only I2P destinations are
-      reachable. <a href="#ref-2">↩</a></p>
+    <p id="fn-2"><sup>2</sup> When using I2P, an <a href=
+    "https://www.stormycloud.org/i2p-outproxy/">outproxy</a> is required to
+    reach the clearnet. Without an outproxy, only I2P destinations are
+    reachable. <a href="#ref-2">↩</a></p>
 
-      <p id="fn-3"><sup>3</sup> On Debian-based systems the signify tool is
-      available as a package named <code>signify-openbsd</code>, the binary
-      must be invoked as <code>signify-openbsd</code>. <a href=
-      "#ref-3">↩</a></p>
-    </aside>
-  </footer>
+    <p id="fn-3"><sup>3</sup> On Debian-based systems, the signify tool is
+    available as a package named <code>signify-openbsd</code>. The binary must
+    be invoked as <code>signify-openbsd</code>. <a href="#ref-3">↩</a></p>
+  </aside>
 
   <footer id="site-footer">
     <p>&copy; 2025-2026 The Cypherpunk Handbook Authors. All rights
@@ -623,9 +620,8 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
 
     <p><strong><a href="./license.html" rel="license">LICENSE</a></strong>
     </p>
-    <img class="icon" src="./images/anarchy.png" alt="freedom">
-    <h4 class="motto">LIVE FREE OR DIE</h4>
-    <img class="icon" src="./images/anarchy.png" alt="freedom">
+
+    <p class="motto">LIVE FREE OR DIE</p>
   </footer>
 </body>
 </html>
