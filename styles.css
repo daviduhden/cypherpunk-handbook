@@ -667,11 +667,25 @@ footer p {
   box-shadow: 0 0 0.55em #3ee6ff30;
 }
 
-/* Footer motto: keep icon tight with heading text */
+/* Footer motto */
 footer .motto {
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
   margin: 0.35em 0;
+}
+
+footer p.motto,
+footer h4.motto {
+  font-size: 1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+footer img.motto {
+  width: 1em;
+  height: 1em;
 }
 
 /*
