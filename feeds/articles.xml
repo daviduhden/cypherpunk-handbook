@@ -4,7 +4,7 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Tue, 17 Feb 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 02 May 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Why OpenBSD stands alone</title>
@@ -17,7 +17,7 @@
       <title>The C language’s biggest problem: evidence of its insecurity</title>
       <link>/articles/c-language.html</link>
       <description>C is not a memory-safe language, even though it is possible to build secure software with it. Regardless of programmer skill or the number of code reviews, writing C software with flawless memory management is unrealistic. Formally verified software is possible, but it is extremely rare; two examples are the seL4 microkernel and the CompCert compiler.</description>
-      <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/c-language.html</guid>
     </item>
     <item>
