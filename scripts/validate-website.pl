@@ -323,7 +323,7 @@ if ( @css || @js || @json ) {
               . "  \"lineWidth\": 80,\n"
               . "  \"newLineKind\": \"lf\",\n"
               . "  \"plugins\": [\n"
-              . "    \"https://plugins.dprint.dev/typescript-0.95.15.wasm\",\n"
+              . "    \"https://plugins.dprint.dev/typescript-0.96.0.wasm\",\n"
               . "    \"https://plugins.dprint.dev/g-plane/malva-v0.15.3.wasm\",\n"
               . "    \"https://plugins.dprint.dev/json-0.21.3.wasm\"\n"
               . "  ]\n"
