@@ -9,21 +9,21 @@
     <item>
       <title>Why OpenBSD stands alone</title>
       <link>/articles/openbsd.html</link>
-      <description>This article summarizes why OpenBSD is presented as one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux—regardless of hardening level—are argued here to be less secure. The comparison also includes other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
+      <description>This article explains why I consider OpenBSD one of the most secure operating systems in the world, and why I think Windows, macOS, iOS, Android, and Linux remain weaker even when hardened. I also compare it with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
       <pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/openbsd.html</guid>
     </item>
     <item>
-      <title>The C language’s biggest problem: evidence of its insecurity</title>
+      <title>The C language's biggest problem: evidence of its insecurity</title>
       <link>/articles/c-language.html</link>
-      <description>C is not a memory-safe language, even though it is possible to build secure software with it. Regardless of programmer skill or the number of code reviews, writing C software with flawless memory management is unrealistic. Formally verified software is possible, but it is extremely rare; two examples are the seL4 microkernel and the CompCert compiler.</description>
+      <description>C is not a memory-safe language. It is possible to write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two examples. But those projects are exceptions, not the normal path for most software.</description>
       <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/c-language.html</guid>
     </item>
     <item>
       <title>From a strict security perspective, Qubes OS is not reliable</title>
       <link>/articles/qubes-os.html</link>
-      <description>This article provides constructive criticism of the Linux distribution Qubes OS (or XenOS), highlighting its weaknesses and strengths while suggesting possible improvements. It also proposes alternatives that are more robust and reliable, especially from a security standpoint, for different types of users.</description>
+      <description>This article is a critical look at Qubes OS, or "XenOS" as I sometimes call it. I focus on its security weaknesses, note where its design is useful, and suggest improvements and alternatives that I consider more reliable for different kinds of users.</description>
       <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/qubes-os.html</guid>
     </item>

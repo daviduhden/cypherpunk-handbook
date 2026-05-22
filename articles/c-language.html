@@ -43,25 +43,26 @@
       <header id="article-header">
         <p class="kicker">Programming</p>
 
-        <h2>The C language’s biggest problem: evidence of its insecurity</h2>
+        <h2>The C language's biggest problem: evidence of its insecurity</h2>
 
-        <p class="meta">Written by FlyWithMe (A SimpleX chat user) —
+        <p class="meta">Written by FlyWithMe (a SimpleX chat user) —
         <time datetime="2026-05-02">Updated May 2, 2026</time></p>
 
-        <p class="lede">C is not a memory-safe language, even though it is
-        possible to build secure software with it. Regardless of programmer
-        skill or the number of code reviews, writing C software with flawless
-        memory management is unrealistic. Formally verified software is
-        possible, but it is extremely rare; two examples are the seL4
-        microkernel and the CompCert compiler.</p>
+        <p class="lede">C is not a memory-safe language. It is possible to
+        write secure software in C, but flawless memory management is not a
+        realistic expectation, no matter how skilled the programmers are or how
+        many reviews the code receives. Formal verification can help in rare
+        cases; the seL4 microkernel and the CompCert compiler are two examples.
+        But those projects are exceptions, not the normal path for most
+        software.</p>
 
-        <p class="lede">In practice, formal verification is extremely difficult
-        and expensive, so it should be treated not as a general solution, but
-        as a limited possibility.</p>
+        <p class="lede">In practice, formal verification is difficult,
+        expensive, and narrow in scope. It should be treated as a limited
+        possibility, not as a general answer to C's memory-safety problem.</p>
 
-        <p class="lede">For those who claim that vulnerabilities caused by
-        improper memory management are rare or obsolete, this article provides
-        a factual statistical analysis.</p>
+        <p class="lede">For readers who argue that memory-management
+        vulnerabilities are rare or obsolete, this article looks at the numbers
+        directly.</p>
       </header>
 
       <nav class="toc" aria-labelledby="c-contents-heading">
@@ -101,8 +102,8 @@
 
         <h3>Total data</h3>
 
-        <p>Using data from CVEDetails.com and NIST NVD, all registered CVEs
-        from 2015 through December 20, 2025, were analyzed.</p>
+        <p>I analyzed registered CVEs from 2015 through December 20, 2025,
+        using data from CVEDetails.com and the NIST NVD.</p>
 
         <p><strong>CVEs analyzed: 107,173</strong>
         </p>
@@ -123,14 +124,14 @@
         <p><strong>36,659 ÷ 107,173 × 100 = 34.20%</strong>
         </p>
 
-        <p>In other words, 34.20% of all software vulnerabilities registered
-        between 2015 and 2025 are related to memory-management errors (buffer
-        overflows, heap overflows, use-after-free, and out-of-bounds
-        reads/writes).</p>
+        <p>Put another way, 34.20% of all software vulnerabilities registered
+        between 2015 and 2025 were tied to memory-management errors, including
+        buffer overflows, heap overflows, use-after-free bugs, and
+        out-of-bounds reads or writes.</p>
 
         <h3>Distribution by year</h3>
 
-        <p>The yearly analysis shows significant fluctuations:</p>
+        <p>The yearly breakdown fluctuates a lot:</p>
 
         <div class="table-scroll" role="region" aria-label=
         "Memory management vulnerabilities by year" tabindex="0">
@@ -233,65 +234,65 @@
       <section aria-labelledby="c-context">
         <h2 id="c-context">Important context</h2>
 
-        <p>This overall proportion of 34.20% varies significantly by software
-        type and programming language:</p>
+        <p>The overall 34.20% figure changes sharply depending on the kind of
+        software and the language used:</p>
 
-        <p>For compiled C/C++ code, the ratio rises to 66–75%. Studies from
-        large organizations report the following:</p>
+        <p>For compiled C/C++ code, the share rises to roughly 66–75%. Large
+        organizations have reported the following:</p>
 
         <ul>
-          <li>"Microsoft": 70% of CVEs are related to memory management.</li>
+          <li>Microsoft: 70% of CVEs are related to memory management.</li>
 
-          <li>"Google": 70% of bugs in Chromium are memory-related; 90% on
+          <li>Google: 70% of bugs in Chromium are memory-related; 90% on
           Android.</li>
 
           <li>Apple: 60–70% of vulnerabilities in iOS and macOS.</li>
 
           <li>Linux Kernel: 66% of vulnerabilities.</li>
 
-          <li>"Project Zero (Google)": 75% of CVEs exploited in the wild were
+          <li>Project Zero (Google): 75% of CVEs exploited in the wild were
           memory-related; 67% of zero-days in 2021.</li>
         </ul>
 
-        <p><strong>For memory-safe languages (Java, Python, C#), the proportion
-        is less than 5%.</strong>
+        <p><strong>For memory-safe languages such as Java, Python, and C#, the
+        proportion is less than 5%.</strong>
         </p>
       </section>
 
       <section aria-labelledby="c-trend">
         <h2 id="c-trend">Temporal trend</h2>
 
-        <p>The trend chart above shows that while the "absolute number" of
-        memory vulnerabilities remains high, the "relative percentage" has
-        dropped from approximately 38–45% (2015–2016) to 24–29% (2024–2025).
-        This is because other vulnerability categories (particularly XSS, which
-        grew to 31.18% of the total) are increasing faster.</p>
+        <p>The data shows an important distinction. The absolute number of
+        memory vulnerabilities remains high, but their relative share dropped
+        from roughly 38–45% in 2015–2016 to 24–29% in 2024–2025. That does not
+        mean memory bugs disappeared. It means other categories, especially XSS
+        at 31.18% of the total, grew faster.</p>
       </section>
 
       <section aria-labelledby="c-2026">
         <h2 id="c-2026">2026 preliminary data</h2>
 
         <p>According to CVE Program Metrics [24], <strong>15,176 CVE records
-        were published in Q1 2026</strong> (Q2-Q4 are still marked as TBA at
-        the time of writing).</p>
+        were published in Q1 2026</strong>. Q2-Q4 were still marked as TBA at
+        the time of writing.</p>
 
-        <p>This confirms that high publication volume continued into 2026.
+        <p>That confirms that CVE publication volume remained high into 2026.
         However, this figure should not be mixed directly with the 2015-2025
-        table above because that analysis uses a different aggregation and
-        category method (CVEDetails + NVD, with "Overflow" and "Memory
-        Corruption" grouping).</p>
+        table above, because that analysis uses a different aggregation and
+        categorization method: CVEDetails plus NVD, with "Overflow" and "Memory
+        Corruption" grouped together.</p>
       </section>
 
       <section aria-labelledby="c-conclusion">
         <h2 id="c-conclusion">Conclusion</h2>
 
         <p>Of the 107,173 software vulnerabilities registered between 2015 and
-        2025, 36,659 (34.20%) are related to memory-management errors. This
-        global percentage hides the most concerning reality: in compiled
-        software that dominates critical infrastructure (C/C++), approximately
-        two out of three vulnerabilities (66–70%) are caused by
-        memory-management errors, reinforcing ongoing calls by CISA, the NSA,
-        and other agencies to adopt memory-safe languages.</p>
+        2025, 36,659, or 34.20%, were related to memory-management errors. That
+        global percentage hides the more serious reality: in the compiled
+        software that dominates critical infrastructure, especially C and C++,
+        roughly two out of three vulnerabilities are caused by
+        memory-management errors. This is why CISA, the NSA, and other agencies
+        keep calling for memory-safe languages where they are practical.</p>
       </section>
 
       <section aria-labelledby="c-references">

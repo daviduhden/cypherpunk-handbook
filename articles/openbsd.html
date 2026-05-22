@@ -48,11 +48,11 @@
         why-openbsd.rocks — <time datetime="2026-02-17">Updated February 17,
         2026</time></p>
 
-        <p class="lede">This article summarizes why OpenBSD is presented as one
-        of the most secure operating systems in the world, and why Windows,
-        macOS, iOS, Android, and Linux—regardless of hardening level—are argued
-        here to be less secure. The comparison also includes other BSDs, Qubes
-        OS, Fedora Secureblue, and Hardened Gentoo.</p>
+        <p class="lede">This article explains why I consider OpenBSD one of the
+        most secure operating systems in the world, and why I think Windows,
+        macOS, iOS, Android, and Linux remain weaker even when hardened. I also
+        compare it with other BSDs, Qubes OS, Fedora Secureblue, and Hardened
+        Gentoo.</p>
       </header>
 
       <nav class="toc" aria-labelledby="obsd-contents-heading">
@@ -277,8 +277,8 @@
         </blockquote>
 
         <ul>
-          <li>Linux is limited and, in this view, will never be truly secure.
-          It was not built for that.</li>
+          <li>Linux is limited, and in my view it will never be truly secure.
+          It was not built for that goal.</li>
         </ul>
 
         <h2 id="obsd-0">0 - Philosophy</h2>
@@ -292,42 +292,42 @@
         </blockquote>
 
         <ul>
-          <li>This differs from all other operating systems, which were not
-          created with the aim of being the most secure. The same goes for the
-          Linux kernel: from the beginning, it was not built with the objective
-          of extreme security. So many things neglected in the past will
-          eternally impact kernel security. There are 1 or 2 Linux distros with
-          this purpose but they have not rewritten the operating system from
-          scratch and only build user space and maybe do some small kernel
-          hardening, so they will never be as secure as OpenBSD (Or probably
-          any BSD).</li>
+          <li>This is different from most operating systems, which were not
+          created with the goal of being the most secure. The Linux kernel was
+          not designed around extreme security from the beginning, and old
+          design choices still affect it. A few Linux distributions aim for
+          security, but they do not rewrite the operating system from scratch;
+          they mostly harden user space and parts of the kernel. That is
+          useful, but I do not think it can match OpenBSD, or probably the BSD
+          family in general.</li>
         </ul>
       </section>
 
       <section aria-labelledby="obsd-1">
         <h2 id="obsd-1">1 - Library order randomization</h2>
 
-        <p>In rc(8), libc.so, libcrypto, and ld.so are relinked on startup,
-        placing the objects in a random order at boot time to prevent
-        "Return-oriented programming" and other attacks. With randomized
-        symbols, this is not an attack vector anymore.</p>
+        <p>In rc(8), libc.so, libcrypto, and ld.so are relinked on startup, so
+        their objects are placed in a random order at boot. This makes
+        return-oriented programming and similar attacks harder, because symbol
+        locations are no longer predictable in the same way.</p>
 
         <ul>
-          <li>Linux randomizes bases, but does not relink/reorder internal libc
-          symbols with each boot, so internal offsets and gadgets within the
-          same build remain predictable between machines/boots. Without boot
-          relink, an opponent with a small infoleak can locate gadgets.</li>
+          <li>Linux randomizes base addresses, but it does not relink or
+          reorder internal libc symbols at each boot. Internal offsets and
+          gadgets in the same build can remain predictable across machines or
+          boots, so a small infoleak can be enough to locate useful
+          gadgets.</li>
         </ul>
       </section>
 
       <section aria-labelledby="obsd-2">
         <h2 id="obsd-2">2 - arc4random(3)</h2>
 
-        <p>OpenBSD has its own cryptographic random number generator. Wherever
-        random input is needed, arc4random is used. arc4random is an
-        abstraction layer over ciphers currently considered safe and currently
-        uses ChaCha20. The name means "A Replacement Call for Random," and it
-        generates high-quality 32-bit pseudorandom numbers quickly.</p>
+        <p>OpenBSD has its own cryptographic random number interface. When
+        random input is needed, arc4random is the standard choice. It is an
+        abstraction over ciphers considered safe today, currently using
+        ChaCha20. The name means "A Replacement Call for Random," and it
+        quickly generates high-quality 32-bit pseudorandom numbers.</p>
       </section>
 
       <section aria-labelledby="obsd-3">
@@ -448,38 +448,36 @@ permit root</pre>
       <section aria-labelledby="obsd-11">
         <h2 id="obsd-11">11 - KARL</h2>
 
-        <p>At every install, upgrade, and boot, a new kernel is generated with
-        randomized addresses. A unique and unpredictable kernel is a huge
+        <p>At every install, upgrade, and boot, OpenBSD generates a new kernel
+        with randomized addresses. A unique and unpredictable kernel is a real
         security improvement. This technique is called Kernel Address
-        Randomized Link (KARL). Combined with &lsquo;Library order
-        randomization,&rsquo; this is absolutely epic.</p>
+        Randomized Link (KARL), and combined with library order randomization
+        it is one of OpenBSD's strongest ideas.</p>
 
         <ul>
-          <li>Linux can only envy this. macOS, Windows, and Linux have KASLR
-          (kernel base address randomization), but not KARL, which this section
-          considers better.</li>
+          <li>macOS, Windows, and Linux have KASLR (kernel base address
+          randomization), but not KARL. I consider KARL the stronger
+          design.</li>
         </ul>
       </section>
 
       <section aria-labelledby="obsd-12">
         <h2 id="obsd-12">12 - Kernel &amp; Userland</h2>
 
-        <p>The kernel and userland in OpenBSD (and all BSDs) are developed
-        together. The same people who introduce new features to the kernel
-        control the userland. This way, new features can be implemented very
-        quickly across all parts of the OS. See pledge, unveil, and arc4random,
-        for example.</p>
+        <p>The kernel and userland in OpenBSD, as in the BSD family generally,
+        are developed together. The same project that introduces kernel
+        features also controls the base userland, so new security ideas can be
+        applied consistently across the OS. pledge, unveil, and arc4random are
+        good examples.</p>
 
         <ul>
-          <li>Linux Kernel and GNU Core Utilities (or musl/BusyBox if you don't
-          like using GNU) are developed independently, so it would not be
-          possible to introduce pledge (or something like SELinux/AppArmor) to
-          all the tools as easily, for example. This makes it absolutely
-          impossible to have harmony in security protocols and integrated code
-          between the Linux kernel and Linux userland, making the Linux world a
-          real mess. macOS and Windows have more unified development, but they
-          focus on features rather than security, especially Windows, where
-          legacy-code chaos reigns.</li>
+          <li>The Linux kernel and the GNU Core Utilities, or musl/BusyBox on
+          non-GNU systems, are developed independently. That makes it much
+          harder to introduce something like pledge, or even a consistent
+          SELinux/AppArmor approach, across all base tools. This lack of unity
+          makes Linux security fragmented. macOS and Windows have more unified
+          development, but they tend to prioritize features and compatibility,
+          especially Windows with its heavy legacy burden.</li>
 
           <li>Windows, macOS, and BSDs do not have this problem. <strong>Linux
           falls behind here.</strong></li>
@@ -489,12 +487,12 @@ permit root</pre>
       <section aria-labelledby="obsd-13">
         <h2 id="obsd-13">13 - LibreSSL</h2>
 
-        <p>The unmaintainable and bloated OpenSSL codebase was forked after
-        Heartbleed was revealed. The code was thoroughly cleaned up, improved
-        and documented. Besides adding modern ciphers such as FRP256v1, RFC
-        5639 EC Brainpool, ChaCha20, and Poly1305, LibreSSL is API-compatible
-        with OpenSSL but without the same complexity. It is actively developed
-        by OpenBSD devs.</p>
+        <p>The bloated and difficult OpenSSL codebase was forked after
+        Heartbleed. LibreSSL cleaned up, improved, and documented large parts
+        of that code. It added modern cryptography such as FRP256v1, RFC 5639
+        EC Brainpool, ChaCha20, and Poly1305, while remaining API-compatible
+        with OpenSSL without carrying the same level of complexity. It is
+        actively developed by OpenBSD developers.</p>
 
         <ul>
           <li>Nowadays, macOS OpenSSL uses LibreSSL code.</li>
@@ -504,32 +502,29 @@ permit root</pre>
       <section aria-labelledby="obsd-14">
         <h2 id="obsd-14">14 - License</h2>
 
-        <p>You are free to use the operating system as you want and do business
-        with it according to ISC or Berkeley style licenses. By project policy,
-        the GPL is not acceptable when adding new code. The BSD license is
-        presented here as freer than the GPL, which is described as more
-        restrictive in code use.</p>
+        <p>You are free to use the operating system as you want, including for
+        business, under ISC or Berkeley-style licenses. By project policy, GPL
+        code is not acceptable for new additions. I consider the BSD license
+        freer than the GPL, which places more restrictions on code use.</p>
 
-        <p>This prevents infiltration and/or internal corruption of programmers
-        to boycott and/or add backdoors. Like what has happened to the Linux
-        kernel for many years, where Bill Gates has tried several times to
-        boycott the project and then infiltrated dozens of programmers in its
-        development to add backdoors and cause internal fights between
-        developers. Or even IBM, which has literally been part of the Linux
-        world for many years and aims to transform Linux into software for big
-        tech enterprises, destroying the Unix philosophy.</p>
+        <p>In my view, this licensing culture also helps protect the project
+        from corporate capture and internal pressure. Linux has spent years
+        pulled between community goals and large corporate interests,
+        especially from companies such as IBM that want Linux shaped for
+        enterprise platforms. I think that pressure damages the Unix
+        philosophy.</p>
 
-        <p>A license as free as BSD allows companies to freely use, close,
-        distribute, and resell OpenBSD code. This license protects not only
-        OpenBSD, but any BSD software, from the envy of others that only leads
-        to chaos and destruction.</p>
+        <p>A license as permissive as BSD allows companies to use, close,
+        distribute, and resell OpenBSD code. I see that freedom as a strength,
+        not a weakness, because it keeps the project simple and avoids the
+        ideological battles that often surround copyleft licensing.</p>
 
         <ul>
-          <li>The Linux and GNU license is the GPL license, which in a perfect
-          world where there was harmony between open-source programmers and
-          mega-capitalist companies would be ideal, but we don't live in a
-          perfect world. macOS and Windows use proprietary code while OpenBSD
-          is 100% open source.</li>
+          <li>The Linux and GNU world is built heavily around the GPL. In a
+          perfect world, where open-source programmers and huge companies had
+          aligned incentives, that might be ideal. We do not live in that
+          world. macOS and Windows are proprietary, while OpenBSD is fully open
+          source.</li>
         </ul>
       </section>
 
@@ -641,37 +636,35 @@ permit root</pre>
         <ul>
           <li>
             <p>Linux's iptables and nftables are extremely complex compared to
-            PF, which can lead even advanced users to make mistakes and create
-            significant security exposure. That's why there are many frontends
-            to manage them, like firewalld and ufw. In this article's view,
-            iptables and nftables have difficult, cumbersome syntax. There are
-            full professional certification courses just to learn them, which
-            illustrates that complexity.</p>
+            pf, and that complexity can lead even advanced users into dangerous
+            mistakes. That is why frontends such as firewalld and ufw exist. In
+            my view, iptables and nftables have difficult, cumbersome syntax;
+            the existence of full professional certification courses just to
+            learn them says a lot.</p>
           </li>
 
           <li>
-            <p>The Windows firewall is presented here as weak for advanced
-            control: users have limited direct control, and most behavior is
-            managed through a GUI that can feel restrictive. Even so, it can
-            still block malware and other traffic.</p>
+            <p>I consider the Windows firewall weak for advanced control. Users
+            have limited direct control, and most behavior is managed through a
+            restrictive GUI. It can still block malware and unwanted traffic,
+            but it is not pleasant for serious administration.</p>
           </li>
 
           <li>
-            <p>The macOS firewall is rated very positively in this section:
-            safe, simple, and user-controlled. It is based on OpenBSD's
+            <p>I rate the macOS firewall much more positively: it is safe,
+            simple, and user-controlled. It is based on OpenBSD's
             <code>pf</code>.</p>
           </li>
 
           <li>
-            <p>The NetBSD firewall (npf) is very good, as it is the origin of
-            OpenBSD, the syntax of pf is very similar to that of npf but it is
-            a little more complex.</p>
+            <p>The NetBSD firewall, npf, is also very good. Its syntax is
+            similar to pf, though a little more complex.</p>
           </li>
 
           <li>
-            <p>FreeBSD has 3 firewalls, that's a mess, but one of them is pf.
-            However, the FreeBSD pf distanced itself from the OpenBSD pf,
-            almost like a fork.</p>
+            <p>FreeBSD has three firewalls, which I consider messy, but one of
+            them is pf. FreeBSD's pf has diverged from OpenBSD's pf enough that
+            it feels almost like a fork.</p>
           </li>
         </ul>
       </section>
@@ -679,8 +672,8 @@ permit root</pre>
       <section aria-labelledby="obsd-22">
         <h2 id="obsd-22">22 - PID randomization</h2>
 
-        <p>OpenBSD spawns each new process with a random, unused PID. This
-        protects the user from attacks that predict new PID.</p>
+        <p>OpenBSD spawns each new process with a random unused PID. This helps
+        protect users from attacks that rely on predicting process IDs.</p>
 
         <ul>
           <li>Linux kernel allocates PIDs in a semi-sequential (incremental)
@@ -692,10 +685,10 @@ permit root</pre>
       <section aria-labelledby="obsd-23">
         <h2 id="obsd-23">23 - ping randomness</h2>
 
-        <p>Both ping(8) and ping6(8) obfuscate the transmitted monotonic clock
-        values by offsetting them with a random value. ChaCha streams are used
-        to vary every payload. This helps the user to hide the system time from
-        the attacker and prevents OS detection.</p>
+        <p>Both ping(8) and ping6(8) obfuscate transmitted monotonic clock
+        values by offsetting them with a random value. ChaCha streams vary each
+        payload. This helps hide system time from attackers and makes OS
+        detection harder.</p>
 
         <ul>
           <li>Neither Windows, Linux, nor macOS has this.</li>
@@ -705,12 +698,11 @@ permit root</pre>
       <section aria-labelledby="obsd-24">
         <h2 id="obsd-24">24 - pledge</h2>
 
-        <p>pledge allows you to limit a program's access to system calls very
-        easily. This is a huge improvement in security. Even if a binary is
-        compromised, its chances to misbehave are greatly reduced. Within only
-        two releases, the OpenBSD Developers managed to introduce pledge to
-        most of the binaries in the base system. Currently all base system
-        binaries must be pledged.</p>
+        <p>pledge lets a program limit its own access to system calls with very
+        little code. That is a huge security improvement. Even if a binary is
+        compromised, its ability to misbehave is sharply reduced. Within only
+        two releases, OpenBSD developers introduced pledge across most base
+        system binaries. Today, all base system binaries must be pledged.</p>
 
         <ul>
           <li>Linux has seccomp, which can emulate pledge's syscall‑restriction
@@ -719,8 +711,8 @@ permit root</pre>
           libseccomp) to avoid mistakes; writing policies for this is
           error‑prone.</li>
 
-          <li>Seccomp is presented here as not practically usable and very
-          insecure: <a href=
+          <li>I do not consider seccomp practically usable for ordinary
+          hardening, and this critique explains why: <a href=
           "https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html">https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html</a>
           </li>
 
@@ -742,11 +734,11 @@ permit root</pre>
         file system beyond /etc/passwd and /etc/shadow? If there is a security
         bug in passwd, the effects would be more limited.</p>
 
-        <p>The browsers: Firefox, Firefox ESR, Tor, Chromium and Iridium are
-        limited with unveil (and pledge) and can only have access to Downloads
-        folder (and their respective folders on the system), not being able to
-        even read any other system folder/archives, making the browser an
-        impossible vault for any malware to leave.</p>
+        <p>Browsers such as Firefox, Firefox ESR, Tor Browser, Chromium, and
+        Iridium are limited with unveil and pledge. They can access the
+        Downloads folder and their own system folders, but not arbitrary files
+        elsewhere. That turns the browser into a much tighter container for
+        malware.</p>
 
         <ul>
           <li>Linux Landlock, AppArmor, SELinux, Smack: filesystem and broader
@@ -828,19 +820,18 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-29">
         <h2 id="obsd-29">29 - rcctl(8)</h2>
 
-        <p><code>rcctl</code> is a simple utility to maintain
-        <code>rc.conf.local</code>, the system daemon configuration database
-        for OpenBSD. Compared with systemd or SysVinit, this section argues
-        that <code>rcctl</code> is more lightweight, secure, stable, and easier
-        to understand and use. It also argues that systemd behaves almost like
-        a full operating system, with substantial Red Hat-driven
-        complexity.</p>
+        <p><code>rcctl</code> is a simple utility for maintaining
+        <code>rc.conf.local</code>, OpenBSD's system daemon configuration
+        database. Compared with systemd or SysVinit, I find <code>rcctl</code>
+        lighter, more stable, more secure, and easier to understand. Systemd,
+        by contrast, behaves almost like a full operating system, with
+        substantial Red Hat-driven complexity.</p>
 
         <ul>
-          <li>Gentoo and other distributions (like Artix, Alpine and Void) have
-          the advantage of not using systemd (or SysVinit). But Qubes OS,
-          Fedora Secureblue, Tails, Whonix, Kicksecure, Arch, NixOS, and many
-          others use it.</li>
+          <li>Gentoo and distributions such as Artix, Alpine, and Void have the
+          advantage of avoiding systemd, or SysVinit in some cases. But Qubes
+          OS, Fedora Secureblue, Tails, Whonix, Kicksecure, Arch, NixOS, and
+          many others use it.</li>
         </ul>
       </section>
 
@@ -987,8 +978,8 @@ ifconfig iwm0 lladdr random</pre>
           <li>GrapheneOS seems to have that, but it's more dynamic.</li>
 
           <li>macOS swap and sleep image are encrypted when FileVault
-          (full-disk encryption) is enabled. This section rates Windows
-          BitLocker negatively in reliability.</li>
+          (full-disk encryption) is enabled. I rate Windows BitLocker poorly
+          for reliability.</li>
         </ul>
       </section>
 
@@ -1052,26 +1043,25 @@ ifconfig iwm0 lladdr random</pre>
           utilizes state-of-the-art cryptography.</p>
         </blockquote>
 
-        <p>With this, you can do a base and offline installation of OpenBSD
-        and, right at the beginning, set up a good VPN like Mullvad or IVPN for
-        total anonymity (Mullvad and IVPN officially support WireGuard).</p>
+        <p>With this, you can do a base offline installation of OpenBSD and set
+        up a good VPN such as Mullvad or IVPN right away. Both officially
+        support WireGuard.</p>
 
         <ul>
-          <li>WireGuard is integrated into the OpenBSD kernel; obviously,
-          Linux, Windows, and macOS do not have this feature, but have
-          WireGuard support.</li>
+          <li>WireGuard is integrated into the OpenBSD kernel. Linux, Windows,
+          and macOS have WireGuard support, but not in this OpenBSD-style base
+          system form.</li>
         </ul>
       </section>
 
       <section aria-labelledby="obsd-41">
         <h2 id="obsd-41">41 - file(1)</h2>
 
-        <p>File is sandboxed and runs as the _file user. Think of the
-        following: You download a random file from the internet and analyze it
-        using file. If file has a security hole (local code execution for
-        example) and the downloaded file is configured to exploit this, it can
-        run attacks. That's why the file utility is sandboxed and chrooted by
-        default.</p>
+        <p>file(1) is sandboxed and runs as the _file user. Imagine downloading
+        a random file from the internet and analyzing it with file. If file had
+        a local code execution bug and the downloaded file was crafted to
+        exploit it, that bug could become dangerous. OpenBSD reduces this risk
+        by sandboxing and chrooting the utility by default.</p>
 
         <ul>
           <li>This is something unique to OpenBSD.</li>
@@ -1081,13 +1071,11 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-42">
         <h2 id="obsd-42">42 - vmm(4) - hardened hypervisor</h2>
 
-        <p>Theo de Raadt (the creator) has long criticized virtual machines and
-        their security model, arguing that the hypervisor is often the weakest
-        and easiest point to exploit. Then the OpenBSD devs created their own
-        hypervisor for the system, focused on extreme security and with the
-        minimum possible attack vector beyond the separation of privileges.
-        This of course leads to a lot of loss of features for virtual machines
-        like:</p>
+        <p>Theo de Raadt has long criticized virtual machines and their
+        security model, arguing that the hypervisor is often the weakest and
+        easiest point to exploit. OpenBSD still created its own hypervisor, but
+        with a focus on security and a small attack surface rather than feature
+        count. That means losing many VM features, including:</p>
 
         <ul>
           <li>Graphics</li>
@@ -1104,15 +1092,16 @@ ifconfig iwm0 lladdr random</pre>
         </ul>
 
         <p>Supported guest operating systems are currently limited to OpenBSD
-        and Linux. As there is no VGA support yet, the guest OS must support
-        serial console. But a graphical interface is possible with Xephyr and
-        probably with vncviewer and proxmox.</p>
+        and Linux. Because there is no VGA support yet, the guest OS must
+        support a serial console. A graphical interface is still possible with
+        tools such as Xephyr, and probably with vncviewer or Proxmox-style
+        setups.</p>
 
         <ul>
           <li>QEMU/KVM, Xen, Hyper-V, VMware, VirtualBox, and other hypervisors
-          are unreliable and were not built from scratch with security as the
-          first priority. Furthermore, everything in the operating system can
-          make VM management insecure, such as systemd itself.</li>
+          were not built from scratch with security as the first priority. VM
+          management can also be weakened by the surrounding operating system,
+          including components such as systemd.</li>
 
           <li>Hardware passthrough greatly increases the attack surface.
           Additional hardware technology (such as IOMMU) is required for
@@ -1138,23 +1127,20 @@ ifconfig iwm0 lladdr random</pre>
         setuid rights enabled by default.</p>
 
         <ul>
-          <li>The standard X11/Xorg stack is rated very negatively in this
-          section: it is described as legacy-heavy and vulnerability-prone,
-          with significant historical baggage. In OpenBSD, the article views
-          Xenocara as a major improvement. It also notes XLibre as a later
-          effort in that direction, while arguing it still does not match
-          Xenocara's security profile.</li>
+          <li>I rate the standard X11/Xorg stack very negatively: it is
+          legacy-heavy, vulnerability-prone, and full of historical baggage.
+          Xenocara is a major improvement in OpenBSD. XLibre is a later effort
+          in a similar direction, but I do not think it matches Xenocara's
+          security profile.</li>
         </ul>
 
-        <p>Although Wayland is incomparably more secure than X11, it still has
-        had grotesque vulnerabilities that have already been exploited multiple
-        times, mainly because Wayland relies on XWayland to be
-        software-compatible (which Fedora Secureblue has made a point of
-        disabling globally). Wayland is definitely not safe, and can have its
-        so beloved "sandboxing" broken by Hyprland or other graphical
-        environments (Fedora Secureblue does not recommend the use of hyprland
-        because of this). XLibre and Xenocara are far superior alternatives,
-        but only XLibre can be used on Linux.</p>
+        <p>Wayland is much more secure than X11, but it has still had serious
+        vulnerabilities, and XWayland exists for compatibility with older
+        software. Fedora Secureblue disables XWayland globally for this reason.
+        Wayland is not automatically safe, and its sandboxing can be weakened
+        by compositors such as Hyprland, which Secureblue does not recommend.
+        XLibre and Xenocara are better directions in my view, though only
+        XLibre is usable on Linux.</p>
       </section>
 
       <section aria-labelledby="obsd-44">
@@ -1246,7 +1232,7 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-47">
         <h2 id="obsd-47">47 - Project Goals</h2>
 
-        <p>OpenBSD's goals are clear, precise and greatly increase user
+        <p>OpenBSD's goals are clear, precise, and they greatly increase user
         confidence.</p>
 
         <p><a href=
@@ -1320,17 +1306,15 @@ ifconfig iwm0 lladdr random</pre>
         therefore secure.</p>
 
         <ul>
-          <li>Linux development is a mess (as previously stated in topic 12),
-          nothing is predictable, big changes happen all the time and Linux is
-          very malleable and shaped by the will of large corporations like IBM
-          (mainly because of the GPL license).</li>
+          <li>Linux development is chaotic, as I argued in topic 12. Big
+          changes happen constantly, and the project is highly malleable under
+          pressure from large corporations such as IBM, partly because of the
+          GPL-centered ecosystem around it.</li>
 
-          <li>Windows has always been a mess, with each version things get more
-          chaotic. But at least we know that Microsoft's focus is on the
-          average desktop user, so don't expect anything more than that.
-          Windows will always be a pleasant operating system for the average
-          desktop user (at least those who don't care about performance
-          LOL).</li>
+          <li>Windows has always been messy, and each version adds more
+          complexity. At least Microsoft's target is clear: the average desktop
+          user. Windows can be pleasant for that audience, especially for
+          people who do not care much about performance.</li>
 
           <li>macOS is pretty predictable. Nothing changes and Apple products
           only become more and more expensive.</li>
@@ -1348,9 +1332,9 @@ ifconfig iwm0 lladdr random</pre>
           the basis of technical merit.</p>
         </blockquote>
 
-        <p>The development of OpenBSD is completely separate from politics or
-        social causes. The OpenBSD developers and especially its creator (Theo
-        de Raadt) do nothing to please the so protected "minority".</p>
+        <p>OpenBSD development is intentionally separate from politics and
+        social causes. The developers, especially Theo de Raadt, tend to make
+        decisions based on technical merit rather than public pressure.</p>
 
         <p>One of the many (hundreds) examples of this was when an OpenBSD user
         proposed a change of term in the OS code, claiming that the term was
@@ -1360,37 +1344,36 @@ ifconfig iwm0 lladdr random</pre>
         <p>But OpenBSD creator Theo de Raadt responded: <a href=
         "https://marc.info/?l=openbsd-advocacy&amp;m=175977519419628&amp;w=2">https://marc.info/?l=openbsd-advocacy&amp;m=175977519419628&amp;w=2</a></p>
 
-        <p>OpenBSD has proven to be very reliable in this regard. Unlike other
-        operating systems, OpenBSD has proven resistant to political and social
-        corruption.</p>
+        <p>OpenBSD has proven reliable in this regard. Unlike many other
+        operating systems, it has resisted political and social pressure inside
+        its technical decision-making.</p>
 
         <ul>
           <li>
-            <p>Linux in turn always tries to be "inclusive" and please
-            "minorities" who only care about themselves instead of worrying
-            about the real efficiency and security of the software. Linux is
-            full of vanity, with many vain programmers who first want to please
-            those offended and then worry about what really matters.</p>
+            <p>Linux, by contrast, often tries to satisfy social expectations
+            before focusing on software efficiency and security. I think that
+            vanity and public approval sometimes matter too much in the Linux
+            world, while old bugs and structural problems remain
+            unresolved.</p>
 
-            <p>An example of this was when Linus Torvalds has Merged
-            Inclusive-Terminology Rules Into The Linux Kernel Git Tree, to put
-            an end to the "offensive" terms; "master", "sleeve", "blacklist"
-            and "whitelist" used in programming for decades: <a href=
+            <p>One example is the merge of inclusive-terminology rules into the
+            Linux kernel tree, aimed at replacing terms such as "master",
+            "slave", "blacklist", and "whitelist" that programmers had used for
+            decades: <a href=
             "https://linuxreviews.org/Linus_Torvalds_Has_Merged_Inclusive-Terminology_Rules_Into_The_Linux_Kernel_Git_Tree">
             https://linuxreviews.org/Linus_Torvalds_Has_Merged_Inclusive-Terminology_Rules_Into_The_Linux_Kernel_Git_Tree</a></p>
           </li>
 
           <li>
-            <p>None of these changes represents a real improvement in code
-            efficiency. The criticism here is that effort should focus first on
-            fixing longstanding kernel bugs and vulnerabilities instead of
-            prioritizing terminology updates. This is presented as one example
-            of a broader pattern in Linux development priorities.</p>
+            <p>None of these changes improves code efficiency. My criticism is
+            that effort should go first toward long-standing kernel bugs and
+            vulnerabilities instead of terminology updates. I see this as one
+            example of a broader priority problem in Linux development.</p>
           </li>
 
           <li>
-            <p>In the Linux world (beyond the kernel), for example, we have
-            insane cases like systemd "detect-fash":</p>
+            <p>Beyond the kernel, the Linux world has cases like systemd
+            "detect-fash":</p>
 
             <ul>
               <li>
@@ -1408,32 +1391,29 @@ ifconfig iwm0 lladdr random</pre>
           </li>
         </ul>
 
-        <p>The most bizarre thing is that many people supported this commit.
-        Showing that in the Linux world, something like this can emerge at any
-        time and destroy the security of specific users. Imagine if out of
-        nowhere a group of FOSS communists (it's full of them there) decide
-        that another group of people they consider "problematic" and
-        "offensive" should be monitored? For a backdoor of this type to appear
-        in the Linux world, it takes from one day to the next, you cannot sleep
-        peacefully.</p>
+        <p>The most disturbing part is that many people supported the commit.
+        To me, this shows how quickly a political or social idea can appear in
+        the Linux world and create risk for specific users. If maintainers
+        decide that a group is "problematic" and should be treated differently,
+        a harmful feature can appear very quickly. That makes it hard to trust
+        the ecosystem calmly.</p>
 
-        <p>Meanwhile in OpenBSD and as previously mentioned in topic 12, the
-        OpenBSD kernel and userland have the same developers, mitigating the
-        chances of something like this occurring to almost zero.</p>
+        <p>OpenBSD is different. As mentioned in topic 12, the kernel and
+        userland are developed together, which greatly reduces the chance of
+        this kind of surprise entering the system.</p>
 
         <ul>
           <li>
-            <p>Windows and MacOS do everything they can to please people rather
-            than focusing on actual software efficiency. Which is
-            understandable given that they are proprietary and paid operating
-            systems. This is acceptable on Windows and MacOS, but not on
-            Linux.</p>
+            <p>Windows and macOS also try to please broad audiences rather than
+            focusing purely on software efficiency. That is understandable for
+            proprietary, paid operating systems. I expect it there; I do not
+            want it in Linux.</p>
           </li>
 
           <li>
-            <p>FreeBSD is becoming terrible in this regard. The community is
-            filling up with people like this, which isn't a problem as long as
-            they keep their desire for control out of the OS development.</p>
+            <p>FreeBSD is becoming worse in this regard. The community is
+            changing, which is not necessarily a problem as long as those
+            pressures stay out of OS development.</p>
           </li>
 
           <li>
@@ -1471,33 +1451,31 @@ ifconfig iwm0 lladdr random</pre>
         well. FreeBSD and NetBSD have more lines of code than OpenBSD, but most
         likely less than the Linux kernel or a Linux distro.</p>
 
-        <p>More lines of code means more attack surface, more bugs, and more
-        vulnerabilities. The philosophy and development of OpenBSD focuses on
-        minimalism and security, the devs understand that a clean and
-        minimalist code lowers attack surface, and the developers actively
-        follow that approach.</p>
+        <p>More lines of code mean more attack surface, more bugs, and more
+        vulnerabilities. OpenBSD's philosophy focuses on minimalism and
+        security. Its developers understand that clean, minimal code lowers
+        attack surface, and they actively follow that approach.</p>
 
-        <p>By using a Linux distro, whatever it may be, even if it's Gentoo or
-        Linux from Scratch, you'll be dealing with tens and even hundreds of
-        millions of lines of code, maybe billions of lines of code. This
-        represents an incomparably larger attack surface than OpenBSD. Only the
-        Linux kernel has a larger attack surface than the entire OpenBSD
-        operating system. This is even worse when using Windows 10/11, only God
-        knows how many billion lines of proprietary code are there.</p>
+        <p>With any Linux distribution, even Gentoo or Linux from Scratch, you
+        are dealing with tens or hundreds of millions of lines of code, perhaps
+        more depending on the full system. That is an incomparably larger
+        attack surface than OpenBSD. The Linux kernel alone is larger than the
+        entire OpenBSD operating system. Windows 10 and 11 are even harder to
+        judge, because only Microsoft knows how much proprietary code is
+        involved.</p>
 
-        <p>When using OpenBSD you will already have a smaller attack surface by
-        default than any other monolithic or hybrid kernel operating system.
-        This increases not only security for users, but the ease of
-        implementing more security mitigations in OpenBSD on the programming
-        side. Maintenance becomes easier, the quality of the code increases and
-        consequently the reliability also increases. There is no downside when
-        it comes to security and reliability.</p>
+        <p>With OpenBSD, you start with a smaller attack surface than most
+        other monolithic or hybrid-kernel operating systems. That improves user
+        security and also makes additional mitigations easier to implement.
+        Maintenance becomes easier, code quality improves, and reliability
+        improves with it. From a security and reliability perspective, I see no
+        downside.</p>
 
-        <p>Even the total of official OpenBSD websites (www) have a low number
-        of lines of code, 312.465 in total (2026-02-26). Improving privacy and
-        user experience overall and not just the operating system itself. While
-        Microsoft, Apple and many Linux distros websites are heavy and full of
-        JavaScript and telemetry.</p>
+        <p>Even the official OpenBSD websites have a low amount of code:
+        312,465 lines in total as of 2026-02-26. That improves privacy and user
+        experience beyond the operating system itself. Microsoft, Apple, and
+        many Linux distribution websites are heavy, JavaScript-filled, and
+        telemetry-friendly by comparison.</p>
       </section>
 
       <p>El Psy Kongroo!</p>
