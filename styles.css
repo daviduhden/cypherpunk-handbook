@@ -695,8 +695,14 @@ code {
   padding: 0.2em 0.35em;
   border-radius: 0.35em;
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   background: var(--nav-bg);
   border: thin solid color-mix(in srgb, var(--border-2) 70%, var(--accent) 30%);
 }
@@ -712,8 +718,14 @@ pre {
   padding: 1em;
   overflow-x: auto;
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   margin: 1em 0;
   line-height: 1.5;
   box-shadow: inset 0 0 1.1em #39ff1422, 0 0 0.85em #39ff1418;
