@@ -4,8 +4,15 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Sat, 02 May 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 31 May 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Terms and explanations of security in operating systems.</title>
+      <link>/articles/security-terms.html</link>
+      <description>This document is dedicated to giving a brief but precise explanation of several terms related to security in operating systems, which can confuse even the most experienced people. This document is not intended to explain all the terms used and documented in all operating systems, nor specific programs, but only universal concepts.</description>
+      <pubDate>Sun, 31 May 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/security-terms.html</guid>
+    </item>
     <item>
       <title>Why OpenBSD stands alone</title>
       <link>/articles/openbsd.html</link>

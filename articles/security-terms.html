@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>T.C.H. — Terms and explanations of security in operating
+  systems.</title>
+  <link rel="icon" href="./../favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./../styles.css">
+  <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
+  "./../feeds/articles.xml">
+</head>
+<body>
+  <a class="skip-link" href="#site-main">Skip to main content</a>
+  <header id="site-header">
+    <h1>The Cypherpunk Handbook</h1>
+
+    <h2>Article</h2>
+  </header>
+
+  <nav id="site-nav" aria-label="Primary navigation">
+    <ul>
+      <li>
+        <a href="./../index.html" rel="home">Home</a>
+      </li>
+
+      <li>
+        <a href="./../manifesto.html" rel="contents">Manifesto</a>
+      </li>
+
+      <li>
+        <a href="./../contact.html" rel="author">Contact</a>
+      </li>
+
+      <li>
+        <a href="./../contribute.html" rel="help">Contribute</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main id="site-main" tabindex="-1">
+    <article class="article-content">
+      <header id="article-header">
+        <p class="kicker">Security</p>
+
+        <h2>Terms and explanations of security in operating systems.</h2>
+
+        <p class="meta">Written by FlyWithMe (a SimpleX Chat user) —
+        <time datetime="2026-05-31">Updated May 31, 2026</time></p>
+
+        <p class="lede">This document is dedicated to giving a brief but
+        precise explanation of several terms related to security in operating
+        systems, which can confuse even the most experienced people. This
+        document is not intended to explain all the terms used and documented
+        in all operating systems, nor specific programs, but only universal
+        concepts.</p>
+      </header>
+
+      <nav class="toc" aria-labelledby="security-terms-contents-heading">
+        <h2 id="security-terms-contents-heading">Contents</h2>
+
+        <ol>
+          <li>
+            <a href="#security-term-001">1. MAC — _Mandatory Access
+            Control_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-002">2. RBAC — _Role-Based Access
+            Control_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-003">3. DAC — _Discretionary Access
+            Control_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-004">4. ABAC — _Attribute-Based Access
+            Control_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-005">5. RB-RBAC — _Rule-Based Role-Based
+            Access Control_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-006">6. ACL — _Access Control List_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-007">7. ACE — _Access Control Entry_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-008">8. POLP — _Principle of Least
+            Privilege_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-009">9. NX (NX bit) — _No‑eXecute bit_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-010">10. DEP — _Data Execution
+            Prevention_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-011">11. ASLR — _Address Space Layout
+            Randomization_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-012">12. KASLR — _Kernel Address Space
+            Layout Randomization_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-013">13. PIE — _Position Independent
+            Executable_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-014">14. IPsec — _Internet Protocol
+            Security_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-015">15. SELinux — _Security‑Enhanced
+            Linux_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-016">16. AppArmor — _Application Armor_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-017">17. LSM — _Linux Security Modules_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-018">18. PAM — _Pluggable Authentication
+            Modules_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-019">19. TPM — _Trusted Platform
+            Module_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-020">20. TCB — _Trusted Computing Base_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-021">21. UEFI Secure Boot — _Unified
+            Extensible Firmware Interface Secure Boot_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-022">22. SMEP — _Supervisor Mode Execution
+            Protection_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-023">23. SMAP — _Supervisor Mode Access
+            Prevention_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-024">24. SEH — _Structured Exception
+            Handling_ (Windows)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-025">25. MIC — _Mandatory Integrity
+            Control_ (Windows)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-026">26. SUID — _Set User ID_ (on
+            execution)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-027">27. CAP — _Linux Capabilities_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-028">28. Sandbox — Application Sandbox</a>
+          </li>
+
+          <li>
+            <a href="#security-term-029">29. Isolation</a>
+          </li>
+
+          <li>
+            <a href="#security-term-030">30. FIPS — _Federal Information
+            Processing Standard_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-031">31. Stack canary</a>
+          </li>
+
+          <li>
+            <a href="#security-term-032">32. SSP — _Stack Smashing
+            Protector_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-033">33. CFI — _Control‑Flow Integrity_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-034">34. Shadow stack</a>
+          </li>
+
+          <li>
+            <a href="#security-term-035">35. PAC — _Pointer Authentication
+            Code_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-036">36. CET — _Control‑flow Enforcement
+            Technology_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-037">37. Intel SGX — _Intel Software Guard
+            Extensions_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-038">38. ARM TrustZone Technology</a>
+          </li>
+
+          <li>
+            <a href="#security-term-039">39. Secure Enclave</a>
+          </li>
+
+          <li>
+            <a href="#security-term-040">40. TXT — _Intel Trusted Execution_
+            Technology</a>
+          </li>
+
+          <li>
+            <a href="#security-term-041">41. IOMMU — _Input–Output Memory
+            Management Unit_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-042">42. VT-d — _Intel Virtualization
+            Technology for Directed I/O_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-043">43. AMD‑Vi — _AMD I/O Virtualization_
+            (IOMMU)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-044">44. VBS — _Virtualization‑based
+            Security_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-045">45. HVCI — _Hypervisor‑protected Code
+            Integrity_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-046">46. Hypervisor introspection</a>
+          </li>
+
+          <li>
+            <a href="#security-term-047">47. seccomp — _Secure Computing Mode_
+            (seccomp‑bpf)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-048">48. cgroups — _Control Groups_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-049">49. namespaces — _Linux
+            Namespaces_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-050">50. LUKS — _Linux Unified Key
+            Setup_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-051">51. dm‑crypt — _Device-mapper crypt
+            target_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-052">52. eBPF sandboxing</a>
+          </li>
+
+          <li>
+            <a href="#security-term-053">53. W^X — _Write XOR Execute
+            policy_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-054">54. RASP — _Runtime Application
+            Self‑Protection_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-055">55. MACsec — _Media Access Control
+            Security_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-056">56. FDE — _Full Disk Encryption_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-057">57. MFA — _Multi‑Factor
+            Authentication_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-058">58. 2FA — _Two‑Factor
+            Authentication_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-059">59. SSO — _Single Sign‑On_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-060">60. OAuth — OAuth Authorization
+            Framework</a>
+          </li>
+
+          <li>
+            <a href="#security-term-061">61. SAML — _Security Assertion Markup
+            Language_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-062">62. X.509 Public Key Certificate</a>
+          </li>
+
+          <li>
+            <a href="#security-term-063">63. PKCS#11 — _Public-Key Cryptography
+            Standards #11_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-064">64. HSM — _Hardware Security
+            Module_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-065">65. Key wrapping</a>
+          </li>
+
+          <li>
+            <a href="#security-term-066">66. Measured boot</a>
+          </li>
+
+          <li>
+            <a href="#security-term-067">67. Container</a>
+          </li>
+
+          <li>
+            <a href="#security-term-068">68. Memory safety</a>
+          </li>
+
+          <li>
+            <a href="#security-term-069">68. Garbage collection</a>
+          </li>
+
+          <li>
+            <a href="#security-term-070">69. Ownership/borrowing</a>
+          </li>
+
+          <li>
+            <a href="#security-term-071">70. RELRO — _Relocation Read-Only_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-072">71. KARL — _Kernel Address Randomized
+            Link_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-073">72. SROP — _Sigreturn-Oriented
+            Programming_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-074">73. Library order randomization</a>
+          </li>
+
+          <li>
+            <a href="#security-term-075">74. Kernel relinking at boot
+            (relinking/relink-on-boot)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-076">74. NOP — _No Operation_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-077">75. ROP — _Return-Oriented
+            Programming_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-078">76. malloc</a>
+          </li>
+
+          <li>
+            <a href="#security-term-079">77. Memory allocator</a>
+          </li>
+
+          <li>
+            <a href="#security-term-080">78. Capability-based security</a>
+          </li>
+
+          <li>
+            <a href="#security-term-081">79. MPU — _Memory Protection Unit_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-082">80. MMU — _Memory Management Unit_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-083">81. RTOS — _Real‑Time Operating
+            System_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-084">82. Privilege escalation</a>
+          </li>
+
+          <li>
+            <a href="#security-term-085">83. Attack surface</a>
+          </li>
+
+          <li>
+            <a href="#security-term-086">84. MTE — _Memory Tagging
+            Extension_</a>
+          </li>
+
+          <li>
+            <a href="#security-term-087">85. Exploit Mitigations</a>
+          </li>
+
+          <li>
+            <a href="#security-term-088">86. Code signing</a>
+          </li>
+
+          <li>
+            <a href="#security-term-089">87. Chain of trust</a>
+          </li>
+
+          <li>
+            <a href="#security-term-090">89. Supply-chain attack</a>
+          </li>
+
+          <li>
+            <a href="#security-term-091">90. Malware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-092">91. Virus</a>
+          </li>
+
+          <li>
+            <a href="#security-term-093">92. Worm</a>
+          </li>
+
+          <li>
+            <a href="#security-term-094">93. Trojan horse</a>
+          </li>
+
+          <li>
+            <a href="#security-term-095">94. Ransomware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-096">95. Spyware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-097">96. Adware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-098">97. Rootkit</a>
+          </li>
+
+          <li>
+            <a href="#security-term-099">98. Keylogger</a>
+          </li>
+
+          <li>
+            <a href="#security-term-100">99. Botnet</a>
+          </li>
+
+          <li>
+            <a href="#security-term-101">100. Fileless malware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-102">101. Polymorphic/metamorphic
+            malware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-103">102. Wiper</a>
+          </li>
+
+          <li>
+            <a href="#security-term-104">103. Crypto‑miner (cryptojacker)</a>
+          </li>
+
+          <li>
+            <a href="#security-term-105">104. Mobile malware</a>
+          </li>
+
+          <li>
+            <a href="#security-term-106">105. Backdoor</a>
+          </li>
+
+          <li>
+            <a href="#security-term-107">106. Downloader / Dropper</a>
+          </li>
+
+          <li>
+            <a href="#security-term-108">107. Exploit kit</a>
+          </li>
+
+          <li>
+            <a href="#security-term-109">108. Grayware/Potentially Unwanted
+            Application (PUA)</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h3 id="security-term-001">1. MAC — <em>Mandatory Access
+      Control</em></h3>
+
+      <p>A system-enforced policy that restricts access based on fixed
+      labels/clearances assigned to subjects and objects.</p>
+
+      <ul>
+        <li>Example: SELinux enforcing file type labels to prevent processes
+        from reading /etc/shadow.</li>
+      </ul>
+
+      <h3 id="security-term-002">2. RBAC — <em>Role-Based Access
+      Control</em></h3>
+
+      <p>Grants permissions to roles instead of users; users acquire
+      permissions by being assigned roles.</p>
+
+      <ul>
+        <li>Example: Linux sudoers grouping admin users into an "admin"
+        role.</li>
+      </ul>
+
+      <h3 id="security-term-003">3. DAC — <em>Discretionary Access
+      Control</em></h3>
+
+      <p>Resource owners set access permissions (owner/group/others).</p>
+
+      <ul>
+        <li>Example: UNIX file permissions (chmod/chown).</li>
+      </ul>
+
+      <h3 id="security-term-004">4. ABAC — <em>Attribute-Based Access
+      Control</em></h3>
+
+      <p>Access decisions based on attributes of the subject, object, action,
+      and environment (policies evaluate attributes).</p>
+
+      <ul>
+        <li>Example: An access policy allowing access only if user.department
+        == "HR" and request.time &lt; 18:00.</li>
+      </ul>
+
+      <h3 id="security-term-005">5. RB-RBAC — <em>Rule-Based Role-Based Access
+      Control</em></h3>
+
+      <p>RBAC extended with rules/policies that dynamically enable or constrain
+      roles.</p>
+
+      <ul>
+        <li>Example: Temporarily elevating a role when a specific condition
+        (on-call) is met.</li>
+      </ul>
+
+      <h3 id="security-term-006">6. ACL — <em>Access Control List</em></h3>
+
+      <p>A list attached to an object that specifies which users or system
+      processes are granted access and what operations they can perform.</p>
+
+      <ul>
+        <li>Example: Windows NTFS file ACL entries granting Read/Write to a
+        user.</li>
+      </ul>
+
+      <h3 id="security-term-007">7. ACE — <em>Access Control Entry</em></h3>
+
+      <p>A single entry in an ACL specifying a principal and allowed/denied
+      permissions.</p>
+
+      <ul>
+        <li>Example: An ACE in an NTFS ACL that denies Delete to a specific
+        user.</li>
+      </ul>
+
+      <h3 id="security-term-008">8. POLP — <em>Principle of Least
+      Privilege</em></h3>
+
+      <p>Design principle: give processes/users only the privileges they
+      need.</p>
+
+      <ul>
+        <li>Example: Running a web server without root; only granting
+        CAP_NET_BIND_SERVICE.</li>
+      </ul>
+
+      <h3 id="security-term-009">9. NX (NX bit) — <em>No‑eXecute bit</em></h3>
+
+      <p>No-eXecute bit — CPU-supported page attribute marking memory pages
+      non-executable to prevent code execution from data pages.</p>
+
+      <ul>
+        <li>Example: Marking the stack non-executable to block stack-smashing
+        payloads.</li>
+      </ul>
+
+      <h3 id="security-term-010">10. DEP — <em>Data Execution
+      Prevention</em></h3>
+
+      <p>OS/CPU feature using NX to prevent execution of code on data
+      pages.</p>
+
+      <ul>
+        <li>Example: Windows DEP blocking execution of injected shellcode in
+        heap.</li>
+      </ul>
+
+      <h3 id="security-term-011">11. ASLR — <em>Address Space Layout
+      Randomization</em></h3>
+
+      <p>Randomizes memory region addresses (stack, heap, libraries,
+      executables) to make exploitation harder.</p>
+
+      <ul>
+        <li>Example: Linux/Windows randomizing libc and stack base addresses at
+        process start.</li>
+      </ul>
+
+      <h3 id="security-term-012">12. KASLR — <em>Kernel Address Space Layout
+      Randomization</em></h3>
+
+      <p>ASLR applied to kernel memory layout to protect against kernel-level
+      exploits.</p>
+
+      <ul>
+        <li>Example: Randomizing kernel base address on modern Linux
+        kernels.</li>
+      </ul>
+
+      <h3 id="security-term-013">13. PIE — <em>Position Independent
+      Executable</em></h3>
+
+      <p>An executable built so it can be loaded at any address (enables ASLR
+      for the main binary).</p>
+
+      <ul>
+        <li>Example: Modern distributions compile executables with -fPIE and
+        link with -pie.</li>
+      </ul>
+
+      <h3 id="security-term-014">14. IPsec — <em>Internet Protocol
+      Security</em></h3>
+
+      <p>Suite of protocols for authenticating and encrypting IP packets (AH,
+      ESP, IKE).</p>
+
+      <ul>
+        <li>Example: Site-to-site VPN using IPsec ESP for encrypted
+        tunnels.</li>
+      </ul>
+
+      <h3 id="security-term-015">15. SELinux — <em>Security‑Enhanced
+      Linux</em></h3>
+
+      <p>A label-based MAC implementation for Linux providing fine-grained
+      access controls enforced by the kernel.</p>
+
+      <ul>
+        <li>Example: Enforcing separate domains for httpd so it can't access
+        user home dirs.</li>
+      </ul>
+
+      <h3 id="security-term-016">16. AppArmor — <em>Application Armor</em></h3>
+
+      <p>Profile-based MAC for Linux that restricts programs to permitted
+      file/network/syscall actions via profiles.</p>
+
+      <ul>
+        <li>Example: An AppArmor profile limiting Firefox to its config and
+        download dirs.</li>
+      </ul>
+
+      <h3 id="security-term-017">17. LSM — <em>Linux Security Modules</em></h3>
+
+      <p>Kernel framework providing hooks for multiple security modules
+      (SELinux, AppArmor, Landlock).</p>
+
+      <ul>
+        <li>Example: /sys/kernel/security/lsm showing active modules.</li>
+      </ul>
+
+      <h3 id="security-term-018">18. PAM — <em>Pluggable Authentication
+      Modules</em></h3>
+
+      <p>Modular authentication framework for Unix-like systems to configure
+      authentication, account, session, and password policies.</p>
+
+      <ul>
+        <li>Example: pam_pwquality enforcing password complexity.</li>
+      </ul>
+
+      <h3 id="security-term-019">19. TPM — <em>Trusted Platform
+      Module</em></h3>
+
+      <p>Hardware chip providing secure storage for keys, platform attestation,
+      and sealed storage.</p>
+
+      <ul>
+        <li>Example: Storing disk encryption keys and performing measured boot
+        attestation.</li>
+      </ul>
+
+      <h3 id="security-term-020">20. TCB — <em>Trusted Computing Base</em></h3>
+
+      <p>The set of hardware, firmware, and software that enforces the system’s
+      security policy; must be trusted.</p>
+
+      <ul>
+        <li>Example: kernel + firmware + secure boot chain forming a TCB for an
+        OS.</li>
+      </ul>
+
+      <h3 id="security-term-021">21. UEFI Secure Boot — <em>Unified Extensible
+      Firmware Interface Secure Boot</em></h3>
+
+      <p>Firmware feature that verifies signed bootloader/kernel before
+      execution to prevent boot-time tampering.</p>
+
+      <ul>
+        <li>Example: PCs rejecting unsigned bootloaders unless Secure Boot
+        disabled.</li>
+      </ul>
+
+      <h3 id="security-term-022">22. SMEP — <em>Supervisor Mode Execution
+      Protection</em></h3>
+
+      <p>CPU feature preventing the kernel (supervisor mode) from executing
+      code in user-mode pages.</p>
+
+      <ul>
+        <li>Example: Blocks kernel execution of user-space injected code on
+        Intel CPUs.</li>
+      </ul>
+
+      <h3 id="security-term-023">23. SMAP — <em>Supervisor Mode Access
+      Prevention</em></h3>
+
+      <p>CPU feature preventing the kernel from accessing user-space memory
+      unless explicitly enabled.</p>
+
+      <ul>
+        <li>Example: Kernel must enable access when copying data from user
+        space; otherwise accesses fault.</li>
+      </ul>
+
+      <h3 id="security-term-024">24. SEH — <em>Structured Exception
+      Handling</em> (Windows)</h3>
+
+      <p>Windows mechanism for exception handling; historically targeted by
+      exploitation (SEH overwrite).</p>
+
+      <ul>
+        <li>Example: SEH chain protecting exception handlers; mitigations
+        include SafeSEH, SEHOP.</li>
+      </ul>
+
+      <h3 id="security-term-025">25. MIC — <em>Mandatory Integrity Control</em>
+      (Windows)</h3>
+
+      <p>Windows integrity levels enforcing that lower-integrity processes
+      cannot write to higher-integrity objects.</p>
+
+      <ul>
+        <li>Example: Internet Explorer running at Low integrity cannot write to
+        files at Medium integrity.</li>
+      </ul>
+
+      <h3 id="security-term-026">26. SUID — <em>Set User ID</em> (on
+      execution)</h3>
+
+      <p>UNIX file permission bit that makes a program execute with the file
+      owner's privileges (commonly root).</p>
+
+      <ul>
+        <li>Example: /usr/bin/passwd having SUID root to modify
+        /etc/shadow.</li>
+      </ul>
+
+      <h3 id="security-term-027">27. CAP — <em>Linux Capabilities</em></h3>
+
+      <p>Fine-grained privileges that split root powers into discrete
+      capabilities (CAP_NET_BIND_SERVICE, CAP_SYS_ADMIN, etc.).</p>
+
+      <ul>
+        <li>Example: setcap 'cap_net_bind_service=+ep' /usr/bin/nginx to allow
+        binding to port 80 without root.</li>
+      </ul>
+
+      <h3 id="security-term-028">28. Sandbox — Application Sandbox</h3>
+
+      <p>A security technique that builds on isolation and adds explicit,
+      least‑privilege restrictions, syscall/IO/permission filters and
+      monitoring to run untrusted code safely; intent is to limit capabilities
+      and detect/contain misuse.</p>
+
+      <ul>
+        <li>Example:</li>
+      </ul>
+
+      <p><strong>Browser renderer sandbox:</strong> per-tab process +
+      seccomp/MAC policies + capability drops to block filesystem/network
+      access. <strong>seccomp-bpf sandbox:</strong> Linux process allowed only
+      a small syscall whitelist. <strong>pledge (OpenBSD):</strong> process
+      declares a small syscall whitelist (pledges); violating it kills the
+      process. <strong>unveil (OpenBSD):</strong> syscall that restricts a
+      process’s filesystem view to explicitly revealed paths and
+      permissions.</p>
+
+      <h3 id="security-term-029">29. Isolation</h3>
+
+      <p>A security/architectural boundary that prevents components from
+      affecting each other by separating resources, privileges, and address
+      spaces; its goal is containment and trust separation, not necessarily
+      active restriction of behavior.</p>
+
+      <ul>
+        <li>Example:</li>
+      </ul>
+
+      <p><strong>Process isolation:</strong> separate virtual address spaces so
+      one process cannot read another’s memory (typical on Linux/Windows).</p>
+
+      <p><strong>VM/hypervisor isolation:</strong> guests run separate kernels
+      so a guest compromise usually cannot affect the host.</p>
+
+      <p><strong>Hardware isolation:</strong> IOMMU prevents device DMA to
+      arbitrary memory; TPM stores measurements and keys.</p>
+
+      <h3 id="security-term-030">30. FIPS — <em>Federal Information Processing
+      Standard</em></h3>
+
+      <p>U.S. government standards (e.g., FIPS 140-2/3) specifying security
+      requirements for cryptographic modules and practices.</p>
+
+      <ul>
+        <li>Example: Using a FIPS-validated OpenSSL module for compliant
+        cryptography.</li>
+      </ul>
+
+      <h3 id="security-term-031">31. Stack canary</h3>
+
+      <p>A small random value placed between local variables and the return
+      address on the stack; checked on function return to detect
+      stack-buffer-overflow overwrites.</p>
+
+      <ul>
+        <li>Example: GCC’s -fstack-protector adds canaries to vulnerable
+        functions (e.g., strcpy).</li>
+      </ul>
+
+      <h3 id="security-term-032">32. SSP — <em>Stack Smashing
+      Protector</em></h3>
+
+      <p>Compiler-based feature that inserts stack canaries and checks to
+      prevent return-address overwrites.</p>
+
+      <ul>
+        <li>Example: GCC/Clang enabling SSP for hardened builds.</li>
+      </ul>
+
+      <h3 id="security-term-033">33. CFI — <em>Control‑Flow Integrity</em></h3>
+
+      <p>Ensures program execution follows a valid control-flow graph (prevents
+      arbitrary jumps/gadgets).</p>
+
+      <ul>
+        <li>Example: LLVM’s -fsanitize=cfi or Microsoft's CFG (Control Flow
+        Guard).</li>
+      </ul>
+
+      <h3 id="security-term-034">34. Shadow stack</h3>
+
+      <p>A protected, separate stack that records return addresses; the CPU/OS
+      verifies actual return addresses against the shadow copy to prevent ROP
+      attacks.</p>
+
+      <ul>
+        <li>Example: Intel CET's shadow stack implementation.</li>
+      </ul>
+
+      <h3 id="security-term-035">35. PAC — <em>Pointer Authentication
+      Code</em></h3>
+
+      <p>CPU feature that cryptographically signs (authenticates) pointers to
+      detect tampering; signature checked before use.</p>
+
+      <ul>
+        <li>Example: ARMv8.3-A PAC used on iOS devices to protect return
+        addresses and function pointers.</li>
+      </ul>
+
+      <h3 id="security-term-036">36. CET — <em>Control‑flow Enforcement
+      Technology</em></h3>
+
+      <p>Intel CPU feature combining shadow stacks and indirect-branch tracking
+      to prevent ROP/JOP and control-flow hijacks.</p>
+
+      <ul>
+        <li>Example: CET-enabled Windows builds using shadow stacks.</li>
+      </ul>
+
+      <h3 id="security-term-037">37. Intel SGX — <em>Intel Software Guard
+      Extensions</em></h3>
+
+      <p>CPU enclaves providing isolated, attested memory regions for executing
+      sensitive code and data protected from the OS/hypervisor.</p>
+
+      <ul>
+        <li>Example: An application storing crypto keys inside an SGX
+        enclave.</li>
+      </ul>
+
+      <h3 id="security-term-038">38. ARM TrustZone Technology</h3>
+
+      <p>CPU/SoC security extension splitting system into Secure and Non‑Secure
+      worlds for isolated execution of trusted code.</p>
+
+      <ul>
+        <li>Example: Secure bootloader and key storage running in TrustZone on
+        Android devices.</li>
+      </ul>
+
+      <h3 id="security-term-039">39. Secure Enclave</h3>
+
+      <p>Hardware-backed secure coprocessor providing isolated key storage and
+      cryptographic operations (Apple’s implementation).</p>
+
+      <ul>
+        <li>Example: iPhone storing fingerprint/FaceID templates and disk
+        encryption keys in Secure Enclave.</li>
+      </ul>
+
+      <h3 id="security-term-040">40. TXT — <em>Intel Trusted Execution</em>
+      Technology</h3>
+
+      <p>Platform feature for measured/isolated launch of trusted environments
+      using TPM for attestation.</p>
+
+      <ul>
+        <li>Example: Measured launch of a hypervisor with TPM quotes.</li>
+      </ul>
+
+      <h3 id="security-term-041">41. IOMMU — <em>Input–Output Memory Management
+      Unit</em></h3>
+
+      <p>Hardware that isolates and remaps DMA from devices, preventing
+      device-initiated DMA attacks and enabling passthrough.</p>
+
+      <ul>
+        <li>Example: VT-d/IOMMU used to safely assign a PCIe device to a
+        VM.</li>
+      </ul>
+
+      <h3 id="security-term-042">42. VT-d — <em>Intel Virtualization Technology
+      for Directed I/O</em></h3>
+
+      <p>Intel’s IOMMU implementation providing DMA isolation and interrupt
+      remapping for VMs.</p>
+
+      <ul>
+        <li>Example: Passing a GPU through to a KVM guest using VT-d.</li>
+      </ul>
+
+      <h3 id="security-term-043">43. AMD‑Vi — <em>AMD I/O Virtualization</em>
+      (IOMMU)</h3>
+
+      <p>AMD's equivalent of VT-d providing device DMA isolation.</p>
+
+      <ul>
+        <li>Example: PCI device passthrough to VMs on AMD hosts.</li>
+      </ul>
+
+      <h3 id="security-term-044">44. VBS — <em>Virtualization‑based
+      Security</em></h3>
+
+      <p>Technique using a small hypervisor to isolate sensitive OS components
+      (e.g., credential stores) from the main OS.</p>
+
+      <ul>
+        <li>Example: Windows using VBS to isolate LSASS or Credential
+        Guard.</li>
+      </ul>
+
+      <h3 id="security-term-045">45. HVCI — <em>Hypervisor‑protected Code
+      Integrity</em></h3>
+
+      <p>Uses VBS to validate kernel code integrity in an isolated environment,
+      blocking unsigned or tampered kernel code.</p>
+
+      <ul>
+        <li>Example: Windows Hypervisor-Enforced Code Integrity enabled with
+        VBS.</li>
+      </ul>
+
+      <h3 id="security-term-046">46. Hypervisor introspection</h3>
+
+      <p>Monitoring guest OS state from the hypervisor for security
+      (detection/forensics) without inside-agent presence.</p>
+
+      <ul>
+        <li>Example: A cloud hypervisor scanning guest memory for
+        rootkits.</li>
+      </ul>
+
+      <h3 id="security-term-047">47. seccomp — <em>Secure Computing Mode</em>
+      (seccomp‑bpf)</h3>
+
+      <p>Linux kernel facility to restrict a process’s allowed syscalls using
+      BPF filters; used to implement lightweight sandboxes.</p>
+
+      <ul>
+        <li>Example: Chromium using seccomp-bpf to limit renderer
+        syscalls.</li>
+      </ul>
+
+      <h3 id="security-term-048">48. cgroups — <em>Control Groups</em></h3>
+
+      <p>Kernel feature to group processes and limit/measure resource usage
+      (CPU, memory, I/O), used for containment and DoS mitigation.</p>
+
+      <ul>
+        <li>Example: Docker using cgroups to cap container memory and CPU.</li>
+      </ul>
+
+      <h3 id="security-term-049">49. namespaces — <em>Linux
+      Namespaces</em></h3>
+
+      <p>Kernel isolation primitives that give processes separate views of
+      system resources (pid, mount, net, ipc, uts, user), used for
+      containers.</p>
+
+      <ul>
+        <li>Example: Creating an isolated network namespace for a
+        container.</li>
+      </ul>
+
+      <h3 id="security-term-050">50. LUKS — <em>Linux Unified Key
+      Setup</em></h3>
+
+      <p>Standard on-disk format for full-disk encryption on Linux, storing
+      keyslots and metadata.</p>
+
+      <ul>
+        <li>Example: Encrypting root partition with LUKS and using a passphrase
+        at boot.</li>
+      </ul>
+
+      <h3 id="security-term-051">51. dm‑crypt — <em>Device-mapper crypt
+      target</em></h3>
+
+      <p>Kernel subsystem providing disk encryption backend (commonly used with
+      LUKS).</p>
+
+      <ul>
+        <li>Example: dm-crypt encrypting an ext4 filesystem on a block
+        device.</li>
+      </ul>
+
+      <h3 id="security-term-052">52. eBPF sandboxing</h3>
+
+      <p>Using extended BPF programs to enforce security policies, filter
+      events, or sandbox behaviors in kernel space safely.</p>
+
+      <ul>
+        <li>Example: eBPF hooking network syscalls to implement a firewall or
+        syscall filter.</li>
+      </ul>
+
+      <h3 id="security-term-053">53. W^X — <em>Write XOR Execute
+      policy</em></h3>
+
+      <p>Memory protection policy ensuring pages are writable OR executable,
+      never both, to prevent writable code injection.</p>
+
+      <ul>
+        <li>Example: Hardened kernels enforcing W^X for JITs to use controlled
+        APIs to toggle permissions.</li>
+      </ul>
+
+      <h3 id="security-term-054">54. RASP — <em>Runtime Application
+      Self‑Protection</em></h3>
+
+      <p>In-app runtime defenses that detect and mitigate attacks (e.g.,
+      injection, tampering) from inside the application.</p>
+
+      <ul>
+        <li>Example: A web app embedding a runtime monitor that blocks
+        suspicious inputs or modifies behavior on attack.</li>
+      </ul>
+
+      <h3 id="security-term-055">55. MACsec — <em>Media Access Control
+      Security</em></h3>
+
+      <p>Layer 2 protocol providing MAC-layer encryption and integrity between
+      switches/links.</p>
+
+      <ul>
+        <li>Example: Securing Ethernet links between data-center switches with
+        MACsec.</li>
+      </ul>
+
+      <h3 id="security-term-056">56. FDE — <em>Full Disk Encryption</em></h3>
+
+      <p>Encrypting entire storage devices to protect data at rest; keys
+      typically stored in TPM or provided at boot.</p>
+
+      <ul>
+        <li>Example: BitLocker (Windows), SoftRaid (OpenBSD) or LUKS (Linux)
+        encrypting the system drive.</li>
+      </ul>
+
+      <h3 id="security-term-057">57. MFA — <em>Multi‑Factor
+      Authentication</em></h3>
+
+      <p>Authentication requiring two or more independent credentials
+      (something you know, have, or are).</p>
+
+      <ul>
+        <li>Example: Password + TOTP code from an authenticator app.</li>
+      </ul>
+
+      <h3 id="security-term-058">58. 2FA — <em>Two‑Factor
+      Authentication</em></h3>
+
+      <p>Subset of MFA using exactly two factors.</p>
+
+      <ul>
+        <li>Example: Password + SMS OTP (not recommended compared to app-based
+        TOTP).</li>
+      </ul>
+
+      <h3 id="security-term-059">59. SSO — <em>Single Sign‑On</em></h3>
+
+      <p>Centralized authentication allowing one login to access multiple
+      services via tokens.</p>
+
+      <ul>
+        <li>Example: OAuth/OIDC SSO to access multiple corporate apps using the
+        same identity provider.</li>
+      </ul>
+
+      <h3 id="security-term-060">60. OAuth — OAuth Authorization Framework</h3>
+
+      <p>Token-based protocol that delegates access without sharing
+      credentials; commonly used for API authorization.</p>
+
+      <ul>
+        <li>Example: An app obtaining an access token to call a user’s Google
+        Drive.</li>
+      </ul>
+
+      <h3 id="security-term-061">61. SAML — <em>Security Assertion Markup
+      Language</em></h3>
+
+      <p>XML-based standard for exchanging authentication/authorization
+      assertions between identity providers and service providers.</p>
+
+      <ul>
+        <li>Example: Enterprise SSO using SAML to authenticate to web
+        apps.</li>
+      </ul>
+
+      <h3 id="security-term-062">62. X.509 Public Key Certificate</h3>
+
+      <p>Standard format for public key certificates used in TLS and PKI to
+      bind public keys to identities.</p>
+
+      <ul>
+        <li>Example: HTTPS sites presenting an X.509 certificate signed by a
+        CA.</li>
+      </ul>
+
+      <h3 id="security-term-063">63. PKCS#11 — <em>Public-Key Cryptography
+      Standards #11</em></h3>
+
+      <p>API standard for cryptographic token interfaces (HSMs, smartcards) to
+      use keys without exposing them.</p>
+
+      <ul>
+        <li>Example: An application using PKCS#11 to perform signing with an
+        HSM-held key.</li>
+      </ul>
+
+      <h3 id="security-term-064">64. HSM — <em>Hardware Security
+      Module</em></h3>
+
+      <p>Dedicated hardware that securely generates, stores, and uses
+      cryptographic keys with tamper resistance.</p>
+
+      <ul>
+        <li>Example: A cloud HSM storing CA private keys and performing TLS
+        signing.</li>
+      </ul>
+
+      <h3 id="security-term-065">65. Key wrapping</h3>
+
+      <p>Encrypting (wrapping) encryption keys with a Key Encryption Key (KEK)
+      for safe storage/transport.</p>
+
+      <ul>
+        <li>Example: Wrapping a disk encryption master key with a TPM-held
+        wrapping key.</li>
+      </ul>
+
+      <h3 id="security-term-066">66. Measured boot</h3>
+
+      <p>Recording measurements (hashes) of firmware/boot components into TPM
+      to attest boot integrity; used to detect tampering.</p>
+
+      <ul>
+        <li>Example: Platform stores bootloader/kernel hashes in TPM PCRs for
+        remote attestation.</li>
+      </ul>
+
+      <h3 id="security-term-067">67. Container</h3>
+
+      <p>OS-level virtualization unit that packages processes with isolated
+      views (namespaces) and resource limits (cgroups); shares the host kernel
+      but provides a lightweight, repeatable runtime environment.</p>
+
+      <ul>
+        <li>Example: Docker/OCI containers use PID, mount, net, user namespaces
+        + cgroups to isolate processes and limit CPU/memory; a containerized
+        web app runs in its own namespace but shares the host kernel.</li>
+      </ul>
+
+      <h3 id="security-term-068">68. Memory safety</h3>
+
+      <p>Memory safety is the state of being protected from various software
+      bugs and security vulnerabilities when dealing with memory access.
+      Memory-safe languages prevent common memory errors (buffer overflows,
+      use‑after‑free, null/dangling pointer access, uninitialized reads) by
+      enforcing rules or runtime checks that ensure safe allocation, access,
+      and deallocation of memory; approaches include garbage collection (Java,
+      C#, Go, Python), reference counting, and compile-time ownership/borrowing
+      checked by the compiler (Rust), yielding fewer security bugs and crashes
+      while trading off some control or runtime overhead depending on the
+      strategy.</p>
+
+      <ul>
+        <li>Examples: Rust (ownership + zero-cost safety), Go/Java/C# (Garbage
+        Collector), Swift/Kotlin/Python/JavaScript (memory-managed).</li>
+      </ul>
+
+      <h3 id="security-term-069">68. Garbage collection</h3>
+
+      <p>A runtime system automatically finds and reclaims memory that the
+      program can no longer reach (preventing leaks and many pointer errors) by
+      tracing or reference counting; it simplifies programming but adds runtime
+      overhead and possible pauses</p>
+
+      <ul>
+        <li>Examples: Java, Go, C#, Python, JavaScript.</li>
+      </ul>
+
+      <h3 id="security-term-070">69. Ownership/borrowing</h3>
+
+      <p>A compile-time system (used by Rust) where each value has a single
+      owner, scope-based deallocation, and explicit borrowing rules (&amp; for
+      shared read, &amp;mut for exclusive write) that prevent use-after-free
+      and data races with no GC overhead.</p>
+
+      <ul>
+        <li>Example: Rust.</li>
+      </ul>
+
+      <h3 id="security-term-071">70. RELRO — <em>Relocation Read-Only</em></h3>
+
+      <p>Is an ELF hardening option that makes relocation-related sections
+      (notably the GOT) read-only after startup to prevent GOT-overwrite
+      attacks; Partial RELRO (-Wl,-z,relro) leaves .got.plt writable and allows
+      lazy binding, while Full RELRO (-Wl,-z,relro,-z,now) forces eager symbol
+      resolution and marks the entire GOT read-only.</p>
+
+      <ul>
+        <li>Example: compile with full RELRO to mitigate GOT overwrites — gcc
+        -Wl,-z,relro,-z,now -o myprog myprog.c — (partial RELRO: gcc
+        -Wl,-z,relro -o myprog myprog.c).</li>
+      </ul>
+
+      <h3 id="security-term-072">71. KARL — <em>Kernel Address Randomized
+      Link</em></h3>
+
+      <p>Relinks kernel object files in a random order at each boot so function
+      locations differ every boot (mitigates reuse/ROP attacks).</p>
+
+      <ul>
+        <li>Example: OpenBSD’s KARL rebuilds a new kernel from object files
+        after each boot so addresses change across reboots.</li>
+      </ul>
+
+      <h3 id="security-term-073">72. SROP — <em>Sigreturn-Oriented
+      Programming</em></h3>
+
+      <p>An exploit technique that forges a signal frame and invokes sigreturn
+      to set registers and execute syscalls (a compact alternative to ROP).</p>
+
+      <ul>
+        <li>Example: push a crafted sigcontext on the stack, return into a
+        “syscall; ret” gadget with RAX set to rt_sigreturn, then have
+        rt_sigreturn restore registers to invoke execve("/bin/sh").</li>
+      </ul>
+
+      <h3 id="security-term-074">73. Library order randomization</h3>
+
+      <p>Randomizes the order (or load addresses) of shared libraries to add
+      ASLR entropy and make gadget/tooling guesses harder.</p>
+
+      <ul>
+        <li>Example: randomizing the order libc and other .so files are loaded
+        so an attacker cannot rely on a fixed library base for ROP
+        gadgets.</li>
+      </ul>
+
+      <h3 id="security-term-075">74. Kernel relinking at boot
+      (relinking/relink-on-boot)</h3>
+
+      <p>Rebuilds or reorders kernel objects into a new kernel binary at boot
+      time so the kernel’s internal layout is unique per boot (increasing
+      entropy beyond simple base-address KASLR).</p>
+
+      <ul>
+        <li>Example: build a new kernel image from shuffled .o files at each
+        boot and install it for the next boot, as used in KARL workflows.</li>
+      </ul>
+
+      <h3 id="security-term-076">74. NOP — <em>No Operation</em></h3>
+
+      <p>A single CPU instruction that does nothing but advance execution; used
+      in exploits as a NOP-sled (a long sequence of NOPs) so a faulted jump
+      into the sled "slides" into the attack payload.</p>
+
+      <ul>
+        <li>Example: a buffer overflow payload begins with many 0x90 bytes (x86
+        NOP) followed by shellcode so any return address into the sled will
+        reach the shellcode.</li>
+      </ul>
+
+      <h3 id="security-term-077">75. ROP — <em>Return-Oriented
+      Programming</em></h3>
+
+      <p>An exploitation technique that chains short instruction sequences
+      already present in memory ("gadgets") ending in ret to perform arbitrary
+      computation without injecting new code (bypasses NX/DEP).</p>
+
+      <ul>
+        <li>Example: build a ROP chain using gadgets like "pop rdi; ret" and
+        "pop rsi; ret" from libc to set registers and then call mprotect or
+        system("/bin/sh").</li>
+      </ul>
+
+      <h3 id="security-term-078">76. malloc</h3>
+
+      <p>Is a library routine (part of the memory allocator) that gives a
+      program a contiguous block of uninitialized bytes from the heap at
+      runtime; the allocator manages free/used blocks, requests memory from the
+      OS (e.g., sbrk/mmap), and returns a pointer or NULL on failure.
+      Implementations vary and handle fragmentation, alignment, and
+      multithreading differently.</p>
+
+      <ul>
+        <li>Examples: lmalloc, ptmalloc, jemalloc, tcmalloc, mimalloc, musl
+        malloc, PartitionAlloc, rpmalloc, scudo, hardened_malloc.</li>
+      </ul>
+
+      <h3 id="security-term-079">77. Memory allocator</h3>
+
+      <p>Is the part of a runtime/library that manages dynamic heap memory: it
+      satisfies requests for variable-size blocks (malloc/calloc/realloc/new),
+      tracks which blocks are free or in use, requests/releases memory from the
+      OS (sbrk/mmap/VirtualAlloc), minimizes fragmentation, enforces alignment,
+      and handles concurrency and performance trade-offs.</p>
+
+      <ul>
+        <li>Example: dlmalloc, ptmalloc, jemalloc, tcmalloc, mimalloc, musl
+        malloc, PartitionAlloc, rpmalloc, scudo, hardened_malloc.</li>
+      </ul>
+
+      <h3 id="security-term-080">78. Capability-based security</h3>
+
+      <p>Is an authorization model where unforgeable "capabilities" (tokens or
+      references) both name a resource and carry the exact rights allowed;
+      possession of a capability is sufficient to access the resource, so
+      systems grant and delegate fine-grained privileges by passing or
+      restricting capabilities instead of relying on global identity-based
+      checks (ACLs).</p>
+
+      <ul>
+        <li>Examples:</li>
+
+        <li>
+          <ol>
+            <li>A file descriptor returned by open() is a capability letting
+            that process read/write the file.</li>
+          </ol>
+        </li>
+
+        <li>
+          <ol start="2">
+            <li>macaroons (HMAC-based tokens) used to grant limited, delegable
+            API access in distributed systems.</li>
+          </ol>
+        </li>
+
+        <li>
+          <ol start="3">
+            <li>Capsicum-like OS sandboxes or capability-based OSes (e.g.,
+            early capability hardware systems or research OSes) where processes
+            receive only the specific capabilities they need, reducing ambient
+            authority and preventing confused-deputy bugs.</li>
+          </ol>
+        </li>
+      </ul>
+
+      <h3 id="security-term-081">79. MPU — <em>Memory Protection Unit</em></h3>
+
+      <p>A simple hardware block—common in microcontrollers—that divides
+      physical memory into configurable regions and enforces per-region access
+      permissions (read/write/execute) and privilege levels; unlike an MMU it
+      does not provide virtual memory or address translation, only
+      protection.</p>
+
+      <ul>
+        <li>Examples:</li>
+
+        <li>
+          <ol>
+            <li>ARM Cortex‑M MPUs let firmware mark RAM as execute‑never or
+            read‑only to stop code execution from stack or protect
+            configuration data.</li>
+          </ol>
+        </li>
+
+        <li>
+          <ol start="2">
+            <li>an MPU in an RTOS isolates each task’s stack and data so a
+            buggy task can’t corrupt others.</li>
+          </ol>
+        </li>
+
+        <li>
+          <ol start="3">
+            <li>automotive controllers use system/ core/ peripheral MPUs to
+            prevent DMA or peripherals from accessing critical memory
+            ranges.</li>
+          </ol>
+        </li>
+      </ul>
+
+      <h3 id="security-term-082">80. MMU — <em>Memory Management Unit</em></h3>
+
+      <p>Is hardware that translates virtual/logical addresses to physical
+      addresses, enforces per-page permissions (read/write/execute, user vs
+      supervisor), and enables virtual memory, process isolation, paging, and
+      swapping.</p>
+
+      <ul>
+        <li>Examples: x86/ARM MMUs that let operating systems give each process
+        its own virtual address space and implement demand paging and
+        copy‑on‑write.</li>
+      </ul>
+
+      <h3 id="security-term-083">81. RTOS — <em>Real‑Time Operating
+      System</em></h3>
+
+      <p>Is an OS designed to provide deterministic, low-latency scheduling and
+      predictable timing for time‑critical tasks (often with priority‑based
+      preemptive schedulers and minimal jitter).</p>
+
+      <ul>
+        <li>Examples: FreeRTOS used on microcontrollers for motor control with
+        hard deadlines, and VxWorks in avionics where meeting strict timing
+        guarantees is required.</li>
+      </ul>
+
+      <h3 id="security-term-084">82. Privilege escalation</h3>
+
+      <p>Is when an attacker (or a program) gains higher access rights than
+      originally allowed—either by moving laterally to another account with
+      similar rights (horizontal) or by elevating a low‑privilege account to
+      admin/root (vertical); it’s typically achieved by exploiting
+      vulnerabilities, misconfigurations, stolen credentials, or flawed
+      software logic.</p>
+
+      <ul>
+        <li>Examples: (1) a web app vuln lets an attacker execute commands as
+        root (vertical), (2) stealing another user’s session cookie to access
+        their files (horizontal), (3) abusing a misconfigured SUID binary on
+        Linux to spawn a root shell.</li>
+      </ul>
+
+      <h3 id="security-term-085">83. Attack surface</h3>
+
+      <p>Is the total set of points (digital, physical, and human) where an
+      attacker can attempt to enter or extract data from a system; reducing it
+      limits opportunities for compromise.</p>
+
+      <ul>
+        <li>Example: exposed internet services and open ports on servers,
+        unused APIs and forgotten cloud instances (digital); unlocked server
+        rooms or USB ports (physical); and phishing‑prone employees or weak
+        passwords (human/social).</li>
+      </ul>
+
+      <h3 id="security-term-086">84. MTE — <em>Memory Tagging
+      Extension</em></h3>
+
+      <p>Hardware feature (ARM MTE) that associates small tags with memory
+      blocks and pointers to detect spatial/temporal memory errors
+      (out‑of‑bounds, use‑after‑free) at runtime with low overhead.</p>
+
+      <ul>
+        <li>Example: enabling MTE on firmware catches a stale pointer
+        dereference before it corrupts control data.</li>
+      </ul>
+
+      <h3 id="security-term-087">85. Exploit Mitigations</h3>
+
+      <p>Techniques (hardware and software) that raise the difficulty of
+      exploitation.</p>
+
+      <p>Example: ASLR, NX/DEP, stack canaries, RELRO, Control‑Flow Integrity
+      (CFI) and sandboxing; combined they reduce successful exploit reliability
+      even when vulnerabilities exist.</p>
+
+      <h3 id="security-term-088">86. Code signing</h3>
+
+      <p>Cryptographic signing of binaries/firmware so receivers can verify
+      origin and integrity before execution.</p>
+
+      <ul>
+        <li>Example: digitally signed OS updates or drivers that the bootloader
+        or package manager verifies to prevent tampered releases.</li>
+      </ul>
+
+      <h3 id="security-term-089">87. Chain of trust</h3>
+
+      <p>Boot‑time and update model where each stage cryptographically verifies
+      the next (root of trust → bootloader → kernel → userland), ensuring only
+      authorized code runs.</p>
+
+      <ul>
+        <li>Example: secure/UEFI boot verifies bootloader signature, which
+        verifies the kernel signature.</li>
+      </ul>
+
+      <h2 id="supply-chain">88. Supply chain</h2>
+
+      <p>All people, processes, tools, code, and hardware involved in
+      producing/deploying a product (development tools, libraries, build
+      systems, vendors).</p>
+
+      <ul>
+        <li>Example: third‑party libraries and CI/CD pipelines are part of the
+        software supply chain.</li>
+      </ul>
+
+      <h3 id="security-term-090">89. Supply-chain attack</h3>
+
+      <p>An adversary compromises an upstream element (maintainer, build
+      system, vendor, CI/CD, or signing keys) to distribute malicious code or
+      components to many downstream victims.</p>
+
+      <ul>
+        <li>Example: SolarWinds (compromised build pipeline) and trojanized
+        signed installers (3CX/MOVEit incidents).</li>
+      </ul>
+
+      <h3 id="security-term-091">90. Malware</h3>
+
+      <p>Is any program designed to damage, disrupt, steal from, or gain
+      unauthorized access to computers, networks or data.</p>
+
+      <ul>
+        <li>Example: viruses that infect programs (e.g., CIH), ransomware that
+        encrypts files (e.g., WannaCry), and spyware that steals credentials
+        (e.g., Pegasus).</li>
+      </ul>
+
+      <h3 id="security-term-092">91. Virus</h3>
+
+      <p>Attaches to legitimate programs or files and runs when the host does;
+      replicates by infecting other files.</p>
+
+      <ul>
+        <li>Example: the Melissa macro virus that spread via infected
+        documents.</li>
+      </ul>
+
+      <h3 id="security-term-093">92. Worm</h3>
+
+      <p>Self-replicating malware that spreads across networks without needing
+      a host file or user action.</p>
+
+      <ul>
+        <li>Example: Stuxnet (network-spreading component) and Conficker.</li>
+      </ul>
+
+      <h3 id="security-term-094">93. Trojan horse</h3>
+
+      <p>Malware disguised as useful software; runs when the user installs it
+      and typically installs backdoors or other payloads.</p>
+
+      <ul>
+        <li>Example: Emotet delivering other malware.</li>
+      </ul>
+
+      <h3 id="security-term-095">94. Ransomware</h3>
+
+      <p>Encrypts or blocks access to data/systems and demands payment for
+      recovery.</p>
+
+      <ul>
+        <li>Example: WannaCry, Ryuk.</li>
+      </ul>
+
+      <h3 id="security-term-096">95. Spyware</h3>
+
+      <p>Secretly monitors user activity and exfiltrates data (credentials,
+      browsing, microphone/camera).</p>
+
+      <ul>
+        <li>Example: Pegasus.</li>
+      </ul>
+
+      <h3 id="security-term-097">96. Adware</h3>
+
+      <p>Displays unwanted ads, tracks browsing for monetization; often
+      intrusive but sometimes bundled with installers.</p>
+
+      <ul>
+        <li>Example: Fireball</li>
+      </ul>
+
+      <h3 id="security-term-098">97. Rootkit</h3>
+
+      <p>Hides itself and other malware by operating at kernel/firmware level,
+      giving persistent privileged control and evading detection.</p>
+
+      <ul>
+        <li>Example: Sony BMG rootkit.</li>
+      </ul>
+
+      <h3 id="security-term-099">98. Keylogger</h3>
+
+      <p>Records keystrokes to capture passwords and messages; can be hardware
+      or software.</p>
+
+      <ul>
+        <li>Example: commercial/fraudulent keyloggers used to steal banking
+        credentials.</li>
+      </ul>
+
+      <h3 id="security-term-100">99. Botnet</h3>
+
+      <p>Network of infected machines remotely controlled to send spam, DDoS,
+      or mine crypto; infection often via trojans/worms.</p>
+
+      <ul>
+        <li>Example: Mirai.</li>
+      </ul>
+
+      <h3 id="security-term-101">100. Fileless malware</h3>
+
+      <p>Runs in memory or abuses legitimate system tools (PowerShell, WMI) so
+      nothing is written to disk, making detection harder.</p>
+
+      <ul>
+        <li>Example: Astaroth-style campaigns.</li>
+      </ul>
+
+      <h3 id="security-term-102">101. Polymorphic/metamorphic malware</h3>
+
+      <p>Changes its code/signature each infection to evade signature-based
+      detection; often used in sophisticated campaigns.</p>
+
+      <ul>
+        <li>Example: Storm Worm, VirLock, CryptoLocker (polymorphic); advanced
+        metamorphic families used in targeted campaigns.</li>
+      </ul>
+
+      <h3 id="security-term-103">102. Wiper</h3>
+
+      <p>Intentionally destroys or irreversibly deletes data rather than
+      holding it for ransom.</p>
+
+      <ul>
+        <li>Example: NotPetya (acted as a wiper).</li>
+      </ul>
+
+      <h3 id="security-term-104">103. Crypto‑miner (cryptojacker)</h3>
+
+      <p>Silent installation of mining software to use host CPU/GPU for
+      cryptocurrency mining, slowing systems and raising power use.</p>
+
+      <ul>
+        <li>Example: Coinhive-style in‑browser miners and hidden Monero miners
+        deployed by botnets (cryptominers run silently to mine crypto).</li>
+      </ul>
+
+      <h3 id="security-term-105">104. Mobile malware</h3>
+
+      <p>Targets smartphones/tablets (malicious apps, SMS fraud, spyware).</p>
+
+      <ul>
+        <li>Example: Triada on Android.</li>
+      </ul>
+
+      <h3 id="security-term-106">105. Backdoor</h3>
+
+      <p>Provides covert remote access to a system for later use (often
+      installed by trojans); commonly part of multi-stage attacks. Can be
+      software or hardware.</p>
+
+      <ul>
+        <li>Example: Intel ME, PlugX, various Remote Access Trojans that give
+        persistent covert access and control.</li>
+      </ul>
+
+      <h3 id="security-term-107">106. Downloader / Dropper</h3>
+
+      <p>Small program whose sole job is to fetch and install additional
+      malware (used to stage larger infections).</p>
+
+      <ul>
+        <li>Example: Emotet commonly acted as a dropper/downloader that fetches
+        and installs other payloads.</li>
+      </ul>
+
+      <h3 id="security-term-108">107. Exploit kit</h3>
+
+      <p>Toolkit that probes and exploits browser/plug-in vulnerabilities
+      (often via malvertising) to deliver payloads without user
+      interaction.</p>
+
+      <ul>
+        <li>Example: Angler Exploit Kit and Blackhole EK used to probe
+        browser/plug‑in flaws and silently deliver payloads.</li>
+      </ul>
+
+      <h3 id="security-term-109">108. Grayware/Potentially Unwanted Application
+      (PUA)</h3>
+
+      <p>Annoying or privacy-invasive software (toolbars, bundlers) that’s not
+      overtly destructive but degrades security.</p>
+    </article>
+  </main>
+
+  <footer id="site-footer">
+    <p>&copy; 2025-2026 The Cypherpunk Handbook Authors. All Rights
+    Reserved.</p>
+
+    <p><strong><a href="./../license.html">LICENSE</a></strong>
+    </p>
+    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+    <p class="motto">LIVE FREE OR DIE</p>
+    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+  </footer>
+</body>
+</html>
