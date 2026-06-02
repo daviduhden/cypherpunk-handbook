@@ -882,14 +882,20 @@
       <section aria-labelledby="security-term-028">
         <h2 id="security-term-028">28 - Sandbox — Application Sandbox</h2>
 
-        <p>A security technique that builds on isolation and adds explicit,
-        least‑privilege restrictions, syscall/IO/permission filters and
-        monitoring to run untrusted code safely; intent is to limit
-        capabilities and detect/contain misuse.</p>
+        <p>A damage-containment technique that builds on isolation and applies
+        explicit least‑privilege restrictions such as syscall filters,
+        filesystem/network/IPC limits, and permission boundaries. It does not
+        make arbitrary untrusted code safe to run; instead, it reduces what an
+        exploited or compromised process can access. It is especially useful
+        for trusted applications that process attacker-controlled input (for
+        example, browsers, PDF readers, image viewers, office suites, and email
+        clients).</p>
 
         <ul>
-          <li><strong>Example:</strong>
-          </li>
+          <li><strong>Example:</strong> If a crafted email attachment exploits
+          a zero-day vulnerability in a mail client, a strong sandbox can help
+          prevent the attacker from reading unrelated files or accessing
+          unrelated user data.</li>
         </ul>
 
         <p><strong>Browser renderer sandbox:</strong> per-tab process +
