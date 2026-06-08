@@ -53,6 +53,7 @@ use Symbol       qw(gensym);
 # -------------------------
 my $script_dir   = dirname( abs_path($0) );
 my $default_root = File::Spec->catdir( $script_dir, '..' );
+my $tmp_dir      = File::Spec->tmpdir();
 
 my $root_dir   = $default_root;
 my $mode_apply = 1;               # default: apply formatting
@@ -220,7 +221,7 @@ sub make_tmp_file_in_tmp {
     my $template = "validate-website${base}-XXXXXX";
 
     my ( $fh, $path ) =
-      tempfile( $template, DIR => "/tmp", SUFFIX => $ext, UNLINK => 0 );
+      tempfile( $template, DIR => $tmp_dir, SUFFIX => $ext, UNLINK => 0 );
     print {$fh} $content;
     close $fh;
     return $path;
@@ -330,7 +331,7 @@ if ( @css || @js || @json ) {
               . "}\n" );
         push @tmp_paths, $dprint_cfg;
         dprint_config_update($dprint_cfg);
-        logi("Created temporary dprint config in /tmp: $dprint_cfg")
+        logi("Created temporary dprint config in $tmp_dir: $dprint_cfg")
           if $verbose;
     }
 }

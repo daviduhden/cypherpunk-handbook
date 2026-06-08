@@ -261,7 +261,10 @@ sub main {
       File::Spec->catfile( $root_dir, 'scripts', 'rebuild-feeds.pl' );
     if ( -x $rebuild_script ) {
         my $rc = system( $^X, $rebuild_script );
-        logw("Rebuild script exited with code $rc") if $rc != 0;
+        if ( $rc != 0 ) {
+            my $exit_code = $rc >> 8;
+            logw("Rebuild script exited with code $exit_code");
+        }
     }
 }
 
