@@ -1,4 +1,9 @@
 {
+  "searxng-on-openbsd": {
+    "en": "searxng-on-openbsd.html",
+    "pubdate": "2026-06-08",
+    "title_en": "Self-hosting SearXNG on OpenBSD over a Tor onion service"
+  },
   "c-language": {
     "en": "c-language.html",
     "pubdate": "2026-05-02",

@@ -4,8 +4,15 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Mon, 01 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 08 Jun 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Self-hosting SearXNG on OpenBSD over a Tor onion service</title>
+      <link>/articles/searxng-on-openbsd.html</link>
+      <description>This guide explains how to self-host SearXNG on OpenBSD and expose it through a Tor onion service while keeping privileges separated and permissions minimal.</description>
+      <pubDate>Mon, 08 Jun 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/searxng-on-openbsd.html</guid>
+    </item>
     <item>
       <title>Security terms in operating systems</title>
       <link>/articles/security-terms.html</link>
