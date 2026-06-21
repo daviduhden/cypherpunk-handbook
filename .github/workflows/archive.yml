@@ -55,8 +55,10 @@ jobs:
 
           test -n "$LATEST_TAG"
 
-          git clone --quiet --branch "$LATEST_TAG" --depth 1 \
-            "$SIGNIFY_REPO" "$SIGNIFY_DIR"
+          git clone --quiet --depth 1 "$SIGNIFY_REPO" "$SIGNIFY_DIR"
+          git -C "$SIGNIFY_DIR" fetch --quiet --depth 1 origin \
+            "refs/tags/$LATEST_TAG:refs/tags/$LATEST_TAG"
+          git -C "$SIGNIFY_DIR" checkout --quiet "tags/$LATEST_TAG"
           make -s -C "$SIGNIFY_DIR" CC=clang BUNDLED_LIBBSD=1
           sudo install -m 0755 "$SIGNIFY_DIR/signify" /usr/local/bin/signify
 
