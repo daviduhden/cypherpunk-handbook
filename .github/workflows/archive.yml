@@ -33,8 +33,32 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y signify-openbsd
+          sudo apt-get install -y clang libbsd-dev
           python3 -m pip install --upgrade git-filter-repo
+
+      - name: Build latest signify
+        run: |
+          set -euo pipefail
+
+          SIGNIFY_REPO="https://codeberg.org/aperezdc/signify.git"
+          SIGNIFY_DIR="$(mktemp -d)"
+          trap 'rm -rf "$SIGNIFY_DIR"' EXIT
+
+          LATEST_TAG="$(
+            git ls-remote --tags --sort='version:refname' \
+              "$SIGNIFY_REPO" 'refs/tags/v*' |
+              awk '{print $2}' |
+              sed 's#refs/tags/##; s#\^{}##' |
+              uniq |
+              tail -n1
+          )"
+
+          test -n "$LATEST_TAG"
+
+          git clone --quiet --branch "$LATEST_TAG" --depth 1 \
+            "$SIGNIFY_REPO" "$SIGNIFY_DIR"
+          make -s -C "$SIGNIFY_DIR" CC=clang BUNDLED_LIBBSD=1
+          sudo install -m 0755 "$SIGNIFY_DIR/signify" /usr/local/bin/signify
 
       # ----------------------------
       # Check if repository changed since last archive
@@ -108,7 +132,7 @@ jobs:
           chmod 600 "$KEYFILE"
 
           # Sign the checksum (NOT the archive)
-          signify-openbsd -S \
+          /usr/local/bin/signify -S \
             -s "$KEYFILE" \
             -m "$CHECKSUM" \
             -x "$SIGNATURE"
