@@ -199,7 +199,8 @@ git format-patch -1 HEAD
       </p>
 
       <pre>
-got clone https://github.com/daviduhden/cypherpunk-handbook.git
+got clone https://github.com/daviduhden/cypherpunk-handbook.git cypherpunk-handbook.git
+got checkout cypherpunk-handbook.git cypherpunk-handbook
 cd cypherpunk-handbook
 got branch -c main my-contribution
 got update -b my-contribution
@@ -208,6 +209,10 @@ got add data/articles.json
 got commit -m "Add article: My Article"
 got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
 </pre>
+      <p>Before committing, make sure <code>GOT_AUTHOR</code> is set or
+      configured in <code>got.conf</code> / Git configuration, otherwise
+      <code>got commit</code> will refuse to run.</p>
+
       <p>Send the generated <code>.patch</code> file(s) and other attachments
       uncompressed to the administrator of this website via <a href=
       "mailto:david@uhden.dev">email</a>.</p>
