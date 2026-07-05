@@ -39,8 +39,8 @@
     <section id="intro">
       <h2>How to contribute</h2>
 
-      <p>Contributions are welcome. This project values clear, well-sourced,
-      practical content that follows consistent editorial, technical, and
+      <p>Contributions are welcome. This project values clear, practical,
+      well-sourced content that follows consistent editorial, technical, and
       licensing standards.</p>
 
       <p>You can contribute through any of the following workflows:</p>
@@ -52,7 +52,7 @@
         <li>File- and patch-based contributions using Git (anonymous
         workflow)</li>
 
-        <li>File- and patch-based contributions using got (OpenBSD
+        <li>File- and patch-based contributions using <code>got</code> (OpenBSD
         workflow)</li>
 
         <li>Patch creation from signed archive snapshots (archive-based
@@ -70,7 +70,7 @@
 
         <li>Avoid commercial endorsements or promotional language.</li>
 
-        <li>Write in US English, and include translations whenever
+        <li>Write in U.S. English, and include translations whenever
         possible.</li>
 
         <li>Use repository templates when available (see
@@ -111,8 +111,8 @@ some-code/snippet.c &mdash; used with permission from upstream (MIT)
     <section id="method-1">
       <h3>Method 1: Contributing via GitHub (gh / git)</h3>
 
-      <p>This workflow is intended for contributors with GitHub accounts who
-      prefer collaborating online through pull requests (PRs).</p>
+      <p>This workflow is for contributors with GitHub accounts who prefer to
+      collaborate online through pull requests (PRs).</p>
 
       <ol>
         <li>Fork the repository on GitHub.</li>
@@ -154,8 +154,8 @@ git push origin my-article
     <section id="method-2">
       <h3>Method 2: Contributing via files and patches</h3>
 
-      <p>This workflow is intended for contributors who prefer anonymous
-      collaboration or do not use GitHub accounts.</p>
+      <p>This workflow is for contributors who prefer anonymous collaboration
+      or do not use GitHub accounts.</p>
 
       <p><strong>Submitting individual files</strong>
       </p>
@@ -191,8 +191,8 @@ git format-patch -1 HEAD
     <section id="method-3">
       <h3>Method 3: Contributing via got (Game of Trees)</h3>
 
-      <p>This workflow is intended for contributors on <strong>OpenBSD</strong>
-      who prefer a patch-based process without relying on GitHub accounts.</p>
+      <p>This workflow is for contributors on <strong>OpenBSD</strong> who
+      prefer a patch-based process without relying on GitHub accounts.</p>
 
       <p><strong>Submitting Git-compatible patches using got
       (preferred)</strong>
@@ -225,9 +225,9 @@ got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
     <section id="method-4">
       <h3>Method 4: Contributing via archive snapshots</h3>
 
-      <p>This workflow allows contributors to work directly from the signed
-      archive instead of the Git repository. It is useful for offline or
-      anonymous contributions.</p>
+      <p>This workflow lets contributors work directly from the signed archive
+      instead of the Git repository. It is useful for offline or anonymous
+      contributions.</p>
 
       <h4>Steps:</h4>
 
@@ -359,8 +359,8 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
       optional.</p>
 
       <p>After updating the article file and <code>data/articles.json</code>,
-      regenerate feeds or open a pull request. The maintainer will run the site
-      scripts in <strong>scripts/</strong> if needed.</p>
+      regenerate the feeds or open a pull request. The maintainer will run the
+      site scripts in <strong>scripts/</strong> if needed.</p>
     </section>
 
     <section id="strip-metadata">
@@ -416,8 +416,9 @@ ffmpeg -i input.mp3 -map_metadata -1 -c copy output.mp3
 
     <section id="automation">
       <h3>Automation</h3>
-      Perl scripts in <strong>scripts/</strong> can be used to update and
-      rebuild the site.
+
+      <p>Perl scripts in <strong>scripts/</strong> can be used to update and
+      rebuild the site.</p>
 
       <pre>
 perl ./scripts/update-guides.pl
@@ -429,10 +430,12 @@ perl ./scripts/rebuild-feeds.pl
 
     <section id="downloads">
       <h3>Downloading Archives &amp; Using Proxies</h3>
-      A signed archive of the repository is available at
+
+      <p>A signed archive of the repository is available at
       <strong>archive/cypherpunk-handbook.tar.gz</strong> and is updated every
       24 hours. The archive comes with a <code>SHA256</code> hash and a
-      <code>signify</code> signature.
+      <code>signify</code> signature.</p>
+
       <h4>Downloading the archive using <code>curl</code></h4>
 
       <p>Default HTTPS download:</p>

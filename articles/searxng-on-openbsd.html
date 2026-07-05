@@ -48,7 +48,7 @@
         <p class="meta">Written by FlyWithMe (a SimpleX Chat user) —
         <time datetime="2026-06-08">Updated June 8, 2026</time></p>
 
-        <p class="lede">This guide explains how to self-host SearXNG on OpenBSD
+        <p class="lede">This guide shows how to self-host SearXNG on OpenBSD
         and expose it through a Tor onion service while keeping privileges
         separated and permissions minimal.</p>
 
@@ -115,10 +115,10 @@
       <section aria-labelledby="searxng-context">
         <h2 id="searxng-context">Context</h2>
 
-        <p>This guide is based on an older guide from tumfatig.net, with
-        updates and OpenBSD-focused adaptations. The official SearXNG
-        installation documentation targets Linux. The procedure below was
-        tested on OpenBSD 7.9.</p>
+        <p>This guide builds on an older tumfatig.net guide, with updates and
+        OpenBSD-specific adjustments. The official SearXNG installation
+        documentation targets Linux. The procedure below was tested on OpenBSD
+        7.9.</p>
       </section>
 
       <section aria-labelledby="searxng-preliminary">
@@ -195,8 +195,8 @@ Successfully installed annotated-doc-0.0.4 anyio-4.13.0 async-timeout-5.0.1 babe
       <section aria-labelledby="searxng-configuration">
         <h2 id="searxng-configuration">Configuration</h2>
 
-        <p>This setup uses a configuration file outside the source tree so it
-        does not get overwritten during source updates.</p>
+        <p>This setup keeps the configuration file outside the source tree so
+        source updates do not overwrite it.</p>
 
         <pre><code>$ doas -u _searxng /bin/ksh -c 'cd /home/searxng &amp;&amp; exec /bin/ksh -l'</code></pre>
 
@@ -207,7 +207,7 @@ Successfully installed annotated-doc-0.0.4 anyio-4.13.0 async-timeout-5.0.1 babe
 
         <p>If you want every command for the <code>_searxng</code> account to
         use Tor by default, add the following to <code>~/.profile</code>. After
-        that, you do not need <code>torsocks</code> for the
+        that, you no longer need <code>torsocks</code> for the
         <code>_searxng</code> user.</p>
 
         <pre><code>export ALL_PROXY='socks5h://127.0.0.1:9050'
@@ -267,7 +267,7 @@ output: example.onion</code></pre>
       <section aria-labelledby="searxng-gunicorn">
         <h2 id="searxng-gunicorn">Daemonize with Gunicorn</h2>
 
-        <p>Keep it simple.</p>
+        <p>Keep the service setup simple.</p>
 
         <pre><code>$ doas -u _searxng /bin/ksh -c 'cd /home/searxng &amp;&amp; exec /bin/ksh -l'
 
@@ -378,9 +378,9 @@ searxng(ok)</code></pre>
       <section aria-labelledby="searxng-updates">
         <h2 id="searxng-updates">Updating SearXNG</h2>
 
-        <p>SearXNG follows a rolling release model, where the latest commit on
-        the master branch is treated as the latest stable release. Because the
-        update sequence repeats, this guide uses a helper script:</p>
+        <p>SearXNG follows a rolling release model where the latest commit on
+        the master branch is treated as stable. Because the update sequence is
+        repetitive, this guide uses a helper script:</p>
 
         <pre><code>$ doas -u _searxng nano ~_searxng/update.sh
 
@@ -424,7 +424,7 @@ searxng(ok)</code></pre>
         <p>With this setup, you can avoid configuring <code>httpd</code>,
         <code>acme-client</code>, and <code>relayd</code> for a reverse-proxy
         HTTPS deployment, because onion services already provide end-to-end
-        integrity and encryption. The result is a smaller attack surface and a
+        integrity and encryption. That gives you a smaller attack surface and a
         simpler long-term maintenance path.</p>
 
         <p>If you choose to expose SearXNG on clearnet instead, you should
