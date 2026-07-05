@@ -104,6 +104,14 @@
           </li>
 
           <li>
+            <a href="#obsd-10a">relayd(8)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-10b">smtpd(8)</a>
+          </li>
+
+          <li>
             <a href="#obsd-11">KARL</a>
           </li>
 
@@ -440,8 +448,9 @@ permit root</pre>
       <section aria-labelledby="obsd-10">
         <h2 id="obsd-10">10 - httpd(8)</h2>
 
-        <p>OpenBSD has a hardened version of Apache httpd in the base
-        system.</p>
+        <p>OpenBSD includes httpd(8) in the base system. It is not based on
+        Apache: it was written from scratch by OpenBSD developers with a small
+        codebase and security-first design.</p>
 
         <p>OpenBSD recently extended relinking hardening to userland network
         services such as httpd and smtpd. Randomized relinking changes internal
@@ -455,6 +464,23 @@ permit root</pre>
         "https://www.openbsd.org/plus.html">https://www.openbsd.org/plus.html</a>,
         <a href=
         "https://undeadly.org/cgi?action=article;sid=20260605064136">https://undeadly.org/cgi?action=article;sid=20260605064136</a>.</p>
+      </section>
+
+      <section aria-labelledby="obsd-10a">
+        <h2 id="obsd-10a">10.1 - relayd(8)</h2>
+
+        <p>relayd(8) is OpenBSD's relay and application-layer proxy daemon. It
+        provides reverse proxying, load balancing, health checks, and TLS
+        handling with a compact configuration model that integrates well with
+        the rest of the base networking stack.</p>
+      </section>
+
+      <section aria-labelledby="obsd-10b">
+        <h2 id="obsd-10b">10.2 - smtpd(8)</h2>
+
+        <p>smtpd(8), from the OpenSMTPD project, is OpenBSD's native mail
+        daemon in base. It was developed by OpenBSD contributors with a focus
+        on simplicity, secure defaults, and robust privilege separation.</p>
       </section>
 
       <section aria-labelledby="obsd-11">
