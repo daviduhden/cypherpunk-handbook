@@ -4,8 +4,22 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Mon, 08 Jun 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jul 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Why OpenBSD stands alone</title>
+      <link>/articles/openbsd.html</link>
+      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
+      <pubDate>Sun, 05 Jul 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/openbsd.html</guid>
+    </item>
+    <item>
+      <title>From a strict security perspective, Qubes OS is not reliable</title>
+      <link>/articles/qubes-os.html</link>
+      <description>This article takes a critical look at Qubes OS, or "XenOS" as I sometimes call it. I focus on its security weaknesses, note where its design is useful, and suggest improvements and alternatives that are more reliable for different kinds of users.</description>
+      <pubDate>Sun, 05 Jul 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/qubes-os.html</guid>
+    </item>
     <item>
       <title>Self-hosting SearXNG on OpenBSD over a Tor onion service</title>
       <link>/articles/searxng-on-openbsd.html</link>
@@ -26,20 +40,6 @@
       <description>C is not a memory-safe language. You can write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two examples. But those projects are exceptions, not the normal path for most software.</description>
       <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/c-language.html</guid>
-    </item>
-    <item>
-      <title>Why OpenBSD stands alone</title>
-      <link>/articles/openbsd.html</link>
-      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
-      <pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/openbsd.html</guid>
-    </item>
-    <item>
-      <title>From a strict security perspective, Qubes OS is not reliable</title>
-      <link>/articles/qubes-os.html</link>
-      <description>This article takes a critical look at Qubes OS, or "XenOS" as I sometimes call it. I focus on its security weaknesses, note where its design is useful, and suggest improvements and alternatives that are more reliable for different kinds of users.</description>
-      <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/qubes-os.html</guid>
     </item>
   </channel>
 </rss>
