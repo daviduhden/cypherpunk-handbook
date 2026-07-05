@@ -48,10 +48,10 @@
         <time datetime="2026-06-01">Updated June 1, 2026</time></p>
 
         <p class="lede">This glossary defines security terms you will
-        constantly see in OS hardening, exploit mitigation, identity control,
-        trusted boot, virtualization, and network defense. Each entry is short,
-        practical, and paired with an example so the concept is easy to apply
-        in real systems.</p>
+        repeatedly encounter in OS hardening, exploit mitigation, identity
+        control, trusted boot, virtualization, and network defense. Each entry
+        is short, practical, and paired with an example so the concept is easy
+        to apply in real systems.</p>
       </header>
 
       <nav class="toc" aria-labelledby="security-terms-contents-heading">
@@ -1394,15 +1394,14 @@
       <section aria-labelledby="security-term-068">
         <h2 id="security-term-068">68 - Memory safety</h2>
 
-        <p>Memory safety is the state of being protected from various software
-        bugs and security vulnerabilities when dealing with memory access.
-        Memory-safe languages prevent common memory errors (buffer overflows,
-        use‑after‑free, null/dangling pointer access, uninitialized reads) by
-        enforcing rules or runtime checks that ensure safe allocation, access,
-        and deallocation of memory; approaches include garbage collection
-        (Java, C#, Go, Python), reference counting, and compile-time
-        ownership/borrowing checked by the compiler (Rust), yielding fewer
-        security bugs and crashes while trading off some control or runtime
+        <p>Memory safety means being protected from common software bugs and
+        vulnerabilities related to memory access. Memory-safe languages prevent
+        issues such as buffer overflows, use‑after‑free, null/dangling pointer
+        access, and uninitialized reads by enforcing rules or runtime checks
+        for safe allocation, access, and deallocation. Approaches include
+        garbage collection (Java, C#, Go, Python), reference counting, and
+        compile-time ownership/borrowing checks (Rust). The result is fewer
+        crashes and security bugs, with tradeoffs in control or runtime
         overhead depending on the strategy.</p>
 
         <ul>
@@ -1416,9 +1415,9 @@
         <h2 id="security-term-069">68 - Garbage collection</h2>
 
         <p>A runtime system automatically finds and reclaims memory that the
-        program can no longer reach (preventing leaks and many pointer errors)
-        by tracing or reference counting; it simplifies programming but adds
-        runtime overhead and possible pauses</p>
+        program can no longer reach (reducing leaks and many pointer errors),
+        usually by tracing or reference counting. It simplifies programming but
+        adds runtime overhead and possible pauses.</p>
 
         <ul>
           <li>Examples: Java, Go, C#, Python, JavaScript.</li>
@@ -1441,7 +1440,7 @@
       <section aria-labelledby="security-term-071">
         <h2 id="security-term-071">70 - RELRO — Relocation Read-Only</h2>
 
-        <p>Is an ELF hardening option that makes relocation-related sections
+        <p>An ELF hardening option that makes relocation-related sections
         (notably the GOT) read-only after startup to prevent GOT-overwrite
         attacks; Partial RELRO (-Wl,-z,relro) leaves .got.plt writable and
         allows lazy binding, while Full RELRO (-Wl,-z,relro,-z,now) forces
@@ -1515,7 +1514,7 @@
       <section aria-labelledby="security-term-076">
         <h2 id="security-term-076">74 - NOP — No Operation</h2>
 
-        <p>A single CPU instruction that does nothing but advance execution;
+        <p>A single CPU instruction that does nothing except advance execution;
         used in exploits as a NOP-sled (a long sequence of NOPs) so a faulted
         jump into the sled "slides" into the attack payload.</p>
 
@@ -1543,7 +1542,7 @@
       <section aria-labelledby="security-term-078">
         <h2 id="security-term-078">76 - malloc</h2>
 
-        <p>Is a library routine (part of the memory allocator) that gives a
+        <p>A library routine (part of the memory allocator) that gives a
         program a contiguous block of uninitialized bytes from the heap at
         runtime; the allocator manages free/used blocks, requests memory from
         the OS (e.g., sbrk/mmap), and returns a pointer or NULL on failure.
@@ -1559,8 +1558,8 @@
       <section aria-labelledby="security-term-079">
         <h2 id="security-term-079">77 - Memory allocator</h2>
 
-        <p>Is the part of a runtime/library that manages dynamic heap memory:
-        it satisfies requests for variable-size blocks
+        <p>The part of a runtime/library that manages dynamic heap memory: it
+        satisfies requests for variable-size blocks
         (malloc/calloc/realloc/new), tracks which blocks are free or in use,
         requests/releases memory from the OS (sbrk/mmap/VirtualAlloc),
         minimizes fragmentation, enforces alignment, and handles concurrency
@@ -1576,8 +1575,8 @@
       <section aria-labelledby="security-term-080">
         <h2 id="security-term-080">78 - Capability-based security</h2>
 
-        <p>Is an authorization model where unforgeable "capabilities" (tokens
-        or references) both name a resource and carry the exact rights allowed;
+        <p>An authorization model where unforgeable "capabilities" (tokens or
+        references) both name a resource and carry the exact rights allowed;
         possession of a capability is sufficient to access the resource, so
         systems grant and delegate fine-grained privileges by passing or
         restricting capabilities instead of relying on global identity-based
@@ -1760,7 +1759,7 @@
           signature, which verifies the kernel signature.</li>
         </ul>
 
-        <h2 id="supply-chain">88. Supply chain</h2>
+        <h2 id="supply-chain">88 - Supply chain</h2>
 
         <p>All people, processes, tools, code, and hardware involved in
         producing/deploying a product (development tools, libraries, build
@@ -1788,7 +1787,7 @@
       <section aria-labelledby="security-term-091">
         <h2 id="security-term-091">90 - Malware</h2>
 
-        <p>Is any program designed to damage, disrupt, steal from, or gain
+        <p>Any program designed to damage, disrupt, steal from, or gain
         unauthorized access to computers, networks or data.</p>
 
         <ul>

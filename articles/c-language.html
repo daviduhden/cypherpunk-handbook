@@ -48,17 +48,17 @@
         <p class="meta">Written by FlyWithMe (a SimpleX chat user) —
         <time datetime="2026-05-02">Updated May 2, 2026</time></p>
 
-        <p class="lede">C is not a memory-safe language. It is possible to
-        write secure software in C, but flawless memory management is not a
-        realistic expectation, no matter how skilled the programmers are or how
-        many reviews the code receives. Formal verification can help in rare
-        cases; the seL4 microkernel and the CompCert compiler are two examples.
-        But those projects are exceptions, not the normal path for most
+        <p class="lede">C is not a memory-safe language. You can write secure
+        software in C, but flawless memory management is not a realistic
+        expectation, no matter how skilled the programmers are or how many
+        reviews the code receives. Formal verification can help in rare cases;
+        the seL4 microkernel and the CompCert compiler are two examples. But
+        those projects are exceptions, not the normal path for most
         software.</p>
 
         <p class="lede">In practice, formal verification is difficult,
-        expensive, and narrow in scope. It should be treated as a limited
-        possibility, not as a general answer to C's memory-safety problem.</p>
+        expensive, and narrow in scope. It should be treated as a limited tool,
+        not a general answer to C's memory-safety problem.</p>
 
         <p class="lede">For readers who argue that memory-management
         vulnerabilities are rare or obsolete, this article looks at the numbers
@@ -124,14 +124,14 @@
         <p><strong>36,659 ÷ 107,173 × 100 = 34.20%</strong>
         </p>
 
-        <p>Put another way, 34.20% of all software vulnerabilities registered
+        <p>Put simply, 34.20% of all software vulnerabilities registered
         between 2015 and 2025 were tied to memory-management errors, including
         buffer overflows, heap overflows, use-after-free bugs, and
         out-of-bounds reads or writes.</p>
 
         <h3>Distribution by year</h3>
 
-        <p>The yearly breakdown fluctuates a lot:</p>
+        <p>The year-by-year breakdown fluctuates significantly:</p>
 
         <div class="table-scroll" role="region" aria-label=
         "Memory management vulnerabilities by year" tabindex="0">
@@ -265,8 +265,8 @@
         <p>The data shows an important distinction. The absolute number of
         memory vulnerabilities remains high, but their relative share dropped
         from roughly 38–45% in 2015–2016 to 24–29% in 2024–2025. That does not
-        mean memory bugs disappeared. It means other categories, especially XSS
-        at 31.18% of the total, grew faster.</p>
+        mean memory bugs disappeared. It means other categories grew faster,
+        especially XSS at 31.18% of the total.</p>
       </section>
 
       <section aria-labelledby="c-2026">
