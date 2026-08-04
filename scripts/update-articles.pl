@@ -2,21 +2,24 @@
 
 # Copyright (c) 2025-2026 David Uhden Collado
 #
-# Permission to use, copy, modify, and distribute this software for any
-# purpose with or without fee is hereby granted, provided that the above
-# copyright notice and this permission notice appear in all copies.
+# Permission to use, copy, modify, and distribute this software
+# for any purpose with or without fee is hereby granted, provided
+# that the above copyright notice and this permission notice
+# appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+# CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+# NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+# CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# UPDATE article listings/pages from local templates and structured metadata.
-# questions for category/title/slug, builds a safe article link, and injects it
-# into the matching section of index.html while preserving existing markup.
+# UPDATE article listings/pages from local templates and
+# structured metadata. questions for category/title/slug,
+# builds a safe article link, and injects it into the matching
+# section of index.html while preserving existing markup.
 #
 # Usage:
 #   update-articles.pl
@@ -24,8 +27,10 @@
 # Behavior:
 #   - Uses ../index.html as the edit target
 #   - Validates category and prevents duplicate article links
-#   - Inserts mobile "overview" links at the top when applicable
-#   - Writes updated HTML back to disk with explicit error reporting
+#   - Inserts mobile "overview" links at the top when
+#     applicable
+#   - Writes updated HTML back to disk with explicit error
+#     reporting
 
 use strict;
 use warnings;
@@ -40,7 +45,8 @@ my $no_color  = 0;
 my $is_tty    = ( -t STDOUT )             ? 1 : 0;
 my $use_color = ( !$no_color && $is_tty ) ? 1 : 0;
 
-my ( $GREEN, $YELLOW, $RED, $RESET ) = ( "", "", "", "" );
+my ( $GREEN, $YELLOW, $RED, $RESET ) =
+  ( "", "", "", "" );
 if ($use_color) {
     $GREEN  = "\e[32m";
     $YELLOW = "\e[33m";
@@ -48,9 +54,13 @@ if ($use_color) {
     $RESET  = "\e[0m";
 }
 
-sub logi { print "${GREEN}✅ [INFO]${RESET} $_[0]\n"; }
-sub logw { print STDERR "${YELLOW}⚠️ [WARN]${RESET} $_[0]\n"; }
-sub loge { print STDERR "${RED}❌ [ERROR]${RESET} $_[0]\n"; }
+sub logi { print "${GREEN}[INFO]${RESET} $_[0]\n"; }
+sub logw {
+    print STDERR "${YELLOW}[WARN]${RESET} $_[0]\n";
+}
+sub loge {
+    print STDERR "${RED}[ERROR]${RESET} $_[0]\n";
+}
 
 sub die_tool {
     my ($msg) = @_;
@@ -60,17 +70,24 @@ sub die_tool {
 
 sub question {
     my ( $msg, $default ) = @_;
-    my $suf = defined $default && length $default ? " [$default]" : "";
+    my $suf =
+         defined $default && length $default
+      ? " [$default]"
+      : "";
     print "$msg$suf: ";
     my $in = <STDIN>;
-    defined $in or die_tool "Could not read input.\n";
+    defined $in
+      or die_tool "Could not read input.\n";
     chomp $in;
-    return length $in ? $in : ( $default // '' );
+    return length $in
+      ? $in
+      : ( $default // '' );
 }
 
 sub read_file {
     my ($path) = @_;
-    open my $fh, '<:raw', $path or die_tool "Could not open $path: $!\n";
+    open my $fh, '<:raw', $path
+      or die_tool "Could not open $path: $!\n";
     local $/;
     my $c = <$fh>;
     close $fh;
@@ -79,7 +96,8 @@ sub read_file {
 
 sub write_file {
     my ( $path, $content ) = @_;
-    open my $fh, '>:raw', $path or die_tool "Could not write $path: $!\n";
+    open my $fh, '>:raw', $path
+      or die_tool "Could not write $path: $!\n";
     print {$fh} $content;
     close $fh;
 }
@@ -94,27 +112,44 @@ sub esc_html {
 }
 
 my $script_path = abs_path($0);
-my $root        = File::Spec->catdir( dirname($script_path), '..' );
-my $index       = File::Spec->catfile( $root, 'index.html' );
+my $root =
+  File::Spec->catdir(
+    dirname($script_path), '..' );
+my $index =
+  File::Spec->catfile( $root, 'index.html' );
 
 sub run_update {
     my $content = read_file($index);
 
-    logi("This will insert a new article link into $index");
+    logi(
+        "This will insert a new article link"
+          . " into $index"
+    );
 
-    my $category = lc question( 'Category (desktop/mobile)', 'desktop' );
+    my $category = lc question(
+        'Category (desktop/mobile)', 'desktop' );
     $category =~ /^(desktop|mobile)$/
-      or die_tool "Category must be 'desktop' or 'mobile'.\n";
+      or die_tool
+      "Category must be 'desktop' or 'mobile'.\n";
 
-    my $title = question( 'Link text/title', 'New Article' );
-    my $slug =
-      question( 'Slug (filename without .html, e.g. android-privacy)', '' );
-    length $slug or die_tool "Slug is required.\n";
+    my $title =
+      question( 'Link text/title',
+        'New Article' );
+    my $slug = question(
+        'Slug (filename without .html,'
+          . ' e.g. android-privacy)',
+        ''
+    );
+    length $slug
+      or die_tool "Slug is required.\n";
 
     my $href = "./articles/$slug.html";
 
     if ( index( $content, $href ) != -1 ) {
-        logw("A link to $href already exists in $index. No change made.");
+        logw(
+            "A link to $href already exists"
+              . " in $index. No change made."
+        );
         return 0;
     }
 
@@ -124,47 +159,83 @@ sub run_update {
       . qq{</a>\n            </li>\n\n};
 
     if ( $category eq 'desktop' ) {
-        if ( $content =~
-/(\Q<h3>Desktop Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/s
+        if (
+            $content =~
+            /(\Q<h3>Desktop Systems<\/h3>\E
+              .*?<ul[^>]*class="article-list"
+              [^>]*>)(.*?)(<\/ul>)/sx
           )
         {
-            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-            $inner .= "\n            " . $link_html;
-            $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
+            my ( $pre, $inner, $post ) =
+              ( $1, $2, $3 );
+            $inner .=
+              "\n            " . $link_html;
+            $content =~
+              s/\Q$pre$inner$post\E/
+                $pre$inner$post/s;
             write_file( $index, $content );
-            logi("Inserted link into Desktop Systems list.");
+            logi(
+                "Inserted link into Desktop"
+                  . " Systems list."
+            );
             return 0;
         }
-        die_tool "Could not locate Desktop Systems list in $index.\n";
+        die_tool
+          "Could not locate Desktop Systems"
+          . " list in $index.\n";
     }
 
     if ( lc($title) eq 'overview' ) {
-        if ( $content =~
-/(\Q<h3>Mobile Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/s
+        if (
+            $content =~
+            /(\Q<h3>Mobile Systems<\/h3>\E
+              .*?<ul[^>]*class="article-list"
+              [^>]*>)(.*?)(<\/ul>)/sx
           )
         {
-            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-            $inner = "\n            " . $link_html . $inner;
-            $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
+            my ( $pre, $inner, $post ) =
+              ( $1, $2, $3 );
+            $inner =
+              "\n            "
+              . $link_html . $inner;
+            $content =~
+              s/\Q$pre$inner$post\E/
+                $pre$inner$post/s;
             write_file( $index, $content );
-            logi("Inserted Overview link into Mobile Systems.");
+            logi(
+                "Inserted Overview link into"
+                  . " Mobile Systems."
+            );
             return 0;
         }
     }
 
-    if ( $content =~
-/(\Q<h3>Mobile Systems<\/h3>\E.*?<ul[^>]*class="article-list"[^>]*>.*?<ul[^>]*class="topic-list"[^>]*>)(.*?)(<\/ul>)/s
+    if (
+        $content =~
+        /(\Q<h3>Mobile Systems<\/h3>\E
+          .*?<ul[^>]*class="article-list"
+          [^>]*>.*?<ul[^>]*class="topic-list"
+          [^>]*>)(.*?)(<\/ul>)/sx
       )
     {
-        my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-        $inner .= "\n                " . $link_html;
-        $content =~ s/\Q$pre$inner$post\E/$pre$inner$post/s;
+        my ( $pre, $inner, $post ) =
+          ( $1, $2, $3 );
+        $inner .=
+          "\n                " . $link_html;
+        $content =~
+          s/\Q$pre$inner$post\E/
+            $pre$inner$post/s;
         write_file( $index, $content );
-        logi("Inserted link into Mobile Systems topics.");
+        logi(
+            "Inserted link into Mobile"
+              . " Systems topics."
+        );
         return 0;
     }
 
-    die_tool "Could not locate Mobile Systems topic list in $index.\n";
+    die_tool
+      "Could not locate Mobile Systems"
+      . " topic list in $index.\n";
 }
 
 sub main {
