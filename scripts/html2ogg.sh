@@ -6,13 +6,14 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA
+# OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
 # -----------------------------
 # POSIX-compatible HTML to OGG speech script
 # Uses pandoc, espeak-ng, and ffmpeg
@@ -23,7 +24,7 @@ set -e
 
 require_cmd() {
 	if ! command -v "$1" >/dev/null 2>&1; then
-		echo "❌ $1 is not installed"
+		echo "[ERROR] $1 is not installed"
 		exit 1
 	fi
 }
@@ -42,7 +43,7 @@ parse_args() {
 
 	HTML=$1
 	if [ ! -f "$HTML" ]; then
-		echo "❌ File not found: $HTML"
+		echo "[ERROR] File not found: $HTML"
 		exit 1
 	fi
 }
@@ -64,7 +65,7 @@ select_language() {
 		SPEED=140
 		;;
 	*)
-		echo "❌ Invalid option"
+		echo "[ERROR] Invalid option"
 		exit 1
 		;;
 	esac
@@ -84,10 +85,14 @@ create_temp_wav() {
 
 convert_html_to_ogg() {
 	OUT="${HTML%.*}.ogg"
-	echo "▶️ Converting HTML to audio..."
-	pandoc "$HTML" -t plain --wrap=none | espeak-ng -v "$VOICE" -s "$SPEED" -p 50 -w "$TMP_WAV"
-	ffmpeg -y -loglevel error -i "$TMP_WAV" -ac 2 -c:a vorbis -q:a 5 -strict -2 "$OUT"
-	echo "✅ Audio successfully generated: $OUT"
+	echo "Converting HTML to audio..."
+	pandoc "$HTML" -t plain --wrap=none | \
+		espeak-ng -v "$VOICE" -s "$SPEED" \
+		-p 50 -w "$TMP_WAV"
+	ffmpeg -y -loglevel error -i "$TMP_WAV" \
+		-ac 2 -c:a vorbis -q:a 5 \
+		-strict -2 "$OUT"
+	echo "[OK] Audio successfully generated: $OUT"
 }
 
 cleanup() {
