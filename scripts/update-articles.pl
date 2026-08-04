@@ -45,8 +45,7 @@ my $no_color  = 0;
 my $is_tty    = ( -t STDOUT )             ? 1 : 0;
 my $use_color = ( !$no_color && $is_tty ) ? 1 : 0;
 
-my ( $GREEN, $YELLOW, $RED, $RESET ) =
-  ( "", "", "", "" );
+my ( $GREEN, $YELLOW, $RED, $RESET ) = ( "", "", "", "" );
 if ($use_color) {
     $GREEN  = "\e[32m";
     $YELLOW = "\e[33m";
@@ -55,9 +54,11 @@ if ($use_color) {
 }
 
 sub logi { print "${GREEN}[INFO]${RESET} $_[0]\n"; }
+
 sub logw {
     print STDERR "${YELLOW}[WARN]${RESET} $_[0]\n";
 }
+
 sub loge {
     print STDERR "${RED}[ERROR]${RESET} $_[0]\n";
 }
@@ -71,7 +72,7 @@ sub die_tool {
 sub question {
     my ( $msg, $default ) = @_;
     my $suf =
-         defined $default && length $default
+      defined $default && length $default
       ? " [$default]"
       : "";
     print "$msg$suf: ";
@@ -112,34 +113,22 @@ sub esc_html {
 }
 
 my $script_path = abs_path($0);
-my $root =
-  File::Spec->catdir(
-    dirname($script_path), '..' );
-my $index =
-  File::Spec->catfile( $root, 'index.html' );
+my $root        = File::Spec->catdir( dirname($script_path), '..' );
+my $index       = File::Spec->catfile( $root, 'index.html' );
 
 sub run_update {
     my $content = read_file($index);
 
-    logi(
-        "This will insert a new article link"
-          . " into $index"
-    );
+    logi( "This will insert a new article link" . " into $index" );
 
-    my $category = lc question(
-        'Category (desktop/mobile)', 'desktop' );
+    my $category = lc question( 'Category (desktop/mobile)', 'desktop' );
     $category =~ /^(desktop|mobile)$/
-      or die_tool
-      "Category must be 'desktop' or 'mobile'.\n";
+      or die_tool "Category must be 'desktop' or 'mobile'.\n";
 
-    my $title =
-      question( 'Link text/title',
-        'New Article' );
-    my $slug = question(
-        'Slug (filename without .html,'
-          . ' e.g. android-privacy)',
-        ''
-    );
+    my $title = question( 'Link text/title', 'New Article' );
+    my $slug =
+      question( 'Slug (filename without .html,' . ' e.g. android-privacy)',
+        '' );
     length $slug
       or die_tool "Slug is required.\n";
 
@@ -147,9 +136,7 @@ sub run_update {
 
     if ( index( $content, $href ) != -1 ) {
         logw(
-            "A link to $href already exists"
-              . " in $index. No change made."
-        );
+            "A link to $href already exists" . " in $index. No change made." );
         return 0;
     }
 
@@ -160,82 +147,56 @@ sub run_update {
 
     if ( $category eq 'desktop' ) {
         if (
-            $content =~
-            /(\Q<h3>Desktop Systems<\/h3>\E
+            $content =~ /(\Q<h3>Desktop Systems<\/h3>\E
               .*?<ul[^>]*class="article-list"
               [^>]*>)(.*?)(<\/ul>)/sx
           )
         {
-            my ( $pre, $inner, $post ) =
-              ( $1, $2, $3 );
-            $inner .=
-              "\n            " . $link_html;
-            $content =~
-              s/\Q$pre$inner$post\E/
+            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
+            $inner .= "\n            " . $link_html;
+            $content =~ s/\Q$pre$inner$post\E/
                 $pre$inner$post/s;
             write_file( $index, $content );
-            logi(
-                "Inserted link into Desktop"
-                  . " Systems list."
-            );
+            logi( "Inserted link into Desktop" . " Systems list." );
             return 0;
         }
-        die_tool
-          "Could not locate Desktop Systems"
-          . " list in $index.\n";
+        die_tool "Could not locate Desktop Systems" . " list in $index.\n";
     }
 
     if ( lc($title) eq 'overview' ) {
         if (
-            $content =~
-            /(\Q<h3>Mobile Systems<\/h3>\E
+            $content =~ /(\Q<h3>Mobile Systems<\/h3>\E
               .*?<ul[^>]*class="article-list"
               [^>]*>)(.*?)(<\/ul>)/sx
           )
         {
-            my ( $pre, $inner, $post ) =
-              ( $1, $2, $3 );
-            $inner =
-              "\n            "
-              . $link_html . $inner;
-            $content =~
-              s/\Q$pre$inner$post\E/
+            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
+            $inner = "\n            " . $link_html . $inner;
+            $content =~ s/\Q$pre$inner$post\E/
                 $pre$inner$post/s;
             write_file( $index, $content );
-            logi(
-                "Inserted Overview link into"
-                  . " Mobile Systems."
-            );
+            logi( "Inserted Overview link into" . " Mobile Systems." );
             return 0;
         }
     }
 
     if (
-        $content =~
-        /(\Q<h3>Mobile Systems<\/h3>\E
+        $content =~ /(\Q<h3>Mobile Systems<\/h3>\E
           .*?<ul[^>]*class="article-list"
           [^>]*>.*?<ul[^>]*class="topic-list"
           [^>]*>)(.*?)(<\/ul>)/sx
       )
     {
-        my ( $pre, $inner, $post ) =
-          ( $1, $2, $3 );
-        $inner .=
-          "\n                " . $link_html;
-        $content =~
-          s/\Q$pre$inner$post\E/
+        my ( $pre, $inner, $post ) = ( $1, $2, $3 );
+        $inner .= "\n                " . $link_html;
+        $content =~ s/\Q$pre$inner$post\E/
             $pre$inner$post/s;
         write_file( $index, $content );
-        logi(
-            "Inserted link into Mobile"
-              . " Systems topics."
-        );
+        logi( "Inserted link into Mobile" . " Systems topics." );
         return 0;
     }
 
-    die_tool
-      "Could not locate Mobile Systems"
-      . " topic list in $index.\n";
+    die_tool "Could not locate Mobile Systems" . " topic list in $index.\n";
 }
 
 sub main {

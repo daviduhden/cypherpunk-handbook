@@ -86,9 +86,9 @@ create_temp_wav() {
 convert_html_to_ogg() {
 	OUT="${HTML%.*}.ogg"
 	echo "Converting HTML to audio..."
-	pandoc "$HTML" -t plain --wrap=none | \
+	pandoc "$HTML" -t plain --wrap=none |
 		espeak-ng -v "$VOICE" -s "$SPEED" \
-		-p 50 -w "$TMP_WAV"
+			-p 50 -w "$TMP_WAV"
 	ffmpeg -y -loglevel error -i "$TMP_WAV" \
 		-ac 2 -c:a vorbis -q:a 5 \
 		-strict -2 "$OUT"
