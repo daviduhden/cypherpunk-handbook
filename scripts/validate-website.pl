@@ -372,11 +372,11 @@ if ( @css || @js || @json ) {
               . "  \"newLineKind\": \"lf\",\n"
               . "  \"plugins\": [\n"
               . "    \"https://plugins.dprint.dev/"
-              . "typescript-0.96.0.wasm\",\n"
+              . "typescript-0.96.1.wasm\",\n"
               . "    \"https://plugins.dprint.dev/"
-              . "g-plane/malva-v0.15.3.wasm\",\n"
+              . "g-plane/malva-v0.16.0.wasm\",\n"
               . "    \"https://plugins.dprint.dev/"
-              . "json-0.21.3.wasm\"\n" . "  ]\n"
+              . "json-0.23.0.wasm\"\n" . "  ]\n"
               . "}\n" );
         push @tmp_paths, $dprint_cfg;
         dprint_config_update($dprint_cfg);
