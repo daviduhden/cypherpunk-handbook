@@ -45,7 +45,7 @@
         <h2>Why OpenBSD stands alone</h2>
 
         <p class="meta">Written by FlyWithMe (a SimpleX chat user). Inspired by
-        why-openbsd.rocks — <time datetime="2026-02-17">Updated February 17,
+        why-openbsd.rocks — <time datetime="2026-08-05">Updated August 5,
         2026</time></p>
 
         <p class="lede">This article explains why OpenBSD is one of the most
@@ -92,6 +92,10 @@
 
           <li>
             <a href="#obsd-6">cron(8)</a>
+          </li>
+
+          <li>
+            <a href="#obsd-6a">security(8)</a>
           </li>
 
           <li>
@@ -404,6 +408,23 @@
           opposed to systemd.</strong>), but it does not come enabled by
           default.</li>
         </ul>
+      </section>
+
+      <section aria-labelledby="obsd-6a">
+        <h2 id="obsd-6a">6.1 - security(8)</h2>
+
+        <p>OpenBSD includes <a href=
+        "https://man.openbsd.org/security">security(8)</a>, a script run by
+        daily(8) that checks for signs of common security weaknesses and mails
+        any output to root. Its checks cover account databases, root's login
+        environment, home and dotfile permissions, changes to files in
+        /etc/changelist, mounted-disk labels and partition tables, package
+        changes, and selected network configuration permissions.</p>
+
+        <p>The manual is careful to call security(8) an aid, not complete
+        protection. It is useful because obvious weaknesses and unexpected
+        changes become part of routine administration, as long as someone
+        reviews the daily reports and maintains the monitored file list.</p>
       </section>
 
       <section aria-labelledby="obsd-7">
