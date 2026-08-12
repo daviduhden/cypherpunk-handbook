@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://handbook.uhden.dev/</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/articles/c-language.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/articles/openbsd.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/articles/qubes-os.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/articles/searxng-on-openbsd.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/articles/security-terms.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/articles/why-i-stopped-using-linux.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/contact.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/contribute.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/license.html</loc>
+  </url>
+  <url>
+    <loc>https://handbook.uhden.dev/manifesto.html</loc>
+  </url>
+</urlset>

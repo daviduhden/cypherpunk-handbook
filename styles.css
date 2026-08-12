@@ -255,7 +255,8 @@ article header {
 /*
  * Page title
  */
-header h1 {
+header h1,
+header .site-title {
   margin: 0 0 0.75em;
   font-size: clamp(1.6em, 2.5vw + 1em, 2.25em);
   line-height: 1.2;

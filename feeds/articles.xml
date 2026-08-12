@@ -23,7 +23,7 @@
     <item>
       <title>From a strict security perspective, Qubes OS is not reliable</title>
       <link>/articles/qubes-os.html</link>
-      <description>This article is a critical look at Qubes OS, or "XenOS" as I sometimes call it. I focus on its security weaknesses, note where its design is useful, and suggest improvements and more reliable alternatives for different kinds of users.</description>
+      <description>This article is a critical look at Qubes OS, or &amp;quot;XenOS&amp;quot; as I sometimes call it. I focus on its security weaknesses, note where its design is useful, and suggest improvements and more reliable alternatives for different kinds of users.</description>
       <pubDate>Sun, 05 Jul 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/qubes-os.html</guid>
     </item>
@@ -44,7 +44,7 @@
     <item>
       <title>The C language's biggest problem: evidence of its insecurity</title>
       <link>/articles/c-language.html</link>
-      <description>C is not a memory-safe language. You can write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two examples. But those projects are exceptions, not the normal path for most software.</description>
+      <description>C is not a memory-safe language. You can write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two</description>
       <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/c-language.html</guid>
     </item>
