@@ -41,26 +41,15 @@ use File::Spec;
 # -------------------------
 # Logging
 # -------------------------
-my $no_color  = 0;
-my $is_tty    = ( -t STDOUT )             ? 1 : 0;
-my $use_color = ( !$no_color && $is_tty ) ? 1 : 0;
 
-my ( $GREEN, $YELLOW, $RED, $RESET ) = ( "", "", "", "" );
-if ($use_color) {
-    $GREEN  = "\e[32m";
-    $YELLOW = "\e[33m";
-    $RED    = "\e[31m";
-    $RESET  = "\e[0m";
-}
-
-sub logi { print "${GREEN}[INFO]${RESET} $_[0]\n"; }
+sub logi { print "[INFO] $_[0]\n"; }
 
 sub logw {
-    print STDERR "${YELLOW}[WARN]${RESET} $_[0]\n";
+    print STDERR "[WARN] $_[0]\n";
 }
 
 sub loge {
-    print STDERR "${RED}[ERROR]${RESET} $_[0]\n";
+    print STDERR "[ERROR] $_[0]\n";
 }
 
 sub die_tool {

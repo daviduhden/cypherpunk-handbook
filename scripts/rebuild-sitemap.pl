@@ -25,13 +25,13 @@
 use strict;
 use warnings;
 
-use Cwd       qw(abs_path);
+use Cwd qw(abs_path);
 use File::Find;
 use File::Spec;
 
 my $script_dir = ( File::Spec->splitpath($0) )[1];
-my $root_dir = abs_path( File::Spec->catdir( $script_dir, '..' ) );
-my $site_url = 'https://handbook.uhden.dev';
+my $root_dir   = abs_path( File::Spec->catdir( $script_dir, '..' ) );
+my $site_url   = 'https://handbook.uhden.dev';
 
 sub xml_escape {
     my ($text) = @_;

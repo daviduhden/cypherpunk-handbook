@@ -24,7 +24,7 @@
 #
 # Usage:
 #   validate-website.pl [--root DIR] [--apply|--check]
-#                       [--no-color] [--verbose]
+#                       [--verbose]
 #
 # Modes:
 #   --apply   Format in place; also validate
@@ -67,14 +67,13 @@ my $tmp_dir      = File::Spec->tmpdir();
 
 my $root_dir   = $default_root;
 my $mode_apply = 1;               # default: apply
-my $no_color   = 0;
 my $verbose    = 0;
 
 sub usage {
     print STDERR <<"USAGE";
 Usage:
   $0 [--root DIR] [--apply|--check] \\
-     [--no-color] [--verbose]
+     [--verbose]
 
 Modes:
   --apply         Format in place and validate (default)
@@ -84,7 +83,6 @@ Modes:
 Options:
   --root DIR      Root directory to scan
                   (default: ../ relative to this script)
-  --no-color      Disable colored output
   --verbose       Print extra info
 
 Dependencies (compiled binaries):
@@ -102,11 +100,10 @@ USAGE
 }
 
 GetOptions(
-    "root=s"    => \$root_dir,
-    "apply!"    => sub { $mode_apply = 1 },
-    "check!"    => sub { $mode_apply = 0 },
-    "no-color!" => \$no_color,
-    "verbose!"  => \$verbose,
+    "root=s"   => \$root_dir,
+    "apply!"   => sub { $mode_apply = 1 },
+    "check!"   => sub { $mode_apply = 0 },
+    "verbose!" => \$verbose,
 ) or usage();
 
 # Normalize the root directory to a canonical absolute
@@ -124,25 +121,15 @@ if ( defined $abs_root && length $abs_root ) {
 # -------------------------
 # Logging
 # -------------------------
-my $is_tty    = ( -t STDOUT )             ? 1 : 0;
-my $use_color = ( !$no_color && $is_tty ) ? 1 : 0;
 
-my ( $GREEN, $YELLOW, $RED, $RESET ) = ( "", "", "", "" );
-if ($use_color) {
-    $GREEN  = "\e[32m";
-    $YELLOW = "\e[33m";
-    $RED    = "\e[31m";
-    $RESET  = "\e[0m";
-}
-
-sub logi { print "${GREEN}[INFO]${RESET} $_[0]\n"; }
+sub logi { print "[INFO] $_[0]\n"; }
 
 sub logw {
-    print STDERR "${YELLOW}[WARN]${RESET} $_[0]\n";
+    print STDERR "[WARN] $_[0]\n";
 }
 
 sub loge {
-    print STDERR "${RED}[ERROR]${RESET} $_[0]\n";
+    print STDERR "[ERROR] $_[0]\n";
 }
 
 my $os_name = `uname -s 2>/dev/null`;
