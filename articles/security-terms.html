@@ -776,7 +776,7 @@
         <h2 id="security-term-020">20 - TCB — Trusted Computing Base</h2>
 
         <p>The set of hardware, firmware, and software that enforces the
-        system’s security policy; must be trusted.</p>
+        system's security policy; must be trusted.</p>
 
         <ul>
           <li><strong>Example:</strong> kernel + firmware + secure boot chain
@@ -898,7 +898,7 @@
         only a small syscall whitelist. <strong>pledge (OpenBSD):</strong>
         process declares a small syscall whitelist (pledges); violating it
         kills the process. <strong>unveil (OpenBSD):</strong> syscall that
-        restricts a process’s filesystem view to explicitly revealed paths and
+        restricts a process's filesystem view to explicitly revealed paths and
         permissions.</p>
       </section>
 
@@ -916,7 +916,7 @@
         </ul>
 
         <p><strong>Process isolation:</strong> separate virtual address spaces
-        so one process cannot read another’s memory (typical on
+        so one process cannot read another's memory (typical on
         Linux/Windows).</p>
 
         <p><strong>VM/hypervisor isolation:</strong> guests run separate
@@ -947,7 +947,7 @@
         stack-buffer-overflow overwrites.</p>
 
         <ul>
-          <li><strong>Example:</strong> GCC’s -fstack-protector adds canaries
+          <li><strong>Example:</strong> GCC's -fstack-protector adds canaries
           to vulnerable functions (e.g., strcpy).</li>
         </ul>
       </section>
@@ -971,7 +971,7 @@
         (prevents arbitrary jumps/gadgets).</p>
 
         <ul>
-          <li><strong>Example:</strong> LLVM’s -fsanitize=cfi or Microsoft's
+          <li><strong>Example:</strong> LLVM's -fsanitize=cfi or Microsoft's
           CFG (Control Flow Guard).</li>
         </ul>
       </section>
@@ -1043,7 +1043,7 @@
         <h2 id="security-term-039">39 - Secure Enclave</h2>
 
         <p>Hardware-backed secure coprocessor providing isolated key storage
-        and cryptographic operations (Apple’s implementation).</p>
+        and cryptographic operations (Apple's implementation).</p>
 
         <ul>
           <li><strong>Example:</strong> iPhone storing fingerprint/FaceID
@@ -1081,7 +1081,7 @@
         <h2 id="security-term-042">42 - VT-d — Intel Virtualization Technology
         for Directed I/O</h2>
 
-        <p>Intel’s IOMMU implementation providing DMA isolation and interrupt
+        <p>Intel's IOMMU implementation providing DMA isolation and interrupt
         remapping for VMs.</p>
 
         <ul>
@@ -1144,7 +1144,7 @@
         <h2 id="security-term-047">47 - seccomp — Secure Computing Mode
         (seccomp‑bpf)</h2>
 
-        <p>Linux kernel facility to restrict a process’s allowed syscalls using
+        <p>Linux kernel facility to restrict a process's allowed syscalls using
         BPF filters; used to implement lightweight sandboxes.</p>
 
         <ul>
@@ -1309,7 +1309,7 @@
 
         <ul>
           <li><strong>Example:</strong> An app obtaining an access token to
-          call a user’s Google Drive.</li>
+          call a user's Google Drive.</li>
         </ul>
       </section>
 
@@ -1472,7 +1472,7 @@
         function locations differ every boot (mitigates reuse/ROP attacks).</p>
 
         <ul>
-          <li><strong>Example:</strong> OpenBSD’s KARL rebuilds a new kernel
+          <li><strong>Example:</strong> OpenBSD's KARL rebuilds a new kernel
           from object files after each boot so addresses change across
           reboots.</li>
         </ul>
@@ -1488,7 +1488,7 @@
 
         <ul>
           <li><strong>Example:</strong> push a crafted sigcontext on the stack,
-          return into a “syscall; ret” gadget with RAX set to rt_sigreturn,
+          return into a "syscall; ret" gadget with RAX set to rt_sigreturn,
           then have rt_sigreturn restore registers to invoke
           execve("/bin/sh").</li>
         </ul>
@@ -1512,7 +1512,7 @@
         (relinking/relink-on-boot)</h2>
 
         <p>Rebuilds or reorders kernel objects into a new kernel binary at boot
-        time so the kernel’s internal layout is unique per boot (increasing
+        time so the kernel's internal layout is unique per boot (increasing
         entropy beyond simple base-address KASLR).</p>
 
         <ul>
@@ -1644,8 +1644,8 @@
 
           <li>
             <ol start="2">
-              <li>an MPU in an RTOS isolates each task’s stack and data so a
-              buggy task can’t corrupt others.</li>
+              <li>an MPU in an RTOS isolates each task's stack and data so a
+              buggy task can't corrupt others.</li>
             </ol>
           </li>
 
@@ -1694,13 +1694,13 @@
         <p>Is when an attacker (or a program) gains higher access rights than
         originally allowed—either by moving laterally to another account with
         similar rights (horizontal) or by elevating a low‑privilege account to
-        admin/root (vertical); it’s typically achieved by exploiting
+        admin/root (vertical); it's typically achieved by exploiting
         vulnerabilities, misconfigurations, stolen credentials, or flawed
         software logic.</p>
 
         <ul>
           <li>Examples: (1) a web app vuln lets an attacker execute commands as
-          root (vertical), (2) stealing another user’s session cookie to access
+          root (vertical), (2) stealing another user's session cookie to access
           their files (horizontal), (3) abusing a misconfigured SUID binary on
           Linux to spawn a root shell.</li>
         </ul>
@@ -2012,7 +2012,7 @@
         <h2 id="security-term-109">108 - Grayware/Potentially Unwanted
         Application (PUA)</h2>
 
-        <p>Annoying or privacy-invasive software (toolbars, bundlers) that’s
+        <p>Annoying or privacy-invasive software (toolbars, bundlers) that's
         not overtly destructive but degrades security.</p>
       </section>
     </article>
