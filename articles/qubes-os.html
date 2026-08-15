@@ -95,7 +95,7 @@
           </li>
 
           <li>
-            <a href="#qubes-7">TPM 1.2/2.0 requirements</a>
+            <a href="#qubes-7">Anti Evil Maid and TPM 1.2 requirements</a>
           </li>
 
           <li>
@@ -600,7 +600,7 @@
         when stable IOMMU, SLAT, and all Qubes OS features are required without
         workarounds. Having 100% compatibility with the Linux kernel in its
         latest version + Qubes OS in its latest version + IOMMU + SLAT + HVM (+
-        TPM 2.0 if you want it) is a real Russian roulette.</p>
+        TPM 1.2 and Intel TXT if you use AEM) is a real Russian roulette.</p>
 
         <p><a href=
         "https://www.qubes-os.org/hcl/">https://www.qubes-os.org/hcl</a>
@@ -792,54 +792,41 @@
       </section>
 
       <section aria-labelledby="qubes-7">
-        <h2 id="qubes-7">7 - TPM 1.2/2.0 requirements</h2>
+        <h2 id="qubes-7">7 - Anti Evil Maid and TPM 1.2 requirements</h2>
 
-        <p>Qubes OS needs TPM 1.2 support to implement the basics of AEM (Anti
-        Evil Maid). Without it, the system is presented as highly vulnerable to
-        physical attacks. My criticism is simple: a system praised as secure
-        can become very weak once physical compromise enters the threat model,
-        and "requires" more proprietary and vulnerable code to "protect"
-        itself?</p>
+        <p>Qubes OS itself does not require a TPM. Its optional Anti Evil Maid
+        (AEM) package requires a TPM 1.2 interface and a working Intel TXT
+        engine; it does not use TPM 2.0. Without AEM, Qubes OS remains
+        vulnerable to physical attacks such as an Evil Maid attack.</p>
 
         <p><a href=
         "https://doc.qubes-os.org/en/latest/user/security-in-qubes/anti-evil-maid.html">
         https://doc.qubes-os.org/en/latest/user/security-in-qubes/anti-evil-maid.html</a>
         </p>
 
-        <p>But that is not the problem, the real problem is that TPM2 adds more
-        code, firmware, and initrd complexity (tpm2‑tss, stack integration,
-        dracut/hooks, crypttab, signed UKIs and operational dependencies). That
-        raises the boot‑time (which is more attack surface) and operational
-        fragility. Misconfiguration can also break boot or weaken security.
-        TPM2 relies on vendor (closed-source) firmware and tpm2-tss
-        implementations, firmware or vendor backdoors/bugs in TPM microcode are
-        a single point of persistent compromise. If TPM firmware (or Intel
-        PTT/ME interactions) is compromised (even remotely), TPM
-        attestation/sealing can be subverted and used to hide persistent
-        tampering from the user.</p>
+        <p>But that is not a defense. AEM adds a dependency on TPM 1.2, Intel
+        TXT, firmware, and a separate boot-time security workflow. That adds
+        proprietary code, operational complexity, and more ways for
+        misconfiguration to break boot or weaken security. Firmware or vendor
+        bugs in the TPM or Intel TXT chain can become a persistent compromise
+        point and can subvert the measurements AEM relies on.</p>
 
         <p>Many TPM vulnerabilities have already emerged, which require more
         patches from vendors, and if you don't have supported hardware, you
-        will be out of date in security fixes (this happens sooner or
-        later).</p>
+        will be out of date in security fixes sooner or later.</p>
 
         <p>The TPM acts more like a backdoor than anything else. TPM
-        manufacturers/suppliers have a unique identification key (EK) that, if
-        linked to an actual identity or shared with third parties, could allow
-        device identification or correlation. These keys can be easily
-        discovered through the operating system (especially Windows), and
-        malware could use this to totally deanonymize a Qubes OS user in the
-        future through the TPM unique ID, which consists of hardware
-        identifiers. That is, if you did not buy your device in a 100%
-        anonymous way, it's over. Not to mention all the other remote
-        vulnerabilities involving TPM.</p>
+        manufacturers and suppliers have a unique endorsement key (EK) that, if
+        linked to an actual identity or shared with third parties, can allow
+        device identification or correlation. A privileged attacker may be able
+        to access TPM material through the operating system; this creates an
+        additional privacy and persistence risk for a Qubes OS user.</p>
 
-        <p>This could easily be mitigated if Qubes OS did not support TPM or
-        most TPM-based features (like OpenBSD, whose TPM "Functionality is
-        limited to instructing the device to save its state before a system
-        suspend."), so it would be impossible to access such keys without
-        physical access. And TPM 2.0 is even worse than 1.2: much more code and
-        complexity (in other words, much more attack surface).</p>
+        <p>Qubes OS could avoid this dependency by providing a physical-attack
+        mitigation that does not require TPM or Intel TXT. Instead, AEM
+        requires hardware and firmware that ordinary users cannot meaningfully
+        audit. That is more code and complexity, and therefore more attack
+        surface.</p>
 
         <p>More on this topic from an authority in the field: <a href=
         "https://inv.nadeko.net/watch?v=t1eX_vvAlUc">https://inv.nadeko.net/watch?v=t1eX_vvAlUc</a></p>
