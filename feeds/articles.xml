@@ -4,21 +4,21 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Thu, 13 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 15 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Why OpenBSD stands alone</title>
+      <link>/articles/openbsd.html</link>
+      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/openbsd.html</guid>
+    </item>
     <item>
       <title>Why I stopped using Linux?</title>
       <link>/articles/why-i-stopped-using-linux.html</link>
       <description>This article will be dedicated to talking about Systemd/GNU/Linux and the reasons that made me abandon it, at the end I will be talking about alternatives for those who want to do the same.</description>
       <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/why-i-stopped-using-linux.html</guid>
-    </item>
-    <item>
-      <title>Why OpenBSD stands alone</title>
-      <link>/articles/openbsd.html</link>
-      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
-      <pubDate>Wed, 05 Aug 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/openbsd.html</guid>
     </item>
     <item>
       <title>From a strict security perspective, Qubes OS is not reliable</title>

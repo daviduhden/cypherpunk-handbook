@@ -55,7 +55,7 @@
         <h1>Why OpenBSD stands alone</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX chat user). Inspired by
-        why-openbsd.rocks — <time datetime="2026-08-05">Updated August 5,
+        why-openbsd.rocks — <time datetime="2026-08-15">Updated August 15,
         2026</time></p>
 
         <p class="lede">This article explains why OpenBSD is one of the most
@@ -142,6 +142,10 @@
 
           <li>
             <a href="#obsd-13">LibreSSL</a>
+          </li>
+
+          <li>
+            <a href="#obsd-13a">openrsync(1)</a>
           </li>
 
           <li>
@@ -569,9 +573,22 @@ permit root</pre>
         with OpenSSL without carrying the same level of complexity. It is
         actively developed by OpenBSD developers.</p>
 
-        <ul>
-          <li>Nowadays, macOS OpenSSL uses LibreSSL code.</li>
-        </ul>
+        <p>macOS ships LibreSSL as its system
+        <code>libssl</code>/<code>libcrypto</code> and uses it broadly in
+        base-system components, including Apple's <a href=
+        "https://github.com/apple-oss-distributions/OpenSSH/blob/main/configure-for-osx.sh">
+        OpenSSH distribution</a>. The official <a href=
+        "https://github.com/PowerShell/Win32-OpenSSH/wiki/Building-OpenSSH-for-Windows-(using-LibreSSL-crypto)">
+        Windows port of OpenSSH</a> also documents building with LibreSSL
+        crypto.</p>
+      </section>
+
+      <section aria-labelledby="obsd-13a">
+        <h2 id="obsd-13a">13.1 - openrsync(1)</h2>
+
+        <p><a href="https://man.openbsd.org/openrsync">openrsync</a> is
+        OpenBSD's BSD-licensed implementation of rsync. It synchronizes local
+        and remote files and is compatible with rsync protocol version 27.</p>
       </section>
 
       <section aria-labelledby="obsd-14">
