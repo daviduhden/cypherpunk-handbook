@@ -195,34 +195,26 @@
         and compromise Dom0 or other VMs. However, not all attacks go through
         Xen; there are also vectors via firmware (ME/PSP), drivers, IOMMU, or
         flaws in dom0 and service qubes. dom0 is decisive because it manages
-        the domains and administrative policy. Qubes issue 4551 proposed
-        OpenBSD support for dom0 or guests, but replacing Linux in the control
-        path would require porting Qubes' Xen tooling, GUI, qrexec, packaging,
-        and management integration rather than changing one template.</p>
-
-        <p><a href=
-        "https://github.com/QubesOS/qubes-issues/issues/4551">https://github.com/QubesOS/qubes-issues/issues/4551</a>
-        </p>
+        the domains and administrative policy. Qubes <a href=
+        "https://github.com/QubesOS/qubes-issues/issues/4551">issue 4551</a>
+        proposed OpenBSD support for dom0 or guests, but replacing Linux in the
+        control path would require porting Qubes' Xen tooling, GUI, qrexec,
+        packaging, and management integration rather than changing one
+        template.</p>
 
         <p>Qubes users also proposed OpenBSD for the network domain to reduce
-        reliance on the Linux network and driver stack. The proposal identified
-        substantial integration and hardware-support work rather than an
-        immediately supported replacement:</p>
+        reliance on the Linux network and driver stack. <a href=
+        "https://github.com/QubesOS/qubes-issues/issues/5294">The proposal</a>
+        identified substantial integration and hardware-support work rather
+        than an immediately supported replacement:</p>
 
-        <p><a href=
-        "https://github.com/QubesOS/qubes-issues/issues/5294">https://github.com/QubesOS/qubes-issues/issues/5294</a>
-        </p>
-
-        <p>A community guide demonstrates an OpenBSD-based sys-net
+        <p>A <a href=
+        "https://forum.qubesos.org/t/fortifying-sys-net-a-shift-to-openbsd/31973">
+        community guide</a> demonstrates an OpenBSD-based sys-net
         configuration, but the guide is dated and Qubes does not list that
         configuration as an officially supported NetVM. Its current
         compatibility with every Qubes networking and device workflow is
         undocumented:</p>
-
-        <p><a href=
-        "https://forum.qubesos.org/t/fortifying-sys-net-a-shift-to-openbsd/31973">
-        https://forum.qubesos.org/t/fortifying-sys-net-a-shift-to-openbsd/31973</a>
-        </p>
 
         <p>Changing a network domain does not remove Xen, dom0, qrexec, virtual
         devices, firmware, or the IOMMU from the shared trust model. Running
@@ -370,14 +362,16 @@
         virtualization adds complexity and does not automatically improve
         security; it often does the opposite.</p>
 
+        <p>Background on Theo de Raadt:</p>
+
         <ul>
           <li>
-            <a href="https://theos.com/deraadt/">https://theos.com/deraadt/</a>
+            <a href="https://theos.com/deraadt/">Theo de Raadt's website</a>
           </li>
 
           <li>
-            <a href=
-            "https://en.wikipedia.org/wiki/Theo_de_Raadt">https://en.wikipedia.org/wiki/Theo_de_Raadt</a>
+            <a href="https://en.wikipedia.org/wiki/Theo_de_Raadt">Theo de Raadt
+            on Wikipedia</a>
           </li>
         </ul>
 
@@ -414,7 +408,8 @@
           <p>This is why Tails warns you when it is running inside a virtual
           machine</p>
           <a href=
-          "https://tails.net/doc/advanced_topics/virtualization/index.en.html">https://tails.net/doc/advanced_topics/virtualization/index.en.html</a>
+          "https://tails.net/doc/advanced_topics/virtualization/index.en.html">Tails
+          documentation: virtualization</a>
         </blockquote>
 
         <p>This can be masked. There are many scripts and tutorials that try to
@@ -423,23 +418,22 @@
 
         <ul>
           <li>
-            <a href=
-            "https://github.com/sammwyy/NoVM">https://github.com/sammwyy/NoVM</a>
+            <a href="https://github.com/sammwyy/NoVM">NoVM (GitHub)</a>
+          </li>
+
+          <li>
+            <a href="https://github.com/Batlez/CloakBox">CloakBox (GitHub)</a>
           </li>
 
           <li>
             <a href=
-            "https://github.com/Batlez/CloakBox">https://github.com/Batlez/CloakBox</a>
+            "https://forums.virtualbox.org/viewtopic.php?t=112808">Making a VM
+            undetectable to guest applications (VirtualBox forums)</a>
           </li>
 
           <li>
-            <a href=
-            "https://forums.virtualbox.org/viewtopic.php?t=112808">https://forums.virtualbox.org/viewtopic.php?t=112808</a>
-          </li>
-
-          <li>
-            <a href=
-            "https://github.com/d4rksystem/VMwareCloak">https://github.com/d4rksystem/VMwareCloak</a>
+            <a href="https://github.com/d4rksystem/VMwareCloak">VMwareCloak
+            (GitHub)</a>
           </li>
         </ul>
 
@@ -531,15 +525,15 @@
         designs keep separate. Its own project structure groups them into five
         layers:</p>
 
-        <ul>
-          <li>4. systemd Utilities</li>
+        <ol>
+          <li>systemd Libraries (the base)</li>
 
-          <li>2. and 3. systemd daemons and systemd targets</li>
+          <li>systemd Core</li>
 
-          <li>1. systemd Core</li>
+          <li>systemd daemons and systemd targets</li>
 
-          <li>0. systemd Libraries (the base)</li>
-        </ul>
+          <li>systemd Utilities</li>
+        </ol>
 
         <p>Each layer contains programs and libraries that parse configuration,
         messages, credentials, or service state. The security cost comes from
@@ -553,26 +547,26 @@
           <li>Critical views on systemd:
             <ul>
               <li>
-                <a href="https://nosystemd.org/">https://nosystemd.org</a>
+                <a href="https://nosystemd.org/">no systemd</a>
               </li>
 
               <li>
-                <a href=
-                "https://ihatesystemd.com/">https://ihatesystemd.com</a>
+                <a href="https://ihatesystemd.com/">I hate systemd</a>
               </li>
             </ul>
           </li>
 
           <li>Suckless developers on systemd: <a href=
-          "http://suckless.org/sucks/systemd/">http://suckless.org/sucks/systemd/</a>
+          "http://suckless.org/sucks/systemd/">suckless project page</a>
           </li>
 
-          <li>Broken by default: <a href=
-          "http://ewontfix.com/14/">http://ewontfix.com/14</a>
+          <li>Broken by default: <a href="http://ewontfix.com/14/">ewontfix.com
+          article</a>
           </li>
 
           <li>The world after systemd: <a href=
-          "https://the-world-after-systemd.ungleich.ch/">https://the-world-after-systemd.ungleich.ch</a>
+          "https://the-world-after-systemd.ungleich.ch/">ungleich.ch
+          article</a>
           </li>
         </ul>
 
@@ -591,16 +585,13 @@
         work together. Anti Evil Maid (AEM) narrows the compatible set further
         because its current design requires TPM 1.2 and Intel TXT.</p>
 
-        <p><a href=
-        "https://www.qubes-os.org/hcl/">https://www.qubes-os.org/hcl</a>
-        </p>
-
         <p>The project's certified-hardware page contains a short list compared
         with the wider PC market. Outside that list, users must consult the
-        community hardware compatibility list (HCL) and test the exact machine,
-        firmware revision, and Qubes release. The HCL records user reports,
-        including reports for old Qubes versions; an entry is evidence about a
-        specific configuration, not a current certification.</p>
+        <a href="https://www.qubes-os.org/hcl/">community hardware
+        compatibility list (HCL)</a> and test the exact machine, firmware
+        revision, and Qubes release. The HCL records user reports, including
+        reports for old Qubes versions; an entry is evidence about a specific
+        configuration, not a current certification.</p>
 
         <p>The HCL "Remark" field records severe compatibility failures and
         disruptive workarounds, including:</p>
@@ -721,7 +712,7 @@
 
         <p><a href=
         "https://doc.qubes-os.org/en/latest/user/hardware/certified-hardware/certified-hardware.html#qubes-certified-computers">
-        https://doc.qubes-os.org/en/latest/user/hardware/certified-hardware/certified-hardware.html#qubes-certified-computers</a>
+        Qubes OS certified hardware list</a>
         </p>
 
         <p>Pay attention to what the developers themselves say on the official
@@ -751,15 +742,11 @@
         configurations the project must test, but it also concentrates buyers
         on a limited set of vendor supply chains. The resulting concentration
         is an architectural risk inference, not a documented purpose or
-        demonstrated compromise of Qubes vendors. Operation Trojan Shield
-        illustrates the broader threat model: the FBI distributed an advertised
-        secure phone through a controlled company and used it to collect
-        criminal communications.</p>
-
-        <p><a href=
+        demonstrated compromise of Qubes vendors. <a href=
         "https://www.justice.gov/usao-sdca/pr/fbi-s-encrypted-phone-platform-infiltrated-hundreds-criminal-syndicates-result-massive">
-        https://www.justice.gov/usao-sdca/pr/fbi-s-encrypted-phone-platform-infiltrated-hundreds-criminal-syndicates-result-massive</a>
-        </p>
+        Operation Trojan Shield</a> illustrates the broader threat model: the
+        FBI distributed an advertised secure phone through a controlled company
+        and used it to collect criminal communications.</p>
 
         <p>Qubes also depends directly on Intel or AMD virtualization
         extensions and their microcode. A defect in that common layer can
@@ -781,17 +768,13 @@
       <section aria-labelledby="qubes-7">
         <h2 id="qubes-7">7 - Anti Evil Maid and TPM 1.2 requirements</h2>
 
-        <p>Qubes OS itself does not require a TPM. Its optional Anti Evil Maid
-        (AEM) package requires a TPM 1.2 interface and a working Intel TXT
-        engine; it does not use TPM 2.0. AEM detects selected changes to the
-        measured boot chain. It does not prevent every physical attack, and a
-        Qubes installation without AEM can still use disk encryption and
-        physical controls.</p>
-
-        <p><a href=
+        <p>Qubes OS itself does not require a TPM. Its optional <a href=
         "https://doc.qubes-os.org/en/latest/user/security-in-qubes/anti-evil-maid.html">
-        https://doc.qubes-os.org/en/latest/user/security-in-qubes/anti-evil-maid.html</a>
-        </p>
+        Anti Evil Maid (AEM) package</a> requires a TPM 1.2 interface and a
+        working Intel TXT engine; it does not use TPM 2.0. AEM detects selected
+        changes to the measured boot chain. It does not prevent every physical
+        attack, and a Qubes installation without AEM can still use disk
+        encryption and physical controls.</p>
 
         <p>AEM adds a dependency on TPM 1.2, Intel TXT, firmware, and a
         separate boot-time security workflow. That adds proprietary code,
@@ -821,7 +804,9 @@
         compatibility, and vendor dependencies that choice entails.</p>
 
         <p>More on this topic from an authority in the field: <a href=
-        "https://inv.nadeko.net/watch?v=t1eX_vvAlUc">https://inv.nadeko.net/watch?v=t1eX_vvAlUc</a></p>
+        "https://inv.nadeko.net/watch?v=t1eX_vvAlUc">Rob Braxman video: "Your
+        Windows 11 Computer's Hidden Spy: The Dark Truth About TPM
+        Chips"</a></p>
 
         <blockquote>
           <p>Qubes security guidelines dictate that USB devices should never be
@@ -914,30 +899,32 @@
             unavailable.</p>
 
             <p>Intel has published serious CSME and AMT vulnerabilities,
-            including the remotely exploitable AMT authentication flaw
-            INTEL-SA-00075. These vulnerabilities affect the platform below
-            Qubes and Xen; AEM's TXT requirement makes that firmware layer part
-            of its measured-launch dependency. <a href=
+            including the remotely exploitable AMT authentication flaw <a href=
             "https://www.intel.com/content/www/us/en/support/articles/000024133/technologies.html">
-            https://www.intel.com/content/www/us/en/support/articles/000024133/technologies.html</a></p>
+            INTEL-SA-00075</a>. These vulnerabilities affect the platform below
+            Qubes and Xen; AEM's TXT requirement makes that firmware layer part
+            of its measured-launch dependency.</p>
+
+            <p>Platform documentation on Intel AMT and ME:</p>
 
             <ul>
               <li>
                 <a href=
                 "https://www.intel.com/content/www/us/en/docs/active-management-technology/developer-guide/2021/getting-started-with-intel-active-management.html">
-                https://www.intel.com/content/www/us/en/docs/active-management-technology/developer-guide/2021/getting-started-with-intel-active-management.html</a>
+                Getting Started with Intel Active Management Technology
+                (developer guide)</a>
               </li>
 
               <li>
                 <a href=
                 "https://www.intel.com/content/www/us/en/support/articles/000102462/technologies.html">
-                https://www.intel.com/content/www/us/en/support/articles/000102462/technologies.html</a>
+                Intel AMT support article</a>
               </li>
 
               <li>
                 <a href=
                 "https://dl.dell.com/manuals/all-products/esuprt_laptop/esuprt_latitude_laptop/latitude-xt2_administrator%20guide_en-us.pdf">
-                https://dl.dell.com/manuals/all-products/esuprt_laptop/esuprt_latitude_laptop/latitude-xt2_administrator%20guide_en-us.pdf</a>
+                Dell Latitude XT2 Administrator's Guide (PDF)</a>
               </li>
             </ul>
 
@@ -949,7 +936,8 @@
             silicon. Their advantage over UEFI Secure Boot is inspectability
             and owner control, whereas Secure Boot verifies an authorized chain
             without making that chain auditable. <a href=
-            "https://libreboot.org/docs/linux/grub_hardening.html">https://libreboot.org/docs/linux/grub_hardening.html</a></p>
+            "https://libreboot.org/docs/linux/grub_hardening.html">Libreboot
+            GRUB hardening documentation</a></p>
 
             <p>A vulnerability in Intel CSME or AMD PSP does not automatically
             expose VM data. Code execution in a sufficiently privileged
@@ -960,7 +948,8 @@
         </ol>
 
         <p>More on this topic from an authority in the field: <a href=
-        "https://inv.nadeko.net/watch?v=B4cOQOXjxew">https://inv.nadeko.net/watch?v=B4cOQOXjxew</a></p>
+        "https://inv.nadeko.net/watch?v=B4cOQOXjxew">Rob Braxman video: "Intel
+        IME Problems Haunting Us 7 Years Later!"</a></p>
 
         <p>A physical attacker can replace boot components, modify firmware, or
         instrument hardware below the operating system. TPM measurements can
@@ -1160,13 +1149,13 @@
           <li>
             <a href=
             "https://docs.redhat.com/en/documentation/red_hat_satellite/6.2/html/installation_guide/index">
-            https://docs.redhat.com/en/documentation/red_hat_satellite/6.2/html/installation_guide/index</a>
+            Red Hat Satellite 6.2 Installation Guide</a>
           </li>
 
           <li>
             <a href=
             "https://redlib.nadeko.net/r/redhat/comments/c7ycrf/what_are_your_satellite_server_specs/">
-            https://redlib.nadeko.net/r/redhat/comments/c7ycrf/what_are_your_satellite_server_specs/</a>
+            Reddit r/redhat: What are your satellite server specs?</a>
           </li>
         </ul>
 
@@ -1226,7 +1215,7 @@
 
         <p><a href=
         "https://doc.qubes-os.org/en/latest/introduction/faq.html#what-about-privacy-in-non-whonix-qubes">
-        https://doc.qubes-os.org/en/latest/introduction/faq.html#what-about-privacy-in-non-whonix-qubes</a>
+        Qubes OS FAQ: What about privacy in non-Whonix qubes?</a>
         </p>
 
         <p>Qubes integrates Xen, Linux, and Whonix rather than implementing
@@ -1262,7 +1251,7 @@
 
         <p><a href=
         "https://doc.qubes-os.org/en/latest/introduction/faq.html#what-about-other-approaches-to-security">
-        https://doc.qubes-os.org/en/latest/introduction/faq.html#what-about-other-approaches-to-security</a>
+        Qubes OS FAQ: What about other approaches to security?</a>
         </p>
 
         <p>This statement does not admit that Qubes is insecure. It documents a
@@ -1284,7 +1273,7 @@
         <p>The following response addresses Joanna Rutkowska's published
         argument directly. <a href=
         "https://blog.invisiblethings.org/2008/09/02/three-approaches-to-computer-security.html">
-        https://blog.invisiblethings.org/2008/09/02/three-approaches-to-computer-security.html</a></p>
+        Three Approaches to Computer Security</a></p>
 
         <h3>Security by Correctness</h3>
 
@@ -1379,7 +1368,7 @@
         <p>See about this in Ken Thompson's famous document, Trusting Trust:
         <a href=
         "https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf">
-        https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf</a></p>
+        Reflections on Trusting Trust (PDF)</a></p>
 
         <h3>Security by isolation</h3>
 
@@ -1606,7 +1595,8 @@
 
         <p>Other arguments from Joanna Rutkowska: <a href=
         "https://blog.invisiblethings.org/2012/09/12/how-is-qubes-os-different-from.html">
-        https://blog.invisiblethings.org/2012/09/12/how-is-qubes-os-different-from.html</a></p>
+        How is Qubes OS different from other approaches to desktop
+        security?</a></p>
 
         <blockquote>
           <p>Many people ask how does Qubes OS differ from other approaches to
@@ -1853,7 +1843,8 @@
         <h2 id="qubes-15">15 - Reviewing the developers' arguments</h2>
 
         <p><a href=
-        "https://doc.qubes-os.org/en/latest/introduction/faq.html">https://doc.qubes-os.org/en/latest/introduction/faq.html</a>
+        "https://doc.qubes-os.org/en/latest/introduction/faq.html">Qubes OS
+        FAQ</a>
         </p>
 
         <blockquote>
@@ -2062,7 +2053,9 @@
         do not make every field attack impossible. An example is the attack
         discovered in 2024 in which hackers use the friction sound caused by
         the finger on the cell phone screen to steal fingerprints. <a href=
-        "https://www.ndss-symposium.org/wp-content/uploads/2024-618-paper.pdf">https://www.ndss-symposium.org/wp-content/uploads/2024-618-paper.pdf</a></p>
+        "https://www.ndss-symposium.org/wp-content/uploads/2024-618-paper.pdf">PrintListener:
+        Uncovering the Vulnerability of Fingerprint Authentication via the
+        Finger Friction Sound (PDF)</a></p>
 
         <p>This research used a controlled environment, specific sound capture,
         and noise handling. The reported setup achieved 27.9% partial and 9.3%
@@ -2219,7 +2212,8 @@
         mostly static documentation site could expose less.</p>
 
         <p><a href=
-        "https://doc.qubes-os.org/en/latest/user/templates/templates.html">https://doc.qubes-os.org/en/latest/user/templates/templates.html</a>
+        "https://doc.qubes-os.org/en/latest/user/templates/templates.html">Qubes
+        OS templates documentation</a>
         </p>
 
         <blockquote>
@@ -2278,7 +2272,8 @@
         </blockquote>
 
         <p><a href=
-        "https://en.wikipedia.org/wiki/Zero-day_vulnerability">https://en.wikipedia.org/wiki/Zero-day_vulnerability</a>
+        "https://en.wikipedia.org/wiki/Zero-day_vulnerability">Zero-day
+        vulnerability on Wikipedia</a>
         </p>
 
         <p>Qubes' defense against zero-days depends on the boundary the bug
@@ -2369,7 +2364,8 @@
         </blockquote>
 
         <p><a href=
-        "https://doc.qubes-os.org/en/latest/user/templates/templates.html">https://doc.qubes-os.org/en/latest/user/templates/templates.html</a>
+        "https://doc.qubes-os.org/en/latest/user/templates/templates.html">Qubes
+        OS templates documentation</a>
         </p>
 
         <p>Community templates add another maintainer and update channel to the
@@ -2459,15 +2455,12 @@
         userland device model, and process compartmentalization leave less host
         code and authority exposed to a guest.</p>
 
-        <p><a href=
-        "https://www.openbsd.org/faq/faq16.html">https://www.openbsd.org/faq/faq16.html</a>
-        </p>
-
         <p>OpenBSD added vmm after years of public skepticism from Theo de
-        Raadt about hypervisor security. The current OpenBSD FAQ documents a
-        narrow feature set and explicitly lists the following unsupported
-        features; it does not claim that every omission was made exclusively
-        for security:</p>
+        Raadt about hypervisor security. <a href=
+        "https://www.openbsd.org/faq/faq16.html">The current OpenBSD FAQ</a>
+        documents a narrow feature set and explicitly lists the following
+        unsupported features; it does not claim that every omission was made
+        exclusively for security:</p>
 
         <ul>
           <li>Graphics</li>
@@ -2495,28 +2488,32 @@
         <ul>
           <li>
             <a href=
-            "https://www.pentest.es/Demystifying_QubesOS_Security.pdf">https://www.pentest.es/Demystifying_QubesOS_Security.pdf</a>
+            "https://www.pentest.es/Demystifying_QubesOS_Security.pdf">Demystifying
+            Qubes OS Security (pentest.es, PDF)</a>
+          </li>
+
+          <li>
+            <a href="https://news.ycombinator.com/item?id=41401318">Hacker
+            News: Counter argument against QubesOS being more secure as a type
+            1 hypervisor</a>
           </li>
 
           <li>
             <a href=
-            "https://news.ycombinator.com/item?id=41401318">https://news.ycombinator.com/item?id=41401318</a>
+            "https://simplifiedprivacy.com/the-case-against-qubesos.html">The
+            Case Against QubesOS (Simplified Privacy)</a>
           </li>
 
           <li>
-            <a href=
-            "https://simplifiedprivacy.com/the-case-against-qubesos.html">https://simplifiedprivacy.com/the-case-against-qubesos.html</a>
-          </li>
-
-          <li>
-            <a href=
-            "https://seclists.org/dailydave/2010/q3/29">https://seclists.org/dailydave/2010/q3/29</a>
+            <a href="https://seclists.org/dailydave/2010/q3/29">Daily Dave:
+            Qubes square rooted (Brad Spengler)</a>
           </li>
 
           <li>
             <a href=
             "https://discuss.grapheneos.org/d/24352-is-qubes-os-really-secure-what-about-windows-security-in-2025">
-            https://discuss.grapheneos.org/d/24352-is-qubes-os-really-secure-what-about-windows-security-in-2025</a>
+            GrapheneOS forum: Is Qubes OS really secure? What about Windows
+            security in 2025?</a>
           </li>
         </ul>
       </section>
@@ -2542,13 +2539,13 @@
           OpenSSH software comes from OpenBSD.</p>
         </blockquote>
 
-        <p><a href="https://www.openbsd.org/">https://www.openbsd.org</a>
+        <p><a href="https://www.openbsd.org/">The OpenBSD project</a>
         </p>
 
         <p>To understand how OpenBSD security and development work, and to
         learn about all the security protocols and innovations OpenBSD offers
-        in this area: <a href=
-        "https://www.openbsd.org/security.html">https://www.openbsd.org/security.html</a></p>
+        in this area: <a href="https://www.openbsd.org/security.html">OpenBSD
+        security page</a></p>
 
         <p>For a better understanding of why OpenBSD is so secure compared to
         other operating systems, read my other article: <a href=
@@ -2574,7 +2571,7 @@
           best commercial ones."</p>
         </blockquote>
 
-        <p><a href="https://www.freebsd.org/">https://www.freebsd.org</a>
+        <p><a href="https://www.freebsd.org/">The FreeBSD project</a>
         </p>
 
         <p>FreeBSD jails provide OS-level isolation without a hypervisor. They
@@ -2585,7 +2582,8 @@
         equivalent hardware-virtualization boundary. For services that do not
         need separate kernels, I prefer this simpler compartmentalization to
         Qubes' desktop VM model. <a href=
-        "https://docs.freebsd.org/en/books/handbook/jails/">https://docs.freebsd.org/en/books/handbook/jails/</a></p>
+        "https://docs.freebsd.org/en/books/handbook/jails/">FreeBSD Handbook:
+        Jails</a></p>
 
         <ul>
           <li>
@@ -2594,20 +2592,21 @@
 
             <ul>
               <li>
-                <a href=
-                "https://appjail.readthedocs.io/en/latest/">https://appjail.readthedocs.io/en/latest/</a>
+                <a href="https://appjail.readthedocs.io/en/latest/">AppJail
+                documentation</a>
               </li>
 
               <li>
                 <a href=
-                "https://appjail.readthedocs.io/en/latest/install/">https://appjail.readthedocs.io/en/latest/install/</a>
+                "https://appjail.readthedocs.io/en/latest/install/">AppJail
+                installation</a>
               </li>
             </ul>
           </li>
 
           <li>
             <p>And for Qubes OS enthusiasts: <a href=
-            "https://github.com/BawdyAnarchist/quBSD">https://github.com/BawdyAnarchist/quBSD</a></p>
+            "https://github.com/BawdyAnarchist/quBSD">quBSD (GitHub)</a></p>
           </li>
         </ul>
 
@@ -2620,11 +2619,12 @@
         <ul>
           <li>For proper installation and post-configuration, READ THE
           HANDBOOK: <a href=
-          "https://docs.freebsd.org/en/books/handbook/">https://docs.freebsd.org/en/books/handbook/</a>
+          "https://docs.freebsd.org/en/books/handbook/">FreeBSD Handbook</a>
           </li>
 
           <li>For basic hardening and security understanding: <a href=
-          "https://docs.freebsd.org/en/books/handbook/security/">https://docs.freebsd.org/en/books/handbook/security/</a>
+          "https://docs.freebsd.org/en/books/handbook/security/">FreeBSD
+          Handbook: Security chapter</a>
           </li>
         </ul>
 
@@ -2650,34 +2650,35 @@
 
         <ul>
           <li>Handbook for a good installation: <a href=
-          "https://wiki.gentoo.org/wiki/Handbook">https://wiki.gentoo.org/wiki/Handbook</a>
+          "https://wiki.gentoo.org/wiki/Handbook">Gentoo Handbook</a>
           </li>
 
           <li>Hardening understanding: <a href=
-          "https://wiki.gentoo.org/wiki/Hardened/FAQ">https://wiki.gentoo.org/wiki/Hardened/FAQ</a>
+          "https://wiki.gentoo.org/wiki/Hardened/FAQ">Gentoo Hardened FAQ</a>
           </li>
 
           <li>Hardening guide (can be outdated):
             <ul>
               <li>
-                <a href=
-                "https://wiki.gentoo.org/wiki/Hardened_Gentoo">https://wiki.gentoo.org/wiki/Hardened_Gentoo</a>
+                <a href="https://wiki.gentoo.org/wiki/Hardened_Gentoo">Gentoo
+                wiki: Hardened Gentoo</a>
               </li>
 
               <li>
-                <a href=
-                "https://wiki.gentoo.org/wiki/Project:Hardened">https://wiki.gentoo.org/wiki/Project:Hardened</a>
+                <a href="https://wiki.gentoo.org/wiki/Project:Hardened">Gentoo
+                wiki: Hardened project</a>
               </li>
 
               <li>
                 <a href=
                 "https://madaidans-insecurities.github.io/guides/linux-hardening.html">
-                https://madaidans-insecurities.github.io/guides/linux-hardening.html</a>
+                Madaidan's Linux hardening guide</a>
               </li>
 
               <li>
                 <a href=
-                "https://github.com/xea/hardened-gentoo-hardened">https://github.com/xea/hardened-gentoo-hardened</a>
+                "https://github.com/xea/hardened-gentoo-hardened">hardened-gentoo-hardened
+                (GitHub)</a>
               </li>
             </ul>
           </li>
@@ -2699,11 +2700,11 @@
         GrapheneOS's hardened_malloc, and additional application and service
         restrictions. Among the general-purpose Linux desktops I have
         evaluated, secureblue ships the strongest defaults. <a href=
-        "https://secureblue.dev/">https://secureblue.dev</a></p>
+        "https://secureblue.dev/">The Secureblue website</a></p>
 
         <p>Its main drawback is systemd, but Secureblue's security work
         outweighs that problem for many users. <a href=
-        "https://secureblue.dev/features">https://secureblue.dev/features</a></p>
+        "https://secureblue.dev/features">Secureblue features</a></p>
 
         <h3>5 - NetBSD</h3>
 
@@ -2717,7 +2718,7 @@
         <p>NetBSD is my first BSD choice for embedded and unusual hardware. It
         supports an extraordinary range of architectures, although hardware
         support must still be checked for each specific device and release.
-        <a href="https://www.netbsd.org/">https://www.netbsd.org</a></p>
+        <a href="https://www.netbsd.org/">The NetBSD project</a></p>
 
         <p>NetBSD can also be extremely minimalist for those who know how to
         configure it, more so than any other BSD.</p>
@@ -2736,13 +2737,13 @@
           <li>To learn more about its security features and hardening:
             <ul>
               <li>
-                <a href=
-                "https://man.netbsd.org/security.7">https://man.netbsd.org/security.7</a>
+                <a href="https://man.netbsd.org/security.7">NetBSD security(7)
+                manual page</a>
               </li>
 
               <li>
-                <a href=
-                "https://wiki.netbsd.org/security/">https://wiki.netbsd.org/security</a>
+                <a href="https://wiki.netbsd.org/security/">NetBSD wiki:
+                Security</a>
               </li>
             </ul>
           </li>
@@ -2763,7 +2764,7 @@
           zero-day and other vulnerabilities.</p>
         </blockquote>
 
-        <p><a href="https://alpinelinux.org/">https://alpinelinux.org/</a>
+        <p><a href="https://alpinelinux.org/">The Alpine Linux project</a>
         </p>
 
         <p>Alpine uses musl, BusyBox, and OpenRC instead of the common glibc,
@@ -2777,11 +2778,13 @@
         <ul>
           <li>Alpine has native support for hardened_malloc, GrapheneOS's
           malloc implementation. Install it. <a href=
-          "https://wiki.alpinelinux.org/wiki/Hardened_malloc">https://wiki.alpinelinux.org/wiki/Hardened_malloc</a>
+          "https://wiki.alpinelinux.org/wiki/Hardened_malloc">Alpine wiki:
+          Hardened malloc</a>
           </li>
 
           <li>For some hardening: <a href=
-          "https://wiki.alpinelinux.org/wiki/Securing_Alpine_Linux">https://wiki.alpinelinux.org/wiki/Securing_Alpine_Linux</a>
+          "https://wiki.alpinelinux.org/wiki/Securing_Alpine_Linux">Alpine
+          wiki: Securing Alpine Linux</a>
           </li>
         </ul>
 
@@ -2794,7 +2797,7 @@
           and stable.</p>
         </blockquote>
 
-        <p><a href="https://artixlinux.org/">https://artixlinux.org</a>
+        <p><a href="https://artixlinux.org/">The Artix Linux project</a>
         </p>
 
         <blockquote>
@@ -2806,8 +2809,7 @@
           as without unnecessary additions or modifications.</p>
         </blockquote>
 
-        <p><a href=
-        "https://archlinux.org/about/">https://archlinux.org/about</a>
+        <p><a href="https://archlinux.org/about/">About Arch Linux</a>
         </p>
 
         <p>Artix combines its own repositories with access to much of the Arch
@@ -2828,28 +2830,29 @@
           as the clearest and most complete distribution documentation in the
           Linux ecosystem because it documents mechanisms, configuration files,
           failure modes, and recovery procedures rather than only installation
-          steps. <a href=
-          "https://wiki.archlinux.org/title/Main_page">https://wiki.archlinux.org/title/Main_page</a>
+          steps. <a href="https://wiki.archlinux.org/title/Main_page">Arch
+          Wiki</a>
           </li>
 
           <li>For proper hardening (you will take some days):
             <ul>
               <li>
-                <a href=
-                "https://wiki.archlinux.org/title/Security">https://wiki.archlinux.org/title/Security</a>
+                <a href="https://wiki.archlinux.org/title/Security">Arch Wiki:
+                Security</a>
               </li>
 
               <li>
                 <a href=
                 "https://madaidans-insecurities.github.io/guides/linux-hardening.html">
-                https://madaidans-insecurities.github.io/guides/linux-hardening.html</a>
+                Madaidan's Linux hardening guide</a>
               </li>
             </ul>
           </li>
 
           <li>hardened_malloc is available for download in the AUR, but I don't
           know if there's a guide on how to configure it in Arch: <a href=
-          "https://aur.archlinux.org/packages/hardened_malloc">https://aur.archlinux.org/packages/hardened_malloc</a>
+          "https://aur.archlinux.org/packages/hardened_malloc">AUR package:
+          hardened_malloc</a>
           </li>
         </ul>
 
@@ -2861,7 +2864,7 @@
           and expert around-the-clock support.</p>
         </blockquote>
 
-        <p><a href="https://www.truenas.com/">https://www.truenas.com/</a>
+        <p><a href="https://www.truenas.com/">The TrueNAS project</a>
         </p>
 
         <p>Built around OpenZFS, current TrueNAS Community Edition provides
@@ -2906,7 +2909,7 @@
         stronger defaults. I place it below Secureblue and alongside Alpine for
         default Linux security; that ordering is my assessment of their shipped
         policies, not a published comparative benchmark. <a href=
-        "https://www.kicksecure.com/">https://www.kicksecure.com</a></p>
+        "https://www.kicksecure.com/">The Kicksecure project</a></p>
 
         <h3>10 - RHEL, Rocky Linux and AlmaLinux respectively</h3>
 
@@ -2921,21 +2924,22 @@
           <li>
             <a href=
             "https://www.redhat.com/en/technologies/Linux-platforms/enterprise-Linux">
-            https://www.redhat.com/en/technologies/Linux-platforms/enterprise-Linux</a>
+            Red Hat Enterprise Linux</a>
           </li>
 
           <li>
-            <a href="https://almalinux.org/">https://almalinux.org</a>
+            <a href="https://almalinux.org/">The AlmaLinux project</a>
           </li>
 
           <li>
-            <a href="https://rockylinux.org/">https://rockylinux.org</a>
+            <a href="https://rockylinux.org/">The Rocky Linux project</a>
           </li>
         </ul>
 
         <ul>
           <li>Rocky Linux supports hardened_malloc (experimental): <a href=
-          "https://sig-security.rocky.page/packages/hardened_malloc/">https://sig-security.rocky.page/packages/hardened_malloc</a>
+          "https://sig-security.rocky.page/packages/hardened_malloc/">Rocky
+          Linux SIG Security: hardened_malloc package</a>
           </li>
         </ul>
 
@@ -2954,7 +2958,7 @@
           tools using a single solution.</p>
         </blockquote>
 
-        <p><a href="https://www.proxmox.com/">https://www.proxmox.com</a>
+        <p><a href="https://www.proxmox.com/">The Proxmox VE project</a>
         </p>
 
         <p>Proxmox VE is my recommendation when the actual requirement is
@@ -3000,7 +3004,7 @@
             mobile OS with Android app compatibility, developed as a nonprofit
             open-source project. It is my strongest mobile recommendation and
             supports only selected Google Pixel devices. <a href=
-            "https://grapheneos.org/">https://grapheneos.org</a> Android user
+            "https://grapheneos.org/">The GrapheneOS project</a> Android user
             profiles separate application instances and profile data, while
             verified boot, hardware-backed key storage, exploit mitigations,
             and a hardened app sandbox protect the common platform. This is a
@@ -3015,18 +3019,18 @@
             file, and declarative state does not make the chosen services
             secure. I still object to its dependence on systemd, but its
             package and deployment model is technically excellent. <a href=
-            "https://nixos.org/">https://nixos.org</a> SixOS is an experimental
+            "https://nixos.org/">The NixOS project</a> SixOS is an experimental
             effort to build a Nix system without systemd:</p>
 
             <ul>
               <li>
-                <a href=
-                "https://inv.nadeko.net/watch?v=gSW3YJ8uyBI">https://inv.nadeko.net/watch?v=gSW3YJ8uyBI</a>
+                <a href="https://inv.nadeko.net/watch?v=gSW3YJ8uyBI">38C3 talk:
+                "sixos: a nix os without systemd" (video)</a>
               </li>
 
               <li>
-                <a href=
-                "https://codeberg.org/amjoseph/sixos">https://codeberg.org/amjoseph/sixos</a>
+                <a href="https://codeberg.org/amjoseph/sixos">SixOS
+                (Codeberg)</a>
               </li>
             </ul>
 
@@ -3048,12 +3052,12 @@
 
         <ul>
           <li>
-            <a href="https://lkrg.org/">https://lkrg.org/</a>
+            <a href="https://lkrg.org/">LKRG - Linux Kernel Runtime Guard</a>
           </li>
 
           <li>
-            <a href=
-            "https://github.com/GrapheneOS/hardened_malloc">https://github.com/GrapheneOS/hardened_malloc</a>
+            <a href="https://github.com/GrapheneOS/hardened_malloc">GrapheneOS
+            hardened_malloc (GitHub)</a>
           </li>
         </ul>
 
@@ -3063,7 +3067,7 @@
           <li>
             <a href=
             "https://madaidans-insecurities.github.io/guides/linux-hardening.html">
-            https://madaidans-insecurities.github.io/guides/linux-hardening.html</a>
+            Madaidan's Linux hardening guide</a>
           </li>
         </ul>
 
