@@ -7,7 +7,7 @@
   "c-language": {
     "en": "c-language.html",
     "pubdate": "2026-05-02",
-    "title_en": "The C language and its biggest problem: evidence of its insecurity."
+    "title_en": "The C language's biggest problem: evidence of its insecurity"
   },
   "openbsd": {
     "en": "openbsd.html",
@@ -17,6 +17,16 @@
   "qubes-os": {
     "en": "qubes-os.html",
     "pubdate": "2026-02-02",
-    "title_en": "When it comes strictly to security, Qubes OS is not reliable."
+    "title_en": "From a strict security perspective, Qubes OS is not reliable"
+  },
+  "security-terms": {
+    "en": "security-terms.html",
+    "pubdate": "2026-06-01",
+    "title_en": "Security terms in operating systems"
+  },
+  "why-i-stopped-using-linux": {
+    "en": "why-i-stopped-using-linux.html",
+    "pubdate": "2026-08-13",
+    "title_en": "Why I stopped using Linux"
   }
 }

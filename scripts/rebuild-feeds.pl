@@ -83,6 +83,18 @@ sub xml_escape {
     return $text;
 }
 
+sub decode_html_quotes {
+    my ($text) = @_;
+    return '' unless defined $text;
+    $text =~ s/&quot;/"/gi;
+    $text =~ s/&#0*34;/"/g;
+    $text =~ s/&#x0*22;/"/gi;
+    $text =~ s/&apos;/'/gi;
+    $text =~ s/&#0*39;/'/g;
+    $text =~ s/&#x0*27;/'/gi;
+    return $text;
+}
+
 sub as_root_relative_url {
     my ($url) = @_;
     return '' unless defined $url;
@@ -212,6 +224,7 @@ sub extract_metadata {
         ($desc) = $content_scope =~ /<p[^>]*>\s*(.*?)\s*<\/p>/is;
         $desc //= '';
     }
+    $desc = decode_html_quotes($desc);
     $desc = strip_tags_and_trim($desc);
     $desc = normalize_summary($desc);
 
@@ -291,7 +304,7 @@ sub rebuild_feed_file {
           "</description>\n",
           "      <pubDate>$pub</pubDate>\n",
           "      <guid" . " isPermaLink=\"false\">" . "$article_url</guid>\n",
-          "    </item>\n\n";
+          "    </item>\n";
     }
 
     my $last_epoch = time;
@@ -313,7 +326,6 @@ sub rebuild_feed_file {
       qq(    <atom:link href="$feed_url")
       . qq( rel="self")
       . qq( type="application/rss+xml"/>\n),
-      qq(\n),
       $items,
       qq(  </channel>\n),
       qq(</rss>\n);

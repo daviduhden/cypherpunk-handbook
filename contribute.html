@@ -18,9 +18,9 @@
 <body>
   <a class="skip-link" href="#site-main">Skip to main content</a>
   <header id="site-header">
-    <h1>The Cypherpunk Handbook</h1>
+    <p class="site-title">The Cypherpunk Handbook</p>
 
-    <h2>Contribute to this website</h2>
+    <h1>Contribute to this website</h1>
 
     <nav id="site-nav" aria-label="Primary navigation">
       <ul>
@@ -69,12 +69,13 @@
     </section>
 
     <section id="guidelines">
-      <h3>Content guidelines</h3>
+      <h2>Content guidelines</h2>
 
       <ul>
         <li>Keep content concise, precise, and actionable.</li>
 
-        <li>Use a respectful, formal, neutral tone.</li>
+        <li>Use a respectful, formal, evidence-driven tone. State opinions
+        directly and distinguish them from documented facts.</li>
 
         <li>Avoid commercial endorsements or promotional language.</li>
 
@@ -99,7 +100,7 @@
     </section>
 
     <section id="licensing">
-      <h3>Licensing</h3>
+      <h2>Licensing</h2>
 
       <p>All contributions must comply with the project license at <a href=
       "./license.html">./license.html</a>. If any content (code, images, or
@@ -109,15 +110,14 @@
 
       <p>Suggested exception notice format:</p>
 
-      <pre>
-EXCEPTIONS:
-files/images/thirdparty.jpg &mdash; licensed under CC BY 4.0 (see LICENSE in images/)
-some-code/snippet.c &mdash; used with permission from upstream (MIT)
-</pre>
+      <pre><code>EXCEPTIONS:
+files/images/thirdparty.jpg - licensed under CC BY 4.0 (see LICENSE in images/)
+some-code/snippet.c - used with permission from upstream (MIT)
+</code></pre>
     </section>
 
     <section id="method-1">
-      <h3>Method 1: Contributing via GitHub (gh / git)</h3>
+      <h2>Method 1: Contributing via GitHub (gh / git)</h2>
 
       <p>This workflow is for contributors with GitHub accounts who prefer to
       collaborate online through pull requests (PRs).</p>
@@ -137,30 +137,31 @@ some-code/snippet.c &mdash; used with permission from upstream (MIT)
       <p><strong>Recommended workflow using GitHub CLI:</strong>
       </p>
 
-      <pre>
-gh repo fork daviduhden/cypherpunk-handbook --clone=true
+      <pre><code>gh repo fork daviduhden/cypherpunk-handbook --clone=true
 cd cypherpunk-handbook
 git switch -c my-article
 git add articles/my-article.html data/articles.json
 git commit -m "Add article: My Article"
 git push --set-upstream origin my-article
 gh pr create --fill
-</pre>
+</code></pre>
       <p><strong>Alternative workflow using plain Git:</strong>
       </p>
 
-      <pre>
-git clone https://github.com/daviduhden/cypherpunk-handbook.git
+      <p>Fork the repository in GitHub's web interface, then replace
+      <code>YOUR-ACCOUNT</code> with your account name:</p>
+
+      <pre><code>git clone https://github.com/YOUR-ACCOUNT/cypherpunk-handbook.git
 cd cypherpunk-handbook
 git switch -c my-article
 git add articles/my-article.html data/articles.json
 git commit -m "Add article: My Article"
 git push origin my-article
-</pre>
+</code></pre>
     </section>
 
     <section id="method-2">
-      <h3>Method 2: Contributing via files and patches</h3>
+      <h2>Method 2: Contributing via files and patches</h2>
 
       <p>This workflow is for contributors who prefer anonymous collaboration
       or do not use GitHub accounts.</p>
@@ -182,14 +183,13 @@ git push origin my-article
       <p><strong>Submitting Git patches (preferred)</strong>
       </p>
 
-      <pre>
-git clone https://github.com/daviduhden/cypherpunk-handbook.git
+      <pre><code>git clone https://github.com/daviduhden/cypherpunk-handbook.git
 cd cypherpunk-handbook
 git switch -c my-contribution
 git add articles/my-article.html data/articles.json
 git commit -m "Add article: My Article"
 git format-patch -1 HEAD
-</pre>
+</code></pre>
       <p>Send the generated <code>.patch</code> file(s) and other attachments
       uncompressed to the <a href=
       "https://smp5.simplex.im/g#bM7SrzAZBPzeC2XRRmsulARXp5SeZ-sQZOZN9j52zNc">SimpleX
@@ -197,7 +197,7 @@ git format-patch -1 HEAD
     </section>
 
     <section id="method-3">
-      <h3>Method 3: Contributing via got (Game of Trees)</h3>
+      <h2>Method 3: Contributing via got (Game of Trees)</h2>
 
       <p>This workflow is for contributors on <strong>OpenBSD</strong> who
       prefer a patch-based process without relying on GitHub accounts.</p>
@@ -206,8 +206,7 @@ git format-patch -1 HEAD
       (preferred)</strong>
       </p>
 
-      <pre>
-got clone https://github.com/daviduhden/cypherpunk-handbook.git cypherpunk-handbook.git
+      <pre><code>got clone https://github.com/daviduhden/cypherpunk-handbook.git cypherpunk-handbook.git
 got checkout cypherpunk-handbook.git cypherpunk-handbook
 cd cypherpunk-handbook
 got branch -c main my-contribution
@@ -216,7 +215,7 @@ got add articles/my-article.html
 got add data/articles.json
 got commit -m "Add article: My Article"
 got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
-</pre>
+</code></pre>
       <p>Before committing, make sure <code>GOT_AUTHOR</code> is set or
       configured in <code>got.conf</code> / Git configuration, otherwise
       <code>got commit</code> will refuse to run.</p>
@@ -231,13 +230,13 @@ got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
     </section>
 
     <section id="method-4">
-      <h3>Method 4: Contributing via archive snapshots</h3>
+      <h2>Method 4: Contributing via archive snapshots</h2>
 
       <p>This workflow lets contributors work directly from the signed archive
       instead of the Git repository. It is useful for offline or anonymous
       contributions.</p>
 
-      <h4>Steps:</h4>
+      <h3>Steps:</h3>
 
       <ol>
         <li>Download the latest signed archive and its checksum/signature from
@@ -247,11 +246,12 @@ got diff main my-contribution &gt; 0001-Add-article-My-Article.patch
 
         <li>Extract the archive into a temporary working directory:
 
-          <pre>
-mkdir -p ~/cypherpunk-handbook-work
-tar -xzf cypherpunk-handbook.tar.gz -C ~/cypherpunk-handbook-work
-cd ~/cypherpunk-handbook-work
-</pre>
+          <pre><code>mkdir -p ~/cypherpunk-handbook-work/original
+mkdir -p ~/cypherpunk-handbook-work/modified
+tar -xzf cypherpunk-handbook.tar.gz -C ~/cypherpunk-handbook-work/original
+cp -Rp ~/cypherpunk-handbook-work/original/. ~/cypherpunk-handbook-work/modified/
+cd ~/cypherpunk-handbook-work/modified
+</code></pre>
         </li>
 
         <li>Edit or add files as needed, following the site's article templates
@@ -260,11 +260,11 @@ cd ~/cypherpunk-handbook-work
         <li>Generate patch files based on the changes relative to the extracted
         archive:
 
-          <pre>
-diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
-</pre>
-          <p><em>Tip:</em> Use the extracted archive as <code>original/</code>
-          and your working directory as <code>modified/</code>.</p>
+          <pre><code>cd ~/cypherpunk-handbook-work
+diff -Naur original modified &gt; 0001-my-contribution.patch
+</code></pre>
+          <p><code>diff</code> exits with status 1 when it finds differences;
+          that status is expected here.</p>
         </li>
 
         <li>Send the generated <code>.patch</code> file(s) and other
@@ -274,7 +274,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
     </section>
 
     <section id="submitting-articles">
-      <h3>Submitting Articles</h3>
+      <h2>Submitting Articles</h2>
 
       <p>To publish a new article, create an HTML file in
       <strong>articles/</strong> and include a header with the following
@@ -284,8 +284,8 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
         <li><strong>kicker</strong>: a short category, tag, or label for the
         article, inside a <code>&lt;p class="kicker"&gt;</code> element.</li>
 
-        <li><strong>title</strong>: the main article title inside a
-        <code>&lt;h2&gt;</code> element.</li>
+        <li><strong>title</strong>: the main article title inside an
+        <code>&lt;h1&gt;</code> element.</li>
 
         <li><strong>meta</strong>: author information and last updated date
         inside a <code>&lt;p class="meta"&gt;</code> element, using a
@@ -297,16 +297,15 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
 
         <li><strong>TL;DR section</strong>: a <code>&lt;section&gt;</code>
         inside the header containing a <code>&lt;h2&gt;TL;DR&lt;/h2&gt;</code>
-        and an unordered list (<code>&lt;ul&gt;</code>) of 2–4 primary
+        and an unordered list (<code>&lt;ul&gt;</code>) of 2-4 primary
         takeaways or recommendations.</li>
       </ul>
 
-      <pre>
-&lt;article&gt;
+      <pre><code>&lt;article&gt;
   &lt;header id="article-header"&gt;
     &lt;p class="kicker"&gt;CATEGORY OR TAG&lt;/p&gt;
 
-    &lt;h2&gt;Article Title&lt;/h2&gt;
+    &lt;h1&gt;Article Title&lt;/h1&gt;
 
     &lt;p class="meta"&gt;By AUTHOR - Updated
       &lt;time datetime="2025-01-01"&gt;DATE&lt;/time&gt;
@@ -324,9 +323,10 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
       &lt;/ul&gt;
     &lt;/section&gt;
   &lt;/header&gt;
-</pre>
+</code></pre>
       <p>Use the provided <a href="./templates/articles.html" type=
-      "text/plain">article template</a> and update the following files:</p>
+      "text/plain">article template</a>, add the article to
+      <code>data/articles.json</code>, and regenerate the feed:</p>
 
       <ul>
         <li>
@@ -336,29 +336,31 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
 
         <li>
           <a href="./feeds/articles.xml" type=
-          "application/rss+xml">feeds/articles.xml</a>
+          "application/rss+xml">feeds/articles.xml</a> (generated output)
         </li>
       </ul>
 
-      <h4>data/articles.json Structure</h4>
+      <h3>data/articles.json Structure</h3>
 
-      <p>The site uses <strong>data/articles.json</strong> as an index for
-      articles and feeds. Each top-level key is an article ID (slug).
-      Example:</p>
+      <p>The site keeps <strong>data/articles.json</strong> as a structured
+      article index. Each top-level key is an article ID (slug). The feed
+      rebuild script reads article headers directly, so the HTML metadata and
+      this index must agree. Example:</p>
 
-      <pre>
-{
+      <pre><code>{
   "my-article-slug": {
-    "en": "articles/my-article.html",
+    "en": "my-article.html",
     "pubdate": "2025-12-18",
     "title_en": "My Article Title"
   }
 }
-</pre>
-      <p class="underline">Set <code>"pubdate"</code> to an ISO date
-      (YYYY-MM-DD) to control the publication date in feeds.</p>
+</code></pre>
+      <p class="underline">Set <code>"pubdate"</code> to the article's ISO
+      publication date (YYYY-MM-DD). Set the article header's <code>&lt;time
+      datetime="..."&gt;</code> value to its current modification date;
+      <code>rebuild-feeds.pl</code> uses that header date for RSS.</p>
 
-      <h4>Author Metadata and Pseudonyms</h4>
+      <h3>Author Metadata and Pseudonyms</h3>
 
       <p>Include the author name in the article header following the template
       (see the <code>&lt;p class="meta"&gt;</code> line in <a href=
@@ -372,7 +374,7 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
     </section>
 
     <section id="strip-metadata">
-      <h3>Stripping metadata from files</h3>
+      <h2>Stripping metadata from files</h2>
 
       <p>Before submitting articles, images, videos, audio, or other assets, we
       recommend removing potentially sensitive metadata. For most file types,
@@ -387,20 +389,18 @@ diff -Naur original/ modified/ &gt; 0001-my-contribution.patch
           and video files. By default, it <em>creates a new file</em> with
           metadata removed:
 
-          <pre>
-mat2 filename.pdf
+          <pre><code>mat2 filename.pdf
 mat2 filename.png
 mat2 filename.jpg
-</pre>
+</code></pre>
         </li>
 
         <li>
           <strong>exiftool</strong> can also be used but is <em>not recommended
           for PDFs</em>:
 
-          <pre>
-exiftool -all= filename.jpg
-</pre>
+          <pre><code>exiftool -all= filename.jpg
+</code></pre>
         </li>
 
         <li>
@@ -408,10 +408,9 @@ exiftool -all= filename.jpg
           files. Use the following commands to create a new cleaned file
           without overwriting the original:
 
-          <pre>
-ffmpeg -i input.mp4 -map_metadata -1 -c copy output.mp4
+          <pre><code>ffmpeg -i input.mp4 -map_metadata -1 -c copy output.mp4
 ffmpeg -i input.mp3 -map_metadata -1 -c copy output.mp3
-</pre>
+</code></pre>
           <p class="underline">Replace <code>input.*</code> with your original
           file and <code>output.*</code> with the new file name to preserve the
           original.</p>
@@ -423,52 +422,49 @@ ffmpeg -i input.mp3 -map_metadata -1 -c copy output.mp3
     </section>
 
     <section id="automation">
-      <h3>Automation</h3>
+      <h2>Automation</h2>
 
       <p>Perl scripts in <strong>scripts/</strong> can be used to update and
       rebuild the site.</p>
 
-      <pre>
-perl ./scripts/update-guides.pl
-perl ./scripts/update-feeds.pl articles/my-article.html
+      <pre><code>perl ./scripts/update-feeds.pl articles/my-article.html
 perl ./scripts/rebuild-feeds.pl
-</pre>
+perl ./scripts/rebuild-sitemap.pl
+perl ./scripts/validate-website.pl
+</code></pre>
       <p class="underline">Requires Perl with JSON::PP</p>
     </section>
 
     <section id="downloads">
-      <h3>Downloading Archives &amp; Using Proxies</h3>
+      <h2>Downloading Archives &amp; Using Proxies</h2>
 
       <p>A signed archive of the repository is available at
       <strong>archive/cypherpunk-handbook.tar.gz</strong> and is updated every
       24 hours. The archive comes with a <code>SHA256</code> hash and a
       <code>signify</code> signature.</p>
 
-      <h4>Downloading the archive using <code>curl</code></h4>
+      <h3>Downloading the archive using <code>curl</code></h3>
 
       <p>Default HTTPS download:</p>
 
-      <pre>
-curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz
+      <pre><code>curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz.sig
 curl -O https://handbook.uhden.dev/archive/cypherpunk-handbook.tar.gz.sha256
-</pre>
-      <p>SOCKS5 proxy via TOR <sup><a id="ref-1" href=
+</code></pre>
+      <p>SOCKS5 proxy via Tor <sup><a id="ref-1" href=
       "#fn-1">[1]</a></sup>:</p>
 
-      <pre>
-curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz
+      <pre><code>curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz
 curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sig
 curl --socks5-hostname 127.0.0.1:9050 -O http://5u6pytvslmtzmlheqsno2wt3vpyd7nggxhdgn533spyy2euaqwvpfbid.onion/archive/cypherpunk-handbook.tar.gz.sha256
-</pre>
+</code></pre>
       <p>HTTP proxy via I2P <sup><a id="ref-2" href="#fn-2">[2]</a></sup>:</p>
 
-      <pre>
-curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz
-curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sig
-curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sha256
-</pre>
-      <h4>Verifying the archive</h4>
+      <pre><code>curl -x http://127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz
+curl -x http://127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sig
+curl -x http://127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyegt7xpeg3q.b32.i2p/archive/cypherpunk-handbook.tar.gz.sha256
+</code></pre>
+      <h3>Verifying the archive</h3>
 
       <p>Verify checksum and signature before extracting the archive.</p>
 
@@ -477,72 +473,61 @@ curl -p -x 127.0.0.1:4444 -O http://poy7mv4bgjnjgxq73hck72x5lnspvev4pnsiea2gdyeg
 
       <p>Verify using the SHA256 file.</p>
 
-      <pre>
-sha256sum -c cypherpunk-handbook.tar.gz.sha256
-</pre>
+      <pre><code>sha256sum -c cypherpunk-handbook.tar.gz.sha256
+</code></pre>
       <p><strong>BSD</strong>
       </p>
 
       <p>Compute SHA256 and compare it manually with the value in the SHA256
       file.</p>
 
-      <pre>
-sha256 cypherpunk-handbook.tar.gz
+      <pre><code>sha256 cypherpunk-handbook.tar.gz
 cat cypherpunk-handbook.tar.gz.sha256
-</pre>
+</code></pre>
       <p>Verify the signed archive:</p>
 
-      <pre>
-signify -V -p cypherpunk-handbook.pub -x cypherpunk-handbook.tar.gz.sig -m cypherpunk-handbook.tar.gz.sha256
-</pre>
-      <h4>Extract the archive:</h4>
+      <pre><code>signify -V -p cypherpunk-handbook.pub -x cypherpunk-handbook.tar.gz.sig -m cypherpunk-handbook.tar.gz.sha256
+</code></pre>
+      <h3>Extract the archive:</h3>
 
-      <pre>
-tar -xzf cypherpunk-handbook.tar.gz
-</pre>
-      <h4>Using Git with a proxy</h4>
+      <pre><code>tar -xzf cypherpunk-handbook.tar.gz
+</code></pre>
+      <h3>Using Git with a proxy</h3>
 
       <p><strong>Default (no proxy):</strong>
       </p>
 
-      <pre>
-git clone https://github.com/daviduhden/cypherpunk-handbook.git
-</pre>
-      <p><strong>SOCKS5 proxy via TOR (global configuration)</strong>
+      <pre><code>git clone https://github.com/daviduhden/cypherpunk-handbook.git
+</code></pre>
+      <p><strong>SOCKS5 proxy via Tor (global configuration)</strong>
       </p>
 
-      <pre>
-git config --global http.proxy socks5://127.0.0.1:9050
-</pre>
+      <pre><code>git config --global http.proxy socks5h://127.0.0.1:9050
+</code></pre>
       <p>Then clone normally:</p>
 
-      <pre>
-git clone https://github.com/daviduhden/cypherpunk-handbook.git
-</pre>
+      <pre><code>git clone https://github.com/daviduhden/cypherpunk-handbook.git
+</code></pre>
       <p><strong>HTTP proxy via I2P (global configuration)</strong>
       </p>
 
-      <pre>
-git config --global http.proxy http://127.0.0.1:4444
-</pre>
+      <pre><code>git config --global http.proxy http://127.0.0.1:4444
+</code></pre>
       <p>Then clone normally:</p>
 
-      <pre>
-git clone https://github.com/daviduhden/cypherpunk-handbook.git
-</pre>
-      <p><strong>SOCKS5 proxy via TOR (temporary for this command
+      <pre><code>git clone https://github.com/daviduhden/cypherpunk-handbook.git
+</code></pre>
+      <p><strong>SOCKS5 proxy via Tor (temporary for this command
       only)</strong>
       </p>
 
-      <pre>
-git -c http.proxy=socks5://127.0.0.1:9050 clone https://github.com/daviduhden/cypherpunk-handbook.git
-</pre>
+      <pre><code>git -c http.proxy=socks5h://127.0.0.1:9050 clone https://github.com/daviduhden/cypherpunk-handbook.git
+</code></pre>
       <p><strong>HTTP proxy via I2P (temporary for this command only)</strong>
       </p>
 
-      <pre>
-git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cypherpunk-handbook.git
-</pre>
+      <pre><code>git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cypherpunk-handbook.git
+</code></pre>
       <p class="underline">Global configuration (~/.gitconfig) affects all
       subsequent <code>git pull</code>, <code>git push</code>, and other
       commands. Temporary <code>-c</code> settings apply only to the specific
@@ -550,7 +535,7 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
     </section>
 
     <section id="tools-used">
-      <h3>Tools Used</h3>
+      <h2>Tools Used</h2>
 
       <p>This guide and the workflows described here use the following common
       tools and utilities:</p>
@@ -574,7 +559,7 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
         extracting <code>.tar.gz</code> archives.</li>
 
         <li><strong><a href=
-        "https://www.gnu.org/software/coreutils/manual/html_node/sha256sum-invocation.html">
+        "https://www.gnu.org/software/coreutils/manual/html_node/sha2-utilities.html">
         sha256sum</a> / <a href=
         "https://man.openbsd.org/sha256">sha256</a></strong> - For SHA256
         checksum verification (Linux / BSD).</li>
@@ -612,22 +597,27 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
     </section>
   </main>
 
-  <aside id="footnotes" aria-label="Notes">
-    <p><strong>Notes:</strong>
-    </p>
+  <aside id="footnotes" aria-labelledby="footnotes-heading">
+    <h2 id="footnotes-heading">Notes</h2>
 
-    <p id="fn-1"><sup>1</sup> <a href="https://arti.torproject.org/">Arti</a>
-    uses port 9150 by default for the local SOCKS5 proxy.<a href=
-    "#ref-1">↩</a></p>
+    <ol>
+      <li id="fn-1">
+        <a href="https://arti.torproject.org/">Arti</a> uses port 9150 by
+        default for the local SOCKS5 proxy. <a href="#ref-1">Back to reference
+        1</a>
+      </li>
 
-    <p id="fn-2"><sup>2</sup> When using I2P, an <a href=
-    "https://www.stormycloud.org/i2p-outproxy/">outproxy</a> is required to
-    reach the clearnet. Without an outproxy, only I2P destinations are
-    reachable. <a href="#ref-2">↩</a></p>
+      <li id="fn-2">When using I2P, an <a href=
+      "https://www.stormycloud.org/i2p-outproxy/">outproxy</a> is required to
+      reach the clearnet. Without an outproxy, only I2P destinations are
+      reachable. <a href="#ref-2">Back to reference 2</a>
+      </li>
 
-    <p id="fn-3"><sup>3</sup> On Debian-based systems, the signify tool is
-    available as a package named <code>signify-openbsd</code>. The binary must
-    be invoked as <code>signify-openbsd</code>. <a href="#ref-3">↩</a></p>
+      <li id="fn-3">On Debian-based systems, the signify tool is available as a
+      package named <code>signify-openbsd</code>. The binary must be invoked as
+      <code>signify-openbsd</code>. <a href="#ref-3">Back to reference 3</a>
+      </li>
+    </ol>
   </aside>
 
   <footer id="site-footer">
@@ -636,9 +626,8 @@ git -c http.proxy=http://127.0.0.1:4444 clone https://github.com/daviduhden/cyph
 
     <p><strong><a href="./license.html" rel="license">LICENSE</a></strong>
     </p>
-    <img src="./images/anarchy.png" alt="freedom" class="motto">
+
     <p class="motto">VIVE LIBER AUT MORERE</p>
-    <img src="./images/anarchy.png" alt="freedom" class="motto">
   </footer>
 </body>
 </html>

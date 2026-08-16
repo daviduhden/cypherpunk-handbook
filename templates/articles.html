@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. — Article</title>
+  <title>T.C.H. - Article</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
@@ -14,7 +14,7 @@
   <header id="site-header">
     <p class="site-title">The Cypherpunk Handbook</p>
 
-    <h2>Article</h2>
+    <p class="page-type">Article</p>
   </header>
 
   <nav id="site-nav" aria-label="Primary navigation">
@@ -103,13 +103,12 @@
           <li>Key point two</li>
         </ul>
 
-        <pre>
-// Example code block
+        <pre><code>// Example code block
 console.log("Hello world");
-</pre>
+</code></pre>
         <blockquote>
           <p>"Simplicity is prerequisite for reliability."</p>
-          <cite>— Edsger W. Dijkstra</cite>
+          <cite>- Edsger W. Dijkstra</cite>
         </blockquote>
       </section>
 
@@ -129,12 +128,14 @@ console.log("Hello world");
     </article>
   </main>
 
-  <aside id="footnotes" aria-label="Notes">
-    <p><strong>Notes:</strong>
-    </p>
+  <aside id="footnotes" aria-labelledby="footnotes-heading">
+    <h2 id="footnotes-heading">Notes</h2>
 
-    <p id="fn-1"><sup>1</sup> Example footnote text explaining the citation
-    above. <a href="#ref-1">↩</a></p>
+    <ol>
+      <li id="fn-1">Example footnote text explaining the citation above.
+      <a href="#ref-1">Back to reference 1</a>
+      </li>
+    </ol>
   </aside>
 
   <footer id="site-footer">
@@ -143,9 +144,8 @@ console.log("Hello world");
 
     <p><strong><a href="./../license.html">LICENSE</a></strong>
     </p>
-    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+
     <p class="motto">VIVE LIBER AUT MORERE</p>
-    <img src="./../images/anarchy.png" alt="freedom" class="motto">
   </footer>
 </body>
 </html>

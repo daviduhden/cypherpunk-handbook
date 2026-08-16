@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. — Why I stopped using Linux?</title>
+  <title>T.C.H. - Why I stopped using Linux</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
   "./../feeds/articles.xml">
   <meta name="description" content=
-  "This article will be dedicated to talking about Systemd/GNU/Linux and the reasons that made me abandon it, at the end I will be talking about alternatives for those who want to do the same.">
+  "After thirteen years with Linux, I left because its security model, integration burden, operational complexity, and project culture no longer met my requirements. This article explains that decision and identifies the alternatives I consider superior.">
   <link rel="canonical" href=
   "https://handbook.uhden.dev/articles/why-i-stopped-using-linux.html">
-  <meta property="og:title" content="T.C.H. — Why I stopped using Linux?">
+  <meta property="og:title" content="T.C.H. - Why I stopped using Linux">
   <meta property="og:description" content=
-  "This article will be dedicated to talking about Systemd/GNU/Linux and the reasons that made me abandon it, at the end I will be talking about alternatives for those who want to do the same.">
+  "After thirteen years with Linux, I left because its security model, integration burden, operational complexity, and project culture no longer met my requirements. This article explains that decision and identifies the alternatives I consider superior.">
   <meta property="og:type" content="article">
   <meta property="og:url" content=
   "https://handbook.uhden.dev/articles/why-i-stopped-using-linux.html">
@@ -24,7 +24,7 @@
   <header id="site-header">
     <p class="site-title">The Cypherpunk Handbook</p>
 
-    <h2>Article</h2>
+    <p class="page-type">Article</p>
   </header>
 
   <nav id="site-nav" aria-label="Primary navigation">
@@ -52,15 +52,15 @@
       <header id="article-header">
         <p class="kicker">Operating systems</p>
 
-        <h1>Why I stopped using Linux?</h1>
+        <h1>Why I stopped using Linux</h1>
 
-        <p class="meta">Written by FlyWithMe (a SimpleX Chat user) —
-        <time datetime="2026-08-13">Updated August 13, 2026</time></p>
+        <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
+        <time datetime="2026-08-16">Updated August 16, 2026</time></p>
 
-        <p class="lede">This article will be dedicated to talking about
-        Systemd/GNU/Linux and the reasons that made me abandon it, at the end I
-        will be talking about alternatives for those who want to do the
-        same.</p>
+        <p class="lede">After thirteen years with Linux, I left because its
+        security model, integration burden, operational complexity, and project
+        culture no longer met my requirements. This article explains that
+        decision and identifies the alternatives I consider superior.</p>
       </header>
 
       <nav class="toc" aria-labelledby="why-linux-contents-heading">
@@ -134,25 +134,25 @@
         </ol>
       </nav>
 
-      <p>My critical analysis on the topic is purely technical, not subjective,
-      but many people may not care about such things. The purpose of this
-      article is not to prove anything, and links will be provided as examples
-      only. The article aims to make the reader distrust what they know (or
-      what they think they know) and instigate in-depth research.</p>
+      <p>This is a personal technical critique based on thirteen years of using
+      Linux and repeated attempts to harden it. The linked examples support the
+      specific claims; they are starting points for readers who want to inspect
+      the underlying projects and decisions themselves.</p>
 
-      <p>This article is not intended to be the most complete and in-depth, and
-      as the title suggests, it is based on what I consider relevant to me.</p>
+      <p>This is not a survey of every Linux distribution. It addresses the
+      failures that determined my decision.</p>
 
       <section aria-labelledby="why-linux-1">
         <h2 id="why-linux-1">Security concerns</h2>
 
-        <p>I am digital security enjoyer, and software that is not secure
-        cannot be enjoyable to me.</p>
+        <p>Security is a primary requirement for every system I use. Features
+        and convenience do not compensate for an architecture I cannot harden
+        or audit to my satisfaction.</p>
 
-        <p>I completely abandoned Windows 10 years ago for security reasons,
-        and about 2 years ago I completely abandoned using Linux for the same
-        reasons. I've been using Linux for over 13 years, and Linux has never
-        been about security, but it took me a long time to realize that.</p>
+        <p>I abandoned Windows 10 for security reasons and stopped using Linux
+        on my computers in 2024 for the same reason. Linux served me for more
+        than thirteen years, but its kernel and conventional desktop stack were
+        not designed around the security priorities I now demand.</p>
 
         <blockquote>
           <p>If you don't treat security like a religious fanatic, you are
@@ -163,10 +163,10 @@
           company.</cite>
         </blockquote>
 
-        <p>(Btw, It is ironic that the NSA, the largest surveillance and
-        monitoring agency in the world, is responsible for the most relevant
-        security advancement in the Linux world (SELinux). This is very, very
-        funny.)</p>
+        <p>There is a sharp irony here: the NSA, an institution built around
+        signals intelligence and surveillance, originated SELinux, one of the
+        Linux ecosystem's most consequential mandatory-access-control
+        systems.</p>
 
         <blockquote>
           <p>The people who care most about this stuff are completely crazy.
@@ -175,9 +175,8 @@
         </blockquote>
 
         <blockquote>
-          <p>Security in itself is useless. . . . The upside is always
-          somewhere else. The security is never the thing that you really care
-          about.</p>
+          <p>Security in itself is useless... The upside is always somewhere
+          else. The security is never the thing that you really care about.</p>
           <cite>Linus Torvalds.</cite>
         </blockquote>
 
@@ -191,8 +190,8 @@
 
         <p>Torvalds has engaged in an occasionally profane standoff with
         experts on the subject. One group he has dismissed as "masturbating
-        monkeys." <a href=
-        "http://article.gmane.org/gmane.linux.kernel/706950">http://article.gmane.org/gmane.linux.kernel/706950</a></p>
+        monkeys." See the <a href="https://marc.info/?t=121507404600023">Linux
+        kernel mailing-list thread</a>.</p>
 
         <p>In blasting the security features produced by another group, he said
         in a public post, "Please just kill yourself now. The world would be a
@@ -202,23 +201,26 @@
         "https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">
         https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/</a></p>
 
-        <p>It doesn't take much to finally understand that Linux has been
-        insecure since its creation, and the developers (especially its
-        creator) don't take security seriously.</p>
+        <p>These statements document Torvalds's resistance to treating security
+        defects as a separate class and his hostility toward some security
+        contributors. They do not describe every kernel developer, but they
+        explain why I reject the claim that Linux has always treated security
+        as a first-order design constraint.</p>
 
         <blockquote>
           <p>What about security-focused Linux operating systems like Qubes OS?
           Linux can be very secure</p>
-          <cite>Ignorant Linux fanboy.</cite>
+          <cite>A common objection from Linux users.</cite>
         </blockquote>
 
-        <p>Well, they're not as safe as you think: <a href=
-        "./qubes-os.html">./qubes-os.html</a></p>
+        <p>My separate <a href="./qubes-os.html">Qubes OS analysis</a> explains
+        why adding VM compartmentalization does not remove the Linux, Xen,
+        firmware, and operational risks beneath that boundary.</p>
 
-        <p>The Linux operating system that I consider to be the most secure by
-        default is Secureblue. The development team takes security very
-        seriously, and they don't mind trading usability for security. Let's
-        see what they say about Linux:</p>
+        <p>The Linux distribution that I consider the most secure by default is
+        Secureblue. The development team takes security very seriously, and
+        they don't mind trading usability for security. Let's see what they say
+        about Linux:</p>
 
         <blockquote>
           <p>Who is secureblue for?</p>
@@ -238,32 +240,30 @@
         <p><a href="https://secureblue.dev/">https://secureblue.dev/</a>
         </p>
 
-        <p>I have many years of experience with Linux, especially in hardening
-        Linux systems, and I have never seen hardening as strong as that
-        applied in Secureblue (which is based on immutable Fedora). The fact,
-        as was said, is that Linux is extremely limited when it comes to
-        security.</p>
+        <p>Secureblue applies the strongest default hardening I have examined
+        in a general-purpose Linux distribution. Its Fedora Atomic base,
+        hardened kernel configuration, mandatory access control, and
+        application policies improve the system substantially. They still
+        operate within the interfaces and architectural constraints of the
+        upstream Linux platform.</p>
 
-        <p>Linux is not secure by default, additional hardening is extremely
-        necessary, and with the exception of Secureblue and perhaps ChromeOS,
-        no Linux distribution can be considered secure by default. But even an
-        extremely hardened Linux distro cannot escape the fact, Linux will
-        always be insecure, because the insecurity is in the kernel code.
+        <p>Conventional desktop Linux requires additional hardening. ChromeOS
+        reduces variation through verified boot, automatic updates, and tight
+        control over supported hardware; Secureblue hardens a more conventional
+        general-purpose environment. Neither distribution policy can remove
+        every upstream kernel interface or redesign the kernel beneath it.
         <a href=
         "https://madaidans-insecurities.github.io/linux.html">https://madaidans-insecurities.github.io/linux.html</a></p>
 
-        <p>The Linux kernel and Systemd/GNU/Linux distros have a huge and
-        frightening attack surface. In 2025 the Linux kernel reached the
-        impressive number of 40 million lines of code, and Linux distros (such
-        as Debian) already surpass the 1 billion lines of code mark.</p>
+        <p>The Linux kernel and a complete GNU/Linux distribution contain an
+        enormous volume of code. Debian's own source archive statistics exceed
+        one billion physical source lines, while the kernel alone contains tens
+        of millions. Source size is not identical to attack surface: only
+        reachable interfaces and code paths form the attack surface of a given
+        deployment. Size still increases the code that maintainers must review,
+        integrate, compile, and patch.</p>
 
         <ul>
-          <li>
-            <a href=
-            "https://commandlinux.com/statistics/linux-kernel-contributors-lines-of-code-statistics/">
-            https://commandlinux.com/statistics/linux-kernel-contributors-lines-of-code-statistics/</a>
-          </li>
-
           <li>
             <a href=
             "https://micronews.debian.org/2023/1686455026.html">https://micronews.debian.org/2023/1686455026.html</a>
@@ -275,148 +275,158 @@
           </li>
         </ul>
 
-        <p>For comparison, the entire OpenBSD operating system has ~36 million
-        lines of code (the kernel has 8 mLoC), which is less than just the
-        Linux kernel. But there are operating systems that are much smaller in
-        codebase, such as RedoxOS, SculptOS, TockOS, and LionOS. These
-        operating systems consequently have a much smaller attack surface than
-        Linux.</p>
+        <p>OpenBSD develops a deliberately bounded base system as one source
+        tree, rather than treating an entire third-party package archive as
+        part of the operating system. Research and specialized systems such as
+        Redox, Sculpt, Tock, and LionOS reduce or restructure privileged code
+        in different ways. A smaller codebase strengthens auditability only
+        when the removed code would otherwise sit inside the trusted computing
+        base or expose reachable interfaces; raw line counts do not prove
+        security.</p>
 
-        <p>Here is a hardening guide for Linux, it is not complete and is out
-        of date, but it is good to serve as a basis for readers to do in-depth
-        research later. <a href=
-        "https://madaidans-insecurities.github.io/guides/linux-hardening.html">https://madaidans-insecurities.github.io/guides/linux-hardening.html</a></p>
+        <p>This <a href=
+        "https://madaidans-insecurities.github.io/guides/linux-hardening.html">independent
+        Linux hardening guide</a> documents a useful baseline, but readers must
+        verify every recommendation against current kernel and distribution
+        documentation.</p>
       </section>
 
       <section aria-labelledby="why-linux-2">
         <h2 id="why-linux-2">Complexity</h2>
 
-        <p>I have used all types of Linux operating systems, some of them
-        being: Debian, Ubuntu, Fedora, openSUSE, Arch, Manjaro, CachyOS, Artix,
-        Gentoo, QubesOS, Exherbo, Secureblue, Alpine and even Linux from
-        Scratch. No one can say "skill issue" to me, because I know what I'm
-        talking about.</p>
+        <p>My experience spans Debian, Ubuntu, Fedora, openSUSE, Arch, Manjaro,
+        CachyOS, Artix, Gentoo, Qubes OS, Exherbo, secureblue, Alpine, and
+        Linux From Scratch. This criticism comes from administering,
+        rebuilding, and hardening those systems, not from a brief encounter
+        with one desktop distribution.</p>
 
-        <p>No matter which distribution it is, they all have something in
-        common, complexity. And I'm not talking about desktop environments as
-        this is irrelevant to someone who knows how to use the terminal or
-        tilling window managers, I'm referring to the configuration of the
-        system as a whole.</p>
+        <p>The recurring problem is system-wide complexity, not desktop
+        appearance. A Linux administrator must reconcile kernel parameters,
+        init and service policy, network configuration, privilege escalation,
+        mandatory access control, package scripts, boot configuration, and
+        distribution-specific filesystem conventions.</p>
 
-        <p>The firewall, sudo, systemd, networking, kernel parameters, daemons,
-        and /etc and /usr files in general are all unnecessarily complex, and
-        this is only noticeable when an experienced Linux user migrates to
-        another operating system such as FreeBSD, OpenBSD and NetBSD.</p>
+        <p>OpenBSD, FreeBSD, and NetBSD exposed how much integration work I had
+        accepted as normal. Their base-system documentation describes a
+        coherent release, while Linux documentation is divided among the
+        kernel, distribution, init system, network stack, package manager, and
+        individual upstream projects.</p>
 
-        <p>Systemd is the biggest piece garbage in the Linux world when it
-        comes to complexity (1.3 million lines of code btw), something worthy
-        of being proprietary software from Microsoft (although Red Hat is the
-        Microsoft of the open source world xD).</p>
+        <p>systemd concentrates service management, logging, login sessions,
+        networking, DNS, time synchronization, containers, and other functions
+        in one tightly coupled project. I reject that scope because a defect or
+        incompatible change crosses subsystem boundaries that separate tools
+        would keep independent.</p>
 
         <p>Achieving minimally pleasant hardening on Linux is extremely
-        difficult and is not viable for the vast majority of users. I've
-        already wasted weeks hardening on Arch Linux only to end up with shit
-        because of systemd. I've already wasted 2 months hardening on Gentoo
-        and 6 months hardening on Linux from Scratch, it's simply not something
-        realistic to maintain by just one person and can drive you crazy.</p>
+        difficult and is not viable for the vast majority of users. I spent
+        weeks hardening Arch Linux, two months on Gentoo, and six months on
+        Linux from Scratch. The result still depended on maintaining custom
+        systemd units, kernel policy, sandbox rules, and package-specific
+        exceptions, an unreasonable permanent workload for one
+        administrator.</p>
 
-        <p>I mentioned Arch and Gentoo because I consider them to be the most
-        hardening-friendly Linux distributions, whether due to the incredible
-        documentation on the Arch Wiki or Gentoo's incredible control and
-        customization.</p>
+        <p>Arch and Gentoo remain the most hardening-friendly conventional
+        distributions I used: Arch documents the system exceptionally well,
+        while Gentoo exposes toolchain, libc, init, kernel, and package choices
+        that binary distributions fix in advance.</p>
 
-        <p>I don't need to elaborate much on this topic. Linux is complex,
-        that's all.</p>
+        <p>That flexibility is real, but the continuing integration burden is
+        the price. I no longer accept that price on my primary systems.</p>
       </section>
 
       <section aria-labelledby="why-linux-3">
         <h2 id="why-linux-3">Instability</h2>
 
-        <p>Stability is something necessary and indispensable in my life, but
-        unfortunately I don't find it in Linux. It doesn't matter if it's
-        Debian stable or Ubuntu LTS, the promise of stability is not something
-        to be trusted.</p>
+        <p>I require updates to preserve a working system without repeated
+        repair. Neither Debian stable nor Ubuntu LTS met that operational
+        requirement in my deployments.</p>
 
-        <p>Many people think that stability is just about life cycle, how long
-        software will be properly maintained without having to update it for a
-        new release. But this is wrong, stability is about a system remaining
-        working exactly as it was in the beginning even after many updates,
-        installed packages and changed system configurations.</p>
+        <p>A long support lifecycle and runtime stability are different
+        properties. Lifecycle policy states how long a release receives
+        maintenance; operational stability measures whether supported updates
+        preserve documented behavior and keep configured workloads running.</p>
 
-        <p>I've had more stability using Arch Linux than Ubuntu LTS and Debian
-        stable. But no matter which Linux distribution you use, it is
-        inevitable that the system will break at one time or another. It's
-        amazing how a Linux system can break so easily and unexpectedly just
-        because you installed too many packages or updated the system.</p>
+        <p>In my installations, Arch proved more predictable than Ubuntu LTS
+        and Debian stable. Package additions and supported updates still caused
+        failures often enough that I had to treat rollback and manual repair as
+        routine maintenance. That is an account of my systems, not a claim that
+        every Linux installation inevitably breaks.</p>
 
-        <p>It seems to me that almost all Linux users think this is normal, it
-        has become something so everyday and common that people have accepted
-        Linux's instability as a feature. It got to a point where I could only
-        achieve pleasant stability on Linux with extremely minimalist distros
-        and configurations to the point where I didn't even have security (no
-        MAC, Wayland, sandboxing, firewall, kernel parameters, boot config or
-        any hardening at all).</p>
+        <p>In the Linux communities I used, routine breakage was commonly
+        treated as a normal cost of maintaining the system. I reached a point
+        where I could only achieve pleasant stability on Linux with extremely
+        minimalist distros and configurations to the point where I didn't even
+        have security (no MAC, Wayland, sandboxing, firewall, kernel
+        parameters, boot config or any hardening at all).</p>
 
-        <p>It's understandable that one of the biggest struggles of enterprise
-        Linux distributions is stability. Red Hat (RHEL), Microsoft (Azure
-        Linux) and Canonical (Ubuntu) invest a lot to deliver the most stable
-        environment possible, and yet they lag behind other non-Linux operating
-        systems. Android and ChromeOS are probably the only stable Linux
-        operating systems.</p>
+        <p>RHEL, Azure Linux, and Ubuntu invest heavily in release engineering
+        and compatibility, but they must integrate independently governed
+        upstream components across broad hardware and software combinations.
+        Android and ChromeOS obtain stronger platform consistency by
+        controlling the supported hardware, update path, and application model
+        more tightly than a conventional distribution.</p>
 
-        <p>Linux has always been unstable and will probably always be
-        unstable.</p>
+        <p>My conclusion is narrower and better supported: across rolling,
+        stable, source-based, and LTS distributions, Linux never delivered the
+        operational stability I require.</p>
       </section>
 
       <section aria-labelledby="why-linux-4">
         <h2 id="why-linux-4">Centralized decentralization (Or would it be
         decentralized centralization?)</h2>
 
-        <p>Linux's biggest advantage has been completely thrown away, and it
-        has become a huge disadvantage. What was once GNU/Linux became
-        Systemd/GNU/Linux/IBM.</p>
+        <p>Linux's modular ecosystem once promised meaningful substitution
+        among userlands and system components. In mainstream distributions,
+        dependence on GNU interfaces, systemd, D-Bus, and a small group of
+        heavily funded upstreams has narrowed that practical choice. What was
+        presented as decentralized integration now depends on several central
+        projects.</p>
 
-        <p>Linux is just the kernel, and this provides enormous potential for
-        decentralization and motivates the community to create all kinds of
-        software. But what's the point if everything is GNU and systemd? The
-        Linux world has reached a point where the only difference between
-        distributions are the packages installed by default and sometimes the
-        package manager.</p>
+        <p>Linux is a kernel, so distributions can assemble radically different
+        systems around it. Most desktop and server distributions instead share
+        the same kernel, GNU libc and utilities, systemd service architecture,
+        D-Bus interfaces, and desktop stack. Repositories, release engineering,
+        defaults, and package managers still matter, but they do not create
+        independent operating-system architectures.</p>
 
-        <p>I've seen a lot of stupid skids say "install Kali Linux, use Kali
-        Linux, it's amazing and blah blah blah...", but what's the fucking
-        difference between Kali and Debian? It's just that Kali is bloated and
-        has more packages installed, but it's literally the same garbage. Even
-        in distros like Ubuntu and Fedora the only considerable change besides
-        the installed packages is the package manager itself.</p>
+        <p>Kali is a specialized Debian derivative with a rolling repository,
+        penetration-testing tools, and task-specific defaults. Those changes
+        serve its intended workflow, but they do not replace the Linux kernel,
+        GNU userland, service architecture, or the underlying security model.
+        The same distinction applies to Ubuntu and Fedora: distribution policy
+        changes the assembled system without creating a new operating-system
+        architecture.</p>
 
-        <p>IBM seems to have dominated the entire Linux ecosystem with Red Hat:
-        Fedora, systemd, SELinux, libvirt, Xorg, Flatpak, + 100 other
-        strong/main contributions to other Linux software like GNOME, KDE,
-        d-bus and Wayland (even the freedesktop.org organization was created by
-        a Red Hat employee). IBM currently has strong dominance and/or
-        authority over the entire Linux ecosystem and even over the kernel
-        development.</p>
+        <p>Red Hat, now owned by IBM, funds development across Fedora, systemd,
+        SELinux, libvirt, GNOME, and other infrastructure used far beyond its
+        own distributions. That is not ownership of Linux, and each project has
+        its own governance. It does give one vendor substantial engineering
+        influence over components that other distributions cannot replace
+        without major integration work.</p>
 
-        <p>The only different alternative are non-GNU distros such as Alpine,
-        Void and Chimera (also Gentoo). However, in the end they all end up
-        being very similar, as they use musl/BusyBox and the packages you can
-        install are the same as those available for all other GNU/systemd
-        distributions. If you can completely get rid of systemd, GNU coreutils,
-        glibc and d-bus, that's already a lot.</p>
+        <p>Alpine, Void, Chimera, and configurable systems such as Gentoo prove
+        that alternatives remain possible. They can replace systemd, glibc, GNU
+        coreutils, or all three, although third-party applications and desktop
+        environments often pull the system back toward interfaces used by
+        mainstream distributions. Removing those central dependencies is
+        valuable, but it does not turn a distribution into an integrated BSD
+        base system.</p>
 
-        <p>Now comes my second review. The Linux kernel and userland being
-        developed separately is horrible. Each software in the Linux world has
-        different developers with different philosophies, mindsets and goals.
-        This is a mess and only brings instability, complexity, insecurity and
-        heartbreak.</p>
+        <p>My second criticism concerns integration. The Linux kernel and its
+        userland are developed by separate projects with different release
+        schedules, compatibility policies, and security models. Distributions
+        must integrate those components and resolve the resulting policy and
+        lifecycle conflicts. That division increases complexity and makes
+        system-wide invariants harder to define and enforce.</p>
 
-        <p>Systemd/GNU/Linux/IBM tries to be 2 things at the same time,
-        centralized and decentralized, but in the end it can't be either
-        completely, and that's ridiculous.</p>
+        <p>The result is centralized dependency on a few dominant components
+        without centralized responsibility for the complete operating system.
+        Linux retains fragmented ownership while losing much of the practical
+        replaceability that fragmentation was supposed to provide.</p>
       </section>
 
-      <section aria-labelledby="why-linux-6">
+      <section aria-labelledby="why-linux-5">
         <h2 id="why-linux-5">License</h2>
 
         <p>As I already talked about in my other article: <a href=
@@ -429,44 +439,46 @@
           philosophy.</p>
         </blockquote>
 
-        <p>If Linux were distributed under a permissive license like BSD and
-        MIT this would not happen, as companies would not make an effort to
-        change the mainstream Linux project to suit their wishes. Not only IBM,
-        but also Microsoft, Google, Intel and many other companies have already
-        influenced decisions in the development of Linux, influences that are
-        not always (or almost never) positive, or are even ideological:</p>
+        <p>A permissive Linux license would not eliminate corporate influence.
+        It would allow vendors to maintain proprietary downstream changes
+        instead of publishing corresponding source when they distribute
+        binaries. The GPL creates an incentive to place reusable changes
+        upstream, where vendors compete to shape the common kernel. Microsoft,
+        Google, Intel, IBM, and other companies therefore contribute both code
+        and policy to Linux.</p>
 
         <p><a href=
         "https://linuxreviews.org/Intel_Is_Pushing_For_1984-Style_Revision_Of_Words_Allowed_In_Linux_Kernel_Development_And_Documentation">
         https://linuxreviews.org/Intel_Is_Pushing_For_1984-Style_Revision_Of_Words_Allowed_In_Linux_Kernel_Development_And_Documentation</a>
         </p>
 
-        <p>No matter what GNU fanboys say about permissive licenses, it is a
-        fact that they guarantee the purity of the mainstream project, while
-        restrictive licenses like GPL motivate technical or ideological fights
-        between different corporations to influence the development of the
-        software.</p>
+        <p>I still prefer permissive licenses. They let each recipient use,
+        modify, combine, and redistribute the code without imposing reciprocal
+        licensing on a larger work. They do not guarantee a technically pure
+        upstream, but they make independent downstream development a lawful
+        alternative to winning control over the common project.</p>
 
-        <p>There is no freedom restricting freedom. Selective freedom is not
-        freedom, and therefore restrictive licenses like GPL deliver a false
-        sense of freedom, deceiving the user into believing that the software
-        is free when in fact the project is driven by the will of large
-        corporations.</p>
+        <p>Under my definition, freedom includes the freedom to combine code
+        with differently licensed or proprietary work. The GPL deliberately
+        withholds that option when distribution creates a covered combined
+        work. GNU calls this reciprocity; I call it a restriction. That is a
+        value judgment about licensing, separate from the factual question of
+        who governs a project.</p>
 
-        <p>Unfortunately, not even the most used permissive licenses such as
-        BSD, MIT and Apache are in fact completely free, but they are much
-        better than restrictive licenses.</p>
+        <p>BSD, MIT, and Apache licenses still impose notice or other narrow
+        conditions because copyright licenses are legal instruments, not the
+        absence of copyright. They nevertheless preserve far more downstream
+        discretion than the GPL, which is why I rank them higher.</p>
       </section>
 
-      <section aria-labelledby="why-linux-7">
+      <section aria-labelledby="why-linux-6">
         <h2 id="why-linux-6">Politics</h2>
 
-        <p>In the Linux world, what prevails is not the technical and rational
-        argument, but rather subjective opinions and political ideologies.
-        Decisions that are useless for the actual functionality of a project
-        are common when dealing with Linux software development. The basis for
-        making decisions in Linux are the emotions you are feeling at the
-        moment.</p>
+        <p>Political criteria repeatedly enter Linux project governance where I
+        expect technical criteria. The examples below record decisions about
+        terminology, contributors, and project inclusion that were not based
+        solely on code correctness, security, or maintenance quality. I reject
+        that ordering of priorities.</p>
 
         <p>(and Red Hat strikes again)</p>
 
@@ -483,28 +495,28 @@
           </li>
         </ul>
 
-        <p>As shown in the previous topic about the influence of large
-        companies on the development of the Linux kernel, the creator of Linux
-        himself was influenced and applied ideological and completely useless
-        changes into the project:</p>
+        <p>The kernel's inclusive-terminology change is a direct example. It
+        altered naming policy rather than executable behavior, and I consider
+        that an inappropriate use of project authority:</p>
 
-        <p><strong>Linux Torvalds has merged inclusive-terminology rules into
-        the Linux kernel git tree</strong> <a href=
+        <p><strong>Linus Torvalds merged inclusive-terminology rules into the
+        Linux kernel git tree</strong> <a href=
         "https://linuxreviews.org/Linus_Torvalds_Has_Merged_Inclusive-Terminology_Rules_Into_The_Linux_Kernel_Git_Tree">
         https://linuxreviews.org/Linus_Torvalds_Has_Merged_Inclusive-Terminology_Rules_Into_The_Linux_Kernel_Git_Tree</a></p>
 
-        <p>If you want to contribute to the Linux ecosystem, don't worry about
-        giving technical and grounded arguments to build the project's
-        development, just follow your ideological and political heart:</p>
+        <p>A proposed systemd utility named <code>detect-fash</code>
+        illustrates the same conflict even though a pull request is not an
+        accepted feature. Its record should be judged as a proposal and
+        discussion, not as released systemd functionality:</p>
 
         <p><strong>detect-fash: A utility to detect problematic software and
         configurations</strong> <a href=
         "https://github.com/systemd/systemd/pull/39285">https://github.com/systemd/systemd/pull/39285</a></p>
 
-        <p>You also don't need to argue rationally about why you reject a good
-        project that brought life to dead software, just say whatever bullshit
-        comes to mind and refuse technological advancement because the project
-        developer disagrees with your political opinions:</p>
+        <p>The XLibre disputes provide a second test: several projects rejected
+        the software because of statements attributed to its developer rather
+        than a documented defect in the code. The following records let readers
+        evaluate whether those decisions used technical criteria:</p>
 
         <p>Aeryn OS rejects XLibre: "Hell no. Its author is spreading
         conspiracy theories..." <a href=
@@ -534,72 +546,73 @@
         "https://ariadne.space/2025/07/07/two-weeks-of-wayback.html">https://ariadne.space/2025/07/07/two-weeks-of-wayback.html</a>
         </p>
 
-        <p>That's it, I know a few thousand more cases on the subject to show,
-        but it's not necessary. Linux is not a serious environment for serious
-        people, and it should not demand to be taken seriously.</p>
+        <p>These records are sufficient for my conclusion: parts of the Linux
+        ecosystem use political affiliation as a project-selection criterion. I
+        will not depend on communities that subordinate technical review to
+        that test.</p>
       </section>
 
-      <section aria-labelledby="why-linux-8">
+      <section aria-labelledby="why-linux-7">
         <h2 id="why-linux-7">Community</h2>
 
-        <p>Since 2019, the Linux community in general has been in decline,
-        getting worse every day. Everything has become political and
-        ideological, purely technical groups almost no longer exist.</p>
+        <p>Since 2019, the Linux communities I used have shifted away from the
+        technical focus I found there earlier. Political and ideological tests
+        now enter moderation and project-selection decisions that should be
+        resolved through code, threat models, and maintenance evidence.</p>
 
-        <p>Technical merit no longer exists, if you are against the ideology of
-        a certain group, you will be muted or banned from their groups that are
-        supposed to be about Linux, or you will even be threatened with
-        death.</p>
+        <p>I encountered muting, bans, and threats in channels presented as
+        technical forums when participants rejected the administrators'
+        politics. Those incidents do not describe every Linux group, but they
+        explain why I no longer trust the wider community as a technical
+        institution.</p>
 
-        <p>They can speak about their political ideologies and mental delusions
-        freely as long as it is in accordance with the administrators' thinking
-        (for them it is permitted), but when someone responds with disagreement
-        they are brutally attacked. All this in a community that is supposed to
-        be about software.</p>
+        <p>The recurring failure was asymmetric enforcement: administrators
+        allowed aligned political speech while treating disagreement as
+        misconduct. That converts software channels into affiliation tests and
+        makes technical standards secondary.</p>
 
-        <p>The many Linux communities seem to have been infected with a scary
-        mental disease, people act crazy and are mentally unstable most of the
-        time. It is not uncommon to see senseless psychological outbursts in
-        Discord groups, Matrix, social media and internet forums.</p>
+        <p>Across Discord, Matrix, social media, and forums, I repeatedly saw
+        technical disputes displaced by ideological tests, personal attacks,
+        and erratic moderation. Those are observable community failures; they
+        do not require diagnosing strangers or speculating about their mental
+        health.</p>
 
-        <p>It became unbearable for me (and I believe for thousands of other
-        people too) to be part of the Linux community. I miss the Arch Linux
-        community 8 years ago, I considered it the most technical and capable
-        community on the internet, everything was technical, specialized and
-        knowledge was abundant.</p>
+        <p>I left because participation became intolerable. Eight years ago, I
+        regarded the Arch Linux community as one of the Internet's most capable
+        technical communities: discussions were specialized, documentation was
+        dense, and expertise was abundant. My later experience did not preserve
+        that standard.</p>
 
-        <p>There is no perfect community, because people are not perfect and
-        there will never be someone who pleases you 100% in everything,
-        diversity of ideas is normal. The problem is that there is no more
-        freedom of speech among the Linux community. There are many dictators
-        who hide behind the facade of "free and open source software" or
-        "digital freedom" bullshit, but if they could, they would literally
-        kill you or send you to the gulag.</p>
+        <p>Disagreement is normal; viewpoint-based exclusion from technical
+        channels is not. Projects that invoke "free and open-source software"
+        or "digital freedom" while suppressing dissent contradict their stated
+        values and drive technically capable contributors away.</p>
 
         <p>You are free, but only as long as you agree with them.</p>
 
-        <p>There can be no real technological advancement in a community like
-        this, nor is it possible to obtain useful knowledge in these
-        environments. And, how I hate codes of conduct... The greater the code
-        of conduct, the greater the intellectual decline of a community.</p>
+        <p>A technical community cannot advance when affiliation outranks
+        evidence. My objection to expansive codes of conduct is operational:
+        vague behavioral rules give moderators discretion over technical
+        disagreement and make participation depend on social conformity.</p>
 
-        <p>Dictators and mentally unstable people everywhere, that's how I see
-        the Linux community these days.</p>
+        <p>That combination of ideological gatekeeping and discretionary
+        moderation is why I no longer treat the wider Linux community as a
+        reliable technical environment.</p>
       </section>
 
-      <section aria-labelledby="why-linux-9">
+      <section aria-labelledby="why-linux-8">
         <h2 id="why-linux-8">Superior alternatives</h2>
       </section>
 
       <section aria-labelledby="why-linux-9">
         <h3 id="why-linux-9">BSDs</h3>
 
-        <p>Obviously the best alternative for Linux users is BSD operating
-        systems. I will not recommend Windows or macOS xD. BSDs are independent
-        and complete operating systems, that is, the kernel and userland are
-        developed together by the same developers. They are typically more
-        stable, simple, secure, minimalist and reliable than Linux
-        distributions.</p>
+        <p>I rank the BSD operating systems above Windows, macOS, and Linux as
+        replacements for a Unix-oriented user. Each BSD develops its kernel and
+        base userland as one product, which enables coordinated releases,
+        documentation, interfaces, and security changes. That coherence is the
+        concrete source of the simplicity and reliability I found missing in
+        Linux distributions.</p>
 
         <p>To understand more about the differences between BSD operating
         systems: <a href=
@@ -611,12 +624,13 @@
         </p>
       </section>
 
-      <section aria-labelledby="why-linux-11">
+      <section aria-labelledby="why-linux-10">
         <h4 id="why-linux-10">OpenBSD</h4>
 
-        <p>Currently OpenBSD is the operating system I use daily. OpenBSD is
-        very secure by default, simple and minimalist, politics-free, and has
-        perhaps the most technical community of all.</p>
+        <p>OpenBSD is now my daily operating system. Its conservative defaults,
+        small base, integrated documentation, and public focus on technical
+        merit make its community the most technically disciplined one I have
+        used.</p>
 
         <blockquote>
           <p>The OpenBSD project produces a FREE, multi-platform 4.4BSD-based
@@ -638,39 +652,42 @@
         "https://www.openbsd.org/goals.html">https://www.openbsd.org/goals.html</a>
         </p>
 
-        <p>It is an operating system focused on security, I recommend reading
-        my other article about it: <a href=
-        "./openbsd.html">./openbsd.html</a></p>
+        <p>OpenBSD places security, correctness, and simplicity at the center
+        of its base-system design. My <a href="./openbsd.html">OpenBSD
+        article</a> examines the mechanisms and engineering practices behind
+        that judgment.</p>
 
-        <p>The repository is small, it has around 10k packages and there is no
-        Wine or Linuxlator.</p>
+        <p>Its package collection is intentionally less expansive than the
+        largest Linux and FreeBSD repositories. OpenBSD 7.9 does not ship Wine
+        or a Linux binary-compatibility layer, so applications that depend on
+        those environments require another system.</p>
       </section>
 
       <section aria-labelledby="why-linux-11">
         <h4 id="why-linux-11">FreeBSD</h4>
 
-        <p>This was the first operating system I used after leaving Linux, it
-        is the most recommended BSD for users who do not want to lose the
-        "usability" they had on Linux, as FreeBSD has Linuxlator (compatibility
-        layer for running Linux binaries), Wine and even Steam. FreeBSD has the
-        fourth largest repository of all operating systems, with approximately
-        33k packages, behind only NixOS, AUR and Debian.</p>
+        <p>FreeBSD was the first system I used after leaving Linux. It is my
+        BSD recommendation for users who need a broader desktop and application
+        compatibility range: it provides Linux binary compatibility, Wine, and
+        work toward Steam support. The FreeBSD Ports Collection now contains
+        more than 36,000 third-party applications, although availability still
+        varies by architecture and package branch.</p>
 
         <blockquote>
-          <p>FreeBSD is an operating system for a variety of plataforms which
+          <p>FreeBSD is an operating system for a variety of platforms which
           focuses on features, speed and stability. It is derived from BSD, the
           version of UNIX developed at the University of California, Berkeley.
-          It is developed and maintained by a largue community</p>
+          It is developed and maintained by a large community.</p>
         </blockquote>
 
         <p><a href=
         "https://www.freebsd.org/about">https://www.freebsd.org/about</a>
         </p>
 
-        <p>Unfortunately FreeBSD has the same problem as Linux (albeit on a
-        smaller scale) regarding the community, but at least the technical
-        level remains high and this does not affect the development of the
-        operating system (at least yet).</p>
+        <p>I have encountered some of the same community problems around
+        FreeBSD, but on a smaller scale. Its base-system engineering and
+        documentation remain technically strong, which keeps it above Linux in
+        my ranking.</p>
 
         <p>Read and strictly follow the handbook during installation: <a href=
         "https://docs.freebsd.org/en/books/handbook/">https://docs.freebsd.org/en/books/handbook/</a></p>
@@ -679,10 +696,10 @@
       <section aria-labelledby="why-linux-12">
         <h4 id="why-linux-12">NetBSD</h4>
 
-        <p>This is a true operating system for hackers, and it is probably the
-        most portable operating system ever (much more than any Linux OS). It
-        will certainly run on your hardware, even if it's a Nintendo64 (I'm not
-        kidding).</p>
+        <p>NetBSD is an operating system for hackers with an unusually broad
+        hardware range. Its supported ports extend from servers and desktops to
+        embedded systems and machines such as the Nintendo 64, exceeding the
+        architecture coverage of mainstream Linux distributions.</p>
 
         <blockquote>
           <p>NetBSD is a free, fast, secure, and highly portable Unix-like Open
@@ -694,42 +711,49 @@
         <p><a href="https://netbsd.org/">https://netbsd.org/</a>
         </p>
 
-        <p>pkgsrc (the NetBSD Packages Collection repository) currently
-        contains over 26,000 packages. NetBSD also has Wine and Linuxlator.</p>
+        <p>pkgsrc gives NetBSD a broad, portable package collection. NetBSD
+        also provides Linux binary compatibility on supported architectures,
+        while Wine availability depends on the platform and pkgsrc package
+        state.</p>
       </section>
 
       <section aria-labelledby="why-linux-13">
         <h3 id="why-linux-13">Good Linux operating systems?</h3>
 
-        <p>Although this article is about my dissatisfaction with Linux and
-        also an encouragement for other people to stop using it, I understand
-        that not everyone will want to do this for many other reasons that go
-        beyond those mentioned in this article. So I'm going to recommend some
-        Linux operating systems that might still be worth using, although none
-        of them escape everything I talked about in the article.</p>
+        <p>I encourage readers to leave Linux where a superior system meets
+        their requirements, but hardware and application constraints make that
+        impossible for some users. The following Linux systems still solve
+        specific problems well; none escapes every architectural criticism in
+        this article.</p>
       </section>
 
       <section aria-labelledby="why-linux-14">
         <h4 id="why-linux-14">Gentoo</h4>
 
-        <p>Very complex and slow (compilation), but it gives total freedom and
-        control to the user, so with some time and reading the documentation it
-        is possible to achieve a relatively secure, independent and extremely
-        minimalist Gentoo.</p>
+        <p>Gentoo is complex and source builds consume substantial time, but it
+        exposes exceptional control over the toolchain, init system, services,
+        package features, and kernel. Careful profile and package selection can
+        produce a small, independently configured system.</p>
 
-        <p>My recommendation: do hardening and configure a full musl + BusyBox
-        system.</p>
+        <p>My preferred configuration uses a musl profile, OpenRC, and a
+        minimal userland. BusyBox can replace many standalone utilities, but it
+        also consolidates them into one executable and reduces compatibility;
+        that is a size and maintenance tradeoff, not automatic hardening.</p>
       </section>
 
       <section aria-labelledby="why-linux-15">
         <h4 id="why-linux-15">Guix (+ Nonguix)</h4>
 
-        <p>GNU everywhere but at least no Systemd, and it is a declarative
-        system. The community isn't that bad, it's perhaps the "less worse"
-        Linux community.</p>
+        <p>Guix is GNU-centered but avoids systemd and provides a declarative
+        system. Of the Linux communities discussed here, it is the one I find
+        least objectionable.</p>
 
-        <p>Can be very stable and minimalist. Unfortunately proprietary blobs
-        are necessary for proper security on x86, so use Nonguix.</p>
+        <p>Guix can be stable and minimal. On common x86 hardware, refusing all
+        proprietary firmware can leave CPU microcode and device firmware
+        unavailable, including vendor fixes for known vulnerabilities. Nonguix
+        supplies those components, at the cost of departing from GNU's
+        free-system policy. Its official repository is <a href=
+        "https://gitlab.com/nonguix/nonguix">Nonguix on GitLab</a>.</p>
       </section>
 
       <section aria-labelledby="why-linux-16">
@@ -737,7 +761,7 @@
 
         <blockquote>
           <p>GrapheneOS is a privacy and security focused mobile OS with
-          Android appcompatibility developed as a non-profit open source
+          Android app compatibility developed as a non-profit open source
           project. It's focused on the research and development of privacy and
           security technology including substantial improvements to sandboxing,
           exploit mitigations and the permission model.</p>
@@ -756,8 +780,7 @@
           you make something so cluster fucked he can't understand it, he's
           gonna think you're a god. Cause you made it so complicated nobody can
           understand it.</p>
-          <cite>Terry A. Davis, TempleOS creator and God's loneliest
-          soldier.</cite>
+          <cite>Terry A. Davis, TempleOS creator.</cite>
         </blockquote>
       </section>
     </article>
@@ -769,9 +792,8 @@
 
     <p><strong><a href="./../license.html" rel="license">LICENSE</a></strong>
     </p>
-    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+
     <p class="motto">VIVE LIBER AUT MORERE</p>
-    <img src="./../images/anarchy.png" alt="freedom" class="motto">
   </footer>
 </body>
 </html>

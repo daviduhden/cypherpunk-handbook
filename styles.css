@@ -265,7 +265,8 @@ header .site-title {
   text-shadow: 0 0 0.7em #3ee6ff2b;
 }
 
-header h2 {
+#site-header > .page-type,
+#site-header > .site-title + h1 {
   margin: 0 0 1em;
   font-size: clamp(1.05em, 1.1vw + 0.85em, 1.35em);
   font-weight: 600;
@@ -326,20 +327,62 @@ nav a[aria-current="page"] {
   box-shadow: 0 0 1em #3ee6ff33, inset 0 0 0.45em #3ee6ff29;
 }
 
-/*
- * Icon style for inline SVG or img icons
- */
-.icon {
+/* Decorative icons enhance labels that are complete without CSS. */
+.icon-label::before,
+footer p.motto::before,
+footer p.motto::after {
+  content: "";
   display: inline-block;
   width: 1.25em;
   height: 1.25em;
-  vertical-align: middle;
-  margin-left: 0.4em;
   margin-right: 0.4em;
-  border-radius: 0;
-  border: none;
-  background: inherit;
-  box-shadow: none;
+  vertical-align: middle;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.icon-archive::before {
+  background-image: url("./images/archive.png");
+}
+.icon-bitcoin::before {
+  background-image: url("./images/bitcoin.png");
+}
+.icon-email::before {
+  background-image: url("./images/email.png");
+}
+.icon-feed::before {
+  background-image: url("./images/feed.png");
+}
+.icon-github::before {
+  background-image: url("./images/github.png");
+}
+.icon-gnupg::before {
+  background-image: url("./images/gnupg.png");
+}
+.icon-i2p::before {
+  background-image: url("./images/i2p.png");
+}
+.icon-monero::before {
+  background-image: url("./images/monero.png");
+}
+.icon-openbsd::before {
+  background-image: url("./images/openbsd.png");
+}
+.icon-simplex::before {
+  background-image: url("./images/simplex.png");
+}
+.icon-tor::before {
+  background-image: url("./images/tor.png");
+}
+.icon-www::before {
+  background-image: url("./images/www.png");
+}
+
+footer p.motto::before,
+footer p.motto::after {
+  margin: 0 0.4em;
+  background-image: url("./images/anarchy.png");
 }
 
 /*
@@ -620,10 +663,20 @@ ul ul, ol ol, ul ol, ol ul {
   }
 }
 
-/*
- * Footer
- * Center footer content, except footnote paragraphs.
- */
+/* Supplementary article material outside the main panel. */
+#footnotes {
+  width: min(var(--max-width), 100%);
+  margin: 1.5em auto 0;
+  padding: 1em 0;
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
+#footnotes h2 {
+  color: var(--heading);
+}
+
+/* Footer */
 footer {
   margin-top: 1.5em;
   padding: 1em 0;
@@ -637,35 +690,8 @@ footer p {
   text-align: center;
 }
 
-#footnotes p,
 #footnotes li {
   text-align: start;
-}
-
-#footnotes p sup,
-#footnotes li sup {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.55em;
-  min-height: 1.55em;
-  margin-right: 0.45em;
-  padding: 0 0.38em;
-  border-radius: var(--radius-pill);
-  border: thin solid
-    color-mix(in srgb, var(--blue-light) 55%, var(--accent) 45%);
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--blue-dark) 72%, var(--panel) 28%),
-    color-mix(in srgb, var(--accent) 35%, var(--blue-dark) 65%)
-  );
-  color: #eefdff;
-  font-weight: 800;
-  font-size: 0.76em;
-  line-height: 1;
-  text-align: center;
-  vertical-align: baseline;
-  box-shadow: 0 0 0.55em #3ee6ff30;
 }
 
 /* Footer motto */
@@ -682,11 +708,6 @@ footer h4.motto {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-footer img.motto {
-  width: 1em;
-  height: 1em;
 }
 
 /*
@@ -878,6 +899,7 @@ img {
   main,
   header,
   footer,
+  #footnotes,
   .toc,
   .articles,
   .article-column {
@@ -951,10 +973,6 @@ img {
     border-color: currentcolor !important;
     box-shadow: none !important;
     text-shadow: none !important;
-  }
-
-  .icon[aria-hidden="true"] {
-    display: none !important;
   }
 
   nav ul {

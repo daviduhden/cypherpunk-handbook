@@ -4,49 +4,49 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Sat, 15 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 16 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>The C language's biggest problem: evidence of its insecurity</title>
+      <link>/articles/c-language.html</link>
+      <description>C permits unchecked pointer arithmetic, out-of-bounds access, use after free, and other forms of undefined behavior. Vendor data from Microsoft, Google, and Android shows why memory safety remains a dominant security problem in large C and C++ codebases.</description>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/c-language.html</guid>
+    </item>
     <item>
       <title>Why OpenBSD stands alone</title>
       <link>/articles/openbsd.html</link>
-      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
-      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
+      <description>OpenBSD integrates secure defaults, source auditing, exploit mitigations, privilege-separated daemons, and small base-system implementations. This article explains why that coherent architecture remains superior to hardened Linux, Windows, macOS, mobile systems, and competing BSD designs.</description>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/openbsd.html</guid>
-    </item>
-    <item>
-      <title>Why I stopped using Linux?</title>
-      <link>/articles/why-i-stopped-using-linux.html</link>
-      <description>This article will be dedicated to talking about Systemd/GNU/Linux and the reasons that made me abandon it, at the end I will be talking about alternatives for those who want to do the same.</description>
-      <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/why-i-stopped-using-linux.html</guid>
     </item>
     <item>
       <title>From a strict security perspective, Qubes OS is not reliable</title>
       <link>/articles/qubes-os.html</link>
-      <description>This article is a critical look at Qubes OS, or &amp;quot;XenOS&amp;quot; as I sometimes call it. I focus on its security weaknesses, note where its design is useful, and suggest improvements and more reliable alternatives for different kinds of users.</description>
-      <pubDate>Sun, 05 Jul 2026 00:00:00 GMT</pubDate>
+      <description>This critique evaluates Qubes OS through Xen, dom0, device domains, hardware trust, recovery, and total trusted computing base. It recognizes the value of compartmentalization while explaining where shared hardware and privileged infrastructure limit that model.</description>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/qubes-os.html</guid>
     </item>
     <item>
       <title>Self-hosting SearXNG on OpenBSD over a Tor onion service</title>
       <link>/articles/searxng-on-openbsd.html</link>
       <description>This guide shows how to self-host SearXNG on OpenBSD and expose it through a Tor onion service while keeping privileges separated and permissions minimal.</description>
-      <pubDate>Mon, 08 Jun 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/searxng-on-openbsd.html</guid>
     </item>
     <item>
       <title>Security terms in operating systems</title>
       <link>/articles/security-terms.html</link>
       <description>This glossary defines security terms you will repeatedly encounter in OS hardening, exploit mitigation, identity control, trusted boot, virtualization, and network defense. Each entry is short, practical, and paired with an example so the concept is easy to apply in real systems.</description>
-      <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/security-terms.html</guid>
     </item>
     <item>
-      <title>The C language's biggest problem: evidence of its insecurity</title>
-      <link>/articles/c-language.html</link>
-      <description>C is not a memory-safe language. You can write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two</description>
-      <pubDate>Sat, 02 May 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/c-language.html</guid>
+      <title>Why I stopped using Linux</title>
+      <link>/articles/why-i-stopped-using-linux.html</link>
+      <description>After thirteen years with Linux, I left because its security model, integration burden, operational complexity, and project culture no longer met my requirements. This article explains that decision and identifies the alternatives I consider superior.</description>
+      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/why-i-stopped-using-linux.html</guid>
     </item>
   </channel>
 </rss>

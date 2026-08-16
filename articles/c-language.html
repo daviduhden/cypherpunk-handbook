@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>T.C.H. — The C language's biggest problem: evidence of its
+  <title>T.C.H. - The C language's biggest problem: evidence of its
   insecurity</title>
   <link rel="icon" href="./../favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./../styles.css">
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
   "./../feeds/articles.xml">
   <meta name="description" content=
-  "C is not a memory-safe language. You can write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two">
+  "C permits unchecked pointer arithmetic, out-of-bounds access, use after free, and other forms of undefined behavior. Vendor data from Microsoft, Google, and Android shows why memory safety remains a dominant security problem in large C and C++ codebases.">
   <link rel="canonical" href=
   "https://handbook.uhden.dev/articles/c-language.html">
   <meta property="og:title" content=
-  "T.C.H. — The C language's biggest problem: evidence of its insecurity">
+  "T.C.H. - The C language's biggest problem: evidence of its insecurity">
   <meta property="og:description" content=
-  "C is not a memory-safe language. You can write secure software in C, but flawless memory management is not a realistic expectation, no matter how skilled the programmers are or how many reviews the code receives. Formal verification can help in rare cases; the seL4 microkernel and the CompCert compiler are two">
+  "C permits unchecked pointer arithmetic, out-of-bounds access, use after free, and other forms of undefined behavior. Vendor data from Microsoft, Google, and Android shows why memory safety remains a dominant security problem in large C and C++ codebases.">
   <meta property="og:type" content="article">
   <meta property="og:url" content=
   "https://handbook.uhden.dev/articles/c-language.html">
@@ -26,7 +26,7 @@
   <header id="site-header">
     <p class="site-title">The Cypherpunk Handbook</p>
 
-    <h2>Article</h2>
+    <p class="page-type">Article</p>
   </header>
 
   <nav id="site-nav" aria-label="Primary navigation">
@@ -56,24 +56,24 @@
 
         <h1>The C language's biggest problem: evidence of its insecurity</h1>
 
-        <p class="meta">Written by FlyWithMe (a SimpleX chat user) —
-        <time datetime="2026-05-02">Updated May 2, 2026</time></p>
+        <p class="meta">Written by FlyWithMe (a SimpleX chat user) -
+        <time datetime="2026-08-16">Updated August 16, 2026</time></p>
 
-        <p class="lede">C is not a memory-safe language. You can write secure
-        software in C, but flawless memory management is not a realistic
-        expectation, no matter how skilled the programmers are or how many
-        reviews the code receives. Formal verification can help in rare cases;
-        the seL4 microkernel and the CompCert compiler are two examples. But
-        those projects are exceptions, not the normal path for most
-        software.</p>
+        <p class="lede">C permits unchecked pointer arithmetic, out-of-bounds
+        access, use after free, and other undefined behavior that a memory-safe
+        language prevents in safe code. Review, fuzzing, hardened allocators,
+        sanitizers, and exploit mitigations reduce the risk; they do not change
+        C's language semantics.</p>
 
-        <p class="lede">In practice, formal verification is difficult,
-        expensive, and narrow in scope. It should be treated as a limited tool,
-        not a general answer to C's memory-safety problem.</p>
+        <p class="lede">Formal verification can establish specific properties
+        under explicit assumptions, as seL4 and CompCert demonstrate. It does
+        not automatically verify an application's C code, linked libraries,
+        build process, hardware, or complete deployment.</p>
 
-        <p class="lede">For readers who argue that memory-management
-        vulnerabilities are rare or obsolete, this article looks at the numbers
-        directly.</p>
+        <p class="lede">The strongest evidence comes from organizations that
+        classify vulnerabilities in their own large C and C++ codebases. The
+        aggregate CVE table below is retained as a source-specific snapshot and
+        is not presented as a census of all software vulnerabilities.</p>
       </header>
 
       <nav class="toc" aria-labelledby="c-contents-heading">
@@ -81,8 +81,8 @@
 
         <ol>
           <li>
-            <a href="#c-analysis">Analysis: Memory Management Vulnerabilities
-            in CVEs (2015-2025)</a>
+            <a href="#c-analysis">A Source-Specific CVE Snapshot
+            (2015-2025)</a>
           </li>
 
           <li>
@@ -108,15 +108,18 @@
       </nav>
 
       <section aria-labelledby="c-analysis">
-        <h2 id="c-analysis">Analysis: Memory Management Vulnerabilities in CVEs
-        (2015-2025)</h2>
+        <h2 id="c-analysis">A Source-Specific CVE Snapshot (2015-2025)</h2>
 
         <h3>Total data</h3>
 
-        <p>I analyzed registered CVEs from 2015 through December 20, 2025,
-        using data from CVEDetails.com and the NIST NVD.</p>
+        <p>The original analysis collected category totals from CVEDetails.com
+        and consulted NVD records through December 20, 2025. The retained notes
+        do not include the exact queries or an exported set of CVE IDs. The
+        result is therefore not independently reproducible from this article,
+        and its denominator is smaller than the complete CVE publication count
+        for the period.</p>
 
-        <p><strong>CVEs analyzed: 107,173</strong>
+        <p><strong>Records in the collected source snapshot: 107,173</strong>
         </p>
 
         <h3>Memory-management vulnerabilities</h3>
@@ -127,7 +130,7 @@
           <li>Category: Memory Corruption (heap, use-after-free,
           out-of-bounds). Total CVEs: 20,777</li>
 
-          <li>Total: 36,659</li>
+          <li>Arithmetic sum of both category counts: 36,659</li>
         </ul>
 
         <h3>Percentage of memory-management vulnerabilities</h3>
@@ -135,27 +138,30 @@
         <p><strong>36,659 ÷ 107,173 × 100 = 34.20%</strong>
         </p>
 
-        <p>Put simply, 34.20% of all software vulnerabilities registered
-        between 2015 and 2025 were tied to memory-management errors, including
-        buffer overflows, heap overflows, use-after-free bugs, and
-        out-of-bounds reads or writes.</p>
+        <p>The arithmetic is correct, but the inference is not. Without the
+        underlying CVE IDs, the two category counts cannot be checked for
+        overlap, omissions, or changes in classification. The figure describes
+        this collected snapshot only. It does not establish that 34.20% of all
+        software vulnerabilities published between 2015 and 2025 were memory
+        safety flaws.</p>
 
         <h3>Distribution by year</h3>
 
-        <p>The year-by-year breakdown fluctuates significantly:</p>
+        <p>The retained source snapshot produced the following yearly
+        values:</p>
 
         <div class="table-scroll" role="region" aria-label=
         "Memory management vulnerabilities by year" tabindex="0">
           <table class="c-language-table">
             <caption>
-              Memory-management vulnerabilities by year (2015-2025)
+              Source-snapshot memory-management categories by year (2015-2025)
             </caption>
 
             <thead>
               <tr>
                 <th scope="col">Year</th>
-                <th scope="col">Memory Vulnerabilities</th>
-                <th scope="col">Total CVEs</th>
+                <th scope="col">Memory Category Count</th>
+                <th scope="col">Snapshot Records</th>
                 <th scope="col">Percentage</th>
               </tr>
             </thead>
@@ -245,69 +251,98 @@
       <section aria-labelledby="c-context">
         <h2 id="c-context">Important context</h2>
 
-        <p>The overall 34.20% figure changes sharply depending on the kind of
-        software and the language used:</p>
-
-        <p>For compiled C/C++ code, the share rises to roughly 66–75%. Large
-        organizations have reported the following:</p>
+        <p>Product-specific measurements provide stronger evidence because the
+        organizations define the affected codebase and classification process.
+        The published figures do not describe every C or C++ project:</p>
 
         <ul>
-          <li>Microsoft: 70% of CVEs are related to memory management.</li>
+          <li>
+            <a href=
+            "https://www.microsoft.com/en-us/msrc/blog/2019/07/we-need-a-safer-systems-programming-language">
+            Microsoft reported in 2019</a> that approximately 70% of the
+            vulnerabilities it fixed and assigned CVEs were memory-safety
+            issues.
+          </li>
 
-          <li>Google: 70% of bugs in Chromium are memory-related; 90% on
-          Android.</li>
+          <li>
+            <a href=
+            "https://security.googleblog.com/2021/09/an-update-on-memory-safety-in-chrome.html">
+            Chrome reported in 2021</a> that more than 70% of its severe
+            security bugs were memory-safety problems.
+          </li>
 
-          <li>Apple: 60–70% of vulnerabilities in iOS and macOS.</li>
+          <li>
+            <a href=
+            "https://security.googleblog.com/2024/09/eliminating-memory-safety-vulnerabilities-Android.html">
+            Android reported</a> that memory-safety issues fell from 76% of its
+            vulnerabilities in 2019 to 24% in 2024 as new development shifted
+            toward memory-safe languages.
+          </li>
 
-          <li>Linux Kernel: 66% of vulnerabilities.</li>
-
-          <li>Project Zero (Google): 75% of CVEs exploited in the wild were
-          memory-related; 67% of zero-days in 2021.</li>
+          <li>
+            <a href=
+            "https://security.googleblog.com/2024/10/safer-with-google-advancing-memory.html">
+            Google reported in 2024</a> that its internal analysis estimated
+            75% of CVEs used in zero-day exploits were memory-safety
+            vulnerabilities.
+          </li>
         </ul>
 
-        <p><strong>For memory-safe languages such as Java, Python, and C#, the
-        proportion is less than 5%.</strong>
-        </p>
+        <p>Memory-safe languages exclude spatial and temporal memory errors in
+        code that remains within their safe semantics. Native extensions,
+        foreign-function interfaces, unsafe blocks, runtimes, and logic errors
+        remain in scope. No source retained by this article supports the former
+        blanket claim that fewer than 5% of vulnerabilities in Java, Python,
+        and C# projects involve memory safety.</p>
       </section>
 
       <section aria-labelledby="c-trend">
         <h2 id="c-trend">Temporal trend</h2>
 
-        <p>The data shows an important distinction. The absolute number of
-        memory vulnerabilities remains high, but their relative share dropped
-        from roughly 38–45% in 2015–2016 to 24–29% in 2024–2025. That does not
-        mean memory bugs disappeared. It means other categories grew faster,
-        especially XSS at 31.18% of the total.</p>
+        <p>Within the retained snapshot, the computed share fell from 38-45% in
+        2015-2016 to 25-27% in 2024-2025. The dataset does not establish why.
+        Changes in CVE volume, product mix, category assignment, missing NVD
+        enrichment, and genuine changes in vulnerability prevalence can all
+        move the ratio. The former attribution to XSS was unsupported by a
+        reproducible query and has been removed.</p>
       </section>
 
       <section aria-labelledby="c-2026">
         <h2 id="c-2026">2026 preliminary data</h2>
 
-        <p>According to CVE Program Metrics [24], <strong>15,176 CVE records
-        were published in Q1 2026</strong>. Q2-Q4 were still marked as TBA at
-        the time of writing.</p>
+        <p>As checked on August 16, 2026, <a href=
+        "https://www.cve.org/about/Metrics">CVE Program Metrics</a> reports
+        <strong>15,176 CVE records published in Q1 2026</strong>; Q2-Q4 remain
+        unpublished on that page.</p>
 
-        <p>That confirms that CVE publication volume remained high into 2026.
-        However, this figure should not be mixed directly with the 2015-2025
-        table above, because that analysis uses a different aggregation and
-        categorization method: CVEDetails plus NVD, with "Overflow" and "Memory
-        Corruption" grouped together.</p>
+        <p>That publication count cannot be combined with the 2015-2025 table.
+        The official metric counts all CVE records published by CNAs, while the
+        table uses an undocumented third-party category aggregation.</p>
       </section>
 
       <section aria-labelledby="c-conclusion">
         <h2 id="c-conclusion">Conclusion</h2>
 
-        <p>Of the 107,173 software vulnerabilities registered between 2015 and
-        2025, 36,659, or 34.20%, were related to memory-management errors. That
-        global percentage hides the more serious reality: in the compiled
-        software that dominates critical infrastructure, especially C and C++,
-        roughly two out of three vulnerabilities are caused by
-        memory-management errors. This is why CISA, the NSA, and other agencies
-        keep calling for memory-safe languages where they are practical.</p>
+        <p>The 34.20% aggregate cannot support a global prevalence claim, so
+        the conclusion rests on the stronger product evidence. Microsoft,
+        Chrome, and Android each documented memory safety as a dominant
+        vulnerability class in large C and C++ codebases. Android then measured
+        a steep reduction after shifting new code toward memory-safe languages.
+        C remains appropriate where its control and platform support are
+        required, but its callers, allocators, and reviewers must enforce
+        properties that the language does not. For new security-sensitive
+        components, a memory-safe language removes those bug classes by
+        construction in its safe subset.</p>
       </section>
 
       <section aria-labelledby="c-references">
         <h2 id="c-references">References</h2>
+
+        <p>The conclusion above relies on the Microsoft, Chrome, Android, CISA,
+        CVE Program, NIST, and MITRE material in this archive. The remaining
+        links preserve the original research trail; several are secondary
+        commentary or examples and do not substantiate the 34.20%
+        aggregate.</p>
 
         <ul>
           <li>[1] <a href=
@@ -325,8 +360,8 @@
           </li>
 
           <li>[4] <a href=
-          "https://www.zdnet.com/article/microsoft-70-percent-of-all-security-bugs-are-memory-safety-issues/">
-            Microsoft: 70 percent of all security bugs are memory safety …</a>
+          "https://www.microsoft.com/en-us/msrc/blog/2019/07/we-need-a-safer-systems-programming-language">
+            Microsoft: We need a safer systems programming language</a>
           </li>
 
           <li>[5] <a href=
@@ -608,9 +643,8 @@
 
     <p><strong><a href="./../license.html">LICENSE</a></strong>
     </p>
-    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+
     <p class="motto">VIVE LIBER AUT MORERE</p>
-    <img src="./../images/anarchy.png" alt="freedom" class="motto">
   </footer>
 </body>
 </html>
