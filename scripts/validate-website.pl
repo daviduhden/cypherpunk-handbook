@@ -358,12 +358,9 @@ if ( @css || @js || @json ) {
               . "  \"lineWidth\": 80,\n"
               . "  \"newLineKind\": \"lf\",\n"
               . "  \"plugins\": [\n"
-              . "    \"https://plugins.dprint.dev/"
-              . "typescript-0.96.1.wasm\",\n"
-              . "    \"https://plugins.dprint.dev/"
-              . "g-plane/malva-v0.16.0.wasm\",\n"
-              . "    \"https://plugins.dprint.dev/"
-              . "json-0.23.0.wasm\"\n" . "  ]\n"
+              . "    \"npm:\@dprint/typescript\@0.96.1\",\n"
+              . "    \"npm:dprint-plugin-malva\@0.16.0\",\n"
+              . "    \"npm:\@dprint/json\@0.23.0\"\n" . "  ]\n"
               . "}\n" );
         push @tmp_paths, $dprint_cfg;
         dprint_config_update($dprint_cfg);

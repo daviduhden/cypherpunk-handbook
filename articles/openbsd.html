@@ -55,7 +55,7 @@
         <h1>Why OpenBSD stands alone</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX chat user). Inspired by
-        why-openbsd.rocks - <time datetime="2026-08-16">Updated August 16,
+        why-openbsd.rocks - <time datetime="2026-08-28">Updated August 28,
         2026</time></p>
 
         <p class="lede">OpenBSD integrates secure defaults, source auditing,
@@ -1193,19 +1193,38 @@ permit root</code></pre>
       <section aria-labelledby="obsd-31">
         <h2 id="obsd-31">31 - rpki-client(8)</h2>
 
+        <p><a href="https://www.openbgpd.org/">OpenBGPD</a> implements BGP, the
+        protocol through which autonomous systems and large networks exchange
+        routing information. An ISP can use it to learn which networks are
+        reachable through peers and upstream providers, then advertise the
+        prefixes it can reach. That operational role is one concrete reason
+        OpenBSD remains relevant to the Internet's infrastructure.</p>
+
         <p>The <a href=
-        "https://man.openbsd.org/rpki-client"><code>rpki-client(8)</code></a>
-        utility synchronizes RPKI repositories through a built-in HTTPS client
-        and <code>openrsync(1)</code>. It validates certificates, manifests,
+        "https://www.rpki-client.org/"><code>rpki-client(8)</code></a> utility
+        is an RPKI relying-party implementation. It synchronizes RPKI
+        repositories through a built-in HTTPS client and
+        <code>openrsync(1)</code>, validates certificates, manifests,
         revocation lists, and signed objects beneath configured Trust Anchors,
         then emits Validated ROA Payloads, BGPsec Router Keys, and Validated
-        ASPA Payloads for routing software. This is the operational context
-        that originally required OpenBSD to implement the rsync protocol
-        without importing the GPL rsync code.</p>
+        ASPA Payloads for routing software. OpenBGPD can use the validated RPKI
+        data for Route Origin Validation, classifying a BGP announcement's
+        origin as Valid, Invalid, or NotFound according to the available ROAs.
+        This is the operational context that originally required OpenBSD to
+        implement the rsync protocol without importing the GPL rsync code.</p>
+
+        <p>Together, these tools help operators detect incorrect route-origin
+        announcements, configuration errors, and some forms of route hijacking.
+        RPKI origin validation does not cryptographically validate a complete
+        AS path, and it does not make BGP universally secure. OpenBGPD and
+        rpki-client are not the only BGP and RPKI implementations, but they are
+        a significant OpenBSD contribution to more secure, reliable Internet
+        routing. OpenBSD developers also participate in developing and
+        implementing relevant open Internet standards.</p>
 
         <ul>
-          <li>This is an OpenBSD feature. It is available for installation on
-          Linux and macOS, although no Linux distro uses it by default.</li>
+          <li>rpki-client is developed by the OpenBSD project and is available
+          for installation on Linux and macOS as well.</li>
         </ul>
       </section>
 
