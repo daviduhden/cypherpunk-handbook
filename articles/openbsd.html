@@ -1902,6 +1902,31 @@ permit root</code></pre>
         Nevertheless, that code remains part of the overall implementation
         complexity and potential attack surface.</p>
 
+        <p>Attack surface also depends on how much of that code is enabled and
+        exposed. Total code size measures potential complexity, while code that
+        is loaded, privileged, listening on the network, parsing untrusted
+        input, or reachable through local IPC is more directly relevant to the
+        effective attack surface. The number of daemons and services enabled by
+        default therefore matters.</p>
+
+        <p>OpenBSD deliberately keeps a default installation minimal.
+        Relatively few network-facing or privileged services are enabled by
+        default, and unnecessary services are not started automatically. A
+        process merely running is not necessarily remotely reachable, and a
+        network listener is not necessarily exposed beyond a local interface or
+        firewall. These distinctions matter, but every additional long-running
+        process, privileged helper, IPC endpoint, network listener, or parser
+        of untrusted input increases the code that attackers can continuously
+        reach.</p>
+
+        <p>Mainstream desktop and server operating systems often begin with a
+        larger collection of background services, IPC endpoints, privileged
+        helpers, update agents, discovery services, management components, and
+        network listeners. Individual components can be well designed and
+        securely configured, but their aggregate exposure still expands the
+        attack surface. OpenBSD's minimal default configuration is a deliberate
+        security property, not merely an aesthetic preference.</p>
+
         <p>The very large difference between the OpenBSD and Linux kernel trees
         illustrates OpenBSD's "less is more" approach. OpenBSD removes or
         avoids unnecessary functionality, drivers, compatibility layers,
