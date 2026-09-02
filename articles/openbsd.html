@@ -669,6 +669,9 @@ permit root</code></pre>
           makes Linux security fragmented. macOS and Windows have more unified
           development, but they tend to prioritize features and compatibility,
           especially Windows with its heavy legacy burden.</li>
+
+          <li>Windows, macOS, and BSDs do not have this problem. <strong>Linux
+          falls behind here.</strong></li>
         </ul>
       </section>
 
@@ -1453,7 +1456,7 @@ permit root</code></pre>
       </section>
 
       <section aria-labelledby="obsd-42">
-        <h2 id="obsd-42">42 - vmm(4) - compartmentalized hypervisor</h2>
+        <h2 id="obsd-42">42 - vmm(4) - hardened hypervisor</h2>
 
         <p>Theo de Raadt has long criticized virtual machines and their
         security model, arguing that hypervisors add a high-value attack
@@ -1503,12 +1506,39 @@ permit root</code></pre>
         <code>vmd(8)</code> or other device code.</p>
 
         <p>The missing features reduce the emulation, passthrough, and
-        migration paths that OpenBSD must maintain and expose. The FAQ does not
-        identify security as the motive for every omission. The host trust
+        migration paths that OpenBSD must maintain and expose. The host trust
         boundary still includes <code>vmm(4)</code>, <code>vmd(8)</code>, and
         the kernel; an exploitable bug there can cause an escape. OpenBSD's
         advantage is direct project control over this compact stack and
         consistent process isolation throughout userland device emulation.</p>
+
+        <p>The following <code>cloc</code> counts describe the hypervisor
+        implementations themselves, not the complete virtualization stack: Xen
+        is about 660,000 lines of code; KVM is about 83,500 lines for x86 only
+        and 217,700 lines across all architectures; bhyve is about 80,000
+        lines; NOVA is about 24,000 lines; and OpenBSD's <code>vmm(4)</code> is
+        about 9,600 lines. This is why vmm's deliberately restricted design
+        matters: a smaller implementation leaves less hypervisor code to audit
+        and less code that can contain an escape.</p>
+
+        <p>The hypervisor alone is not the whole virtualization attack surface.
+        OpenBSD's stack also includes about 19,000 lines in <code>vmd(8)</code>
+        and about 1,000 lines in the AMD PSP driver, for an approximately
+        29,600-line OpenBSD virtualization stack. Linux/KVM deployments also
+        include QEMU and their surrounding management and device-emulation
+        components. Depending on the boundary being measured, Qubes OS also
+        includes dom0 and AppVM infrastructure, while CPU firmware related to
+        virtualization belongs to the broader trusted computing base. External
+        compartmentalization is useful when upstream software cannot
+        practically be modified, but it does not eliminate attack surface.</p>
+
+        <p>Least-privilege mechanisms inside software, such as
+        <code>pledge(2)</code>, <code>unveil(2)</code>, privilege separation,
+        and sandboxing, also require code. They can be preferable to a larger
+        VM or container isolation stack when they remove comparable authority
+        with much less additional implementation complexity. Both approaches
+        are security tools; the important questions are how much code they add,
+        where it runs, and which privileges they remove.</p>
 
         <ul>
           <li>QEMU/KVM, Xen, Hyper-V, VMware, and VirtualBox support broader
@@ -1776,15 +1806,14 @@ permit root</code></pre>
 
         <p>In that exchange, the project rejected the proposed terminology
         change because its maintainers did not accept the technical case. That
-        decision follows the published goal quoted above; it does not require a
-        broader claim about every decision the project has made.</p>
+        decision follows the published goal quoted above.</p>
 
         <ul>
           <li>
             <p>Linux, by contrast, often tries to satisfy social expectations
             before focusing on software efficiency and security. Vanity and
-            public approval sometimes matter too much in the Linux world, while
-            old bugs and structural problems remain unresolved.</p>
+            public approval matter too much in the Linux world, while old bugs
+            and structural problems remain unresolved.</p>
 
             <p>One example is the merge of inclusive-terminology rules into the
             Linux kernel tree, aimed at replacing terms such as "master",
@@ -1822,16 +1851,16 @@ permit root</code></pre>
           </li>
         </ul>
 
-        <p>The systemd proposal is more serious than a terminology rule because
-        it would have changed runtime behavior according to a political label.
-        The linked review records the proposal and its reception. I treat that
-        willingness to encode political classification in system software as a
-        trust failure, regardless of whether the patch ultimately ships.</p>
+        <p>The most disturbing part is that many people supported the proposal.
+        To me, this shows how quickly a political or social idea can appear in
+        the Linux world and create risk for specific users. If maintainers
+        decide that a group is "problematic" and should be treated differently,
+        a harmful feature can appear very quickly. That makes it hard to trust
+        the ecosystem calmly.</p>
 
-        <p>OpenBSD's unified kernel and userland do not mechanically prevent a
-        political decision. The stronger evidence is governance: the project
-        publishes technical merit as a goal, conducts development in public,
-        and rejected the cited proposal on that basis.</p>
+        <p>OpenBSD is different. As mentioned in topic 12, the kernel and
+        userland are developed together, which greatly reduces the chance of
+        this kind of surprise entering the system.</p>
 
         <ul>
           <li>
@@ -1842,17 +1871,14 @@ permit root</code></pre>
           </li>
 
           <li>
-            <p>I view parts of the FreeBSD community as moving in the same
-            direction, but I have not established a corresponding change in
-            FreeBSD's technical decisions. Community culture and source-tree
-            policy are separate claims.</p>
+            <p>FreeBSD is becoming terrible in this regard. The community is
+            filling up with people like this, which is not a problem as long as
+            they keep their desire for control out of OS development.</p>
           </li>
 
           <li>
-            <p>I have not examined enough NetBSD or DragonFlyBSD governance
-            records to make the same claim about them. Their absence from this
-            comparison is a limit of my evidence, not evidence that the issue
-            does or does not exist there.</p>
+            <p>NetBSD and DragonFlyBSD do not seem to suffer from this type of
+            problem, but I do not really know.</p>
           </li>
         </ul>
       </section>
@@ -1860,62 +1886,41 @@ permit root</code></pre>
       <section aria-labelledby="obsd-49">
         <h2 id="obsd-49">49 - Less attack surface</h2>
 
-        <p>OpenBSD publishes an integrated <code>src</code> tree for its kernel
-        and base userland and a separate <code>xenocara</code> tree for X. A
-        reproducible line-count comparison would have to fix the revision, file
-        types, generated files, imported components, and architecture scope for
-        every system. Raw totals that omit those choices create false
-        precision. The defensible comparison is architectural:</p>
+        <p>A <code>cloc</code> count using the same methodology on both source
+        trees puts the OpenBSD kernel (<code>src/sys</code>) at approximately 8
+        million lines of code, while the Linux kernel is approximately 30
+        million. These are total source-line counts, not architecture-specific
+        counts or a claim that every line is equally exploitable.</p>
 
-        <ul>
-          <li>A Linux distribution combines an independently developed kernel
-          with a much larger collection of upstream packages. Debian's
-            <a href="https://sources.debian.org/stats/#sloc_current">live
-            source statistics</a> report more than a billion source lines
-            across the archive. That archive is not the code installed or
-            reachable on one machine, but it illustrates the ecosystem and
-            maintenance scope from which deployments are assembled.
-          </li>
+        <p>Lines of code are a coarse measure of software size and complexity,
+        not a standalone security metric. More code means more code that can
+        contain defects, unintended interactions, or exploitable behavior. A
+        smaller codebase does not automatically make software secure, and
+        security mechanisms themselves require code. Privilege separation,
+        least privilege, sandboxing, and compartmentalization can add code
+        while reducing the effective authority available to an attacker.
+        Nevertheless, that code remains part of the overall implementation
+        complexity and potential attack surface.</p>
 
-          <li>OpenBSD's base tree deliberately excludes many drivers,
-          compatibility layers, services, and administrative frameworks found
-          in broader systems. What is absent cannot expose a parser, privileged
-          interface, or dependency edge.</li>
-        </ul>
+        <p>The very large difference between the OpenBSD and Linux kernel trees
+        illustrates OpenBSD's "less is more" approach. OpenBSD removes or
+        avoids unnecessary functionality, drivers, compatibility layers,
+        services, and administrative frameworks rather than assuming that
+        mitigations can make unlimited complexity harmless. This smaller,
+        coherent base supports aggressive auditing, secure defaults, privilege
+        separation, and exploit mitigations.</p>
 
-        <p>Windows and macOS do not publish source trees that permit the same
-        current line-count comparison. FreeBSD and NetBSD publish their source,
-        but a fair comparison requires matching generated files, imported code,
-        architectures, and userland scope. I therefore do not attach an
-        unverifiable number to those systems.</p>
+        <p>OpenBSD's base system is distinct from arbitrary third-party
+        software installed through ports or packages. Such software can add
+        substantial code and attack surface and does not universally use
+        OpenBSD-specific containment mechanisms. That does not change the
+        security properties of the audited base system or the minimal default
+        installation.</p>
 
-        <p>Source lines are not identical to remotely reachable attack surface,
-        and a line count says nothing by itself about code quality. Scope still
-        matters: every parser, compatibility path, driver, and privileged
-        subsystem adds behavior that must be maintained and reviewed. OpenBSD's
-        minimalism removes entire classes of such behavior instead of assuming
-        that mitigations can make unlimited complexity harmless.</p>
-
-        <p>A complete Linux distribution adds a package set and independently
-        maintained userland to its kernel. Not every installed line is
-        reachable by an attacker, but a broad deployment carries more code,
-        dependency edges, and separately governed security policy. Windows and
-        macOS are harder to quantify because their complete corresponding
-        source trees are not public.</p>
-
-        <p>OpenBSD starts with a smaller, more coherent base than mainstream
-        general-purpose operating systems. That reduces the code and interfaces
-        covered by each audit and makes system-wide mitigations easier to
-        apply. The tradeoff is narrower hardware support, application
-        compatibility, and feature coverage. For a security-first system, I
-        consider that trade decisively superior.</p>
-
-        <p>The official OpenBSD websites express the same preference in a form
-        visitors can inspect directly: mostly static HTML, no client-side
-        application framework, and no analytics payload. That design avoids the
-        third-party scripts, browser storage, and telemetry common on major
-        technology websites. Minimalism improves privacy because the site
-        simply does not ship those mechanisms.</p>
+        <p>The same philosophy appears in OpenBSD's official websites: a small,
+        mostly static implementation without client-side application frameworks
+        or analytics payloads avoids third-party scripts, browser storage, and
+        telemetry common on major technology websites.</p>
       </section>
 
       <p>El Psy Kongroo!</p>
