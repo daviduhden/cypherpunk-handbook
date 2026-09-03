@@ -4,34 +4,34 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Fri, 28 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 03 Sep 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
-    <item>
-      <title>Why OpenBSD stands alone</title>
-      <link>/articles/openbsd.html</link>
-      <description>OpenBSD integrates secure defaults, source auditing, exploit mitigations, privilege-separated daemons, and small base-system implementations. This article explains why that coherent architecture remains superior to hardened Linux, Windows, macOS, mobile systems, and competing BSD designs.</description>
-      <pubDate>Fri, 28 Aug 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/openbsd.html</guid>
-    </item>
     <item>
       <title>The C language's biggest problem: evidence of its insecurity</title>
       <link>/articles/c-language.html</link>
-      <description>C permits unchecked pointer arithmetic, out-of-bounds access, use after free, and other forms of undefined behavior. Vendor data from Microsoft, Google, and Android shows why memory safety remains a dominant security problem in large C and C++ codebases.</description>
-      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <description>C is not memory-safe. This article argues that flawless memory management in C is not a realistic expectation and presents the statistical case that memory-management errors remain a dominant security problem.</description>
+      <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/c-language.html</guid>
+    </item>
+    <item>
+      <title>Why OpenBSD stands alone</title>
+      <link>/articles/openbsd.html</link>
+      <description>OpenBSD is one of the most secure operating systems in the world. This article argues that its integrated security architecture is superior to Windows, macOS, iOS, Android, Linux, Qubes OS, and competing BSD designs.</description>
+      <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/openbsd.html</guid>
     </item>
     <item>
       <title>From a strict security perspective, Qubes OS is not reliable</title>
       <link>/articles/qubes-os.html</link>
-      <description>This critique evaluates Qubes OS through Xen, dom0, device domains, hardware trust, recovery, and total trusted computing base. It recognizes the value of compartmentalization while explaining where shared hardware and privileged infrastructure limit that model.</description>
-      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <description>This article argues that Qubes OS is not reliable when security is the first priority. It examines Xen, dom0, device domains, hardware trust, recovery, and the total trusted computing base, then recommends stronger alternatives.</description>
+      <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/qubes-os.html</guid>
     </item>
     <item>
       <title>Self-hosting SearXNG on OpenBSD over a Tor onion service</title>
       <link>/articles/searxng-on-openbsd.html</link>
       <description>This guide shows how to self-host SearXNG on OpenBSD and expose it through a Tor onion service while keeping privileges separated and permissions minimal.</description>
-      <pubDate>Sun, 16 Aug 2026 00:00:00 GMT</pubDate>
+      <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/searxng-on-openbsd.html</guid>
     </item>
     <item>

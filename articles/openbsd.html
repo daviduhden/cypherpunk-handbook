@@ -9,12 +9,12 @@
   <link rel="alternate" type="application/rss+xml" title="Articles RSS" href=
   "./../feeds/articles.xml">
   <meta name="description" content=
-  "OpenBSD integrates secure defaults, source auditing, exploit mitigations, privilege-separated daemons, and small base-system implementations. This article explains why that coherent architecture remains superior to hardened Linux, Windows, macOS, mobile systems, and competing BSD designs.">
+  "OpenBSD is one of the most secure operating systems in the world. This article argues that its integrated security architecture is superior to Windows, macOS, iOS, Android, Linux, Qubes OS, and competing BSD designs.">
   <link rel="canonical" href=
   "https://handbook.uhden.dev/articles/openbsd.html">
   <meta property="og:title" content="T.C.H. - Why OpenBSD stands alone">
   <meta property="og:description" content=
-  "OpenBSD integrates secure defaults, source auditing, exploit mitigations, privilege-separated daemons, and small base-system implementations. This article explains why that coherent architecture remains superior to hardened Linux, Windows, macOS, mobile systems, and competing BSD designs.">
+  "OpenBSD is one of the most secure operating systems in the world. This article argues that its integrated security architecture is superior to Windows, macOS, iOS, Android, Linux, Qubes OS, and competing BSD designs.">
   <meta property="og:type" content="article">
   <meta property="og:url" content=
   "https://handbook.uhden.dev/articles/openbsd.html">
@@ -55,14 +55,15 @@
         <h1>Why OpenBSD stands alone</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX chat user). Inspired by
-        why-openbsd.rocks - <time datetime="2026-08-28">Updated August 28,
+        why-openbsd.rocks - <time datetime="2026-09-03">Updated September 3,
         2026</time></p>
 
-        <p class="lede">OpenBSD integrates secure defaults, source auditing,
-        exploit mitigations, privilege-separated daemons, and small base-system
-        implementations. This article explains why that coherent architecture
-        remains superior to hardened Linux, Windows, macOS, mobile systems, and
-        competing BSD designs.</p>
+        <p class="lede">This is a summary of why OpenBSD is one of the most
+        secure operating systems in the world, and why, in my judgment,
+        Windows, macOS, iOS, Android, and even a hardened Linux system will
+        never compare with it. That includes the other BSDs, Qubes OS (FraudOS,
+        as explained in <a href="./qubes-os.html">my article about Qubes
+        OS</a>), Fedora Secureblue, and hardened Gentoo.</p>
 
         <p>For readers interested in discussing OpenBSD, there is also an
         independent <a href=
@@ -261,7 +262,7 @@
           </li>
 
           <li>
-            <a href="#obsd-42">vmm(4) - compartmentalized hypervisor</a>
+            <a href="#obsd-42">vmm(4) - hardened hypervisor</a>
           </li>
 
           <li>
@@ -309,10 +310,11 @@
         </blockquote>
 
         <ul>
-          <li>Linux's current model cannot provide OpenBSD's unified security
-          architecture. A distribution hardens the kernel and userland, but
-          cannot turn their independently governed upstream projects into one
-          auditable base system.</li>
+          <li><strong>Linux is limited and will never be truly secure. It was
+          not built for that.</strong> Its current model cannot provide
+          OpenBSD's unified security architecture. A distribution can harden
+          the kernel and userland, but it cannot turn their independently
+          governed upstream projects into one auditable base system.</li>
         </ul>
 
         <h2 id="obsd-0">0 - Philosophy</h2>
@@ -363,8 +365,16 @@
         random input is needed, arc4random is the standard choice. It is an
         abstraction over a cryptographic pseudorandom generator, currently
         ChaCha20. The name means "A Replacement Call for Random." Callers
-        obtain random values without managing generator state or choosing a
-        cipher.</p>
+        obtain high-quality 32-bit random values quickly without managing
+        generator state or choosing a cipher.</p>
+
+        <ul>
+          <li>Modern Linux userlands can provide the arc4random API through
+          recent libc versions or libbsd, and ports of OpenBSD's implementation
+          exist. That is not the same as making it a base-system interface,
+          integrating it with getentropy, and using it consistently throughout
+          one operating-system source tree. OpenBSD does all three.</li>
+        </ul>
       </section>
 
       <section aria-labelledby="obsd-3">
@@ -398,6 +408,10 @@
         <p>These firsts establish a recurring pattern: OpenBSD deploys
         system-wide defenses as defaults while other operating systems still
         leave comparable mechanisms optional or unintegrated.</p>
+
+        <p>Using OpenBSD means receiving the strongest security mechanisms as
+        integrated defaults, often before other operating systems deploy them
+        system-wide.</p>
       </section>
 
       <section aria-labelledby="obsd-4">
@@ -428,8 +442,9 @@
         avoids race conditions, simultaneous access to shared resources, and
         overload caused by multiple instances, reducing the risk of data
         corruption and load spikes. Randomized offsets distribute synchronized
-        starts and address the thundering-herd problem; they are an
-        availability control, not an access-control boundary.</p>
+        starts, address the thundering-herd problem, and make exact execution
+        windows less predictable to an observer; they are an availability and
+        scheduling control, not an access-control boundary.</p>
 
         <p>OpenBSD's version is not a ground-up replacement: it descends from
         Paul Vixie's implementation and is maintained as part of the coherent
@@ -464,9 +479,9 @@
 
         <ul>
           <li>systemd timers can express randomized delays and prevent
-          overlapping units on Linux (<strong>I strongly oppose systemd's
-          design and scope</strong>), but these properties depend on the unit's
-          configuration rather than the base cron format.</li>
+          overlapping units on Linux (<strong>fuck systemd</strong>), but these
+          properties depend on the unit's configuration rather than the base
+          cron format.</li>
         </ul>
       </section>
 
@@ -518,7 +533,8 @@
         behavior out of the base system. A bad rule can still be unsafe, but
         OpenBSD provides the clearer foundation.</p>
 
-        <p>This is a minimal doas.conf configuration:</p>
+        <p>This is an example of a full, ultra-mega-hyper-overpowered,
+        absolutely hardened <code>doas.conf</code> configuration:</p>
 
         <pre><code>permit &lt;user&gt; as root
 permit root</code></pre>
@@ -526,6 +542,9 @@ permit root</code></pre>
         authentication; a production policy should add <code>cmd</code> and
         <code>args</code> constraints wherever the workflow permits them. Even
         this broad example exposes its authority in two readable rules.</p>
+
+        <p>Compare that with even a basic sudo configuration and the advantage
+        in readability is obvious.</p>
 
         <ul>
           <li>Portable implementations make doas available on Linux, although
@@ -624,6 +643,9 @@ permit root</code></pre>
           the OpenBSD kernel. That extra interior randomization denies an
           attacker the stable object layout of a fixed kernel build.</li>
         </ul>
+
+        <p>Together with library-order randomization, this is absolutely epic.
+        Cry more, Linux.</p>
       </section>
 
       <section aria-labelledby="obsd-12">
@@ -671,7 +693,7 @@ permit root</code></pre>
           especially Windows with its heavy legacy burden.</li>
 
           <li>Windows, macOS, and BSDs do not have this problem. <strong>Linux
-          falls behind here.</strong></li>
+          falls behind here. Fuck you, Linux.</strong></li>
         </ul>
       </section>
 
@@ -690,6 +712,8 @@ permit root</code></pre>
 
         <p>LibreSSL develops <code>libcrypto</code>, <code>libssl</code>, and
         the smaller <code>libtls</code> API inside the OpenBSD source tree. The
+        cleanup and modernization included algorithms and curves such as
+        FRP256v1, the RFC 5639 Brainpool curves, ChaCha20, and Poly1305. The
         project also publishes portable releases for Linux, the BSDs, macOS,
         and Windows. Portability demonstrates that OpenBSD's implementation can
         benefit other systems without making unsupported claims about which TLS
@@ -755,10 +779,13 @@ permit root</code></pre>
         than the GPL, which places more restrictions on code use.</p>
 
         <p>This licensing culture also helps protect the project from corporate
-        capture and internal pressure. Linux has spent years pulled between
-        community goals and large corporate interests, especially from
-        companies such as IBM that want Linux shaped for enterprise platforms.
-        That pressure damages the Unix philosophy.</p>
+        capture, programmer infiltration, internal corruption, and pressure to
+        sabotage or backdoor the code. I believe corporate attempts to steer
+        Linux, including Microsoft's influence and its placement of many paid
+        developers in the ecosystem, create exactly this risk and encourage
+        factional conflict. That is my judgment about the governance threat,
+        not a claim that a permissive license can technically prevent a
+        malicious patch from being submitted.</p>
 
         <p>A license as permissive as BSD allows companies to use, close,
         distribute, and resell OpenBSD code. I see that freedom as a strength,
@@ -814,7 +841,7 @@ permit root</code></pre>
           the Arch Wiki partly compensate for this gap.</li>
         </ul>
 
-        <p><strong>Linux still falls short here.</strong>
+        <p><strong>FUCK YOU, LINUX.</strong>
         </p>
       </section>
 
@@ -839,9 +866,12 @@ permit root</code></pre>
       <section aria-labelledby="obsd-18">
         <h2 id="obsd-18">18 - Memory allocation randomization</h2>
 
-        <p>Windows, Linux, macOS, and Android all provide system allocators.
-        OpenBSD applies its hardened allocator and diagnostic behavior as the
-        base-system default rather than as an optional replacement.</p>
+        <p>Windows, Linux, macOS, and Android all provide system allocators. In
+        my judgment, OpenBSD has the world's most secure general-purpose system
+        allocator and applies its hardened allocator and diagnostic behavior as
+        the base-system default rather than as an optional replacement. The
+        normal Linux allocator is a joke by comparison; macOS does much
+        better.</p>
 
         <ul>
           <li>
@@ -860,8 +890,10 @@ permit root</code></pre>
         <p>OpenBSD's allocator combines exploit resistance with diagnostics
         intended to expose memory errors during development. That design
         attacks both sides of the problem: it detects defects before release
-        and makes surviving defects harder to exploit. It does not prove that
-        the allocator contains fewer undiscovered bugs.</p>
+        and makes surviving defects harder to exploit. That dual purpose gives
+        OpenBSD an advantage over an allocator focused only on hardening,
+        although it cannot prove that either implementation contains fewer
+        undiscovered bugs.</p>
       </section>
 
       <section aria-labelledby="obsd-19">
@@ -942,7 +974,11 @@ permit root</code></pre>
             firewalld and ufw. This layered policy surface is harder to inspect
             than one <code>pf.conf</code>; inconsistent frontend and native
             rules can also leave an administrator reviewing only part of the
-            active policy.</p>
+            active policy. In practice, iptables and nftables are absolute
+            garbage compared with pf: they are so complex that even advanced
+            users can make security-critical mistakes, which is why graphical
+            frontends and entire professional certification courses exist to
+            manage them.</p>
           </li>
 
           <li>
@@ -1130,7 +1166,9 @@ permit root</code></pre>
           <li>Linux network managers and privacy-focused systems such as Tails
           also support MAC-address randomization. Defaults and per-network
           behavior differ, so the active configuration matters more than the
-          presence of a toggle.</li>
+          presence of a toggle. Secureblue and Qubes NetVMs also provide this;
+          Whonix does not provide the same host-interface behavior by
+          itself.</li>
         </ul>
       </section>
 
@@ -1140,9 +1178,10 @@ permit root</code></pre>
         <p><code>rcctl</code> maintains OpenBSD's daemon settings in
         <code>rc.conf.local</code>. I prefer this narrow text-based control
         plane to systemd's combined service, logging, session, timer, network,
-        and IPC architecture. The security argument is inspectability and
-        limited scope, not a claim that a short command automatically makes its
-        services secure.</p>
+        and IPC architecture. Systemd is garbage, almost an operating system in
+        itself: absolute Red Hat devil crap. The security argument is
+        inspectability and limited scope, not a claim that a short command
+        automatically makes its services secure.</p>
 
         <p>Strictly speaking, <code>rcctl</code> is not OpenBSD's init system
         or a resident supervisor. The narrowly scoped <a href=
@@ -1249,6 +1288,13 @@ permit root</code></pre>
         ship with project-maintained privilege boundaries and conservative
         defaults. Threat-specific authentication, network, and access policy
         still belongs to the administrator.</p>
+
+        <p>A secure system by default is necessary. The average unprepared user
+        should not have to invent a hardening policy merely to sleep
+        peacefully; that process can introduce more mistakes and security
+        holes. Secureblue is the only Linux desktop distribution I consider a
+        serious example of this goal, and it still operates at a much lower
+        level of integration than OpenBSD.</p>
 
         <ul>
           <li>Linux distributions assemble security policy from kernel
@@ -1432,6 +1478,10 @@ permit root</code></pre>
         and release process as the rest of OpenBSD networking. It does not make
         a VPN provider trustworthy or conceal endpoint metadata by itself.</p>
 
+        <p>This means an offline base installation can configure a WireGuard
+        VPN immediately, including a provider such as Mullvad. That is a useful
+        private network path, but no VPN alone guarantees total anonymity.</p>
+
         <ul>
           <li>WireGuard is integrated into the OpenBSD kernel. Linux, Windows,
           and macOS have WireGuard support, but not in this OpenBSD-style base
@@ -1540,6 +1590,12 @@ permit root</code></pre>
         are security tools; the important questions are how much code they add,
         where it runs, and which privileges they remove.</p>
 
+        <p>That makes vmm the hypervisor I trust most. QEMU/KVM, Xen, VMware,
+        VirtualBox, and other general-purpose hypervisors carry far more code
+        and functionality and are unreliable as security boundaries without
+        extensive hardening. Even systemd enlarges the host attack surface in a
+        virtualization deployment.</p>
+
         <ul>
           <li>QEMU/KVM, Xen, Hyper-V, VMware, and VirtualBox support broader
           hardware models, management APIs, snapshot formats, passthrough, or
@@ -1573,20 +1629,24 @@ permit root</code></pre>
 
         <ul>
           <li>The standard X11/Xorg stack carries decades of protocol and
-          compatibility code. Xenocara gives OpenBSD direct control over its
-          local patches, unprivileged execution, authentication, and network
-          policy. XLibre is a later X server fork available on Linux, but it
-          does not inherit OpenBSD's kernel, privilege, and base-system
-          integration.</li>
+          compatibility code; in its ordinary form it is garbage, practically a
+          walking backdoor of ambient client authority and legacy behavior.
+          Xenocara gives OpenBSD direct control over its local patches,
+          unprivileged execution, authentication, and network policy. XLibre is
+          a later X server fork available on Linux, but it does not inherit
+          OpenBSD's kernel, privilege, and base-system integration.</li>
         </ul>
 
-        <p>Wayland removes X11's default ability for one client to inspect or
-        inject input into every other client, but the compositor, protocols,
-        portals, and XWayland compatibility server still define the effective
-        boundary. Fedora Secureblue disables XWayland by default and excludes
-        compositors such as Hyprland when their security model does not meet
-        its policy. Xenocara and XLibre instead harden and maintain an X11
-        stack; only XLibre is available on Linux.</p>
+        <p>Wayland is incomparably safer than ordinary X11 because it removes
+        X11's default ability for one client to inspect or inject input into
+        every other client, but the compositor, protocols, portals, and
+        XWayland compatibility server still define the effective boundary.
+        Fedora Secureblue disables XWayland by default and excludes compositors
+        such as Hyprland when their security model does not meet its policy.
+        Wayland is still not automatically safe; compositor and XWayland bugs
+        can break its beloved sandboxing, and the failures have been grotesque.
+        Xenocara and XLibre instead harden and maintain an X11 stack; only
+        XLibre is available on Linux.</p>
       </section>
 
       <section aria-labelledby="obsd-44">
@@ -1660,9 +1720,9 @@ permit root</code></pre>
           Networks, the company that made the industry's premier network
           security scanning software package Ballista (Secure Networks got
           purchased by Network Associates, Ballista got renamed to Cybercop
-          Scanner, and well&hellip;) That company did a lot of security
-          research, and thus fit in well with the OpenBSD stance. OpenBSD
-          passed Ballista's tests with flying colors since day 1.</p>
+          Scanner, and well...) That company did a lot of security research,
+          and thus fit in well with the OpenBSD stance. OpenBSD passed
+          Ballista's tests with flying colors since day 1.</p>
 
           <p>Another facet of our security auditing process is its
           proactiveness. In most cases we have found that the determination of

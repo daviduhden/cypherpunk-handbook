@@ -57,7 +57,7 @@
         <h1>Self-hosting SearXNG on OpenBSD over a Tor onion service</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
-        <time datetime="2026-08-16">Updated August 16, 2026</time></p>
+        <time datetime="2026-09-03">Updated September 3, 2026</time></p>
 
         <p class="lede">This guide shows how to self-host SearXNG on OpenBSD
         and expose it through a Tor onion service while keeping privileges
@@ -67,13 +67,15 @@
           <h2>TL;DR</h2>
 
           <ul>
-            <li>Create a dedicated <code>_searxng</code> user before installing
-            dependencies.</li>
+            <li>Install an explicit Python 3.13 package, Tor, and the build
+            dependencies, then create a dedicated <code>_searxng</code>
+            user.</li>
 
-            <li>Install and run SearXNG inside a Python virtual environment,
-            store a separate <code>settings.yml</code> in
-            <code>/home/searxng</code>, and optionally force all outbound
-            traffic through Tor.</li>
+            <li>Install SearXNG inside a Python virtual environment, including
+            the modules required to bootstrap its non-isolated build. Keep a
+            small, separate <code>settings.yml</code> in
+            <code>/home/searxng</code> and force search traffic through
+            Tor.</li>
 
             <li>Bind Gunicorn to localhost and publish the service via a Tor v3
             onion service to avoid exposing SearXNG directly on clearnet.</li>
@@ -110,6 +112,11 @@
           </li>
 
           <li>
+            <a href="#searxng-verification">Verification and
+            troubleshooting</a>
+          </li>
+
+          <li>
             <a href="#searxng-updates">Updating SearXNG</a>
           </li>
 
@@ -126,26 +133,49 @@
       <section aria-labelledby="searxng-context">
         <h2 id="searxng-context">Context</h2>
 
-        <p>This guide builds on an older tumfatig.net guide and adapts the
-        installation to OpenBSD. SearXNG changes rapidly, while its official
-        installation documentation targets Linux and recommends either the
-        container image or the project installation script. The manual
-        procedure below was tested on OpenBSD 7.9. Read the upstream migration
-        notes before applying it to a later SearXNG release.</p>
+        <p>This guide teaches OpenBSD users how to self-host a SearXNG instance
+        at an onion address. I separate privileges and grant as few permissions
+        as possible. It started as a copy of an outdated-ass tumfatig.net
+        guide, but the commands below have the changes needed for current
+        SearXNG and OpenBSD.</p>
+
+        <p>I tested this procedure on a fully patched OpenBSD 7.9 system.
+        SearXNG is a rolling release: every commit to its <code>master</code>
+        branch is a release, and infrastructure requirements can change. Read
+        the upstream maintenance notes before applying these commands to a
+        later version.</p>
       </section>
 
       <section aria-labelledby="searxng-preliminary">
         <h2 id="searxng-preliminary">Preliminary steps</h2>
 
+        <p>Run the commands in this section as root. Patch the base system,
+        update installed packages, and install the exact Python branch shipped
+        with OpenBSD 7.9. Using <code>python</code> without a branch can be
+        ambiguous to <code>pkg_add</code>.</p>
+
+        <pre><code># syspatch
+# pkg_add -u
+# pkg_add git libxslt python%3.13 tor torsocks</code></pre>
+        <p>Enable Tor now because both the optional bootstrap proxy and the
+        SearXNG outgoing proxy use its SOCKS listener on
+        <code>127.0.0.1:9050</code>.</p>
+
+        <pre><code># rcctl enable tor
+# rcctl start tor
+# rcctl check tor
+tor(ok)</code></pre>
         <h3>Set up a dedicated user</h3>
 
-        <pre><code>$ nano /etc/login.conf.d/searxng
+        <pre><code># install -d -m 0755 /etc/login.conf.d
+# vi /etc/login.conf.d/searxng
 
 searxng:\
         :openfiles=4096:\
         :tc=daemon:</code></pre>
 
-        <pre><code>$ useradd -g =uid -c "SearXNG metasearch engine" \
+        <pre><code># cap_mkdb /etc/login.conf
+# useradd -g =uid -c "SearXNG metasearch engine" \
   -L searxng -s /sbin/nologin -d /home/searxng   \
   -m -r 2000..2500 _searxng</code></pre>
       </section>
@@ -153,12 +183,9 @@ searxng:\
       <section aria-labelledby="searxng-installation">
         <h2 id="searxng-installation">Installation</h2>
 
-        <h3>Install minimum system dependencies</h3>
-
-        <pre><code>$ pkg_add git python libxslt</code></pre>
         <h3>Install SearXNG sources and prepare the environment</h3>
 
-        <pre><code>$ doas -u _searxng /bin/ksh -c 'cd /home/searxng &amp;&amp; exec /bin/ksh -l'</code></pre>
+        <pre><code># su -l -s /bin/ksh _searxng</code></pre>
 
         <pre><code>$ echo "umask 077" &gt;&gt; ~/.profile
 $ git clone https://github.com/searxng/searxng ~/src</code></pre>
@@ -168,34 +195,56 @@ $ echo ". ~/pyenv/bin/activate" &gt;&gt; ~/.profile
 $ ^D</code></pre>
         <h3>Install SearXNG in the virtual environment</h3>
 
-        <p>If you want, use <code>torsocks</code> with each <code>git
-        clone</code>/<code>git pull</code> and <code>pip</code> command to
-        fetch packages through Tor.</p>
+        <p>If you want the bootstrap downloads to use Tor too, put
+        <code>torsocks</code> before the <code>git</code> and <code>pip</code>
+        commands. This is optional; routing SearXNG's searches through Tor is
+        configured separately below.</p>
 
-        <pre><code>$ doas -u _searxng /bin/ksh -c 'cd /home/searxng &amp;&amp; exec /bin/ksh -l'</code></pre>
+        <pre><code># su -l -s /bin/ksh _searxng</code></pre>
 
         <pre><code>$ command -v python &amp;&amp; python --version
 
-/home/searxng/pyenv/bin/python
-Python 3.13.13</code></pre>
+/home/searxng/pyenv/bin/python</code></pre>
 
         <pre><code>$ python -m pip install --upgrade pip setuptools wheel
+$ python -m pip install --upgrade \
+  pyyaml msgspec typing-extensions pybind11
 $ cd ~/src
-$ python -m pip install --use-pep517 --no-build-isolation --editable .</code></pre>
+$ python -m pip install --use-pep517 --no-build-isolation --editable .
+$ python -m pip check
+$ ^D</code></pre>
+        <p>Do not remove the second bootstrap command while retaining
+        <code>--no-build-isolation</code>. SearXNG's setup code imports those
+        modules before pip can install the dependencies declared by the
+        project. Without that command, a clean installation fails during the
+        build bootstrap.</p>
       </section>
 
       <section aria-labelledby="searxng-configuration">
         <h2 id="searxng-configuration">Configuration</h2>
 
-        <p>This setup keeps the configuration file outside the source tree so
-        source updates do not overwrite it.</p>
+        <p>I keep the configuration outside the source tree so an update cannot
+        overwrite it. More importantly, I use SearXNG's small reference
+        template, which inherits new defaults from the updated source instead
+        of freezing a copy of the enormous default file.</p>
 
-        <pre><code>$ doas -u _searxng /bin/ksh -c 'cd /home/searxng &amp;&amp; exec /bin/ksh -l'</code></pre>
+        <pre><code># su -l -s /bin/ksh _searxng</code></pre>
 
-        <pre><code>$ cp ~/src/searx/settings.yml ~/settings.yml
-$ sed -i -e "s/ultrasecretkey/$(openssl rand -hex 32)/g" ~/settings.yml
-$ chmod 0600 ~/settings.yml
+        <pre><code>$ install -m 0600 \
+  ~/src/utils/templates/etc/searxng/settings.yml ~/settings.yml
+$ sed -i \
+  -e "s/ultrasecretkey/$(openssl rand -hex 32)/g" \
+  -e "s/limiter: true/limiter: false/" \
+  -e "s|url: valkey://localhost:6379/0|url: false|" \
+  ~/settings.yml
 $ echo 'export SEARXNG_SETTINGS_PATH=/home/searxng/settings.yml' &gt;&gt; ~/.profile</code></pre>
+        <p>The reference template enables the limiter and expects a Valkey
+        server. This deliberately small onion-only setup installs no Valkey, so
+        the commands disable both that URL and the limiter. The template keeps
+        the image proxy enabled. If you turn this into a busy multi-user
+        service, install a compatible Valkey service and re-enable the limiter
+        according to the official documentation.</p>
+
         <h3>Tor proxy defaults in shell profile</h3>
 
         <p>To route network clients that honor standard proxy environment
@@ -222,17 +271,18 @@ export HTTP_PROXY="$ALL_PROXY" HTTPS_PROXY="$ALL_PROXY"</code></pre>
 
         <pre><code>$ . ~/.profile</code></pre>
 
-        <pre><code>$ nano ~/settings.yml</code></pre>
+        <pre><code>$ vi ~/settings.yml</code></pre>
         <p>Run a local smoke test from the source directory (use
         <code>torsocks</code> if you did not configure <code>~/.profile</code>
         as shown above):</p>
 
         <pre><code>$ cd ~/src
-$ python searx/webapp.py
+$ python -m searx.webapp
 ...
  * Serving Flask app 'webapp'
  * Debug mode: off
-^C</code></pre>
+^C
+$ ^D</code></pre>
       </section>
 
       <section aria-labelledby="searxng-tor">
@@ -241,34 +291,46 @@ $ python searx/webapp.py
         <p>To expose SearXNG through an onion address, add this to
         <code>/etc/tor/torrc</code>:</p>
 
-        <pre><code>$ nano /etc/tor/torrc
+        <pre><code># vi /etc/tor/torrc
 
 HiddenServiceDir /var/tor/searx_hidden_service/
-HiddenServiceVersion 3
 HiddenServicePort 80 127.0.0.1:8888</code></pre>
-        <p>Reload Tor, then read the generated onion hostname:</p>
+        <p>Version 3 is Tor's default, so no obsolete version directive is
+        necessary. Check the configuration, restart Tor, and read the generated
+        onion hostname:</p>
 
-        <pre><code>$ rcctl reload tor
-$ doas cat /var/tor/searx_hidden_service/hostname
+        <pre><code># tor --verify-config -f /etc/tor/torrc
+# rcctl restart tor
+# cat /var/tor/searx_hidden_service/hostname
 
 output: example.onion</code></pre>
-        <p>Open the resulting <code>.onion</code> address in Tor Browser.</p>
+        <p>Add the real hostname to the existing <code>server</code> section of
+        <code>/home/searxng/settings.yml</code> so SearXNG generates canonical
+        inbound links correctly:</p>
+
+        <pre><code>server:
+  # Keep the generated secret_key and the other existing settings here.
+  base_url: "http://example.onion/"</code></pre>
+        <p>Replace <code>example.onion</code> with the hostname Tor generated.
+        Never publish or casually copy the other files in the hidden-service
+        directory: they contain the keys that control the onion address. Also
+        remember that anybody who learns this address can use the instance
+        unless you configure Tor client authorization.</p>
       </section>
 
       <section aria-labelledby="searxng-gunicorn">
         <h2 id="searxng-gunicorn">Run under rc.d with Gunicorn</h2>
 
-        <p>Gunicorn serves SearXNG on localhost. A short OpenBSD
-        <code>rc.d</code> script delegates process management, privilege
-        dropping, status checks, and logging to <code>rc.subr</code>.</p>
+        <p>Keep It Simple, Stupid! Gunicorn serves SearXNG on localhost. A
+        short OpenBSD <code>rc.d</code> script delegates process management,
+        privilege dropping, status checks, and logging to
+        <code>rc.subr</code>.</p>
 
-        <pre><code>$ doas -u _searxng /bin/ksh -c 'cd /home/searxng &amp;&amp; exec /bin/ksh -l'
+        <pre><code># su -l -s /bin/ksh _searxng
 
-$ pip install gunicorn
-(...)
-Successfully installed gunicorn-26.0.0</code></pre>
+$ python -m pip install --upgrade gunicorn</code></pre>
 
-        <pre><code>$ nano searxng.conf.py
+        <pre><code>$ vi searxng.conf.py
 
 # Server Socket ========================================================
 bind = "127.0.0.1:8888"
@@ -282,12 +344,6 @@ threads = 4
 timeout = 120
 graceful_timeout = 30
 
-# Process Naming =======================================================
-proc_name = "searxng"
-
-# Config File ==========================================================
-wsgi_app = "searx.webapp:application"
-
 # Server Mechanics =====================================================
 chdir = "/home/searxng/src"
 raw_env = [
@@ -298,15 +354,17 @@ raw_env = [
 # Logging ==============================================================
 accesslog = "-"
 errorlog = "-"</code></pre>
+
+        <pre><code>$ ^D</code></pre>
         <p>Create the service script:</p>
 
-        <pre><code>$ nano /etc/rc.d/searxng
+        <pre><code># vi /etc/rc.d/searxng
 
 #!/bin/ksh
-daemon="/home/searxng/pyenv/bin/gunicorn"
+daemon="/home/searxng/pyenv/bin/python"
 daemon_user="_searxng"
 daemon_execdir="/home/searxng/src"
-daemon_flags="-c /home/searxng/searxng.conf.py"
+daemon_flags="-m gunicorn -c /home/searxng/searxng.conf.py searx.webapp:application"
 daemon_logger="daemon.info"
 
 . /etc/rc.d/rc.subr
@@ -316,23 +374,53 @@ rc_reload=NO
 
 rc_cmd "$1"</code></pre>
 
-        <pre><code>$ chown root:wheel /etc/rc.d/searxng
-$ chmod 0555 /etc/rc.d/searxng
-$ rcctl enable searxng
-$ rcctl start searxng
+        <pre><code># chown root:wheel /etc/rc.d/searxng
+# chmod 0555 /etc/rc.d/searxng
+# rcctl enable searxng
+# rcctl start searxng
 searxng(ok)</code></pre>
+        <p>The Python interpreter is the daemon, and Gunicorn is invoked as a
+        module. That detail matters: <code>rc.subr</code> identifies processes
+        by their complete command line. Pointing <code>daemon</code> at
+        Gunicorn's Python wrapper can start the service yet leave
+        <code>rcctl</code> unable to find it for checks, restarts, or
+        shutdown.</p>
+      </section>
+
+      <section aria-labelledby="searxng-verification">
+        <h2 id="searxng-verification">Verification and troubleshooting</h2>
+
+        <p>Verify each boundary separately before blaming Tor Browser:</p>
+
+        <pre><code># rcctl check tor
+# rcctl check searxng
+# ftp -o /dev/null http://127.0.0.1:8888/
+# fstat | grep ':8888'</code></pre>
+        <p>The listener must be on <code>127.0.0.1:8888</code>, never on a
+        public address. Then open the generated onion address in Tor Browser
+        and run a real search. If startup fails, stop guessing and ask
+        <code>rc.d</code> for the command it ran, then inspect the daemon
+        log:</p>
+
+        <pre><code># rcctl -d start searxng
+# tail -f /var/log/daemon</code></pre>
+        <p>A dependency error here usually means the bootstrap modules were not
+        installed before the editable SearXNG package. A proxy error means Tor
+        is not listening on port 9050, or the <code>outgoing</code> block is
+        not nested correctly in YAML.</p>
       </section>
 
       <section aria-labelledby="searxng-updates">
         <h2 id="searxng-updates">Updating SearXNG</h2>
 
         <p>This installation tracks SearXNG's <code>master</code> branch. Read
-        the upstream update and migration documentation before running this
-        helper. The <code>git reset --hard</code> command deliberately discards
-        local changes in the source checkout; the separate
-        <code>settings.yml</code> remains untouched.</p>
+        the upstream maintenance and migration documentation before running
+        this helper. The <code>git reset --hard</code> command deliberately
+        discards local changes in the source checkout; the separate minimal
+        <code>settings.yml</code> remains untouched and continues to inherit
+        the updated defaults.</p>
 
-        <pre><code>$ doas -u _searxng nano ~_searxng/update.sh
+        <pre><code># vi /home/searxng/update.sh
 
 #!/bin/ksh
 set -eu
@@ -341,33 +429,38 @@ cd /home/searxng/src
 git fetch --prune origin
 git reset --hard origin/master
 /home/searxng/pyenv/bin/python -m pip install --upgrade pip setuptools wheel
+/home/searxng/pyenv/bin/python -m pip install --upgrade \
+  pyyaml msgspec typing-extensions pybind11
 /home/searxng/pyenv/bin/python -m pip install --upgrade gunicorn
 /home/searxng/pyenv/bin/python -m pip install \
-  --use-pep517 --no-build-isolation --upgrade --editable .</code></pre>
+  --use-pep517 --no-build-isolation --upgrade --editable .
+/home/searxng/pyenv/bin/python -m pip check</code></pre>
 
-        <pre><code>$ chmod 0750 ~_searxng/update.sh</code></pre>
+        <pre><code># chown _searxng:_searxng ~_searxng/update.sh
+# chmod 0750 ~_searxng/update.sh</code></pre>
         <p>To upgrade:</p>
 
-        <pre><code>$ doas -u _searxng /bin/ksh /home/searxng/update.sh
-$ diff -u ~_searxng/src/searx/settings.yml ~_searxng/settings.yml
-
-$ rcctl restart searxng
+        <pre><code># su -l -s /bin/ksh _searxng -c /home/searxng/update.sh
+# rcctl restart searxng
 searxng(ok)
+# rcctl check searxng
 searxng(ok)</code></pre>
       </section>
 
       <section aria-labelledby="searxng-conclusion">
         <h2 id="searxng-conclusion">Conclusion</h2>
 
-        <p>This onion-only setup does not require an Internet-facing reverse
-        proxy or public TLS certificate. Tor onion services authenticate the
-        onion address and encrypt traffic between the client and the service;
-        Gunicorn listens only on the loopback interface. This removes the
-        public HTTP and TLS components that a clearnet deployment would
-        need.</p>
+        <p>With these steps, I do not need to configure <code>httpd</code>,
+        <code>acme-client</code>, or <code>relayd</code> merely to put this
+        service behind public HTTPS. Tor authenticates the onion address and
+        encrypts traffic between the client and the onion service, while
+        Gunicorn listens only on loopback. That means less attack surface, more
+        stability, and easier long-term maintenance.</p>
 
-        <p>If you choose to expose SearXNG on clearnet instead, you should
-        still configure HTTPS correctly.</p>
+        <p>If you expose SearXNG on clearnet, then you absolutely need to
+        configure HTTPS correctly. That is a different deployment, with more
+        moving parts, and I am deliberately not dragging them into this
+        onion-only guide.</p>
 
         <p>El Psy Kongroo!</p>
       </section>
@@ -385,7 +478,19 @@ searxng(ok)</code></pre>
           <li>
             <a href=
             "https://docs.searxng.org/admin/installation-searxng.html">SearXNG
-            documentation: installation</a>
+            documentation: step-by-step installation</a>
+          </li>
+
+          <li>
+            <a href=
+            "https://github.com/searxng/searxng/blob/master/utils/searxng.sh">SearXNG
+            source: official installation and update commands</a>
+          </li>
+
+          <li>
+            <a href=
+            "https://docs.searxng.org/admin/update-searxng.html">SearXNG
+            documentation: maintenance and migration notes</a>
           </li>
 
           <li>
@@ -408,6 +513,22 @@ searxng(ok)</code></pre>
             <a href=
             "https://community.torproject.org/onion-services/overview/">Tor
             Project: onion services overview</a>
+          </li>
+
+          <li>
+            <a href=
+            "https://community.torproject.org/onion-services/setup/">Tor
+            Project: onion service setup and key-handling guidance</a>
+          </li>
+
+          <li>
+            <a href="https://www.openbsd.org/79.html">OpenBSD 7.9 release and
+            component versions</a>
+          </li>
+
+          <li>
+            <a href="https://man.openbsd.org/pkg_add">OpenBSD
+            <code>pkg_add(1)</code> package and branch selection</a>
           </li>
         </ul>
       </section>
