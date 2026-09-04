@@ -65,15 +65,14 @@ use Symbol       qw(gensym);
 my $script_dir   = dirname( abs_path($0) );
 my $default_root = File::Spec->catdir( $script_dir, '..' );
 
-my $root_dir    = $default_root;
-my $mode_apply  = 1;               # default: apply formatting
-my $check_links = 0;               # optional: check/fix links
-my $check_spelling = 0;            # optional: check visible HTML text
-my $verbose     = 0;
+my $root_dir       = $default_root;
+my $mode_apply     = 1;               # default: apply formatting
+my $check_links    = 0;               # optional: check/fix links
+my $check_spelling = 0;               # optional: check visible HTML text
+my $verbose        = 0;
 
-my %spelling_dictionary = ( en => 'en_US' );
-my $spelling_dictionary_list =
-  join( ', ', sort values %spelling_dictionary );
+my %spelling_dictionary      = ( en => 'en_US' );
+my $spelling_dictionary_list = join( ', ', sort values %spelling_dictionary );
 my $spelling_personal_list =
   join( ' or ', map { ".hunspell/$_" } sort values %spelling_dictionary );
 
@@ -124,12 +123,12 @@ USAGE
 }
 
 GetOptions(
-    "root=s"       => \$root_dir,
-    "apply!"       => sub { $mode_apply = 1 },
-    "check!"       => sub { $mode_apply = 0 },
-    "check-links!" => \$check_links,
+    "root=s"          => \$root_dir,
+    "apply!"          => sub { $mode_apply = 1 },
+    "check!"          => sub { $mode_apply = 0 },
+    "check-links!"    => \$check_links,
     "check-spelling!" => \$check_spelling,
-    "verbose!"     => \$verbose,
+    "verbose!"        => \$verbose,
 ) or usage();
 
 # Normalize the root directory to a canonical absolute
@@ -294,7 +293,7 @@ sub should_skip_link {
 sub is_external_link {
     my ($link) = @_;
     return 1 if $link =~ m{^\s*https?://}i;
-    return 1 if $link =~ m{^\s*//[^/]};          # proto-rel
+    return 1 if $link =~ m{^\s*//[^/]};       # proto-rel
     return 0;
 }
 
@@ -656,7 +655,7 @@ END { unlink $_ for @tmp_paths; }
 my %format_needed;        # file => 1 (--check only)
 my %validate_failed;      # file => 1
 my %link_replacements;    # file => { old_link => new_link }
-my $link_report_file = "";
+my $link_report_file     = "";
 my $spelling_report_file = "";
 
 sub mark_format_needed {
@@ -942,7 +941,7 @@ sub run_spelling_checks {
             next;
         }
 
-        my $text = visible_html_text($content);
+        my $text  = visible_html_text($content);
         my $input = make_tmp_file_in_tmp( ".spell-input.txt", $text );
         push @tmp_paths, $input;
 
@@ -957,8 +956,7 @@ sub run_spelling_checks {
             loge("Hunspell failed (exit $rc): $file");
             print STDERR $err if defined($err) && $err ne "";
             mark_validate_failed($file);
-            push @report_rows,
-              "$file | $dictionary | ERROR: hunspell failed";
+            push @report_rows, "$file | $dictionary | ERROR: hunspell failed";
             next;
         }
 
@@ -974,8 +972,7 @@ sub run_spelling_checks {
             mark_validate_failed($file);
             my @words = sort { lc($a) cmp lc($b) || $a cmp $b }
               keys %unknown;
-            push @report_rows,
-              "$file | $dictionary | " . join( ", ", @words );
+            push @report_rows, "$file | $dictionary | " . join( ", ", @words );
         }
     }
 
@@ -1325,7 +1322,7 @@ sub summarize_and_exit {
 
 sub main {
     run_validations();
-    run_link_checks() if $check_links;
+    run_link_checks()     if $check_links;
     run_spelling_checks() if $check_spelling;
     summarize_and_exit();
 }
