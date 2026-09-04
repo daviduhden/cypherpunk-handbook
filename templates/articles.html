@@ -38,7 +38,7 @@
   </nav>
 
   <main id="site-main" tabindex="-1">
-    <article>
+    <article class="article-content">
       <header id="article-header">
         <p class="kicker">CATEGORY OR TAG</p>
 
@@ -63,8 +63,8 @@
         </section>
       </header>
 
-      <nav class="toc" aria-label="Table of contents">
-        <h2>Contents</h2>
+      <nav class="toc" aria-labelledby="article-contents-heading">
+        <h2 id="article-contents-heading">Contents</h2>
 
         <ol>
           <li>
@@ -107,7 +107,7 @@
 console.log("Hello world");
 </code></pre>
         <blockquote>
-          <p>"Simplicity is prerequisite for reliability."</p>
+          <p>Simplicity is prerequisite for reliability.</p>
           <cite>- Edsger W. Dijkstra</cite>
         </blockquote>
       </section>
@@ -142,7 +142,7 @@ console.log("Hello world");
     <p>&copy; 2025-2026 The Cypherpunk Handbook Authors. All Rights
     Reserved.</p>
 
-    <p><strong><a href="./../license.html">LICENSE</a></strong>
+    <p><strong><a href="./../license.html" rel="license">LICENSE</a></strong>
     </p>
 
     <p class="motto">VIVE LIBER AUT MORERE</p>
