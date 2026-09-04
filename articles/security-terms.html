@@ -56,7 +56,7 @@
         <h1>Security terms in operating systems</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
-        <time datetime="2026-08-16">Updated August 16, 2026</time></p>
+        <time datetime="2026-09-04">Updated September 4, 2026</time></p>
 
         <p class="lede">This glossary defines security terms you will
         repeatedly encounter in OS hardening, exploit mitigation, identity
@@ -445,7 +445,7 @@
           </li>
 
           <li>
-            <a href="#security-term-087">Exploit Mitigations</a>
+            <a href="#security-term-087">Exploit mitigations</a>
           </li>
 
           <li>
@@ -1409,29 +1409,30 @@
       <section aria-labelledby="security-term-068">
         <h2 id="security-term-068">68 - Memory safety</h2>
 
-        <p>Memory safety prevents a program from reading, writing, or executing
-        memory outside the bounds and lifetime permitted by the language and
-        runtime. It excludes defect classes such as buffer overflows,
-        use-after-free, dangling pointers, and uninitialized memory reads.
-        Implementations use techniques such as bounds checks, garbage
-        collection, reference counting, and compile-time ownership and
-        borrowing. Their performance, predictability, and control tradeoffs
-        differ.</p>
+        <p>Memory safety means being protected from common software bugs and
+        vulnerabilities related to memory access. Memory-safe languages prevent
+        issues such as buffer overflows, use-after-free, null/dangling pointer
+        access, and uninitialized reads by enforcing rules or runtime checks
+        for safe allocation, access, and deallocation. Approaches include
+        garbage collection (Java, C#, Go, Python), reference counting, and
+        compile-time ownership/borrowing checks (Rust). The result is fewer
+        crashes and security bugs, with tradeoffs in control or runtime
+        overhead depending on the strategy.</p>
 
         <ul>
-          <li><strong>Examples:</strong> Rust enforces ownership and borrowing;
-          Go, Java, and C# use garbage-collected runtimes; Swift uses automatic
-          reference counting.</li>
+          <li>Examples: Rust (ownership + zero-cost safety), Go/Java/C#
+          (Garbage Collector), Swift/Kotlin/Python/JavaScript
+          (memory-managed).</li>
         </ul>
       </section>
 
       <section aria-labelledby="security-term-069">
         <h2 id="security-term-069">69 - Garbage collection</h2>
 
-        <p>A garbage collector identifies memory that a program can no longer
-        reach and reclaims it automatically. This prevents manual deallocation
-        errors such as use-after-free, but collection consumes runtime
-        resources and some collectors introduce pauses.</p>
+        <p>A runtime system automatically finds and reclaims memory that the
+        program can no longer reach (reducing leaks and many pointer errors),
+        usually by tracing or reference counting. It simplifies programming but
+        adds runtime overhead and possible pauses.</p>
 
         <ul>
           <li>Examples: Java, Go, C#, Python, JavaScript.</li>
@@ -1441,10 +1442,10 @@
       <section aria-labelledby="security-term-070">
         <h2 id="security-term-070">70 - Ownership/borrowing</h2>
 
-        <p>Rust's compile-time ownership model gives each value an owner and
-        enforces rules for shared and exclusive references. The borrow checker
-        uses those rules to reject use-after-free and unsynchronized data races
-        without a garbage collector.</p>
+        <p>A compile-time system (used by Rust) where each value has a single
+        owner, scope-based deallocation, and explicit borrowing rules (&amp;
+        for shared read, &amp;mut for exclusive write) that prevent
+        use-after-free and data races with no GC overhead.</p>
 
         <ul>
           <li><strong>Example:</strong> Rust.</li>
@@ -1462,9 +1463,8 @@
 
         <ul>
           <li><strong>Example:</strong> compile with full RELRO to mitigate GOT
-          overwrites (<code>gcc -Wl,-z,relro,-z,now -o myprog myprog.c</code>).
-          For partial RELRO, use <code>gcc -Wl,-z,relro -o myprog
-          myprog.c</code>.</li>
+          overwrites - gcc -Wl,-z,relro,-z,now -o myprog myprog.c - (partial
+          RELRO: gcc -Wl,-z,relro -o myprog myprog.c).</li>
         </ul>
       </section>
 
@@ -1472,10 +1472,8 @@
         <h2 id="security-term-072">72 - KARL - Kernel Address Randomized
         Link</h2>
 
-        <p>Relinks kernel object files in randomized order after boot,
-        producing a different kernel layout for the next boot. This denies an
-        attacker a stable set of reusable kernel addresses across machines and
-        reboots.</p>
+        <p>Relinks kernel object files in a random order at each boot so
+        function locations differ every boot (mitigates reuse/ROP attacks).</p>
 
         <ul>
           <li><strong>Example:</strong> OpenBSD's KARL rebuilds a new kernel
@@ -1503,9 +1501,8 @@
       <section aria-labelledby="security-term-074">
         <h2 id="security-term-074">74 - Library order randomization</h2>
 
-        <p>Randomizes the order in which shared libraries are loaded. Combined
-        with address-space randomization, this makes library locations less
-        predictable for code-reuse attacks.</p>
+        <p>Randomizes the order (or load addresses) of shared libraries to add
+        ASLR entropy and make gadget/tooling guesses harder.</p>
 
         <ul>
           <li><strong>Example:</strong> randomizing the order libc and other
@@ -1600,76 +1597,50 @@
         restricting capabilities instead of relying on global identity-based
         checks (ACLs).</p>
 
-        <ul>
-          <li>Examples:</li>
+        <p>Examples:</p>
 
-          <li>
-            <ol>
-              <li>A file descriptor returned by open() is a capability letting
-              that process read/write the file.</li>
-            </ol>
-          </li>
+        <ol>
+          <li>A file descriptor returned by open() is a capability letting that
+          process read/write the file.</li>
 
-          <li>
-            <ol start="2">
-              <li>macaroons (HMAC-based tokens) used to grant limited,
-              delegable API access in distributed systems.</li>
-            </ol>
-          </li>
+          <li>macaroons (HMAC-based tokens) used to grant limited, delegable
+          API access in distributed systems.</li>
 
-          <li>
-            <ol start="3">
-              <li>Capsicum-like OS sandboxes or capability-based OSes (e.g.,
-              early capability hardware systems or research OSes) where
-              processes receive only the specific capabilities they need,
-              reducing ambient authority and preventing confused-deputy
-              bugs.</li>
-            </ol>
-          </li>
-        </ul>
+          <li>Capsicum-like OS sandboxes or capability-based OSes (e.g., early
+          capability hardware systems or research OSes) where processes receive
+          only the specific capabilities they need, reducing ambient authority
+          and preventing confused-deputy bugs.</li>
+        </ol>
       </section>
 
       <section aria-labelledby="security-term-081">
         <h2 id="security-term-081">81 - MPU - Memory Protection Unit</h2>
 
-        <p>A simple hardware block (common in microcontrollers) that divides
+        <p>A simple hardware block, common in microcontrollers, that divides
         physical memory into configurable regions and enforces per-region
         access permissions (read/write/execute) and privilege levels; unlike an
         MMU it does not provide virtual memory or address translation, only
         protection.</p>
 
-        <ul>
-          <li>Examples:</li>
+        <p>Examples:</p>
 
-          <li>
-            <ol>
-              <li>ARM Cortex-M MPUs let firmware mark RAM as execute-never or
-              read-only to stop code execution from stack or protect
-              configuration data.</li>
-            </ol>
-          </li>
+        <ol>
+          <li>ARM Cortex-M MPUs let firmware mark RAM as execute-never or
+          read-only to stop code execution from stack or protect configuration
+          data.</li>
 
-          <li>
-            <ol start="2">
-              <li>an MPU in an RTOS isolates each task's stack and data so a
-              buggy task can't corrupt others.</li>
-            </ol>
-          </li>
+          <li>An MPU in an RTOS isolates each task's stack and data so a buggy
+          task can't corrupt others.</li>
 
-          <li>
-            <ol start="3">
-              <li>automotive controllers use system/ core/ peripheral MPUs to
-              prevent DMA or peripherals from accessing critical memory
-              ranges.</li>
-            </ol>
-          </li>
-        </ul>
+          <li>Automotive controllers use system/core/peripheral MPUs to prevent
+          DMA or peripherals from accessing critical memory ranges.</li>
+        </ol>
       </section>
 
       <section aria-labelledby="security-term-082">
         <h2 id="security-term-082">82 - MMU - Memory Management Unit</h2>
 
-        <p>Is hardware that translates virtual/logical addresses to physical
+        <p>Hardware that translates virtual/logical addresses to physical
         addresses, enforces per-page permissions (read/write/execute, user vs
         supervisor), and enables virtual memory, process isolation, paging, and
         swapping.</p>
@@ -1684,9 +1655,9 @@
       <section aria-labelledby="security-term-083">
         <h2 id="security-term-083">83 - RTOS - Real-Time Operating System</h2>
 
-        <p>Is an OS designed to provide deterministic, low-latency scheduling
-        and predictable timing for time-critical tasks (often with
-        priority-based preemptive schedulers and minimal jitter).</p>
+        <p>An OS designed to provide deterministic, low-latency scheduling and
+        predictable timing for time-critical tasks (often with priority-based
+        preemptive schedulers and minimal jitter).</p>
 
         <ul>
           <li>Examples: FreeRTOS used on microcontrollers for motor control
@@ -1698,10 +1669,10 @@
       <section aria-labelledby="security-term-084">
         <h2 id="security-term-084">84 - Privilege escalation</h2>
 
-        <p>Is when an attacker (or a program) gains higher access rights than
-        originally allowed, either by moving laterally to another account with
-        similar rights (horizontal) or by elevating a low-privilege account to
-        admin/root (vertical); it's typically achieved by exploiting
+        <p>Occurs when an attacker (or a program) gains higher access rights
+        than originally allowed: either by moving laterally to another account
+        with similar rights (horizontal) or by elevating a low-privilege
+        account to admin/root (vertical); it's typically achieved by exploiting
         vulnerabilities, misconfigurations, stolen credentials, or flawed
         software logic.</p>
 
@@ -1716,7 +1687,7 @@
       <section aria-labelledby="security-term-085">
         <h2 id="security-term-085">85 - Attack surface</h2>
 
-        <p>Is the total set of points (digital, physical, and human) where an
+        <p>The total set of points (digital, physical, and human) where an
         attacker can attempt to enter or extract data from a system; reducing
         it limits opportunities for compromise.</p>
 
@@ -1742,7 +1713,7 @@
       </section>
 
       <section aria-labelledby="security-term-087">
-        <h2 id="security-term-087">87 - Exploit Mitigations</h2>
+        <h2 id="security-term-087">87 - Exploit mitigations</h2>
 
         <p>Techniques (hardware and software) that raise the difficulty of
         exploitation.</p>
@@ -1768,11 +1739,9 @@
       <section aria-labelledby="security-term-089">
         <h2 id="security-term-089">89 - Chain of trust</h2>
 
-        <p>A verification model in which a trusted initial component verifies
-        the authenticity and integrity of the next component before handing it
-        control. A chain of trust proves that verified components were signed
-        by an accepted key; it does not prove that the signed code is free of
-        vulnerabilities.</p>
+        <p>Boot-time and update model where each stage cryptographically
+        verifies the next (root of trust -&gt; bootloader -&gt; kernel -&gt;
+        userland), ensuring only authorized code runs.</p>
 
         <ul>
           <li><strong>Example:</strong> secure/UEFI boot verifies bootloader
@@ -1801,9 +1770,8 @@
         components to many downstream victims.</p>
 
         <ul>
-          <li><strong>Examples:</strong> the SolarWinds Orion and 3CX incidents
-          distributed trojanized, signed software through trusted vendor update
-          channels.</li>
+          <li><strong>Example:</strong> SolarWinds (compromised build pipeline)
+          and trojanized signed installers (3CX/MOVEit incidents).</li>
         </ul>
       </section>
 
@@ -1884,7 +1852,7 @@
         intrusive but sometimes bundled with installers.</p>
 
         <ul>
-          <li><strong>Example:</strong> Fireball</li>
+          <li><strong>Example:</strong> Fireball.</li>
         </ul>
       </section>
 
@@ -1984,14 +1952,13 @@
       <section aria-labelledby="security-term-107">
         <h2 id="security-term-107">107 - Backdoor</h2>
 
-        <p>A deliberately concealed access path that bypasses normal
-        authentication or authorization. An attacker can install a backdoor
-        after compromise, or a developer can place one in software or
-        hardware.</p>
+        <p>Provides covert remote access to a system for later use (often
+        installed by trojans); commonly part of multi-stage attacks. Can be
+        software or hardware.</p>
 
         <ul>
-          <li><strong>Example:</strong> PlugX installs persistent remote-access
-          functionality on compromised Windows systems.</li>
+          <li><strong>Example:</strong> Intel ME, PlugX, various Remote Access
+          Trojans that give persistent covert access and control.</li>
         </ul>
       </section>
 
@@ -2037,8 +2004,9 @@
 
     <p><strong><a href="./../license.html">LICENSE</a></strong>
     </p>
-
-    <p class="motto">VIVE LIBER AUT MORERE</p>
+    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+    <p class="motto">LIVE FREE OR DIE</p>
+    <img src="./../images/anarchy.png" alt="freedom" class="motto">
   </footer>
 </body>
 </html>

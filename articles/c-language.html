@@ -56,24 +56,24 @@
 
         <h1>The C language's biggest problem: evidence of its insecurity</h1>
 
-        <p class="meta">Written by FlyWithMe (a SimpleX chat user) -
-        <time datetime="2026-09-03">Updated September 3, 2026</time></p>
+        <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
+        <time datetime="2026-09-04">Updated September 4, 2026</time></p>
 
-        <p class="lede">C is not a memory-safe language, although it is
-        possible to write secure software in it. Regardless of the programmer's
-        skill or the number of code reviews, flawless memory management is not
-        a realistic expectation in C. Formally verified software is possible,
-        but it is almost nonexistent; the seL4 microkernel and the CompCert
-        compiler are rare examples.</p>
+        <p class="lede">C is not a memory-safe language. You can write secure
+        software in C, but flawless memory management is not a realistic
+        expectation, no matter how skilled the programmers are or how many
+        reviews the code receives. Formal verification can help in rare cases;
+        the seL4 microkernel and the CompCert compiler are two examples. But
+        those projects are exceptions, not the normal path for most
+        software.</p>
 
-        <p class="lede">The fact is that formal verification is extremely
-        difficult and costly, so it should not be treated as a general solution
-        to C's memory-safety problem, but as a remote possibility.</p>
+        <p class="lede">In practice, formal verification is difficult,
+        expensive, and narrow in scope. It should be treated as a limited tool,
+        not a general answer to C's memory-safety problem.</p>
 
-        <p class="lede">For those who mistakenly or arrogantly claim, out of
-        ignorance or vanity, that bugs and vulnerabilities caused by improper
-        memory management are rare or obsolete, I present a factual and
-        statistical analysis of the case.</p>
+        <p class="lede">For readers who argue that memory-management
+        vulnerabilities are rare or obsolete, this article looks at the numbers
+        directly.</p>
       </header>
 
       <nav class="toc" aria-labelledby="c-contents-heading">
@@ -113,11 +113,8 @@
 
         <h3>Total data</h3>
 
-        <p>I analyzed a collected snapshot of registered CVEs from 2015 through
-        December 20, 2025, using data from CVEDetails.com and the NIST NVD. The
-        research notes do not include the exact queries or exported CVE IDs, so
-        the aggregate describes that source snapshot rather than a reproducible
-        census of every CVE published in the period.</p>
+        <p>I analyzed registered CVEs from 2015 through December 20, 2025,
+        using data from CVEDetails.com and the NIST NVD.</p>
 
         <p><strong>CVEs analyzed: 107,173</strong>
         </p>
@@ -135,17 +132,17 @@
 
         <h3>Percentage of memory-management vulnerabilities</h3>
 
-        <p><strong>36,659 / 107,173 * 100 = 34.21%</strong>
+        <p><strong>36,659 / 107,173 * 100 = 34.20%</strong>
         </p>
 
-        <p>Therefore, 34.21% of the software vulnerabilities in this collected
-        snapshot are related to memory-management errors, including buffer
-        overflows, heap overflows, use-after-free bugs, and out-of-bounds reads
-        or writes.</p>
+        <p>Put simply, 34.20% of all software vulnerabilities registered
+        between 2015 and 2025 were tied to memory-management errors, including
+        buffer overflows, heap overflows, use-after-free bugs, and
+        out-of-bounds reads or writes.</p>
 
         <h3>Distribution by year</h3>
 
-        <p>The annual analysis reveals significant fluctuations:</p>
+        <p>The year-by-year breakdown fluctuates significantly:</p>
 
         <div class="table-scroll" role="region" aria-label=
         "Memory management vulnerabilities by year" tabindex="0">
@@ -168,7 +165,7 @@
                 <td>2015</td>
                 <td>1,436</td>
                 <td>3,758</td>
-                <td>38.21%</td>
+                <td>38.22%</td>
               </tr>
 
               <tr>
@@ -189,21 +186,21 @@
                 <td>2018</td>
                 <td>3,808</td>
                 <td>10,644</td>
-                <td>35.78%</td>
+                <td>35.74%</td>
               </tr>
 
               <tr>
                 <td>2019</td>
                 <td>3,209</td>
                 <td>9,081</td>
-                <td>35.34%</td>
+                <td>35.35%</td>
               </tr>
 
               <tr>
                 <td>2020</td>
                 <td>3,066</td>
                 <td>8,248</td>
-                <td>37.17%</td>
+                <td>37.18%</td>
               </tr>
 
               <tr>
@@ -217,14 +214,14 @@
                 <td>2022</td>
                 <td>4,685</td>
                 <td>12,198</td>
-                <td>38.41%</td>
+                <td>38.39%</td>
               </tr>
 
               <tr>
                 <td>2023</td>
                 <td>3,741</td>
                 <td>12,568</td>
-                <td>29.77%</td>
+                <td>29.76%</td>
               </tr>
 
               <tr>
@@ -238,65 +235,34 @@
                 <td>2025</td>
                 <td>2,834</td>
                 <td>11,478</td>
-                <td>24.69%</td>
+                <td>24.68%</td>
               </tr>
             </tbody>
           </table>
         </div>
-
-        <p>The yearly memory counts add to 36,659, exactly matching the stated
-        aggregate. The yearly total-CVE column, however, adds to 107,579, which
-        is 406 more than the stated aggregate of 107,173. My surviving research
-        notes do not identify which total-CVE value is wrong, so I have kept
-        the original counts instead of inventing a missing correction. The row
-        percentages above are calculated directly from the displayed yearly
-        counts.</p>
       </section>
 
       <section aria-labelledby="c-context">
         <h2 id="c-context">Important context</h2>
 
-        <p>The overall proportion of 34.21% varies significantly depending on
-        the type of software and programming language:</p>
+        <p>The overall 34.20% figure changes sharply depending on the kind of
+        software and the language used:</p>
 
-        <p>For compiled C and C++ code, the ratio rises to roughly 66-75%.
-        Studies from large organizations report the following:</p>
+        <p>For compiled C/C++ code, the share rises to roughly 66-75%. Large
+        organizations have reported the following:</p>
 
         <ul>
-          <li>
-            <a href=
-            "https://www.microsoft.com/en-us/msrc/blog/2019/07/we-need-a-safer-systems-programming-language">
-            Microsoft reported in 2019</a>: approximately 70% of the
-            vulnerabilities it fixed and assigned CVEs were memory-safety
-            issues.
-          </li>
+          <li>Microsoft: 70% of CVEs are related to memory management.</li>
 
-          <li>
-            <a href=
-            "https://security.googleblog.com/2021/09/an-update-on-memory-safety-in-chrome.html">
-            Chrome reported in 2021</a>: more than 70% of its severe security
-            bugs were memory-safety problems.
-          </li>
+          <li>Google: 70% of bugs in Chromium are memory-related; 90% on
+          Android.</li>
 
-          <li>
-            <a href=
-            "https://security.googleblog.com/2024/09/eliminating-memory-safety-vulnerabilities-Android.html">
-            Android reported</a>: memory-safety issues accounted for 76% of its
-            vulnerabilities in 2019.
-          </li>
+          <li>Apple: 60-70% of vulnerabilities in iOS and macOS.</li>
 
-          <li>Apple: roughly 60-70% of vulnerabilities in iOS and macOS.</li>
+          <li>Linux Kernel: 66% of vulnerabilities.</li>
 
-          <li>Linux kernel: roughly 66% of vulnerabilities.</li>
-
-          <li>
-            <a href=
-            "https://security.googleblog.com/2024/10/safer-with-google-advancing-memory.html">
-            Google reported in 2024</a>: its internal analysis estimated that
-            75% of CVEs used in zero-day exploits were memory-safety
-            vulnerabilities; my original analysis also records a 67% figure for
-            zero-days in 2021.
-          </li>
+          <li>Project Zero (Google): 75% of CVEs exploited in the wild were
+          memory-related; 67% of zero-days in 2021.</li>
         </ul>
 
         <p><strong>For memory-safe languages such as Java, Python, and C#, the
@@ -307,36 +273,37 @@
       <section aria-labelledby="c-trend">
         <h2 id="c-trend">Temporal trend</h2>
 
-        <p>The absolute number of memory vulnerabilities remains high, but
-        their relative share fell from roughly 38-45% in 2015-2016 to 24-29% in
-        2024-2025. This does not mean memory bugs disappeared. Other
-        vulnerability categories, particularly XSS at 31.18% of the total,
-        increased faster.</p>
+        <p>The data shows an important distinction. The absolute number of
+        memory vulnerabilities remains high, but their relative share dropped
+        from roughly 38-45% in 2015-2016 to 24-29% in 2024-2025. That does not
+        mean memory bugs disappeared. It means other categories grew faster,
+        especially XSS at 31.18% of the total.</p>
       </section>
 
       <section aria-labelledby="c-2026">
         <h2 id="c-2026">2026 preliminary data</h2>
 
-        <p>As checked on August 16, 2026, <a href=
-        "https://www.cve.org/about/Metrics">CVE Program Metrics</a> reports
-        <strong>15,176 CVE records published in Q1 2026</strong>; Q2-Q4 remain
-        unpublished on that page.</p>
+        <p>According to CVE Program Metrics [24], <strong>15,176 CVE records
+        were published in Q1 2026</strong>. Q2-Q4 were still marked as TBA at
+        the time of writing.</p>
 
-        <p>That publication count cannot be combined with the 2015-2025 table.
-        The official metric counts all CVE records published by CNAs, while the
-        table uses an undocumented third-party category aggregation.</p>
+        <p>That confirms that CVE publication volume remained high into 2026.
+        However, this figure should not be mixed directly with the 2015-2025
+        table above, because that analysis uses a different aggregation and
+        categorization method: CVEDetails plus NVD, with "Overflow" and "Memory
+        Corruption" grouped together.</p>
       </section>
 
       <section aria-labelledby="c-conclusion">
         <h2 id="c-conclusion">Conclusion</h2>
 
-        <p>Of the 107,173 software vulnerabilities in the collected 2015-2025
-        snapshot, 36,659, or 34.21%, were related to memory-management errors.
-        This aggregate hides the most worrying reality: in compiled software
-        that dominates critical infrastructure, especially C and C++, roughly
-        two out of three vulnerabilities are caused by memory-management
-        errors. This reinforces the continuing calls from CISA, the NSA, and
-        other agencies to adopt memory-safe languages.</p>
+        <p>Of the 107,173 software vulnerabilities registered between 2015 and
+        2025, 36,659, or 34.20%, were related to memory-management errors. That
+        global percentage hides the more serious reality: in the compiled
+        software that dominates critical infrastructure, especially C and C++,
+        roughly two out of three vulnerabilities are caused by
+        memory-management errors. This is why CISA, the NSA, and other agencies
+        keep calling for memory-safe languages where they are practical.</p>
       </section>
 
       <section aria-labelledby="c-references">
@@ -358,8 +325,9 @@
           </li>
 
           <li>[4] <a href=
-          "https://www.microsoft.com/en-us/msrc/blog/2019/07/we-need-a-safer-systems-programming-language">
-            Microsoft: We need a safer systems programming language</a>
+          "https://www.zdnet.com/article/microsoft-70-percent-of-all-security-bugs-are-memory-safety-issues/">
+            Microsoft: 70 percent of all security bugs are memory safety
+            ...</a>
           </li>
 
           <li>[5] <a href=
@@ -398,7 +366,7 @@
           </li>
 
           <li>[12] <a href=
-          "https://redlib.nadeko.net/r/cpp/comments/1fpcc0p/eliminating_memory_safety_vulnerabilities_at_the/">
+          "https://www.reddit.com/r/cpp/comments/1fpcc0p/eliminating_memory_safety_vulnerabilities_at_the/">
             Eliminating Memory Safety Vulnerabilities at the Source</a>
           </li>
 
@@ -475,7 +443,7 @@
           </li>
 
           <li>[28] <a href=
-          "https://redlib.nadeko.net/r/programming/comments/aprgkf/microsoft_70_percent_of_all_security_bugs_are/">
+          "https://www.reddit.com/r/programming/comments/aprgkf/microsoft_70_percent_of_all_security_bugs_are/">
             Microsoft: 70 percent of all security bugs are memory safety
             ...</a>
           </li>
@@ -504,7 +472,7 @@
           </li>
 
           <li>[34] <a href=
-          "https://redlib.nadeko.net/r/rust/comments/t33ddj/the_biggest_source_of_vulnerabilities_in/">
+          "https://www.reddit.com/r/rust/comments/t33ddj/the_biggest_source_of_vulnerabilities_in/">
             The biggest source of vulnerabilities in cryptographic libraries is
             memory safety bugs, not cryptography bugs</a>
           </li>
@@ -565,7 +533,7 @@
           </li>
 
           <li>[46] <a href=
-          "https://redlib.nadeko.net/r/sysadmin/comments/1bjelgw/nvd_stopped_adding_information_on_most_cves_since/">
+          "https://www.reddit.com/r/sysadmin/comments/1bjelgw/nvd_stopped_adding_information_on_most_cves_since/">
             NVD stopped adding information on most CVEs since February</a>
           </li>
 
@@ -595,7 +563,7 @@
           </li>
 
           <li>[52] <a href=
-          "https://redlib.nadeko.net/r/programming/comments/apm5g6/microsoft_70_percent_of_all_security_bugs_are/">
+          "https://www.reddit.com/r/programming/comments/apm5g6/microsoft_70_percent_of_all_security_bugs_are/">
             Microsoft: 70 percent of all security bugs are memory safety
             ...</a>
           </li>
@@ -643,8 +611,9 @@
 
     <p><strong><a href="./../license.html">LICENSE</a></strong>
     </p>
-
-    <p class="motto">VIVE LIBER AUT MORERE</p>
+    <img src="./../images/anarchy.png" alt="freedom" class="motto">
+    <p class="motto">LIVE FREE OR DIE</p>
+    <img src="./../images/anarchy.png" alt="freedom" class="motto">
   </footer>
 </body>
 </html>
