@@ -17,7 +17,7 @@
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 # UPDATE article listings/pages from local templates and
-# structured metadata. questions for category/title/slug,
+# structured metadata. It asks for a subsection, title, and slug,
 # builds a safe article link, and injects it into the matching
 # section of index.html while preserving existing markup.
 #
@@ -26,9 +26,7 @@
 #
 # Behavior:
 #   - Uses ../index.html as the edit target
-#   - Validates category and prevents duplicate article links
-#   - Inserts mobile "overview" links at the top when
-#     applicable
+#   - Validates the target subsection and prevents duplicate article links
 #   - Writes updated HTML back to disk with explicit error
 #     reporting
 
@@ -110,9 +108,13 @@ sub run_update {
 
     logi( "This will insert a new article link" . " into $index" );
 
-    my $category = lc question( 'Category (desktop/mobile)', 'desktop' );
-    $category =~ /^(desktop|mobile)$/
-      or die_tool "Category must be 'desktop' or 'mobile'.\n";
+    my $subsection = lc question(
+        'Subsection (for example operating-systems/openbsd)',
+        'operating-systems/openbsd'
+    );
+    $subsection =~ m{^([a-z0-9-]+)/([a-z0-9-]+)$}
+      or die_tool "Subsection must be a section/subsection identifier.\n";
+    my ( $section_id, $subsection_id ) = ( $1, $2 );
 
     my $title = question( 'Link text/title', 'New Article' );
     my $slug =
@@ -134,58 +136,22 @@ sub run_update {
       . esc_html($title)
       . qq{</a>\n            </li>\n\n};
 
-    if ( $category eq 'desktop' ) {
-        if (
-            $content =~ /(\Q<h3>Desktop Systems<\/h3>\E
-              .*?<ul[^>]*class="article-list"
-              [^>]*>)(.*?)(<\/ul>)/sx
-          )
-        {
-            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-            $inner .= "\n            " . $link_html;
-            $content =~ s/\Q$pre$inner$post\E/
-                $pre$inner$post/s;
-            write_file( $index, $content );
-            logi( "Inserted link into Desktop" . " Systems list." );
-            return 0;
-        }
-        die_tool "Could not locate Desktop Systems" . " list in $index.\n";
-    }
-
-    if ( lc($title) eq 'overview' ) {
-        if (
-            $content =~ /(\Q<h3>Mobile Systems<\/h3>\E
-              .*?<ul[^>]*class="article-list"
-              [^>]*>)(.*?)(<\/ul>)/sx
-          )
-        {
-            my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-            $inner = "\n            " . $link_html . $inner;
-            $content =~ s/\Q$pre$inner$post\E/
-                $pre$inner$post/s;
-            write_file( $index, $content );
-            logi( "Inserted Overview link into" . " Mobile Systems." );
-            return 0;
-        }
-    }
-
     if (
-        $content =~ /(\Q<h3>Mobile Systems<\/h3>\E
-          .*?<ul[^>]*class="article-list"
-          [^>]*>.*?<ul[^>]*class="topic-list"
-          [^>]*>)(.*?)(<\/ul>)/sx
+        $content =~ /(<section\s+id="\Q$section_id\E"[^>]*>
+          .*?<section\s+id="\Q$subsection_id\E"[^>]*>
+          .*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/sx
       )
     {
         my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-        $inner .= "\n                " . $link_html;
+        $inner .= "\n              " . $link_html;
         $content =~ s/\Q$pre$inner$post\E/
             $pre$inner$post/s;
         write_file( $index, $content );
-        logi( "Inserted link into Mobile" . " Systems topics." );
+        logi("Inserted link into $subsection.");
         return 0;
     }
 
-    die_tool "Could not locate Mobile Systems" . " topic list in $index.\n";
+    die_tool "Could not locate subsection $subsection in $index.\n";
 }
 
 sub main {
