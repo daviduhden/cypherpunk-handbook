@@ -87,44 +87,63 @@
         <h2 id="searxng-contents-heading">Contents</h2>
 
         <ol>
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-context">Context</a>
           </li>
 
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-preliminary">Preliminary steps</a>
           </li>
 
-          <li>
+          <li class="toc-level-3">
+            <a href="#searxng-dedicated-user">Set up a dedicated user</a>
+          </li>
+
+          <li class="toc-level-2">
             <a href="#searxng-installation">Installation</a>
           </li>
 
-          <li>
+          <li class="toc-level-3">
+            <a href="#searxng-sources">Install SearXNG sources and prepare the
+            environment</a>
+          </li>
+
+          <li class="toc-level-3">
+            <a href="#searxng-virtual-environment">Install SearXNG in the
+            virtual environment</a>
+          </li>
+
+          <li class="toc-level-2">
             <a href="#searxng-configuration">Configuration</a>
           </li>
 
-          <li>
+          <li class="toc-level-3">
+            <a href="#searxng-tor-proxy-defaults">Tor proxy defaults in shell
+            profile</a>
+          </li>
+
+          <li class="toc-level-2">
             <a href="#searxng-tor">Tor onion service configuration</a>
           </li>
 
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-gunicorn">Run under rc.d with Gunicorn</a>
           </li>
 
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-verification">Verification and
             troubleshooting</a>
           </li>
 
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-updates">Updating SearXNG</a>
           </li>
 
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-conclusion">Conclusion</a>
           </li>
 
-          <li>
+          <li class="toc-level-2">
             <a href="#searxng-references">References</a>
           </li>
         </ol>
@@ -165,7 +184,7 @@
 # rcctl start tor
 # rcctl check tor
 tor(ok)</code></pre>
-        <h3>Set up a dedicated user</h3>
+        <h3 id="searxng-dedicated-user">Set up a dedicated user</h3>
 
         <pre><code># install -d -m 0755 /etc/login.conf.d
 # vi /etc/login.conf.d/searxng
@@ -183,7 +202,8 @@ searxng:\
       <section aria-labelledby="searxng-installation">
         <h2 id="searxng-installation">Installation</h2>
 
-        <h3>Install SearXNG sources and prepare the environment</h3>
+        <h3 id="searxng-sources">Install SearXNG sources and prepare the
+        environment</h3>
 
         <pre><code># su -l -s /bin/ksh _searxng</code></pre>
 
@@ -193,7 +213,8 @@ $ git clone https://github.com/searxng/searxng ~/src</code></pre>
         <pre><code>$ python3 -m venv ~/pyenv
 $ echo ". ~/pyenv/bin/activate" &gt;&gt; ~/.profile
 $ ^D</code></pre>
-        <h3>Install SearXNG in the virtual environment</h3>
+        <h3 id="searxng-virtual-environment">Install SearXNG in the virtual
+        environment</h3>
 
         <p>If you want the bootstrap downloads to use Tor too, put
         <code>torsocks</code> before the <code>git</code> and <code>pip</code>
@@ -245,7 +266,8 @@ $ echo 'export SEARXNG_SETTINGS_PATH=/home/searxng/settings.yml' &gt;&gt; ~/.pro
         service, install a compatible Valkey service and re-enable the limiter
         according to the official documentation.</p>
 
-        <h3>Tor proxy defaults in shell profile</h3>
+        <h3 id="searxng-tor-proxy-defaults">Tor proxy defaults in shell
+        profile</h3>
 
         <p>To route network clients that honor standard proxy environment
         variables through Tor, add the following to <code>~/.profile</code>.
