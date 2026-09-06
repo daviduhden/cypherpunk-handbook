@@ -558,13 +558,54 @@ ul ul, ol ol, ul ol, ol ul {
 
 .toc ol {
   margin: 0.2em 0 0;
+  padding-left: 0;
+  list-style: none;
   column-count: 2;
   column-gap: 1.5em;
+  counter-reset: toc-level-2;
 }
 
 .toc li {
+  display: grid;
+  grid-template-columns: minmax(2.5ch, max-content) minmax(0, 1fr);
+  gap: 0.55em;
+  align-items: baseline;
   break-inside: avoid;
   margin: 0.2em 0;
+  counter-increment: toc-level-2;
+  counter-reset: toc-level-3 toc-level-4;
+  font-weight: 700;
+}
+
+.toc li::before {
+  content: counter(toc-level-2) ".";
+  color: var(--heading);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.toc .toc-level-3 {
+  margin-left: 1.35em;
+  counter-increment: toc-level-3;
+  counter-reset: toc-level-4;
+  font-size: 0.94em;
+  font-weight: 600;
+}
+
+.toc .toc-level-3::before {
+  content: counter(toc-level-2) "." counter(toc-level-3);
+}
+
+.toc .toc-level-4 {
+  margin-left: 2.7em;
+  counter-increment: toc-level-4;
+  font-size: 0.9em;
+  font-weight: 400;
+}
+
+.toc .toc-level-4::before {
+  content: counter(toc-level-2) "." counter(toc-level-3) "."
+    counter(toc-level-4);
 }
 
 @media (max-width: 60em) {
