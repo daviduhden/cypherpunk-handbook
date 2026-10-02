@@ -1,7 +1,9 @@
-JSON::PP = perl5/p5-JSON
 tidy = www/tidy
 xmllint = textproc/libxml
 dprint = not ported
+jq = textproc/jq
+curl = net/curl
+hunspell = textproc/hunspell
 rsvg-convert = x11/gnome/librsvg
 pandoc = textproc/pandoc
 ffmpeg = graphics/ffmpeg
