@@ -12,8 +12,7 @@
   "A practical OpenBSD desktop hardening guide covering privilege separation, file permissions, PF firewall rules, system settings, DNS, X11, and userland sandboxing.">
   <link rel="canonical" href=
   "https://handbook.uhden.dev/articles/openbsd-hardening.html">
-  <meta property="og:title" content=
-  "T.C.H. - OpenBSD desktop hardening guide">
+  <meta property="og:title" content="T.C.H. - OpenBSD desktop hardening guide">
   <meta property="og:description" content=
   "A practical OpenBSD desktop hardening guide covering privilege separation, file permissions, PF firewall rules, system settings, DNS, X11, and userland sandboxing.">
   <meta property="og:type" content="article">
@@ -24,127 +23,161 @@
   <a class="skip-link" href="#site-main">Skip to main content</a>
   <header id="site-header">
     <p class="site-title">The Cypherpunk Handbook</p>
+
     <p class="page-type">Article</p>
   </header>
+
   <nav id="site-nav" aria-label="Primary navigation">
     <ul>
       <li>
         <a href="./../index.html" rel="home">Home</a>
       </li>
+
       <li>
         <a href="./../manifesto.html" rel="contents">Manifesto</a>
       </li>
+
       <li>
         <a href="./../contact.html" rel="author">Contact</a>
       </li>
+
       <li>
         <a href="./../contribute.html" rel="help">Contribute</a>
       </li>
     </ul>
   </nav>
+
   <main id="site-main" tabindex="-1">
     <article class="article-content">
       <header id="article-header">
         <p class="kicker">Guides</p>
+
         <h1>OpenBSD desktop hardening guide</h1>
+
         <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
         <time datetime="2026-10-08">Updated October 8, 2026</time></p>
+
         <p class="lede">This is a guide on how to harden OpenBSD, and is
-        dedicated to desktop users, although information here may be useful
-        to anyone. This guide is just a copy and paste of my own setup, with
-        a few minor modifications.</p>
+        dedicated to desktop users, although information here may be useful to
+        anyone. This guide is just a copy and paste of my own setup, with a few
+        minor modifications.</p>
       </header>
+
       <nav class="toc" aria-labelledby="hardening-contents-heading">
         <h2 id="hardening-contents-heading">Contents</h2>
+
         <ol>
           <li class="toc-level-2">
             <a href="#privilege-escalation" id=
             "toc-privilege-escalation">Privilege escalation</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#multi-user-hardening" id=
             "toc-multi-user-hardening">Multi-user hardening</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#firewall" id="toc-firewall">Firewall</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#disabling-usb-ports" id=
             "toc-disabling-usb-ports">Disabling USB ports</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#etcsysctl.conf" id=
             "toc-etcsysctl.conf">/etc/sysctl.conf</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#securelevel" id="toc-securelevel">Securelevel</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#etcfstab" id="toc-etcfstab">/etc/fstab</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#immutable-files" id="toc-immutable-files">Immutable
             files</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#locking-single-user-mode" id=
             "toc-locking-single-user-mode">Locking single-user mode</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#unwind-for-dns-resolving" id=
             "toc-unwind-for-dns-resolving">Unwind for DNS resolving</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#building-ports" id="toc-building-ports">Building
             ports</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#screenlock-and-disabling-x11-magic-keystrokes" id=
-            "toc-screenlock-and-disabling-x11-magic-keystrokes">Screenlock
-            and disabling X11 magic keystrokes</a>
+            "toc-screenlock-and-disabling-x11-magic-keystrokes">Screenlock and
+            disabling X11 magic keystrokes</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#userland-sandboxing-with-flysunaba" id=
             "toc-userland-sandboxing-with-flysunaba">Userland sandboxing with
             Flysunaba</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#good-practices-and-more-tips" id=
-            "toc-good-practices-and-more-tips">Good practices and more
-            tips</a>
+            "toc-good-practices-and-more-tips">Good practices and more tips</a>
           </li>
+
           <li class="toc-level-2">
             <a href="#more-good-tips-at" id="toc-further-reading">Further
             reading</a>
           </li>
         </ol>
       </nav>
-      <p>This guide is not intended to show any configuration related to
-      OPSEC and anonymity, this will be dedicated to another guide.</p>
+
+      <p>This guide is not intended to show any configuration related to OPSEC
+      and anonymity, this will be dedicated to another guide.</p>
+
       <p>Hardening on OpenBSD is not necessary for most users, but for those
-      who want to make their system even more secure. The hardening process
-      is extremely easy compared to any other operating system I've ever
-      used, requiring minimal configuration, and that is because OpenBSD is
-      an secure OS by default.</p>
+      who want to make their system even more secure. The hardening process is
+      extremely easy compared to any other operating system I've ever used,
+      requiring minimal configuration, and that is because OpenBSD is an secure
+      OS by default.</p>
+
       <p>Let's keep this as KISS as possible.</p>
+
       <h2 id="privilege-escalation">Privilege escalation</h2>
-      <p>In order to prevent a program to escalate privileges, remove
-      yourself from the wheel group, and don't set any doas or sudo
-      permission.</p>
+
+      <p>In order to prevent a program to escalate privileges, remove yourself
+      from the wheel group, and don't set any doas or sudo permission.</p>
+
       <p>If you need root privileges, switch to a TTY using the root user or
       (even better) only allow your user as root for specific and restricted
       commands, and escalate privileges using <code>doas</code>, this can be
       configured in <code>/etc/doas.conf</code>.</p>
+
       <h3 id="etcdoas.conf">/etc/doas.conf</h3>
+
       <p>Replace "flywithme" with the name of the user you want to allow.
       That's the setting I use, but you might want to add or remove some
       things.</p>
-      <p>I do not recommend allowing <code>pkg_add</code>, as this can be
-      used to install malicious applications, and not necessarily
-      applications from the ports tree but also local malware. Do not add
-      anything that allows you to change system files, especially the
-      firewall settings and the <code>doas.conf</code> itself.</p>
+
+      <p>I do not recommend allowing <code>pkg_add</code>, as this can be used
+      to install malicious applications, and not necessarily applications from
+      the ports tree but also local malware. Do not add anything that allows
+      you to change system files, especially the firewall settings and the
+      <code>doas.conf</code> itself.</p>
+
       <p>This setting should be as restricted as possible.</p>
+
       <pre><code># Allow reboot and halt without password
 # Warning: this will allow Denial of Service (DoS)
 permit nopass flywithme as root cmd reboot
@@ -176,26 +209,36 @@ permit nopass divaythfyr as fsunaba
 permit nopass divaythfyr as fsunaba-amnesic
 </code></pre>
       <h2 id="multi-user-hardening">Multi-user hardening</h2>
-      <p>The permissions of the user directory should be 700, so only the
-      owner and root could browse it.</p>
+
+      <p>The permissions of the user directory should be 700, so only the owner
+      and root could browse it.</p>
+
       <p>Ideally, you should add <code>umask 077</code> to your user
       environment (often ~/.profile), so every new directory or file
       permissions will be restricted to your user only. But <code>umask
       077</code> doesn’t change existing files.</p>
+
       <p>To set existing regular files to 600 and directories to 700:</p>
+
       <pre><code>find /home/user -type f -exec chmod 600 {} +
 find /home/user -type d -exec chmod 700 {} +</code></pre>
-      <p>This removes execute permission from existing files, including
-      scripts and programs. If you need those to remain executable, don’t run
-      the first command blindly or add the permissions again later.</p>
+      <p>This removes execute permission from existing files, including scripts
+      and programs. If you need those to remain executable, don’t run the first
+      command blindly or add the permissions again later.</p>
+
       <h2 id="firewall">Firewall</h2>
-      <p>We need a good firewall, and this is probably the most important
-      part, all users should dedicate their time studying how to configure
-      the firewall of their systems.</p>
+
+      <p>We need a good firewall, and this is probably the most important part,
+      all users should dedicate their time studying how to configure the
+      firewall of their systems.</p>
+
       <p>That's the setting I use. Block everything by default and clearly
       block out what's essential, then allows only what is necessary.</p>
+
       <p>Adapt configuration variables to suit your system.</p>
+
       <h3 id="etcpf.conf">/etc/pf.conf</h3>
+
       <pre><code># DEFINITION RULES
 
 # Put your network interface here
@@ -305,37 +348,48 @@ pass out quick on $ext_if proto { udp tcp } user _ntp
 pass out quick on $ext_if proto { udp tcp } user $allowed_users
 </code></pre>
       <p>Ensure pf is enabled and then load the rules:</p>
+
       <pre><code># pfctl -e
 # pfctl -f /etc/pf.conf</code></pre>
       <h2 id="disabling-usb-ports">Disabling USB ports</h2>
-      <p>Root is already required to mount a filesystem, this protects
-      against ordinary users mounting USB storage, but it doesn’t make a
-      plugged-in USB device harmless. A device could pretend to be a keyboard
-      or network adapter, or target a bug in a USB driver, and neither needs
-      to mount a disk.</p>
-      <p>If you need to protect your system from malicious USB devices
-      (usually in an office environment), you should disable them in the
-      BIOS/Firmware if possible. If it's not possible, then you could still
-      disable the kernel drivers at boot time using this method.</p>
+
+      <p>Root is already required to mount a filesystem, this protects against
+      ordinary users mounting USB storage, but it doesn’t make a plugged-in USB
+      device harmless. A device could pretend to be a keyboard or network
+      adapter, or target a bug in a USB driver, and neither needs to mount a
+      disk.</p>
+
+      <p>If you need to protect your system from malicious USB devices (usually
+      in an office environment), you should disable them in the BIOS/Firmware
+      if possible. If it's not possible, then you could still disable the
+      kernel drivers at boot time using this method.</p>
+
       <p>Create the file /etc/bsd.re-config and add the content to it:</p>
+
       <pre><code>disable usb
 disable xhci</code></pre>
       <p>This will disable the support for USB 3 and 2 controllers. On a
       desktop computer, you may want to use PS/2 peripherals in these
       conditions.</p>
+
       <h2 id="etcsysctl.conf">/etc/sysctl.conf</h2>
+
       <p>There's not much to do here. The OpenBSD malloc system allows you to
       enable some extra checks, like use after free, heap overflow or guard
       pages, they can be all enabled at once.</p>
+
       <p><strong>ddb.console</strong>: Controls whether keyboard console
       buttons can drop the system into the kernel debugger (DDB). Disabling
       this prevents local users from bypassing authentication.</p>
-      <p><strong>ddb.panic</strong>: drops into DDB when the kernel panics.
-      If ddb.panic is enabled, a panicked unattended machine may stay stopped
-      in the debugger instead of continuing to reboot.</p>
+
+      <p><strong>ddb.panic</strong>: drops into DDB when the kernel panics. If
+      ddb.panic is enabled, a panicked unattended machine may stay stopped in
+      the debugger instead of continuing to reboot.</p>
+
       <p><strong>net.inet.ip.redirect</strong>: Controls whether the kernel
-      accepts ICMP redirect packets. Disabling this prevents network
-      redirects and MITM route hijackings.</p>
+      accepts ICMP redirect packets. Disabling this prevents network redirects
+      and MITM route hijackings.</p>
+
       <pre><code># Memory allocator hardening
 # S = Enable all options suitable for security auditing
 # read "man malloc" for further information
@@ -355,11 +409,14 @@ net.inet6.ip6.redirect=0
 </code></pre>
       <p>Restart the system for the changes to be applied, or apply them
       manually with the <code>sysctl</code> command.</p>
+
       <h2 id="securelevel">Securelevel</h2>
+
       <p>The OpenBSD kernel provides four levels of system security, the
-      default one is "1 Secure mode". Securelevel provides convenient means
-      of “locking down” a system to a degree suited to its environment. It is
+      default one is "1 Secure mode". Securelevel provides convenient means of
+      “locking down” a system to a degree suited to its environment. It is
       possible to increase to level 2, which is the maximum.</p>
+
       <pre><code>$ man securelevel
 
 [...]
@@ -404,33 +461,41 @@ Because securelevel can be modified with the in-kernel debugger ddb(4), a
 
 [...]</code></pre>
       <p>If you don't need to change the firewall rules constantly, this
-      hardening may be good for you, but it is especially useful for
-      dedicated firewalls. I don't see many advantages of this for a desktop
-      user.</p>
+      hardening may be good for you, but it is especially useful for dedicated
+      firewalls. I don't see many advantages of this for a desktop user.</p>
+
       <h3 id="etcrc.securelevel">/etc/rc.securelevel</h3>
+
       <pre><code>sysctl ddb.console=0
 sysctl ddb.panic=0
 sysctl kern.securelevel=2
 </code></pre>
       <p>Then reboot. You can also apply the change instantly with:</p>
+
       <pre><code># sysctl kern.securelevel=2</code></pre>
-      <p>But without the <code>/etc/rc.securelevel</code>, after rebooting
-      the system the securelevel returns to level 1.</p>
+      <p>But without the <code>/etc/rc.securelevel</code>, after rebooting the
+      system the securelevel returns to level 1.</p>
+
       <h2 id="etcfstab">/etc/fstab</h2>
+
       <p>By default in OpenBSD only the <code>/usr/local</code> partition is
       mounted with the <code>wxallowed</code> parameter.</p>
+
       <p><code>wxallowed</code> is an exception to OpenBSD’s W^X protection:
-      normally, programs can’t use memory that is both writable and
-      executable. That helps stop some code-injection attacks.</p>
+      normally, programs can’t use memory that is both writable and executable.
+      That helps stop some code-injection attacks.</p>
+
       <p><code>/usr/local</code> contains third-party packages, and some need
       that exception to work. The rest of the system is kept without it to
       preserve the protection wherever possible. So the setting doesn’t mean
       everything under <code>/usr/local is unsafe</code>, it means programs
       there are allowed to request writable-and-executable memory.</p>
-      <p>If you want to be more secure by accepting that this can and
-      probably will bring future incompatibility, edit the
-      <code>/etc/fstab</code> file and remove the <code>wxallowed</code>
-      parameter from the <code>/usr/local</code> line:</p>
+
+      <p>If you want to be more secure by accepting that this can and probably
+      will bring future incompatibility, edit the <code>/etc/fstab</code> file
+      and remove the <code>wxallowed</code> parameter from the
+      <code>/usr/local</code> line:</p>
+
       <pre><code>[...]
 
 /usr/local ffs rw,nodev 1 2
@@ -438,6 +503,7 @@ sysctl kern.securelevel=2
 [...]</code></pre>
       <p>It is necessary to reboot the system for the configuration to be
       applied, and then check with <code>mount</code>.</p>
+
       <pre><code>$ mount
 
 [...]
@@ -445,79 +511,100 @@ sysctl kern.securelevel=2
 /dev/sd2h on /usr/local type ffs (local, nodev)
 
 [...]</code></pre>
-      <p>This will completely break the I2P (java) daemon/program, I don't
-      know what other programs this can break.</p>
+      <p>This will completely break the I2P (java) daemon/program, I don't know
+      what other programs this can break.</p>
+
       <h2 id="immutable-files">Immutable files</h2>
+
       <p>To make any file be immutable, you can use <code>chflags</code>:</p>
+
       <pre><code># chflags schg /path/to/file</code></pre>
       <p><code>schg</code> makes the file immutable: it can’t be changed,
       moved, or deleted even by root until the flag is cleared. Check it with
       <code>ls -lo</code>. You can clear it with:</p>
+
       <pre><code># chflags noschg /path/to/file</code></pre>
       <p><code>schg</code> can be cleared only when OpenBSD is at security
       level 0 or -1. If the system has raised its security level, changing it
       may require booting into single-user mode.</p>
+
       <p><strong>What to protect?</strong> Usually, nothing essential:
       immutable flags can interfere with updates and normal system tasks.
       <code>uchg</code> can be useful for a specific file you rarely change,
       such as a carefully reviewed configuration snapshot. Avoid recursively
-      flagging <code>/etc</code>, <code>/var</code>, or the whole system.
-      These flags are an extra obstacle, in case of a compromised root
-      user.</p>
-      <p>In my opinion, this tool has its greatest usefulness when it comes
-      to logs.</p>
-      <p>For active logs, OpenBSD’s append-only flag is what you want.
-      Logging can continue, but existing log contents can’t be edited or
-      deleted.</p>
+      flagging <code>/etc</code>, <code>/var</code>, or the whole system. These
+      flags are an extra obstacle, in case of a compromised root user.</p>
+
+      <p>In my opinion, this tool has its greatest usefulness when it comes to
+      logs.</p>
+
+      <p>For active logs, OpenBSD’s append-only flag is what you want. Logging
+      can continue, but existing log contents can’t be edited or deleted.</p>
+
       <pre><code># chflags sappnd /var/log/authlog</code></pre>
       <p>But this breaks normal log rotation: newsyslog needs to rename and
-      replace log files. You’d have to clear the flag for rotation, then set
-      it again. Don’t apply it to all logs unless you’ve planned and tested
-      that process. Use <code>sappnd</code> for active log files that need to
-      grow, and <code>schg</code> for archived logs that should never
-      change.</p>
+      replace log files. You’d have to clear the flag for rotation, then set it
+      again. Don’t apply it to all logs unless you’ve planned and tested that
+      process. Use <code>sappnd</code> for active log files that need to grow,
+      and <code>schg</code> for archived logs that should never change.</p>
+
       <p>Read the complete guide on this, where it shows you to set up this
       process automatically: <a href=
-      "https://rsadowski.de/posts/2025/openbsd-immutable-system-logs/">Why
-      ISO 27001 Demands Immutable Logs (Without Actually Saying So)</a></p>
-      <p>For stronger protection against someone with root access, sending
-      logs to a separate machine is a better setup.</p>
+      "https://rsadowski.de/posts/2025/openbsd-immutable-system-logs/">Why ISO
+      27001 Demands Immutable Logs (Without Actually Saying So)</a></p>
+
+      <p>For stronger protection against someone with root access, sending logs
+      to a separate machine is a better setup.</p>
+
       <h2 id="locking-single-user-mode">Locking single-user mode</h2>
-      <p>OpenBSD allows single-user mode without asking for the root
-      password. With <code>insecure</code>, it prompts for the root password
-      before giving access to the single-user shell.</p>
+
+      <p>OpenBSD allows single-user mode without asking for the root password.
+      With <code>insecure</code>, it prompts for the root password before
+      giving access to the single-user shell.</p>
+
       <p>Edit the console entry: <code>/etc/ttys</code>, then find the entry
       for the actual system console (which is the first line:
-      <code>console</code>) and change its final flag from
-      <code>secure</code> to <code>insecure</code>.</p>
+      <code>console</code>) and change its final flag from <code>secure</code>
+      to <code>insecure</code>.</p>
+
       <pre><code>console "/usr/libexec/getty std.9600"   vt220   off insecure</code></pre>
       <p>This hardening is not very useful unless an attacker gets physical
       access to your device after decryption (if your disk is encrypted) and
-      during the boot process. This setting can also prevent legitimate
-      console recovery if the root password is unavailable, so keep a tested
-      recovery route.</p>
+      during the boot process. This setting can also prevent legitimate console
+      recovery if the root password is unavailable, so keep a tested recovery
+      route.</p>
+
       <h2 id="unwind-for-dns-resolving">Unwind for DNS resolving</h2>
-      <p>This one can be good for privacy, anonymity (if you forward over
-      Tor) and/or security. It all depends on how you set it up.</p>
+
+      <p>This one can be good for privacy, anonymity (if you forward over Tor)
+      and/or security. It all depends on how you set it up.</p>
+
       <h3 id="etcunwind.conf">/etc/unwind.conf</h3>
+
       <p>Here you can go with 4 options:</p>
-      <p>1- No custom configuration. Unwind uses its built-in defaults. It
-      can resolve recursively itself and can also use resolvers learned
-      through network configuration, and it may switch to learned resolvers
-      if it detects that direct DNS queries are blocked. This avoids choosing
-      a public DNS provider, but ordinary DNS traffic is unencrypted between
-      your machine and the DNS servers involved.</p>
+
+      <p>1- No custom configuration. Unwind uses its built-in defaults. It can
+      resolve recursively itself and can also use resolvers learned through
+      network configuration, and it may switch to learned resolvers if it
+      detects that direct DNS queries are blocked. This avoids choosing a
+      public DNS provider, but ordinary DNS traffic is unencrypted between your
+      machine and the DNS servers involved.</p>
+
       <p>2- Prioritizes unwind doing recursive resolution itself, rather than
       using configured forwarders or learned resolvers through the preference
       list. No single public resolver gets your entire query stream, but your
       DNS traffic is still unencrypted.</p>
+
       <p>3- Plaintext forwarding, no transport encryption.</p>
+
       <p>4- DNS-over-TLS (DoT). This is the best for security. The provider
       still receives the queries, and your network can still see that you're
       connecting to the provider, but not the DNS contents of that encrypted
       connection.</p>
+
       <p>Quad9 is a good DNS provider, but you can choose whatever you
       want.</p>
+
       <pre><code># To resolve DNS locally
 #preference { recursor }
 
@@ -538,12 +625,16 @@ forwarder {
 preference { DoT }
 </code></pre>
       <p>Enable and start unwind:</p>
+
       <pre><code># rcctl enable unwind
 # rcctl start unwind</code></pre>
       <h2 id="building-ports">Building ports</h2>
+
       <p>If you prefer to build ports locally rather than installing with
       <code>pkg_add</code>, you should do it safely.</p>
+
       <p>Create <code>/etc/mk.conf</code> and add the following lines:</p>
+
       <pre><code>PORTS_PRIVSEP=Yes
 WRKOBJDIR=/usr/obj/ports
 DISTDIR=/usr/distfiles
@@ -552,26 +643,32 @@ SUDO=doas
 </code></pre>
       <p>Don't forget to uncomment these 2 lines in
       <code>/etc/doas.conf</code>:</p>
+
       <pre><code>permit keepenv nopass flywithme as _pbuild
 permit keepenv nopass flywithme as _pfetch</code></pre>
       <p>After that, just follow the official guide: <a href=
       "https://www.openbsd.org/faq/ports/ports.html">OpenBSD Ports - Working
       with Ports</a></p>
-      <h2 id="screenlock-and-disabling-x11-magic-keystrokes">Screenlock
-      and disabling X11 magic keystrokes</h2>
+
+      <h2 id="screenlock-and-disabling-x11-magic-keystrokes">Screenlock and
+      disabling X11 magic keystrokes</h2>
+
       <p>The Xorg and XFree86 X servers trap certain magic keystrokes before
-      X11 client programs ever see them. If you care about keeping your
-      screen locked, this is a big problem. These keystrokes allow to totally
-      bypass any X11 screensaver.</p>
+      X11 client programs ever see them. If you care about keeping your screen
+      locked, this is a big problem. These keystrokes allow to totally bypass
+      any X11 screensaver.</p>
+
       <p>These keystrokes are:
       <strong><code>Ctrl+Alt+Backspace</code></strong>;
       <strong><code>Ctrl-Alt-F1</code></strong>,
       <strong><code>Ctrl-Alt-F2</code></strong>,
       <strong><code>etc</code></strong>.; and
       <strong><code>Ctrl-Alt-KP_Multiply</code></strong>.</p>
+
       <p>To disable them, create this file:
-      <code>/usr/X11R6/share/X11/xorg.conf.d/90-serverflags.conf</code> and
-      add the following lines:</p>
+      <code>/usr/X11R6/share/X11/xorg.conf.d/90-serverflags.conf</code> and add
+      the following lines:</p>
+
       <pre><code>Section "ServerFlags"
         Option "DontZap" "true"
         Option "DontVTSwitch" "true"
@@ -580,22 +677,27 @@ EndSection</code></pre>
       <p>To lock the screen automatically I use the <code>xautolock</code>
       program, you need to download it from the ports. Then set this on
       <code>~/.xsession</code>:</p>
+
       <pre><code># If you use xscreensaver
 #xscreensaver --no-splash &
 
 # Lock the screen after 3 minutes idle
 xautolock -time 3 -locker "xlock" &</code></pre>
-      <h2 id="userland-sandboxing-with-flysunaba">Userland sandboxing
-      with Flysunaba</h2>
+      <h2 id="userland-sandboxing-with-flysunaba">Userland sandboxing with
+      Flysunaba</h2>
+
       <blockquote>
         <p>Flysunaba is a utility to run X (or X11) applications in a
-        rudimentary sandbox on OpenBSD, isolating them from your X session
-        and from each other. The command is Fsunaba.</p>
+        rudimentary sandbox on OpenBSD, isolating them from your X session and
+        from each other. The command is Fsunaba.</p>
+
         <p>The sandbox consists of:</p>
+
         <ul>
-          <li>A separate, less privileged, local user account under which the
-          X application runs, restricting access to your user files (assuming
+          <li>A separate, less privileged, local user account under which the X
+          application runs, restricting access to your user files (assuming
           appropriate permissions are set).</li>
+
           <li>A separate X session created and rendered into a window within
           your running X display by Xephyr, one per invocation, so the
           application cannot snoop on XEvents in the parent X session, in
@@ -603,53 +705,68 @@ xautolock -time 3 -locker "xlock" &</code></pre>
           session.</li>
         </ul>
       </blockquote>
-      <p><a href="https://github.com/opsec-enthusiast/flysunaba">Flysunaba</a></p>
+
+      <p><a href="https://github.com/opsec-enthusiast/flysunaba">Flysunaba</a>
+      </p>
+
       <p><strong>Flysunaba is a creation of mine with the simple objective of
       ending once and for all the problem of Xorg's lack of GUI
-      isolation.</strong></p>
+      isolation.</strong>
+      </p>
+
       <p>Xenocara is OpenBSD’s adapted X.Org, with privilege separation to
       reduce the risk from bugs in the display server.</p>
+
       <p>But its hardening is about the server, not the clients. The server
       drops privileges to the _x11 user, keeps a small [priv] child confined
-      with <code>pledge(2)</code> and <code>unveil(2)</code>, and disables
-      TCP by default. All of that protects the system from a compromised
-      server. It does not isolate clients from each other: every
-      authenticated client still shares the display, so it can read, keylog,
-      inject into, and screenshot every other application, exactly as on
-      stock X.Org.</p>
+      with <code>pledge(2)</code> and <code>unveil(2)</code>, and disables TCP
+      by default. All of that protects the system from a compromised server. It
+      does not isolate clients from each other: every authenticated client
+      still shares the display, so it can read, keylog, inject into, and
+      screenshot every other application, exactly as on stock X.Org.</p>
+
       <p>The goal of Flysunaba is to remove that problem for the applications
       you run through it. Each session is a separate unprivileged user inside
-      its own nested Xephyr display, so an application cannot read or
-      interfere with your X session, with another Fsunaba session, or with
-      any other application.</p>
+      its own nested Xephyr display, so an application cannot read or interfere
+      with your X session, with another Fsunaba session, or with any other
+      application.</p>
+
       <p><strong>That GUI isolation is the main goal, but Fsunaba also
       restricts more than the display</strong>:</p>
+
       <ul>
         <li>Separate user and filesystem: the application runs as the sandbox
         user, not as you, so Unix permissions keep your files out of
         reach.</li>
+
         <li>No audio: the sandbox has no sndio cookie, so it can neither play
         nor record until you explicitly copy one in.</li>
+
         <li>No clipboard or selection: nothing is shared by default; copying
         requires the explicit xclip bridge (see Shared Selection and/or
         Clipboard).</li>
+
         <li>No credentials: a fresh, minimal environment, with its home
         directory as the working directory.</li>
       </ul>
+
       <p><strong>Compared with Wayland</strong>:</p>
-      <p>Wayland isolates the GUI for native clients, and does nothing else
-      by itself. Applications still run as your user with full access to your
+
+      <p>Wayland isolates the GUI for native clients, and does nothing else by
+      itself. Applications still run as your user with full access to your
       files; PipeWire and PulseAudio accept any client of your user, so audio
       is not blocked; and the clipboard is shared across the session and
       readable by any client, including through
       wlr-data-control/ext-data-control-v1.</p>
+
       <ul>
         <li>
-          <p>Wayland only: native clients cannot read each other's surfaces
-          or input, and there is no X11 socket. But there is no user,
-          filesystem, audio, or clipboard isolation without extra sandboxing,
-          and X11 applications do not run.</p>
+          <p>Wayland only: native clients cannot read each other's surfaces or
+          input, and there is no X11 socket. But there is no user, filesystem,
+          audio, or clipboard isolation without extra sandboxing, and X11
+          applications do not run.</p>
         </li>
+
         <li>
           <p>On environments outside of GNOME, KDE Plasma, Sway, and COSMIC,
           applications can access screen content of the entire desktop. This
@@ -659,55 +776,77 @@ xautolock -time 3 -locker "xlock" &</code></pre>
           which is bad if you want protection against attacks via
           thumbnailers.</p>
         </li>
+
         <li>
-          <p>Wayland with XWayland: X11 applications keep working, but they
-          all share one XWayland server and therefore the whole X11 problem
-          among themselves, and XWayland carries X.Org's code and its
+          <p>Wayland with XWayland: X11 applications keep working, but they all
+          share one XWayland server and therefore the whole X11 problem among
+          themselves, and XWayland carries X.Org's code and its
           vulnerabilities.</p>
         </li>
+
         <li>
-          <p>Xenocara with Flysunaba: X11 applications keep working, and
-          every Fsunaba session gets its own X server and its own
-          unprivileged user, with audio and clipboard off by default. The
-          cost is software rendering only (no OpenGL acceleration), no
-          display manager, and one doas rule.</p>
+          <p>Xenocara with Flysunaba: X11 applications keep working, and every
+          Fsunaba session gets its own X server and its own unprivileged user,
+          with audio and clipboard off by default. The cost is software
+          rendering only (no OpenGL acceleration), no display manager, and one
+          doas rule.</p>
         </li>
       </ul>
-      <p>In short, Xenocara + Flysunaba is even stronger than
-      Wayland-only.</p>
+
+      <p>In short, Xenocara + Flysunaba is even stronger than Wayland-only.</p>
+
       <p><strong>Flysunaba is very easy to use, simple and is pure shell
-      scripting. Just read the manpage.</strong></p>
+      scripting. Just read the manpage.</strong>
+      </p>
+
       <h2 id="good-practices-and-more-tips">Good practices and more tips</h2>
+
       <ol start="14">
-        <li>Obviously encrypt the disk and swap in the OpenBSD installation.
-        If you haven't done it in the installation process, then you can do
-        it after.</li>
+        <li>Obviously encrypt the disk and swap in the OpenBSD installation. If
+        you haven't done it in the installation process, then you can do it
+        after.</li>
+
         <li>Avoid installing ports as much as possible, every new package may
         be compromised and/or can increase the attack surface.</li>
+
         <li>Uninstall packages you don't need.</li>
-        <li>Don't run services unnecessarily and stop services you don't use
-        or need (check with <code>rcctl ls on</code>). Everything is attack
+
+        <li>Don't run services unnecessarily and stop services you don't use or
+        need (check with <code>rcctl ls on</code>). Everything is attack
         surface.</li>
+
         <li>Use a reliable password manager, I recommend keepassxc.</li>
+
         <li>Chromium-based web browsers are more secure than Firefox-based
         ones.</li>
-        <li>Use CWM (OpenBSD's own window manager) instead of FVWM, TWM or
-        any other WM/DE.</li>
+
+        <li>Use CWM (OpenBSD's own window manager) instead of FVWM, TWM or any
+        other WM/DE.</li>
+
         <li>Try as much as possible to use OpenBSD's native tools/programs
         instead of relying on third-party projects.</li>
       </ol>
+
       <h2 id="more-good-tips-at">Further reading</h2>
+
       <p><strong><a href=
       "https://www.openbsdhandbook.com/advanced-networking/hardening-operations/">
-      Hardening and Operational Safety</a></strong></p>
+      Hardening and Operational Safety</a></strong>
+      </p>
+
       <p><strong><a href="https://geodsoft.com/howto/harden/">Taking OpenBSD
-      Security to the Limit</a></strong></p>
+      Security to the Limit</a></strong>
+      </p>
     </article>
   </main>
+
   <footer id="site-footer">
-    <p>&copy; 2025-2026 The Cypherpunk Handbook Authors. All Rights Reserved.</p>
-    <p><strong><a href="./../license.html" rel=
-    "license">LICENSE</a></strong></p>
+    <p>&copy; 2025-2026 The Cypherpunk Handbook Authors. All Rights
+    Reserved.</p>
+
+    <p><strong><a href="./../license.html" rel="license">LICENSE</a></strong>
+    </p>
+
     <p class="motto">VIVE LIBER AUT MORERE</p>
   </footer>
 </body>
