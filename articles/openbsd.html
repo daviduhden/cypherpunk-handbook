@@ -313,7 +313,7 @@
           current model. It was not built for that goal.</li>
         </ul>
 
-        <h2 id="obsd-0">0 - Philosophy</h2>
+        <h2 id="obsd-0">Philosophy</h2>
 
         <blockquote>
           <p>OpenBSD believes in strong security. Our aspiration is to be
@@ -336,7 +336,7 @@
       </section>
 
       <section aria-labelledby="obsd-1">
-        <h2 id="obsd-1">1 - Library order randomization</h2>
+        <h2 id="obsd-1">Library order randomization</h2>
 
         <p>In rc(8), libc.so, libcrypto, and ld.so are relinked on startup, so
         their objects are placed in a random order at boot. This makes
@@ -353,7 +353,7 @@
       </section>
 
       <section aria-labelledby="obsd-2">
-        <h2 id="obsd-2">2 - arc4random(3)</h2>
+        <h2 id="obsd-2">arc4random(3)</h2>
 
         <p>OpenBSD has its own cryptographic random number interface. When
         random input is needed, arc4random is the standard choice. It is an
@@ -363,7 +363,7 @@
       </section>
 
       <section aria-labelledby="obsd-3">
-        <h2 id="obsd-3">3 - First in security implementations</h2>
+        <h2 id="obsd-3">First in security implementations</h2>
 
         <ul>
           <li>The first operating system to integrate post-quantum encryption
@@ -390,7 +390,7 @@
       </section>
 
       <section aria-labelledby="obsd-4">
-        <h2 id="obsd-4">4 - Camera and audio recording</h2>
+        <h2 id="obsd-4">Camera and audio recording</h2>
 
         <p>For privacy reasons, the OpenBSD team disabled camera and audio
         recording for all devices by default in the kernel. This can be toggled
@@ -398,7 +398,7 @@
       </section>
 
       <section aria-labelledby="obsd-5">
-        <h2 id="obsd-5">5 - Chrooted web server by default</h2>
+        <h2 id="obsd-5">Chrooted web server by default</h2>
 
         <p>By default, HTTP daemons are chrooted in /var/www. As an OpenBSD
         system administrator, you do not need extra setup to run a secure web
@@ -407,7 +407,7 @@
       </section>
 
       <section aria-labelledby="obsd-6">
-        <h2 id="obsd-6">6 - cron(8)</h2>
+        <h2 id="obsd-6">cron(8)</h2>
 
         <p>OpenBSD's cron(8) daemon can randomize values (~) and prevent
         multiple jobs from running concurrently (-s). Preventing conflicts
@@ -425,7 +425,7 @@
       </section>
 
       <section aria-labelledby="obsd-6a">
-        <h2 id="obsd-6a">6.1 - security(8)</h2>
+        <h2 id="obsd-6a">security(8)</h2>
 
         <p>OpenBSD includes <a href=
         "https://man.openbsd.org/security">security(8)</a>, a script run by
@@ -442,7 +442,7 @@
       </section>
 
       <section aria-labelledby="obsd-7">
-        <h2 id="obsd-7">7 - Defined integer overflows</h2>
+        <h2 id="obsd-7">Defined integer overflows</h2>
 
         <p>On OpenBSD, Clang, the default compiler on most architectures, has
         the -fwrapv flag enabled by default. GCC also does not include
@@ -453,7 +453,7 @@
       </section>
 
       <section aria-labelledby="obsd-8">
-        <h2 id="obsd-8">8 - doas(1)</h2>
+        <h2 id="obsd-8">doas(1)</h2>
 
         <p>OpenBSD does not use sudo, so it created "doas." doas replaced sudo
         because of sudo's security flaws and large, complex codebase. doas is
@@ -477,7 +477,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-9">
-        <h2 id="obsd-9">9 - freezero(3)</h2>
+        <h2 id="obsd-9">freezero(3)</h2>
 
         <p>The libc function freezero(3) lets programs free memory that holds
         sensitive data and overwrite it with zeros.</p>
@@ -488,7 +488,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-10">
-        <h2 id="obsd-10">10 - httpd(8)</h2>
+        <h2 id="obsd-10">httpd(8)</h2>
 
         <p>OpenBSD includes httpd(8) in the base system. It is not based on
         Apache: it was written from scratch by OpenBSD developers with a small
@@ -519,7 +519,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-10a">
-        <h2 id="obsd-10a">10.1 - relayd(8)</h2>
+        <h2 id="obsd-10a">relayd(8)</h2>
 
         <p>relayd(8) is OpenBSD's relay and application-layer proxy daemon. It
         provides reverse proxying, load balancing, health checks, and TLS
@@ -528,7 +528,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-10b">
-        <h2 id="obsd-10b">10.2 - smtpd(8)</h2>
+        <h2 id="obsd-10b">smtpd(8)</h2>
 
         <p>smtpd(8), from the OpenSMTPD project, is OpenBSD's native mail
         daemon in base. It was developed by OpenBSD contributors with a focus
@@ -536,7 +536,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-11">
-        <h2 id="obsd-11">11 - KARL</h2>
+        <h2 id="obsd-11">KARL</h2>
 
         <p>At every install, upgrade, and boot, OpenBSD generates a new kernel
         with randomized addresses. A unique and unpredictable kernel is a real
@@ -551,7 +551,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-12">
-        <h2 id="obsd-12">12 - Kernel &amp; Userland</h2>
+        <h2 id="obsd-12">Kernel &amp; Userland</h2>
 
         <p>The kernel and userland in OpenBSD, as in the BSD family generally,
         are developed together. The same project that introduces kernel
@@ -574,7 +574,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-13">
-        <h2 id="obsd-13">13 - LibreSSL</h2>
+        <h2 id="obsd-13">LibreSSL</h2>
 
         <p>The bloated and difficult OpenSSL codebase was forked after
         Heartbleed. LibreSSL cleaned up, improved, and documented large parts
@@ -589,7 +589,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-13a">
-        <h2 id="obsd-13a">13.1 - openrsync(1)</h2>
+        <h2 id="obsd-13a">openrsync(1)</h2>
 
         <p><a href="https://man.openbsd.org/openrsync">openrsync</a> is
         OpenBSD's BSD-licensed implementation of rsync. It synchronizes local
@@ -640,7 +640,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-14">
-        <h2 id="obsd-14">14 - License</h2>
+        <h2 id="obsd-14">License</h2>
 
         <p>You are free to use the operating system however you want, including
         for business, under ISC or Berkeley-style licenses. By project policy,
@@ -668,7 +668,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-15">
-        <h2 id="obsd-15">15 - Malloc leak detection</h2>
+        <h2 id="obsd-15">Malloc leak detection</h2>
 
         <p>This is a tool the team uses to detect unsafe behavior in OpenBSD
         code. It requires debug symbols. It tracks memory allocations so they
@@ -683,7 +683,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-16">
-        <h2 id="obsd-16">16 - Documentation - manpages</h2>
+        <h2 id="obsd-16">Documentation - manpages</h2>
 
         <p>There is probably no operating system documented more thoroughly
         than OpenBSD. Every binary, library, driver, or script delivered in the
@@ -702,7 +702,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-17">
-        <h2 id="obsd-17">17 - Meltdown and Spectre</h2>
+        <h2 id="obsd-17">Meltdown and Spectre</h2>
 
         <p>To mitigate Meltdown and Spectre, OpenBSD disables hyper-threading
         by default, citing security concerns, including Spectre-style concerns,
@@ -715,7 +715,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-18">
-        <h2 id="obsd-18">18 - Memory allocation randomization</h2>
+        <h2 id="obsd-18">Memory allocation randomization</h2>
 
         <p>All those OSes (Windows, Linux, macOS, Android, etc.) provide malloc
         implementations, but OpenBSD's malloc is widely regarded as one of the
@@ -740,7 +740,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-19">
-        <h2 id="obsd-19">19 - OpenSMTPD</h2>
+        <h2 id="obsd-19">OpenSMTPD</h2>
 
         <p>OpenSMTPD was written from scratch by OpenBSD developers. A simple
         mail daemon was needed for the base system, and there were no suitable
@@ -754,7 +754,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-20">
-        <h2 id="obsd-20">20 - OpenSSH</h2>
+        <h2 id="obsd-20">OpenSSH</h2>
 
         <p>The most popular OpenBSD software is probably OpenSSH. It is the SSH
         standard used worldwide and is native in all BSDs, macOS, and even
@@ -764,7 +764,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-21">
-        <h2 id="obsd-21">21 - Firewall</h2>
+        <h2 id="obsd-21">Firewall</h2>
 
         <p>pf is OpenBSD's firewall. It is simple, feature-rich, and easy to
         read. It supports variables, lists, and tables. Many commercial
@@ -807,7 +807,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-22">
-        <h2 id="obsd-22">22 - PID randomization</h2>
+        <h2 id="obsd-22">PID randomization</h2>
 
         <p>OpenBSD spawns each new process with a random unused PID. This helps
         protect users from attacks that rely on predicting process IDs.</p>
@@ -820,7 +820,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-23">
-        <h2 id="obsd-23">23 - ping randomness</h2>
+        <h2 id="obsd-23">ping randomness</h2>
 
         <p>Both ping(8) and ping6(8) obfuscate transmitted monotonic clock
         values by offsetting them with a random value. ChaCha streams vary each
@@ -833,7 +833,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-24">
-        <h2 id="obsd-24">24 - pledge</h2>
+        <h2 id="obsd-24">pledge</h2>
 
         <p>pledge lets a program limit its own access to system calls with very
         little code. That is a huge security improvement. Even if a binary is
@@ -861,7 +861,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-25">
-        <h2 id="obsd-25">25 - unveil</h2>
+        <h2 id="obsd-25">unveil</h2>
 
         <p>The unveil system call limits filesystem open calls to a defined set
         of paths. It extends the idea of pledge: simply limiting programs to
@@ -894,7 +894,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-26">
-        <h2 id="obsd-26">26 - Privilege and user separation</h2>
+        <h2 id="obsd-26">Privilege and user separation</h2>
 
         <p>OpenBSD runs all of the standard base system daemons with privilege
         and user separation. These include, for example, bgpd(8), dhclient(8),
@@ -924,7 +924,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-27">
-        <h2 id="obsd-27">27 - Privilege revocation</h2>
+        <h2 id="obsd-27">Privilege revocation</h2>
 
         <p>Related to the work on privilege separation, some programs were
         refactored to drop privileges while holding onto a tricky resource such
@@ -940,7 +940,7 @@ permit root</pre>
       </section>
 
       <section aria-labelledby="obsd-28">
-        <h2 id="obsd-28">28 - MAC addresses randomized</h2>
+        <h2 id="obsd-28">MAC addresses randomized</h2>
 
         <p>OpenBSD lets you use randomized MAC addresses via ifconfig.</p>
 
@@ -956,7 +956,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-29">
-        <h2 id="obsd-29">29 - rcctl(8)</h2>
+        <h2 id="obsd-29">rcctl(8)</h2>
 
         <p><code>rcctl</code> is a simple utility for maintaining
         <code>rc.conf.local</code>, OpenBSD's system daemon configuration
@@ -974,7 +974,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-30">
-        <h2 id="obsd-30">30 - recallocarray(3)</h2>
+        <h2 id="obsd-30">recallocarray(3)</h2>
 
         <p>recallocarray is a libc function that discards old data before
         allocating new memory and checks for integer overflow in
@@ -986,7 +986,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-31">
-        <h2 id="obsd-31">31 - rpki-client(8)</h2>
+        <h2 id="obsd-31">rpki-client(8)</h2>
 
         <p><a href="https://www.openbgpd.org/">OpenBGPD</a> implements BGP, the
         protocol through which autonomous systems and large networks exchange
@@ -1017,7 +1017,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-32">
-        <h2 id="obsd-32">32 - Sane &amp; secure defaults</h2>
+        <h2 id="obsd-32">Sane &amp; secure defaults</h2>
 
         <p>OpenBSD ships with sane, secure defaults in daemons and
         configurations.</p>
@@ -1050,7 +1050,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-33">
-        <h2 id="obsd-33">33 - signify(1)</h2>
+        <h2 id="obsd-33">signify(1)</h2>
 
         <p>signify is a small, elegant tool for cryptographically signing and
         verifying files. It was created to sign OpenBSD releases (since OpenBSD
@@ -1081,7 +1081,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-34">
-        <h2 id="obsd-34">34 - Stack</h2>
+        <h2 id="obsd-34">Stack</h2>
 
         <p>Aggressive randomization of the stack location has been used since
         version 7.3 (2023). This puts the stack at a random location in the
@@ -1101,7 +1101,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-35">
-        <h2 id="obsd-35">35 - stack-register checking</h2>
+        <h2 id="obsd-35">stack-register checking</h2>
 
         <p>A memory object should have the fewest permissions possible:
         typically read, write and execute. OpenBSD introduced a new permission
@@ -1118,7 +1118,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-36">
-        <h2 id="obsd-36">36 - Swap encryption by default</h2>
+        <h2 id="obsd-36">Swap encryption by default</h2>
 
         <p>This protects sensitive information, such as passwords, from leaking
         to disk where it can persist for years.</p>
@@ -1136,7 +1136,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-37">
-        <h2 id="obsd-37">37 - Syscall origin verification</h2>
+        <h2 id="obsd-37">Syscall origin verification</h2>
 
         <p>The kernel checks whether a syscall is executed from the address
         space of its corresponding process. If not, the process is killed. This
@@ -1149,7 +1149,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-38">
-        <h2 id="obsd-38">38 - unwind(8) validating DNS resolver</h2>
+        <h2 id="obsd-38">unwind(8) validating DNS resolver</h2>
 
         <p>unwind is a validating DNS resolver. It is designed for client
         machines such as workstations or laptops and listens only on localhost.
@@ -1166,7 +1166,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-39">
-        <h2 id="obsd-39">39 - W^X Memory</h2>
+        <h2 id="obsd-39">W^X Memory</h2>
 
         <p>Since 2003, memory on OpenBSD can be writable or executable, but not
         both. This is a major security feature that helps prevent attackers
@@ -1180,7 +1180,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-40">
-        <h2 id="obsd-40">40 - WireGuard</h2>
+        <h2 id="obsd-40">WireGuard</h2>
 
         <p>OpenBSD has an in-kernel driver for WireGuard VPN communication.
         Including WireGuard in the kernel improves performance and makes it
@@ -1203,7 +1203,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-41">
-        <h2 id="obsd-41">41 - file(1)</h2>
+        <h2 id="obsd-41">file(1)</h2>
 
         <p>file(1) is sandboxed and runs as the _file user. Imagine downloading
         a random file from the internet and analyzing it with file. If file had
@@ -1217,7 +1217,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-42">
-        <h2 id="obsd-42">42 - vmm(4) - hardened hypervisor</h2>
+        <h2 id="obsd-42">vmm(4) - hardened hypervisor</h2>
 
         <p>Theo de Raadt has long criticized virtual machines and their
         security model, arguing that the hypervisor is often the weakest and
@@ -1320,7 +1320,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-43">
-        <h2 id="obsd-43">43 - X server without root permissions and xenodm: the
+        <h2 id="obsd-43">X server without root permissions and xenodm: the
         secure X Display manager</h2>
 
         <p>OpenBSD developers have worked hard to enable the non-root execution
@@ -1353,7 +1353,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-44">
-        <h2 id="obsd-44">44 - No proprietary blobs</h2>
+        <h2 id="obsd-44">No proprietary blobs</h2>
 
         <p>OpenBSD has a project policy of avoiding non-free blobs and firmware
         in the system.</p>
@@ -1372,7 +1372,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-45">
-        <h2 id="obsd-45">45 - RETGUARD</h2>
+        <h2 id="obsd-45">RETGUARD</h2>
 
         <p>RETGUARD is a replacement for the stack protector that uses a
         per-function random cookie (located in the read-only ELF
@@ -1394,7 +1394,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-46">
-        <h2 id="obsd-46">46 - Audit process</h2>
+        <h2 id="obsd-46">Audit process</h2>
 
         <p><a href="https://www.openbsd.org/security.html">OpenBSD security
         page</a>
@@ -1440,7 +1440,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-47">
-        <h2 id="obsd-47">47 - Project Goals</h2>
+        <h2 id="obsd-47">Project Goals</h2>
 
         <p>OpenBSD's goals are clear, precise, and they greatly increase user
         confidence.</p>
@@ -1535,7 +1535,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-48">
-        <h2 id="obsd-48">48 - Politics-free</h2>
+        <h2 id="obsd-48">Politics-free</h2>
 
         <blockquote>
           <p>Be as politics-free as possible; solutions should be decided on
@@ -1635,7 +1635,7 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-49">
-        <h2 id="obsd-49">49 - Smaller attack surface</h2>
+        <h2 id="obsd-49">Smaller attack surface</h2>
 
         <p>As of 2026-02-16, the entire OpenBSD operating system (src +
         xenocara) has 35,590,098 lines of code. The OpenBSD kernel (src/sys)
