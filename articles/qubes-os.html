@@ -216,7 +216,7 @@
       </nav>
 
       <section aria-labelledby="qubes-1">
-        <h2 id="qubes-1">1 - Xen hypervisor</h2>
+        <h2 id="qubes-1">Xen hypervisor</h2>
 
         <p>Qubes OS runs virtual machines on Xen, a type-1 hypervisor. Because
         Xen runs directly on hardware (Ring 0), virtualization does not
@@ -486,7 +486,7 @@
       </section>
 
       <section aria-labelledby="qubes-2">
-        <h2 id="qubes-2">2 - Lack of VM spoofing</h2>
+        <h2 id="qubes-2">Lack of VM spoofing</h2>
 
         <p>In most VM setups, guest systems can easily detect that they are
         virtualized. On Windows, this can be visible through registry keys,
@@ -540,7 +540,7 @@
       </section>
 
       <section aria-labelledby="qubes-3">
-        <h2 id="qubes-3">3 - Linux-based attack surface</h2>
+        <h2 id="qubes-3">Linux-based attack surface</h2>
 
         <p>Qubes OS uses a Fedora-based dom0 and standard Linux kernels. My
         argument is that this inherits Linux and Fedora risks, and does not
@@ -581,7 +581,7 @@
       </section>
 
       <section aria-labelledby="qubes-4">
-        <h2 id="qubes-4">4 - Operational complexity</h2>
+        <h2 id="qubes-4">Operational complexity</h2>
 
         <p>Qubes OS is operationally complex, even for advanced users. More
         complexity means more chances for human error, and human error can
@@ -595,7 +595,7 @@
       </section>
 
       <section aria-labelledby="qubes-5">
-        <h2 id="qubes-5">5 - Systemd attack surface</h2>
+        <h2 id="qubes-5">Systemd attack surface</h2>
 
         <p>I criticize systemd here for its size and complexity. One practical
         check worth running is <code>systemd-analyze security</code> to review
@@ -657,7 +657,7 @@
       </section>
 
       <section aria-labelledby="qubes-6">
-        <h2 id="qubes-6">6 - Hardware support and compatibility problems</h2>
+        <h2 id="qubes-6">Hardware support and compatibility problems</h2>
 
         <p>Qubes OS hardware compatibility is narrow in practice, especially
         when stable IOMMU, SLAT, and all Qubes OS features are required without
@@ -856,7 +856,7 @@
       </section>
 
       <section aria-labelledby="qubes-7">
-        <h2 id="qubes-7">7 - Anti Evil Maid and TPM 1.2 requirements</h2>
+        <h2 id="qubes-7">Anti Evil Maid and TPM 1.2 requirements</h2>
 
         <p>Qubes OS itself does not require a TPM. Its optional Anti Evil Maid
         (AEM) package requires a TPM 1.2 interface and a working Intel TXT
@@ -929,7 +929,7 @@
       </section>
 
       <section aria-labelledby="qubes-8">
-        <h2 id="qubes-8">8 - Intel ME dependency</h2>
+        <h2 id="qubes-8">Intel ME dependency</h2>
 
         <blockquote>
           <p>Devs: If you cleaned your Intel Management Engine with e.g.,
@@ -1056,7 +1056,7 @@
       </section>
 
       <section aria-labelledby="qubes-9">
-        <h2 id="qubes-9">9 - Weak fit for server workloads</h2>
+        <h2 id="qubes-9">Weak fit for server workloads</h2>
 
         <p>Qubes OS is a poor fit for server use. A system that claims serious
         security should also hold up in reliability-focused server
@@ -1092,7 +1092,7 @@
       </section>
 
       <section aria-labelledby="qubes-10">
-        <h2 id="qubes-10">10 - Networking exposure: trust in NetVMs and the
+        <h2 id="qubes-10">Networking exposure: trust in NetVMs and the
         split-driver model</h2>
 
         <p>Qubes centralizes network access in one or more network-facing qubes
@@ -1126,7 +1126,7 @@
       </section>
 
       <section aria-labelledby="qubes-11">
-        <h2 id="qubes-11">11 - Forensics, logging, and incident response
+        <h2 id="qubes-11">Forensics, logging, and incident response
         limitations</h2>
 
         <p>Qubes' compartmentalization and disposable-qube model complicate
@@ -1168,7 +1168,7 @@
       </section>
 
       <section aria-labelledby="qubes-12">
-        <h2 id="qubes-12">12 - High-threat-model and enterprise support
+        <h2 id="qubes-12">High-threat-model and enterprise support
         limitations</h2>
 
         <p>Qubes OS is poorly suited for enterprise and regulated environments
@@ -1238,7 +1238,7 @@
       </section>
 
       <section aria-labelledby="qubes-13">
-        <h2 id="qubes-13">13 - Security through virtualization, but is that
+        <h2 id="qubes-13">Security through virtualization, but is that
         all?</h2>
 
         <p>The core problem is architectural imbalance. Qubes presents
@@ -1298,7 +1298,7 @@
       </section>
 
       <section aria-labelledby="qubes-14">
-        <h2 id="qubes-14">14 - Security by correctness, isolation, and
+        <h2 id="qubes-14">Security by correctness, isolation, and
         randomization &gt;&gt;&gt;&gt; security by virtualization; plus a
         response to Joanna Rutkowska</h2>
 
@@ -1905,7 +1905,7 @@
       </section>
 
       <section aria-labelledby="qubes-15">
-        <h2 id="qubes-15">15 - Reviewing the developers' arguments</h2>
+        <h2 id="qubes-15">Reviewing the developers' arguments</h2>
 
         <p><a href=
         "https://doc.qubes-os.org/en/latest/introduction/faq.html">Qubes OS
@@ -2328,7 +2328,7 @@
       </section>
 
       <section aria-labelledby="qubes-16">
-        <h2 id="qubes-16">16 - Terrible against zero-day attacks</h2>
+        <h2 id="qubes-16">Terrible against zero-day attacks</h2>
 
         <blockquote>
           <p>A zero-day (also known as a 0-day) is a vulnerability or security
@@ -2629,7 +2629,7 @@
       <section aria-labelledby="qubes-reco">
         <h2 id="qubes-reco">My recommendations instead of Qubes OS</h2>
 
-        <h3 id="qubes-reco-openbsd">1 - OpenBSD</h3>
+        <h3 id="qubes-reco-openbsd">OpenBSD</h3>
 
         <p>Simply the most secure Unix-like operating system by default.
         Created from the beginning in 1995 for first-place security, it is an
@@ -2670,7 +2670,7 @@
         the vmctl(8) control utility, using configuration files stored in the
         vm.conf(5) file.</p>
 
-        <h3 id="qubes-reco-freebsd">2 - FreeBSD</h3>
+        <h3 id="qubes-reco-freebsd">FreeBSD</h3>
 
         <blockquote>
           <p>FreeBSD is an operating system for a variety of platforms which
@@ -2741,7 +2741,7 @@
         <p>FreeBSD is not secure by default. Knowledge of its security tools
         (firewalls, jails, Capsicum, etc.) is necessary.</p>
 
-        <h3 id="qubes-reco-gentoo">3 - Gentoo Hardened</h3>
+        <h3 id="qubes-reco-gentoo">Gentoo Hardened</h3>
 
         <p>This can take several days and maintenance is difficult, but it's
         the only way to have the highest possible security in a Linux operating
@@ -2790,7 +2790,7 @@
           </li>
         </ul>
 
-        <h3 id="qubes-reco-secureblue">4 - Fedora Secureblue</h3>
+        <h3 id="qubes-reco-secureblue">Fedora Secureblue</h3>
 
         <p>Secureblue is a hardened Fedora Atomic/Silverblue-style system with
         an immutable base.</p>
@@ -2811,7 +2811,7 @@
         outweighs that problem for many users. <a href=
         "https://secureblue.dev/features">Secureblue features</a></p>
 
-        <h3 id="qubes-reco-netbsd">5 - NetBSD</h3>
+        <h3 id="qubes-reco-netbsd">NetBSD</h3>
 
         <blockquote>
           <p>NetBSD is a free, fast, secure, and highly portable Unix-like Open
@@ -2857,7 +2857,7 @@
         <p>NetBSD has Wine and Linuxlator for running many Linux programs
         natively (although different from FreeBSD).</p>
 
-        <h3 id="qubes-reco-alpine">6 - Alpine Linux</h3>
+        <h3 id="qubes-reco-alpine">Alpine Linux</h3>
 
         <blockquote>
           <p>Alpine Linux is a security-oriented, lightweight Linux
@@ -2890,7 +2890,7 @@
           </li>
         </ul>
 
-        <h3 id="qubes-reco-artix">7 - Artix Linux Hardened</h3>
+        <h3 id="qubes-reco-artix">Artix Linux Hardened</h3>
 
         <p>Artix is Arch Linux but good (doesn't have systemd).</p>
 
@@ -2956,7 +2956,7 @@
           </li>
         </ul>
 
-        <h3 id="qubes-reco-freecore">8 - FreeCORE</h3>
+        <h3 id="qubes-reco-freecore">FreeCORE</h3>
 
         <p><a href="https://freecore.org/">The FreeCORE project</a>
         </p>
@@ -3000,7 +3000,7 @@
           </li>
         </ul>
 
-        <h3 id="qubes-reco-kicksecure">9 - Kicksecure</h3>
+        <h3 id="qubes-reco-kicksecure">Kicksecure</h3>
 
         <blockquote>
           <p>Kicksecure is a free and open-source Linux distribution that aims
@@ -3022,7 +3022,7 @@
         by default. <a href="https://www.kicksecure.com/">The Kicksecure
         project</a></p>
 
-        <h3 id="qubes-reco-rhel">10 - RHEL, Rocky Linux, and AlmaLinux</h3>
+        <h3 id="qubes-reco-rhel">RHEL, Rocky Linux, and AlmaLinux</h3>
 
         <p>These are the best Linux operating systems for businesses that want
         enterprise security, tested updates, binary compatibility with the RHEL
@@ -3060,7 +3060,7 @@
         Hat's systems and software are excellent and difficult to match in
         business environments.</p>
 
-        <h3 id="qubes-reco-proxmox">11 - Proxmox VE</h3>
+        <h3 id="qubes-reco-proxmox">Proxmox VE</h3>
 
         <blockquote>
           <p>Proxmox Virtual Environment is a complete open-source platform for
