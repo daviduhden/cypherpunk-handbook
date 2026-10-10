@@ -61,8 +61,8 @@
   --nav-bg: #1a1230;
   --nav-bg-hover: #241844;
 
-  --radius: 0.875em;
-  --radius-soft: 0.75em;
+  --radius: 0.75em;
+  --radius-soft: 0.66em;
   --radius-pill: 999em;
 
   --shadow: 0 0.75em 2em #0000003d;
@@ -221,7 +221,7 @@ header {
 
 article header {
   margin-bottom: 1.1em;
-  text-align: justify;
+  text-align: start;
 }
 
 /*
@@ -266,7 +266,7 @@ header .site-title {
 }
 
 #site-header > .page-type,
-#site-header > .site-title + h1 {
+#site-header > .page-title {
   margin: 0 0 1em;
   font-size: clamp(1.05em, 1.1vw + 0.85em, 1.35em);
   font-weight: 600;
@@ -407,6 +407,7 @@ section {
   margin-bottom: 1.5em;
 }
 
+section h1,
 section h2 {
   margin: 0 0 0.5em;
   font-size: clamp(1.25em, 1.2vw + 1em, 1.6em);
@@ -852,7 +853,7 @@ blockquote cite {
   max-width: 100%;
   height: auto;
   margin: 1.5em auto;
-  border-radius: calc(var(--radius-soft) * 0.85);
+  border-radius: calc(var(--radius) * 0.66);
   box-shadow: var(--shadow-img);
   border: thin solid color-mix(in srgb, var(--border) 80%, var(--link) 20%);
 }
@@ -885,7 +886,7 @@ img {
   height: auto;
   display: block;
   margin: 1em auto;
-  border-radius: calc(var(--radius-soft) * 1.1);
+  border-radius: calc(var(--radius) * 1.1);
   border: thin solid var(--border);
   box-shadow: var(--shadow-img);
 }
