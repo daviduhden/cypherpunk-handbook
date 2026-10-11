@@ -1,0 +1,36 @@
+# Perl::Critic configuration for the maintenance scripts.
+#
+# Run from the repository root:
+#     perlcritic scripts/*.pl
+# It is also invoked by `scripts/validate-website.pl --check-all` when
+# perlcritic is installed.
+#
+# Policies listed with a leading "-" are disabled on purpose; every
+# other policy is enforced. Each exception is justified below.
+
+severity = 3
+
+# Short, single-purpose regular expressions are used throughout;
+# requiring the /x flag on all of them adds noise and risks changing the
+# matching semantics.
+[-RegularExpressions::RequireExtendedFormatting]
+
+# The HTML/SVG parsing expressions are inherently long; splitting them
+# into qr// fragments would hurt readability more than it helps.
+[-RegularExpressions::ProhibitComplexRegexes]
+
+# An explicit trailing "return;" in every subroutine is stylistic and
+# adds no functional value.
+[-Subroutines::RequireFinalReturn]
+
+# File mode masks are deliberately written in octal (07777, 0666).
+[-ValuesAndExpressions::ProhibitLeadingZeros]
+
+# The interactive helpers read from STDIN on purpose; "<>" would treat
+# stray command-line arguments as input files.
+[-InputOutput::ProhibitExplicitStdin]
+
+# The orchestration routines are necessarily large; the default McCabe
+# thresholds do not add actionable information for them.
+[-Subroutines::ProhibitExcessComplexity]
+[-Modules::ProhibitExcessMainComplexity]

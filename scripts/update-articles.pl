@@ -77,7 +77,7 @@ sub read_file {
     my ($path) = @_;
     open my $fh, '<:raw', $path
       or die_tool "Could not open $path: $!\n";
-    local $/;
+    local $/ = undef;
     my $c = <$fh>;
     close $fh;
     return $c;
@@ -144,9 +144,9 @@ sub run_update {
     my $subsection =
       lc question( 'Subsection (for example operating-systems/openbsd)',
         'operating-systems/openbsd' );
-    $subsection =~ m{^([a-z0-9-]+)/([a-z0-9-]+)$}
+    my ( $section_id, $subsection_id ) =
+      $subsection =~ m{^([a-z0-9-]+)/([a-z0-9-]+)$}
       or die_tool "Subsection must be a section/subsection identifier.\n";
-    my ( $section_id, $subsection_id ) = ( $1, $2 );
 
     my $title = question( 'Link text/title', 'New Article' );
     my $slug =

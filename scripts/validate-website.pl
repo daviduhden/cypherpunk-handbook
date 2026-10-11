@@ -257,8 +257,8 @@ sub run_capture {
 
 sub read_all {
     my ($path) = @_;
-    open my $fh, '<:raw', $path or return undef;
-    local $/;
+    open my $fh, '<:raw', $path or return;
+    local $/ = undef;
     my $c = <$fh>;
     close $fh;
     return $c;
@@ -533,7 +533,7 @@ sub find_wayback_url {
     my ( $rc, $out, $err ) =
       run_capture( 'curl', '-L', '-sS', '--connect-timeout', '8',
         '--max-time', '20', $api );
-    return undef
+    return
       if $rc != 0 || !defined($out) || $out eq "";
 
     if ( $out =~ /"available"\s*:\s*true.*?"url"\s*:\s*"([^"]+)"/s ) {
@@ -543,7 +543,7 @@ sub find_wayback_url {
         return $wb if $wb =~ m{^https?://};
     }
 
-    return undef;
+    return;
 }
 
 sub propose_external_fix {
@@ -681,7 +681,7 @@ require_cmd( 'curl', "link checking/fixing (--check-links)" )
 require_cmd( 'hunspell', "spell checking (--check-spelling)" )
   if $check_spelling;
 
-$ENV{XMLLINT_INDENT} = "  ";
+local $ENV{XMLLINT_INDENT} = "  ";
 
 # -------------------------
 # Temp dprint config
@@ -737,13 +737,15 @@ my $spelling_report_file = "";
 my $extra_failed         = 0;    # --check-all sub-checks (prove/linters)
 
 sub mark_format_needed {
-    $format_needed{ $_[0] } = 1
-      if defined $_[0] && length $_[0];
+    my ($file) = @_;
+    $format_needed{$file} = 1
+      if defined $file && length $file;
 }
 
 sub mark_validate_failed {
-    $validate_failed{ $_[0] } = 1
-      if defined $_[0] && length $_[0];
+    my ($file) = @_;
+    $validate_failed{$file} = 1
+      if defined $file && length $file;
 }
 
 sub register_link_replacement {
@@ -947,7 +949,7 @@ sub spelling_dictionary_for_html {
 
     loge("Unsupported HTML language '$lang' for spelling: $file");
     mark_validate_failed($file);
-    return undef;
+    return;
 }
 
 sub visible_html_text {
@@ -1470,6 +1472,13 @@ sub run_linters {
                 run_optional( "Shell syntax " . basename($f), 'sh', '-n', $f );
             }
         }
+    }
+
+    if ( -f File::Spec->catfile( $root_dir, '.perlcriticrc' ) ) {
+        my @perl =
+          glob( File::Spec->catfile( $root_dir, 'scripts', '*.pl' ) );
+        run_optional( 'Perl lint (Perl::Critic)', 'perlcritic', @perl )
+          if @perl;
     }
 
     my $hcfg = File::Spec->catfile( $root_dir, '.htmltest.yml' );

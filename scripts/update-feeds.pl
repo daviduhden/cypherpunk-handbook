@@ -79,7 +79,7 @@ sub read_file {
     my ($path) = @_;
     open my $fh, '<:encoding(UTF-8)', $path
       or die_tool("Could not read $path: $!");
-    local $/;
+    local $/ = undef;
     my $content = <$fh>;
     close $fh;
     return $content;
@@ -144,7 +144,7 @@ sub normalize_slug {
 
 sub iso_to_epoch {
     my ($s) = @_;
-    return undef unless defined $s;
+    return unless defined $s;
     if (
         $s =~ /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})
   (Z|([+-])(\d{2}):(\d{2}))?$/x
@@ -162,7 +162,7 @@ sub iso_to_epoch {
     if ( $s =~ /^(\d{4})-(\d{2})-(\d{2})$/ ) {
         return timegm( 0, 0, 0, $3, $2 - 1, $1 );
     }
-    return undef;
+    return;
 }
 
 sub rfc2822_from_ts_locale {
@@ -178,13 +178,15 @@ sub rfc2822_from_ts_locale {
 
 sub extract_datetime_from_article {
     my ($path) = @_;
-    return undef unless -e $path;
+    return unless -e $path;
     my $html = read_file($path);
-    return $1
-      if $html =~ /<time[^>]*\sdatetime\s*=\s*"([^"]+)"/i;
-    return $1
-      if $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/i;
-    return undef;
+    if ( $html =~ /<time[^>]*\sdatetime\s*=\s*"([^"]+)"/i ) {
+        return $1;
+    }
+    if ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/i ) {
+        return $1;
+    }
+    return;
 }
 
 sub detect_feeds {
