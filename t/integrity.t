@@ -9,7 +9,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use Test::More;
-use TestSite qw(repo_root slurp);
+use TestSite       qw(repo_root slurp);
 use File::Basename qw(basename);
 use File::Spec;
 use JSON::PP qw(decode_json);
@@ -20,8 +20,8 @@ sub file { File::Spec->catfile( $root, split m{/}, $_[0] ) }
 
 sub h1_of {
     my ($path) = @_;
-    my $s = slurp($path);
-    my ($h) = $s =~ m{<h1[^>]*>(.*?)</h1>}s;
+    my $s      = slurp($path);
+    my ($h)    = $s =~ m{<h1[^>]*>(.*?)</h1>}s;
     return undef if !defined $h;
     $h =~ s/<[^>]+>//g;
     $h =~ s/\s+/ /g;
@@ -42,7 +42,7 @@ for my $key ( sort keys %$json ) {
         next if !defined $e->{$lang};
         my $fn = $e->{$lang};
         push @dupes, $fn if $covered{$fn}++;
-        my $p = file( "articles/$fn" );
+        my $p = file("articles/$fn");
         ok( -f $p, "index entry $key/$lang points to an existing file" );
         next if !-f $p;
         my $h1 = h1_of($p);
@@ -60,7 +60,7 @@ for my $fn (@html) {
 
 # --- feeds reference existing articles ------------------------------
 for my $feed ( glob( file('feeds/*.xml') ) ) {
-    my $xml = slurp($feed);
+    my $xml   = slurp($feed);
     my @links = $xml =~ m{<link>/articles/([^<]+)</link>}g;
     ok( scalar(@links), basename($feed) . ' has items' );
     for my $fn (@links) {
@@ -68,12 +68,13 @@ for my $feed ( glob( file('feeds/*.xml') ) ) {
     }
     while ( $xml =~ m{<guid\s+isPermaLink="false">([^<]+)</guid>}g ) {
         my $g = $1;
-        like( $g, qr{^/articles/}, 'guid is a stable root-relative identifier' );
+        like( $g, qr{^/articles/},
+            'guid is a stable root-relative identifier' );
     }
 }
 
 # --- sitemap targets exist ------------------------------------------
-my $sm = slurp( file('sitemap.xml') );
+my $sm   = slurp( file('sitemap.xml') );
 my @locs = $sm =~ m{<loc>(.*?)</loc>}g;
 ok( scalar(@locs), 'sitemap has entries' );
 for my $loc (@locs) {

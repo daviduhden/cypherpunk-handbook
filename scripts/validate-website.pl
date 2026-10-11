@@ -57,9 +57,9 @@ use Cwd          qw(abs_path);
 use Getopt::Long qw(GetOptions);
 use File::Temp   qw(tempfile);
 use IO::Select;
-use IPC::Open3   qw(open3);
-use POSIX        qw(uname);
-use Symbol       qw(gensym);
+use IPC::Open3 qw(open3);
+use POSIX      qw(uname);
+use Symbol     qw(gensym);
 
 # -------------------------
 # Options
@@ -149,7 +149,7 @@ GetOptions(
 ) or usage();
 
 if ($check_all) {
-    $mode_apply = 0;
+    $mode_apply  = 0;
     $check_links = 1;
 }
 $external_links = $want_external;
@@ -228,8 +228,8 @@ sub run_capture {
     # Read stdout and stderr concurrently. Reading one pipe to EOF
     # before the other can deadlock when a child fills the second
     # pipe while we are still draining the first.
-    my $sel = IO::Select->new( $out, $err );
-    my %which = ( fileno($out) => "out", fileno($err) => "err" );
+    my $sel    = IO::Select->new( $out, $err );
+    my %which  = ( fileno($out) => "out", fileno($err) => "err" );
     my $stdout = "";
     my $stderr = "";
     while ( my @ready = $sel->can_read ) {
@@ -675,8 +675,9 @@ require_cmd( $tidy,    "HTML formatting/validation" )    if @html;
 require_cmd( $xmllint, "XML/SVG formatting/validation" ) if ( @xml || @svg );
 require_cmd( $dprint,  "CSS/JS/JSON formatting/validation" )
   if ( ( @css || @js || @json ) && !$is_openbsd );
-require_cmd( 'jq',   "JSON formatting/validation (jq)" )      if @json;
-require_cmd( 'curl', "link checking/fixing (--check-links)" ) if $external_links;
+require_cmd( 'jq',   "JSON formatting/validation (jq)" ) if @json;
+require_cmd( 'curl', "link checking/fixing (--check-links)" )
+  if $external_links;
 require_cmd( 'hunspell', "spell checking (--check-spelling)" )
   if $check_spelling;
 
@@ -728,9 +729,9 @@ END { unlink $_ for @tmp_paths; }
 # -------------------------
 # Tracking
 # -------------------------
-my %format_needed;        # file => 1 (--check only)
-my %validate_failed;      # file => 1
-my %link_replacements;    # file => { old_link => new_link }
+my %format_needed;               # file => 1 (--check only)
+my %validate_failed;             # file => 1
+my %link_replacements;           # file => { old_link => new_link }
 my $link_report_file     = "";
 my $spelling_report_file = "";
 my $extra_failed         = 0;    # --check-all sub-checks (prove/linters)
@@ -812,7 +813,7 @@ sub run_link_checks {
         }
 
         my $is_css = ( $file =~ /\.css$/i ) ? 1 : 0;
-        my @links = extract_links_from_content( $content, $is_css );
+        my @links  = extract_links_from_content( $content, $is_css );
         next if !@links;
 
         for my $link (@links) {
@@ -1477,14 +1478,14 @@ sub run_linters {
 
     if ( have_cmd('lychee') ) {
         my @excl = (
-            '--exclude-path', '.git',     '--exclude-path', 'archive',
+            '--exclude-path', '.git', '--exclude-path', 'archive',
             '--exclude-path', 'tmp'
         );
         push @excl, ( '--exclude-path', 'files' )
           if -d File::Spec->catdir( $root_dir, 'files' );
-        run_optional( 'Offline link check (lychee)', 'lychee',
-            '--offline', '--no-progress', '--root-dir', $root_dir,
-            @excl, '.' );
+        run_optional( 'Offline link check (lychee)',
+            'lychee', '--offline', '--no-progress', '--root-dir', $root_dir,
+            @excl,    '.' );
     }
     else {
         logw("Optional tool 'lychee' not found; skipped offline link check.");

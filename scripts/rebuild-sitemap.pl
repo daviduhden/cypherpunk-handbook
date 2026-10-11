@@ -25,7 +25,7 @@
 use strict;
 use warnings;
 
-use Cwd qw(abs_path);
+use Cwd            qw(abs_path);
 use File::Basename qw(dirname);
 use File::Find;
 use File::Spec;
@@ -37,7 +37,7 @@ my $site_url   = 'https://handbook.uhden.dev';
 
 sub write_file_atomic {
     my ( $path, $content ) = @_;
-    my $dir  = dirname($path);
+    my $dir = dirname($path);
     my $mode;
     if ( -e $path ) {
         $mode = ( stat($path) )[2] & 07777;

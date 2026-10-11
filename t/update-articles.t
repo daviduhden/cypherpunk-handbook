@@ -45,16 +45,18 @@ sub run_update {
 # --- inserts a link into the requested subsection -------------------
 {
     my $dir = fixture( 'index.html' => $INDEX );
-    my $r   = run_update(
-        $dir,
-        "operating-systems/openbsd\nNew Article Title\nnew-article\n"
-    );
+    my $r   = run_update( $dir,
+        "operating-systems/openbsd\nNew Article Title\nnew-article\n" );
     is( $r->{status}, 0, 'insert succeeds' ) or diag( $r->{stderr} );
     my $html = slurp("$dir/index.html");
-    like( $html, qr{<a href="\./articles/new-article\.html">New Article Title</a>},
-        'link inserted with escaped title' );
+    like(
+        $html,
+        qr{<a href="\./articles/new-article\.html">New Article Title</a>},
+        'link inserted with escaped title'
+    );
     like( $html, qr{Why OpenBSD stands alone}, 'existing entry preserved' );
-    like( $html, qr{^\s{2}<title>Index</title>}m, 'document still well-formed' );
+    like( $html, qr{^\s{2}<title>Index</title>}m,
+        'document still well-formed' );
 }
 
 # --- duplicate insert is refused ------------------------------------
@@ -62,7 +64,7 @@ sub run_update {
     my $dir = fixture( 'index.html' => $INDEX );
     run_update( $dir, "operating-systems/openbsd\nT\nslug\n" );
     my $before = slurp("$dir/index.html");
-    my $r = run_update( $dir, "operating-systems/openbsd\nT\nslug\n" );
+    my $r      = run_update( $dir, "operating-systems/openbsd\nT\nslug\n" );
     is( $r->{status}, 0, 'duplicate returns success without change' );
     like( $r->{stderr}, qr/already exists/, 'duplicate reported' );
     is( slurp("$dir/index.html"), $before, 'index unchanged on duplicate' );
@@ -80,7 +82,7 @@ sub run_update {
 # --- invalid slug rejected ------------------------------------------
 {
     my $dir = fixture( 'index.html' => $INDEX );
-    my $r = run_update( $dir, "operating-systems/openbsd\nT\n../evil\n" );
+    my $r   = run_update( $dir, "operating-systems/openbsd\nT\n../evil\n" );
     isnt( $r->{status}, 0, 'invalid slug rejected' );
     like( $r->{stderr}, qr/may only contain letters/, 'message' );
 }
@@ -88,7 +90,7 @@ sub run_update {
 # --- invalid subsection format rejected -----------------------------
 {
     my $dir = fixture( 'index.html' => $INDEX );
-    my $r = run_update( $dir, "just-a-section\n" );
+    my $r   = run_update( $dir, "just-a-section\n" );
     isnt( $r->{status}, 0, 'subsection must be section/subsection' );
     like( $r->{stderr}, qr/Subsection must be/, 'message' );
 }
@@ -96,7 +98,7 @@ sub run_update {
 # --- unknown subsection fails cleanly -------------------------------
 {
     my $dir = fixture( 'index.html' => $INDEX );
-    my $r = run_update( $dir, "nope/nope\nT\nslug\n" );
+    my $r   = run_update( $dir, "nope/nope\nT\nslug\n" );
     isnt( $r->{status}, 0, 'unknown subsection fails' );
     like( $r->{stderr}, qr/Could not locate subsection/, 'message' );
 }

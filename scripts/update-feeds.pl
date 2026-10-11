@@ -41,7 +41,7 @@ use warnings;
 
 use File::Basename qw(dirname);
 use File::Spec;
-use File::Temp   qw(tempfile);
+use File::Temp qw(tempfile);
 use Getopt::Long;
 use Time::Local qw(timegm);
 
@@ -87,7 +87,7 @@ sub read_file {
 
 sub write_file {
     my ( $path, $content ) = @_;
-    my $dir  = dirname($path);
+    my $dir = dirname($path);
     my $mode;
     if ( -e $path ) {
         $mode = ( stat($path) )[2] & 07777;
@@ -339,12 +339,10 @@ sub main {
             logw("Could not run $rebuild_script: $!");
         }
         elsif ( $rc & 127 ) {
-            logw( "Rebuild script terminated by signal "
-                  . ( $rc & 127 ) );
+            logw( "Rebuild script terminated by signal " . ( $rc & 127 ) );
         }
         elsif ( $rc >> 8 ) {
-            logw( "Rebuild script exited with code "
-                  . ( $rc >> 8 ) );
+            logw( "Rebuild script exited with code " . ( $rc >> 8 ) );
         }
     }
 }

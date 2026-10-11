@@ -16,7 +16,8 @@ use File::Basename qw(basename);
 my $root = repo_root();
 my $dir  = clone_repo();
 
-my $feeds = run( $^X, File::Spec->catfile( $dir, 'scripts', 'rebuild-feeds.pl' ) );
+my $feeds =
+  run( $^X, File::Spec->catfile( $dir, 'scripts', 'rebuild-feeds.pl' ) );
 is( $feeds->{status}, 0, 'rebuild-feeds.pl runs on a clean clone' )
   or diag( $feeds->{stdout} . $feeds->{stderr} );
 
@@ -32,8 +33,8 @@ for my $f ( glob File::Spec->catfile( $root, 'feeds', '*.xml' ) ) {
 }
 
 is(
-    slurp( File::Spec->catfile( $dir,   'sitemap.xml' ) ),
-    slurp( File::Spec->catfile( $root,  'sitemap.xml' ) ),
+    slurp( File::Spec->catfile( $dir,  'sitemap.xml' ) ),
+    slurp( File::Spec->catfile( $root, 'sitemap.xml' ) ),
     'sitemap.xml matches the generator output'
 );
 

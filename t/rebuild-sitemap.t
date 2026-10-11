@@ -17,7 +17,7 @@ sub locs {
 }
 
 sub run_sitemap {
-    my ($dir) = @_;
+    my ($dir)  = @_;
     my $script = File::Spec->catfile( $dir, 'scripts', 'rebuild-sitemap.pl' );
     my $r      = TestSite::run( $^X, $script );
     return ( $r, "$dir/sitemap.xml" );
@@ -28,18 +28,18 @@ my $page = "<!DOCTYPE html><html lang=\"en\"><head>"
 
 {
     my $dir = fixture(
-        'index.html'          => $page,
-        'a.html'              => $page,
-        'sub/index.html'      => $page,
-        'sub/b.html'          => $page,
-        'archive/old.html'    => $page,
-        'templates/t.html'    => $page,
+        'index.html'       => $page,
+        'a.html'           => $page,
+        'sub/index.html'   => $page,
+        'sub/b.html'       => $page,
+        'archive/old.html' => $page,
+        'templates/t.html' => $page,
     );
     my ( $r, $sm ) = run_sitemap($dir);
     is( $r->{status}, 0, 'sitemap rebuild succeeds' )
       or diag( $r->{stdout} . $r->{stderr} );
 
-    my @locs = locs( slurp($sm) );
+    my @locs  = locs( slurp($sm) );
     my @paths = map { my $x = $_; $x =~ s{^https?://[^/]+}{}; $x } @locs;
 
     is_deeply(
@@ -50,11 +50,13 @@ my $page = "<!DOCTYPE html><html lang=\"en\"><head>"
     is_deeply( \@paths, [ sort @paths ], 'entries are sorted' );
 
     my $first = slurp($sm);
-    TestSite::run( $^X, File::Spec->catfile( $dir, 'scripts', 'rebuild-sitemap.pl' ) );
+    TestSite::run( $^X,
+        File::Spec->catfile( $dir, 'scripts', 'rebuild-sitemap.pl' ) );
     is( slurp($sm), $first, 'regeneration is deterministic' );
 
     chmod 0640, $sm;
-    TestSite::run( $^X, File::Spec->catfile( $dir, 'scripts', 'rebuild-sitemap.pl' ) );
+    TestSite::run( $^X,
+        File::Spec->catfile( $dir, 'scripts', 'rebuild-sitemap.pl' ) );
     is( ( stat $sm )[2] & 07777, 0640, 'file mode preserved' );
 
     opendir my $dh, $dir or die $!;
@@ -62,8 +64,11 @@ my $page = "<!DOCTYPE html><html lang=\"en\"><head>"
     closedir $dh;
     is_deeply( \@tmp, [], 'no temp files left behind' );
 
-    like( slurp($sm), qr{^<\?xml version="1\.0" encoding="UTF-8"\?>},
-        'XML declaration present' );
+    like(
+        slurp($sm),
+        qr{^<\?xml version="1\.0" encoding="UTF-8"\?>},
+        'XML declaration present'
+    );
 }
 
 done_testing();

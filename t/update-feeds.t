@@ -32,7 +32,8 @@ XML
 
 sub item {
     my (%a) = @_;
-    return "    <item>\n"
+    return
+        "    <item>\n"
       . "      <title>$a{title}</title>\n"
       . "      <link>$a{link}</link>\n"
       . "      <description>$a{desc}</description>\n"
@@ -60,13 +61,18 @@ sub strip_rebuild {
     is( $r->{status}, 0, 'insert succeeds' ) or diag( $r->{stderr} );
     my $xml = slurp("$dir/feeds/articles.xml");
     like( $xml, qr{<link>/articles/newslug\.html</link>}, 'link inserted' );
-    like( $xml,
+    like(
+        $xml,
         qr{<guid isPermaLink="false">/articles/newslug\.html</guid>},
-        'guid uses stable relative identifier' );
-    like( $xml, qr{<title>A &amp; B</title>}, 'title escaped' );
+        'guid uses stable relative identifier'
+    );
+    like( $xml, qr{<title>A &amp; B</title>},             'title escaped' );
     like( $xml, qr{<description>D &amp; D</description>}, 'desc escaped' );
-    like( $xml, qr{<lastBuildDate>Wed, 04 Mar 2026 00:00:00 GMT</lastBuildDate>},
-        'lastBuildDate refreshed' );
+    like(
+        $xml,
+        qr{<lastBuildDate>Wed, 04 Mar 2026 00:00:00 GMT</lastBuildDate>},
+        'lastBuildDate refreshed'
+    );
 }
 
 # --- existing link warns and does not duplicate ---------------------
@@ -79,14 +85,14 @@ sub strip_rebuild {
     );
     my $dir = fixture(
         'feeds/articles.xml' => feed( body => $existing ),
-        'articles/dup.html' => "<html lang=\"en\"><body><article>"
+        'articles/dup.html'  => "<html lang=\"en\"><body><article>"
           . "<header id=\"article-header\"><h1>Dup</h1>"
           . "<time datetime=\"2026-01-01\">x</time></header>"
           . "</article></body></html>\n",
     );
     strip_rebuild($dir);
     my $before = slurp("$dir/feeds/articles.xml");
-    my $r = run_update( $dir, "dup\nT\nD\n" );
+    my $r      = run_update( $dir, "dup\nT\nD\n" );
     is( $r->{status}, 0, 'kept without --replace' );
     like( $r->{stderr}, qr/Feed already has/, 'warns about existing link' );
     is( slurp("$dir/feeds/articles.xml"), $before, 'feed unchanged' );
@@ -102,7 +108,7 @@ sub strip_rebuild {
     );
     my $dir = fixture(
         'feeds/articles.xml' => feed( body => $existing ),
-        'articles/gpl.html' => "<html lang=\"en\"><body><article>"
+        'articles/gpl.html'  => "<html lang=\"en\"><body><article>"
           . "<header id=\"article-header\"><h1>GPL</h1>"
           . "<time datetime=\"2026-03-04\">x</time></header>"
           . "</article></body></html>\n",
@@ -110,7 +116,7 @@ sub strip_rebuild {
     strip_rebuild($dir);
     my $r = run_update( $dir, "gpl\nNew Title\nNew Desc\n", '--replace' );
     is( $r->{status}, 0, 'replace succeeds' ) or diag( $r->{stderr} );
-    my $xml = slurp("$dir/feeds/articles.xml");
+    my $xml   = slurp("$dir/feeds/articles.xml");
     my $count = () = $xml =~ m{/articles/gpl\.html}g;
     is( $count, 2, 'exactly one item link and one guid' );
     like( $xml, qr{<title>New Title</title>}, 'new title present' );
@@ -122,10 +128,13 @@ sub strip_rebuild {
     my $dir = fixture( 'feeds/articles.xml' => feed() );
     strip_rebuild($dir);
     my $before = slurp("$dir/feeds/articles.xml");
-    my $r = run_update( $dir, "../evil\n" );
+    my $r      = run_update( $dir, "../evil\n" );
     isnt( $r->{status}, 0, 'invalid slug rejected' );
-    like( $r->{stderr}, qr/may only contain lowercase letters/,
-        'error explains the slug rule' );
+    like(
+        $r->{stderr},
+        qr/may only contain lowercase letters/,
+        'error explains the slug rule'
+    );
     is( slurp("$dir/feeds/articles.xml"), $before, 'feed untouched' );
 }
 

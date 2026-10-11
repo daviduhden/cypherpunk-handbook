@@ -8,7 +8,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use Test::More;
-use TestSite qw(script run run_input slurp spew);
+use TestSite   qw(script run run_input slurp spew);
 use File::Temp qw(tempdir);
 
 my $sh = -x '/bin/sh' ? '/bin/sh' : 'sh';
@@ -25,20 +25,21 @@ sub mkstubs {
 
 my $pandoc_ok = "#!/bin/sh\necho 'some text'\n";
 my $espeak_ok =
-  "#!/bin/sh\ncat >/dev/null\n"
+    "#!/bin/sh\ncat >/dev/null\n"
   . "while [ \$# -gt 0 ]; do case \"\$1\" in -w) shift; : >\"\$1\";; esac; shift; done\n";
-my $ffmpeg_ok = "#!/bin/sh\nlast=\nfor a in \"\$@\"; do last=\$a; done\n: >\"\$last\"\n";
+my $ffmpeg_ok =
+  "#!/bin/sh\nlast=\nfor a in \"\$@\"; do last=\$a; done\n: >\"\$last\"\n";
 my $rsvg_ok =
-  "#!/bin/sh\nout=\nfor a in \"\$@\"; do case \"\$a\" in --output=*) out=\${a#--output=};; esac; done\n: >\"\$out\"\n";
+"#!/bin/sh\nout=\nfor a in \"\$@\"; do case \"\$a\" in --output=*) out=\${a#--output=};; esac; done\n: >\"\$out\"\n";
 
 # ------------------------------------------------------------------
 # html2ogg.sh
 # ------------------------------------------------------------------
 {
     my $bin = mkstubs(
-        pandoc     => $pandoc_ok,
+        pandoc      => $pandoc_ok,
         'espeak-ng' => $espeak_ok,
-        ffmpeg     => $ffmpeg_ok,
+        ffmpeg      => $ffmpeg_ok,
     );
     my $dir  = tempdir( CLEANUP => 1 );
     my $tmpd = tempdir( CLEANUP => 1 );

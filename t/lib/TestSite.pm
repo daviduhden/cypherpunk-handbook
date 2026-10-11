@@ -14,7 +14,7 @@ use File::Spec;
 use File::Temp qw(tempdir);
 use IO::Select;
 use IPC::Open3 qw(open3);
-use Symbol    qw(gensym);
+use Symbol     qw(gensym);
 
 use Exporter 'import';
 our @EXPORT_OK =
@@ -22,7 +22,7 @@ our @EXPORT_OK =
 
 # Repository root derived from this file: <root>/t/lib/TestSite.pm
 sub repo_root {
-    my $here = dirname(__FILE__);          # <root>/t/lib
+    my $here = dirname(__FILE__);    # <root>/t/lib
     return File::Spec->rel2abs( File::Spec->catdir( $here, '..', '..' ) );
 }
 
@@ -89,7 +89,7 @@ sub _run {
     }
     close $wtr;
 
-    my $sel = IO::Select->new( $rdr, $err );
+    my $sel   = IO::Select->new( $rdr, $err );
     my %which = ( fileno($rdr) => 'out', fileno($err) => 'err' );
     my ( $out, $er ) = ( '', '' );
     while ( my @ready = $sel->can_read ) {
@@ -134,14 +134,16 @@ sub run_input {
 # the committed generated files match a fresh run of the generators.
 sub clone_repo {
     my (@skip) = @_;
-    my %skip = map { $_ => 1 } ( @skip ? @skip : qw(.git archive files images t) );
+    my %skip =
+      map { $_ => 1 } ( @skip ? @skip : qw(.git archive files images t) );
 
     my $src = repo_root();
     my $dst = tempdir( CLEANUP => 1 );
 
     my @dirs = ('');
     while ( defined( my $rel = shift @dirs ) ) {
-        my $sdir = $rel eq ''
+        my $sdir =
+            $rel eq ''
           ? $src
           : File::Spec->catdir( $src, split m{/}, $rel );
         opendir my $dh, $sdir or next;

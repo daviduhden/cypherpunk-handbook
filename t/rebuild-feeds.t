@@ -15,12 +15,13 @@ use File::Spec;
 my $U = "\x{263A}";    # ☺ - checked in a UTF-8 handling test
 
 sub article {
-    my (%a) = @_;
+    my (%a)   = @_;
     my $lang  = $a{lang}  // 'en';
     my $time  = $a{time}  // '2026-01-02';
     my $title = $a{title} // 'Title';
     my $desc  = $a{desc}  // 'Description';
-    return "<!DOCTYPE html>\n<html lang=\"$lang\">\n<head>\n"
+    return
+        "<!DOCTYPE html>\n<html lang=\"$lang\">\n<head>\n"
       . "<meta charset=\"utf-8\">\n"
       . "<meta name=\"description\" content=\"$desc\">\n"
       . "</head>\n<body>\n<article>\n"
@@ -30,7 +31,7 @@ sub article {
 }
 
 sub feed {
-    my (%a) = @_;
+    my (%a)   = @_;
     my $title = $a{title} // 'Test - Articles';
     my $desc  = $a{desc}  // 'Channel description';
     return <<"XML";
@@ -83,7 +84,7 @@ sub item_slugs {
         'articles/b.html'    => article( time => '2026-01-01' ),
     );
     my $script = File::Spec->catfile( $dir, 'scripts', 'rebuild-feeds.pl' );
-    my $feed   = File::Spec->catfile( $dir, 'feeds', 'articles.xml' );
+    my $feed   = File::Spec->catfile( $dir, 'feeds',   'articles.xml' );
 
     TestSite::run( $^X, $script );
     my $first = slurp($feed);
@@ -91,7 +92,7 @@ sub item_slugs {
     TestSite::run( $^X, $script );
     is( slurp($feed), $first, 'repeated run is byte-identical' );
 
-    local $ENV{TZ} = 'America/New_York';
+    local $ENV{TZ}     = 'America/New_York';
     local $ENV{LC_ALL} = 'C';
     TestSite::run( $^X, $script );
     is( slurp($feed), $first, 'TZ/locale do not change output' );
@@ -104,7 +105,7 @@ sub item_slugs {
 {
     my $dir = fixture(
         'feeds/articles.xml' => feed(),
-        'articles/x.html' => article(
+        'articles/x.html'    => article(
             title => 'A & B',
             desc  => 'd &amp; d &lt;e&gt;'
         ),
@@ -118,10 +119,14 @@ sub item_slugs {
     my $xml = slurp($feed);
     like( $xml, qr{<title>A &amp; B</title>}, 'ampersand escaped once' );
     unlike( $xml, qr{&amp;amp;}, 'no double encoding in title' );
-    like( $xml, qr{<description>d &amp; d &lt;e&gt;</description>},
-        'entities decoded then re-escaped once' );
+    like(
+        $xml,
+        qr{<description>d &amp; d &lt;e&gt;</description>},
+        'entities decoded then re-escaped once'
+    );
     unlike( $xml, qr{<description>d &amp;amp; d}, 'no double encoding' );
-    like( $xml, qr{<title>A bold B</title>}, 'inline tags stripped from title' );
+    like( $xml, qr{<title>A bold B</title>},
+        'inline tags stripped from title' );
     unlike( $xml, qr{<b>}, 'no raw markup in feed' );
 }
 
@@ -147,8 +152,8 @@ sub item_slugs {
     my ( $r, $feed ) = run_rebuild($dir);
     is( $r->{status}, 0, 'rebuild succeeds with UTF-8' );
     my $raw = slurp($feed);
-    like( $raw, qr/Caf\xc3\xa9/, 'UTF-8 bytes preserved (é)' );
-    like( $raw, qr/\xe2\x98\xba/,   'UTF-8 bytes preserved (☺)' );
+    like( $raw, qr/Caf\xc3\xa9/,  'UTF-8 bytes preserved (é)' );
+    like( $raw, qr/\xe2\x98\xba/, 'UTF-8 bytes preserved (☺)' );
 }
 
 # --- atomic write preserves permissions and leaves no temp files ----
@@ -160,7 +165,7 @@ sub item_slugs {
     my $feed = File::Spec->catfile( $dir, 'feeds', 'articles.xml' );
     chmod 0640, $feed;
     my ( $r, $f ) = run_rebuild($dir);
-    is( $r->{status}, 0, 'rebuild succeeds' );
+    is( $r->{status},           0,    'rebuild succeeds' );
     is( ( stat $f )[2] & 07777, 0640, 'file mode preserved' );
 
     opendir my $dh, File::Spec->catdir( $dir, 'feeds' ) or die $!;
@@ -172,7 +177,7 @@ sub item_slugs {
 # --- index.html is ignored ------------------------------------------
 {
     my $dir = fixture(
-        'feeds/articles.xml' => feed(),
+        'feeds/articles.xml'  => feed(),
         'articles/index.html' => article( title => 'Index' ),
         'articles/a.html'     => article( title => 'A' ),
     );
@@ -194,7 +199,8 @@ sub item_slugs {
 
 # --- article without <time> still works (mtime fallback) ------------
 {
-    my $no_time = "<html lang=\"en\"><body><article>"
+    my $no_time =
+        "<html lang=\"en\"><body><article>"
       . "<header id=\"article-header\"><h1>No Time</h1></header>"
       . "</article></body></html>\n";
     my $dir = fixture(
@@ -208,12 +214,15 @@ sub item_slugs {
 
 # --- missing feed is a hard error -----------------------------------
 {
-    my $dir = fixture( 'articles/a.html' => article() );
+    my $dir    = fixture( 'articles/a.html' => article() );
     my $script = File::Spec->catfile( $dir, 'scripts', 'rebuild-feeds.pl' );
-    my $r = TestSite::run( $^X, $script );
+    my $r      = TestSite::run( $^X, $script );
     isnt( $r->{status}, 0, 'missing feed target fails' );
-    like( $r->{stderr}, qr/No supported feed files found/,
-        'clear error message' );
+    like(
+        $r->{stderr},
+        qr/No supported feed files found/,
+        'clear error message'
+    );
 }
 
 # --- optional absolute base URL; GUIDs stay stable ------------------
@@ -222,18 +231,29 @@ sub item_slugs {
         'feeds/articles.xml' => feed(),
         'articles/a.html'    => article(),
     );
-    my ( $r, $feed ) =
-      run_rebuild( $dir, '--base-url', 'https://example.org' );
+    my ( $r, $feed ) = run_rebuild( $dir, '--base-url', 'https://example.org' );
     is( $r->{status}, 0, 'base-url run succeeds' );
     my $xml = slurp($feed);
-    like( $xml, qr{<link>https://example\.org/articles/a\.html</link>},
-        'item link made absolute' );
-    like( $xml, qr{<link>https://example\.org/</link>},
-        'channel link made absolute' );
-    like( $xml, qr{<atom:link href="https://example\.org/feeds/articles\.xml"},
-        'atom self link made absolute' );
-    like( $xml, qr{<guid isPermaLink="false">/articles/a\.html</guid>},
-        'guid stays root-relative and stable' );
+    like(
+        $xml,
+        qr{<link>https://example\.org/articles/a\.html</link>},
+        'item link made absolute'
+    );
+    like(
+        $xml,
+        qr{<link>https://example\.org/</link>},
+        'channel link made absolute'
+    );
+    like(
+        $xml,
+        qr{<atom:link href="https://example\.org/feeds/articles\.xml"},
+        'atom self link made absolute'
+    );
+    like(
+        $xml,
+        qr{<guid isPermaLink="false">/articles/a\.html</guid>},
+        'guid stays root-relative and stable'
+    );
 }
 
 done_testing();

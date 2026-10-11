@@ -35,7 +35,7 @@ use warnings;
 use Cwd            qw(abs_path);
 use File::Basename qw(dirname);
 use File::Spec;
-use File::Temp     qw(tempfile);
+use File::Temp qw(tempfile);
 
 # -------------------------
 # Logging
@@ -85,7 +85,7 @@ sub read_file {
 
 sub write_file {
     my ( $path, $content ) = @_;
-    my $dir  = dirname($path);
+    my $dir = dirname($path);
     my $mode;
     if ( -e $path ) {
         $mode = ( stat($path) )[2] & 07777;
@@ -141,10 +141,9 @@ sub run_update {
 
     logi( "This will insert a new article link" . " into $index" );
 
-    my $subsection = lc question(
-        'Subsection (for example operating-systems/openbsd)',
-        'operating-systems/openbsd'
-    );
+    my $subsection =
+      lc question( 'Subsection (for example operating-systems/openbsd)',
+        'operating-systems/openbsd' );
     $subsection =~ m{^([a-z0-9-]+)/([a-z0-9-]+)$}
       or die_tool "Subsection must be a section/subsection identifier.\n";
     my ( $section_id, $subsection_id ) = ( $1, $2 );
@@ -184,17 +183,15 @@ sub run_update {
         # positioned immediately before the closing </ul>.
         my $body = $inner;
         $body =~ s/\n[ \t]*$//;
-        my $new_inner = $body . "\n\n              "
-          . $link_html
-          . "\n            ";
+        my $new_inner =
+          $body . "\n\n              " . $link_html . "\n            ";
 
         my $old_block = $pre . $inner . $post;
         my $pos       = index( $content, $old_block );
         $pos != -1
           or die_tool( "Could not locate the article list in"
               . " $index for subsection $subsection.\n" );
-        substr( $content, $pos, length($old_block),
-            $pre . $new_inner . $post );
+        substr( $content, $pos, length($old_block), $pre . $new_inner . $post );
 
         write_file( $index, $content );
         logi("Inserted link into $subsection.");

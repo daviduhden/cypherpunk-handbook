@@ -14,9 +14,9 @@ use File::Spec;
 my $sdir = File::Spec->catdir( repo_root(), 'scripts' );
 
 opendir my $dh, $sdir or die "opendir $sdir: $!";
-my @pl = sort grep { /\.pl$/ }  readdir $dh;
+my @pl = sort grep { /\.pl$/ } readdir $dh;
 rewinddir $dh;
-my @sh = sort grep { /\.sh$/ }  readdir $dh;
+my @sh = sort grep { /\.sh$/ } readdir $dh;
 closedir $dh;
 
 ok( scalar(@pl), "found Perl scripts" ) or BAIL_OUT("no scripts found");
@@ -26,7 +26,7 @@ for my $f (@pl) {
     my $path = File::Spec->catfile( $sdir, $f );
     my $r    = run( $^X, '-c', $path );
     is( $r->{status}, 0, "perl -c $f" )
-      or diag( "stdout: $r->{stdout}\nstderr: $r->{stderr}" );
+      or diag("stdout: $r->{stdout}\nstderr: $r->{stderr}");
 }
 
 my $have_sh = 0;
