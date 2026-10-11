@@ -1,3 +1,7 @@
+# Mapping of the tools used by scripts/ to OpenBSD ports.
+# Format: tool = port (or a short note when there is no port entry).
+#
+# Required by scripts/validate-website.pl:
 tidy = www/tidy
 xmllint = textproc/libxml
 dprint = not ported
@@ -8,3 +12,15 @@ rsvg-convert = x11/gnome/librsvg
 pandoc = textproc/pandoc
 ffmpeg = graphics/ffmpeg
 espeak-ng = audio/espeak
+#
+# Optional, used only by `validate-website.pl --check-all`. None of
+# these are required to build, serve, or maintain the site; when a
+# tool is absent the corresponding check is reported and skipped.
+# They are not shipped with OpenBSD and have to be installed by the
+# means provided by each project.
+prove = (part of the base Perl installation)
+shellcheck = shells/shellcheck
+vnu = (external, needs Java)
+stylelint = (external, needs Node.js)
+htmltest = (external, needs Go or a release binary)
+lychee = (external, needs Rust or a release binary)

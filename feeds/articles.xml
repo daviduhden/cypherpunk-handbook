@@ -9,7 +9,7 @@
     <item>
       <title>OpenBSD desktop hardening guide</title>
       <link>/articles/openbsd-hardening.html</link>
-      <description>A practical desktop-focused guide to hardening OpenBSD, covering privilege separation, file permissions, PF firewall configuration, kernel settings, securelevel, DNS, X11, and userland sandboxing.</description>
+      <description>A practical OpenBSD desktop hardening guide covering privilege separation, file permissions, PF firewall rules, system settings, DNS, X11, and userland sandboxing.</description>
       <pubDate>Thu, 08 Oct 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/openbsd-hardening.html</guid>
     </item>

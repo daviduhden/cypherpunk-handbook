@@ -24,12 +24,13 @@ set -e
 
 require_cmd() {
 	if ! command -v "$1" >/dev/null 2>&1; then
-		echo "[ERROR] $1 is not installed"
+		echo "[ERROR] $1 is not installed" >&2
 		exit 1
 	fi
 }
 
 check_dependencies() {
+	require_cmd mktemp
 	require_cmd pandoc
 	require_cmd espeak-ng
 	require_cmd ffmpeg
@@ -43,7 +44,7 @@ parse_args() {
 
 	HTML=$1
 	if [ ! -f "$HTML" ]; then
-		echo "[ERROR] File not found: $HTML"
+		echo "[ERROR] File not found: $HTML" >&2
 		exit 1
 	fi
 }
@@ -65,28 +66,29 @@ select_language() {
 		SPEED=140
 		;;
 	*)
-		echo "[ERROR] Invalid option"
+		echo "[ERROR] Invalid option" >&2
 		exit 1
 		;;
 	esac
 }
 
 create_temp_wav() {
-	TMP_WAV=
-	i=0
-	while :; do
-		TMP_WAV=${TMPDIR:-/tmp}/voice$$-$i.wav
-		if (umask 077 && : >"$TMP_WAV") 2>/dev/null; then
-			break
-		fi
-		i=$((i + 1))
-	done
+	# mktemp creates the file with an unpredictable name and mode 0600,
+	# using O_EXCL, which avoids races and symlink attacks.
+	TMP_WAV=$(mktemp "${TMPDIR:-/tmp}/voice-XXXXXX") || {
+		echo "[ERROR] Could not create temporary file" >&2
+		exit 1
+	}
 }
 
 convert_html_to_ogg() {
 	OUT="${HTML%.*}.ogg"
 	echo "Converting HTML to audio..."
-	pandoc "$HTML" -t plain --wrap=none |
+	# Run pandoc as a separate, checked command so a text
+	# extraction failure aborts the conversion instead of feeding
+	# empty input to espeak-ng (POSIX sh has no pipefail).
+	text=$(pandoc "$HTML" -t plain --wrap=none)
+	printf '%s\n' "$text" |
 		espeak-ng -v "$VOICE" -s "$SPEED" \
 			-p 50 -w "$TMP_WAV"
 	ffmpeg -y -loglevel error -i "$TMP_WAV" \

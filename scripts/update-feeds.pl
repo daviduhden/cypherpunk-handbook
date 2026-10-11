@@ -39,7 +39,9 @@
 use strict;
 use warnings;
 
+use File::Basename qw(dirname);
 use File::Spec;
+use File::Temp   qw(tempfile);
 use Getopt::Long;
 use Time::Local qw(timegm);
 
@@ -85,10 +87,42 @@ sub read_file {
 
 sub write_file {
     my ( $path, $content ) = @_;
-    open my $fh, '>:encoding(UTF-8)', $path
-      or die_tool("Could not write $path: $!");
-    print {$fh} $content;
-    close $fh;
+    my $dir  = dirname($path);
+    my $mode;
+    if ( -e $path ) {
+        $mode = ( stat($path) )[2] & 07777;
+    }
+    else {
+        my $mask = umask;
+        umask $mask;
+        $mode = 0666 & ~$mask;
+    }
+
+    my ( $fh, $tmp ) = tempfile( '.tmp-XXXXXX', DIR => $dir, UNLINK => 0 );
+    binmode $fh, ':encoding(UTF-8)';
+
+    if ( !print {$fh} $content ) {
+        my $err = $!;
+        close $fh;
+        unlink $tmp;
+        die_tool("Could not write $path: $err");
+    }
+    if ( !close $fh ) {
+        my $err = $!;
+        unlink $tmp;
+        die_tool("Could not close $path: $err");
+    }
+    if ( defined $mode && !chmod $mode, $tmp ) {
+        my $err = $!;
+        unlink $tmp;
+        die_tool("Could not set permissions on $path: $err");
+    }
+    if ( !rename $tmp, $path ) {
+        my $err = $!;
+        unlink $tmp;
+        die_tool("Could not replace $path: $err");
+    }
+    return 1;
 }
 
 sub xml_escape {
@@ -209,8 +243,10 @@ sub update_feed {
             .*?</item>\s*}{}gsx;
     }
 
-    $content =~ s{<pubDate>[^<]*</pubDate>}
-       {<pubDate>$pub</pubDate>}m;
+    # Only lastBuildDate is refreshed here. The new <item> already
+    # carries its own <pubDate>, so rewriting the first <pubDate>
+    # could overwrite an unrelated item when insertion falls back to
+    # appending before </channel>.
     $content =~ s{<lastBuildDate>[^<]*</lastBuildDate>}
        {<lastBuildDate>$pub</lastBuildDate>}m;
 
@@ -233,11 +269,19 @@ sub main {
       normalize_slug( question( 'English slug (without .html)', '' ) );
     length $slug_en
       or die_tool('English slug is required.');
-    my $slug_es =
-      $has_es
-      ? normalize_slug(
-        question( 'Spanish slug (without .html)', "$slug_en-es" ) )
-      : undef;
+    $slug_en =~ /^[a-z0-9][a-z0-9-]*$/
+      or die_tool( "English slug may only contain lowercase letters,"
+          . " digits, and hyphens." );
+    my $slug_es = undef;
+    if ($has_es) {
+        $slug_es = normalize_slug(
+            question( 'Spanish slug (without .html)', "$slug_en-es" ) );
+        length $slug_es
+          or die_tool('Spanish slug is required.');
+        $slug_es =~ /^[a-z0-9][a-z0-9-]*$/
+          or die_tool( "Spanish slug may only contain lowercase letters,"
+              . " digits, and hyphens." );
+    }
 
     my $title_en = question( 'Title (English)',       '' );
     my $desc_en  = question( 'Description (English)', '' );
@@ -291,9 +335,16 @@ sub main {
       File::Spec->catfile( $root_dir, 'scripts', 'rebuild-feeds.pl' );
     if ( -x $rebuild_script ) {
         my $rc = system( $^X, $rebuild_script );
-        if ( $rc != 0 ) {
-            my $exit_code = $rc >> 8;
-            logw( "Rebuild script exited with" . " code $exit_code" );
+        if ( $rc == -1 ) {
+            logw("Could not run $rebuild_script: $!");
+        }
+        elsif ( $rc & 127 ) {
+            logw( "Rebuild script terminated by signal "
+                  . ( $rc & 127 ) );
+        }
+        elsif ( $rc >> 8 ) {
+            logw( "Rebuild script exited with code "
+                  . ( $rc >> 8 ) );
         }
     }
 }

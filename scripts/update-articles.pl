@@ -35,6 +35,7 @@ use warnings;
 use Cwd            qw(abs_path);
 use File::Basename qw(dirname);
 use File::Spec;
+use File::Temp     qw(tempfile);
 
 # -------------------------
 # Logging
@@ -84,10 +85,42 @@ sub read_file {
 
 sub write_file {
     my ( $path, $content ) = @_;
-    open my $fh, '>:raw', $path
-      or die_tool "Could not write $path: $!\n";
-    print {$fh} $content;
-    close $fh;
+    my $dir  = dirname($path);
+    my $mode;
+    if ( -e $path ) {
+        $mode = ( stat($path) )[2] & 07777;
+    }
+    else {
+        my $mask = umask;
+        umask $mask;
+        $mode = 0666 & ~$mask;
+    }
+
+    my ( $fh, $tmp ) = tempfile( '.tmp-XXXXXX', DIR => $dir, UNLINK => 0 );
+    binmode $fh, ':raw';
+
+    if ( !print {$fh} $content ) {
+        my $err = $!;
+        close $fh;
+        unlink $tmp;
+        die_tool("Could not write $path: $err\n");
+    }
+    if ( !close $fh ) {
+        my $err = $!;
+        unlink $tmp;
+        die_tool("Could not close $path: $err\n");
+    }
+    if ( defined $mode && !chmod $mode, $tmp ) {
+        my $err = $!;
+        unlink $tmp;
+        die_tool("Could not set permissions on $path: $err\n");
+    }
+    if ( !rename $tmp, $path ) {
+        my $err = $!;
+        unlink $tmp;
+        die_tool("Could not replace $path: $err\n");
+    }
+    return 1;
 }
 
 sub esc_html {
@@ -120,8 +153,9 @@ sub run_update {
     my $slug =
       question( 'Slug (filename without .html,' . ' e.g. android-privacy)',
         '' );
-    length $slug
-      or die_tool "Slug is required.\n";
+    $slug =~ /^[A-Za-z0-9][A-Za-z0-9-]*$/
+      or die_tool( "Slug may only contain letters, digits, and"
+          . " hyphens (and must not be empty).\n" );
 
     my $href = "./articles/$slug.html";
 
@@ -131,10 +165,12 @@ sub run_update {
         return 0;
     }
 
+    # Build a list item that matches the formatting produced by
+    # tidy(1) so the inserted markup stays formatting-clean.
     my $link_html =
-        qq{<li>\n              <a href="$href">}
+        qq{<li>\n                <a href="$href">}
       . esc_html($title)
-      . qq{</a>\n            </li>\n\n};
+      . qq{</a>\n              </li>};
 
     if (
         $content =~ /(<section\s+id="\Q$section_id\E"[^>]*>
@@ -143,9 +179,23 @@ sub run_update {
       )
     {
         my ( $pre, $inner, $post ) = ( $1, $2, $3 );
-        $inner .= "\n              " . $link_html;
-        $content =~ s/\Q$pre$inner$post\E/
-            $pre$inner$post/s;
+
+        # Drop the trailing indentation so the new item can be
+        # positioned immediately before the closing </ul>.
+        my $body = $inner;
+        $body =~ s/\n[ \t]*$//;
+        my $new_inner = $body . "\n\n              "
+          . $link_html
+          . "\n            ";
+
+        my $old_block = $pre . $inner . $post;
+        my $pos       = index( $content, $old_block );
+        $pos != -1
+          or die_tool( "Could not locate the article list in"
+              . " $index for subsection $subsection.\n" );
+        substr( $content, $pos, length($old_block),
+            $pre . $new_inner . $post );
+
         write_file( $index, $content );
         logi("Inserted link into $subsection.");
         return 0;

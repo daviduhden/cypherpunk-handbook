@@ -26,12 +26,54 @@ use strict;
 use warnings;
 
 use Cwd qw(abs_path);
+use File::Basename qw(dirname);
 use File::Find;
 use File::Spec;
+use File::Temp qw(tempfile);
 
 my $script_dir = ( File::Spec->splitpath($0) )[1];
 my $root_dir   = abs_path( File::Spec->catdir( $script_dir, '..' ) );
 my $site_url   = 'https://handbook.uhden.dev';
+
+sub write_file_atomic {
+    my ( $path, $content ) = @_;
+    my $dir  = dirname($path);
+    my $mode;
+    if ( -e $path ) {
+        $mode = ( stat($path) )[2] & 07777;
+    }
+    else {
+        my $mask = umask;
+        umask $mask;
+        $mode = 0666 & ~$mask;
+    }
+
+    my ( $fh, $tmp ) = tempfile( '.tmp-XXXXXX', DIR => $dir, UNLINK => 0 );
+    binmode $fh, ':encoding(UTF-8)';
+
+    if ( !print {$fh} $content ) {
+        my $err = $!;
+        close $fh;
+        unlink $tmp;
+        die "Could not write $path: $err\n";
+    }
+    if ( !close $fh ) {
+        my $err = $!;
+        unlink $tmp;
+        die "Could not close $path: $err\n";
+    }
+    if ( defined $mode && !chmod $mode, $tmp ) {
+        my $err = $!;
+        unlink $tmp;
+        die "Could not set permissions on $path: $err\n";
+    }
+    if ( !rename $tmp, $path ) {
+        my $err = $!;
+        unlink $tmp;
+        die "Could not replace $path: $err\n";
+    }
+    return 1;
+}
 
 sub xml_escape {
     my ($text) = @_;
@@ -78,9 +120,6 @@ for my $url (@pages) {
 $xml .= "</urlset>\n";
 
 my $output = File::Spec->catfile( $root_dir, 'sitemap.xml' );
-open my $fh, '>:encoding(UTF-8)', $output
-  or die "Could not write $output: $!\n";
-print {$fh} $xml;
-close $fh;
+write_file_atomic( $output, $xml );
 
 print "Rebuilt sitemap: $output\n";

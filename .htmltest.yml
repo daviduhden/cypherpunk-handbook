@@ -1,0 +1,22 @@
+# Configuration for htmltest (https://github.com/wjdp/htmltest).
+# Offline checks only: links, anchors, images and metadata. External
+# URLs are intentionally NOT requested here; use lychee for that.
+# Run from the repository root, e.g. `htmltest -c .htmltest.yml`.
+DirectoryPath: "."
+CheckDoctype: true
+CheckAnchors: true
+CheckLinks: true
+CheckInternal: true
+CheckExternal: false
+CheckImages: true
+CheckMeta: true
+CheckGeneric: true
+CheckMailto: false
+CheckTel: false
+IgnoreURLs:
+  - "onion"
+  - "i2p"
+  - "mailto:"
+  - "tel:"
+  - "bitcoin:"
+  - "monero:"

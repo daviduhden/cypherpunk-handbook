@@ -50,13 +50,15 @@
 use strict;
 use warnings;
 
-use File::Basename qw(dirname);
+use File::Basename qw(basename dirname);
 use File::Spec;
 use File::Find;
 use Cwd          qw(abs_path);
 use Getopt::Long qw(GetOptions);
 use File::Temp   qw(tempfile);
+use IO::Select;
 use IPC::Open3   qw(open3);
+use POSIX        qw(uname);
 use Symbol       qw(gensym);
 
 # -------------------------
@@ -69,7 +71,10 @@ my $root_dir       = $default_root;
 my $mode_apply     = 1;               # default: apply formatting
 my $check_links    = 0;               # optional: check/fix links
 my $check_spelling = 0;               # optional: check visible HTML text
+my $check_all      = 0;               # optional: run every available check
+my $want_external  = 0;               # explicit --check-links-external
 my $verbose        = 0;
+my $external_links = 1;               # resolved after option parsing
 
 my %spelling_dictionary      = ( en => 'en_US' );
 my $spelling_dictionary_list = join( ', ', sort values %spelling_dictionary );
@@ -79,7 +84,8 @@ my $spelling_personal_list =
 sub usage {
     print STDERR <<"USAGE";
 Usage:
-  $0 [--root DIR] [--apply|--check] [--check-links] \\
+  $0 [--root DIR] [--apply|--check] [--check-links]
+     [--check-links-external] [--check-all]
      [--check-spelling] [--verbose]
 
 Modes:
@@ -90,11 +96,17 @@ Modes:
 Options:
   --root DIR      Root directory to scan
                   (default: ../ relative to this script)
-  --check-links   Check internal/external links, write a
-                  temporary report and (in --apply) try to
-                  auto-fix links. External fixes prefer
-                  final official URL after redirects; if
-                  unavailable, Wayback.
+  --check-links   Check internal links, write a temporary report
+                  and (in --apply) try to auto-fix them.
+  --check-links-external
+                  Also contact remote URLs. Off by default so the
+                  checks stay offline and deterministic.
+  --check-all     Run every available check: formatting and
+                  validation, internal link checking, the t/
+                  regression suite (prove), and optional
+                  linters (vnu, stylelint, shellcheck, sh -n,
+                  htmltest, lychee) when installed. Implies
+                  --check.
   --check-spelling
                   Check visible HTML text with the dictionary
                   selected from the document's lang attribute.
@@ -112,6 +124,9 @@ Dependencies (compiled binaries):
                   --check-links is used
   hunspell        Spell checking when --check-spelling is used;
                   each configured dictionary is required
+  Optional for --check-all: prove, vnu, stylelint, shellcheck,
+                  htmltest, lychee (missing tools are reported and
+                  skipped, never fatal).
 
 Exit codes:
   0  OK
@@ -123,13 +138,21 @@ USAGE
 }
 
 GetOptions(
-    "root=s"          => \$root_dir,
-    "apply!"          => sub { $mode_apply = 1 },
-    "check!"          => sub { $mode_apply = 0 },
-    "check-links!"    => \$check_links,
-    "check-spelling!" => \$check_spelling,
-    "verbose!"        => \$verbose,
+    "root=s"                => \$root_dir,
+    "apply!"                => sub { $mode_apply = 1 },
+    "check!"                => sub { $mode_apply = 0 },
+    "check-links!"          => \$check_links,
+    "check-links-external!" => \$want_external,
+    "check-all!"            => \$check_all,
+    "check-spelling!"       => \$check_spelling,
+    "verbose!"              => \$verbose,
 ) or usage();
+
+if ($check_all) {
+    $mode_apply = 0;
+    $check_links = 1;
+}
+$external_links = $want_external;
 
 # Normalize the root directory to a canonical absolute
 # path where possible. This avoids leaving `..` segments
@@ -157,8 +180,8 @@ sub loge {
     print STDERR "[ERROR] $_[0]\n";
 }
 
-my $os_name = `uname -s 2>/dev/null`;
-chomp $os_name;
+my ($os_name) = uname();
+$os_name = "" unless defined $os_name;
 my $is_openbsd = ( $os_name eq "OpenBSD" ) ? 1 : 0;
 
 sub die_tool {
@@ -202,9 +225,29 @@ sub run_capture {
     my $err = gensym;
     my $pid = open3( undef, my $out, $err, @cmd );
 
-    local $/;
-    my $stdout = <$out> // "";
-    my $stderr = <$err> // "";
+    # Read stdout and stderr concurrently. Reading one pipe to EOF
+    # before the other can deadlock when a child fills the second
+    # pipe while we are still draining the first.
+    my $sel = IO::Select->new( $out, $err );
+    my %which = ( fileno($out) => "out", fileno($err) => "err" );
+    my $stdout = "";
+    my $stderr = "";
+    while ( my @ready = $sel->can_read ) {
+        for my $fh (@ready) {
+            my $buf = "";
+            my $n   = sysread( $fh, $buf, 65536 );
+            if ( !defined $n || $n == 0 ) {
+                $sel->remove($fh);
+                next;
+            }
+            if ( $which{ fileno($fh) } eq "out" ) {
+                $stdout .= $buf;
+            }
+            else {
+                $stderr .= $buf;
+            }
+        }
+    }
 
     waitpid( $pid, 0 );
     my $rc = ( $? >> 8 );
@@ -223,9 +266,38 @@ sub read_all {
 
 sub write_all {
     my ( $path, $content ) = @_;
-    open my $fh, '>:raw', $path or return 0;
-    print {$fh} $content;
-    close $fh;
+    my $dir = dirname($path);
+    my $mode;
+    if ( -e $path ) {
+        $mode = ( stat($path) )[2] & 07777;
+    }
+    else {
+        my $mask = umask;
+        umask $mask;
+        $mode = 0666 & ~$mask;
+    }
+
+    my ( $fh, $tmp ) = tempfile( '.tmp-XXXXXX', DIR => $dir, UNLINK => 0 );
+    return 0 if !$fh;
+    binmode $fh, ':raw';
+
+    if ( !print {$fh} $content ) {
+        close $fh;
+        unlink $tmp;
+        return 0;
+    }
+    if ( !close $fh ) {
+        unlink $tmp;
+        return 0;
+    }
+    if ( defined $mode && !chmod $mode, $tmp ) {
+        unlink $tmp;
+        return 0;
+    }
+    if ( !rename $tmp, $path ) {
+        unlink $tmp;
+        return 0;
+    }
     return 1;
 }
 
@@ -311,7 +383,7 @@ sub url_percent_encode {
 }
 
 sub extract_links_from_content {
-    my ($content) = @_;
+    my ( $content, $scan_css_url ) = @_;
     my @found;
     my %seen;
 
@@ -322,11 +394,15 @@ sub extract_links_from_content {
         push @found, $link;
     }
 
-    while ( $content =~ /\burl\(\s*(['"]?)([^'")]+)\1\s*\)/ig ) {
-        my $link = trim($2);
-        next if should_skip_link($link);
-        next if $seen{$link}++;
-        push @found, $link;
+    # url(...) is a CSS construct. Scanning it in other file types
+    # produces false positives such as JavaScript's `new URL(...)`.
+    if ($scan_css_url) {
+        while ( $content =~ /\burl\(\s*(['"]?)([^'")]+)\1\s*\)/ig ) {
+            my $link = trim($2);
+            next if should_skip_link($link);
+            next if $seen{$link}++;
+            push @found, $link;
+        }
     }
 
     return @found;
@@ -600,7 +676,7 @@ require_cmd( $xmllint, "XML/SVG formatting/validation" ) if ( @xml || @svg );
 require_cmd( $dprint,  "CSS/JS/JSON formatting/validation" )
   if ( ( @css || @js || @json ) && !$is_openbsd );
 require_cmd( 'jq',   "JSON formatting/validation (jq)" )      if @json;
-require_cmd( 'curl', "link checking/fixing (--check-links)" ) if $check_links;
+require_cmd( 'curl', "link checking/fixing (--check-links)" ) if $external_links;
 require_cmd( 'hunspell', "spell checking (--check-spelling)" )
   if $check_spelling;
 
@@ -657,6 +733,7 @@ my %validate_failed;      # file => 1
 my %link_replacements;    # file => { old_link => new_link }
 my $link_report_file     = "";
 my $spelling_report_file = "";
+my $extra_failed         = 0;    # --check-all sub-checks (prove/linters)
 
 sub mark_format_needed {
     $format_needed{ $_[0] } = 1
@@ -734,11 +811,13 @@ sub run_link_checks {
             next;
         }
 
-        my @links = extract_links_from_content($content);
+        my $is_css = ( $file =~ /\.css$/i ) ? 1 : 0;
+        my @links = extract_links_from_content( $content, $is_css );
         next if !@links;
 
         for my $link (@links) {
             if ( is_external_link($link) ) {
+                next if !$external_links;
                 my $status = check_external_link($link);
                 my $row    = {
                     file     => $file,
@@ -1301,7 +1380,7 @@ sub summarize_and_exit {
         }
     }
 
-    if ( ( !$mode_apply && @fmt ) || @bad ) {
+    if ( ( !$mode_apply && @fmt ) || @bad || $extra_failed ) {
         exit 2;
     }
 
@@ -1320,10 +1399,104 @@ sub summarize_and_exit {
     exit 0;
 }
 
+# -------------------------
+# --check-all extras: regression tests and optional linters
+# -------------------------
+sub run_optional {
+    my ( $label, $tool, @args ) = @_;
+    if ( !have_cmd($tool) ) {
+        logw("Optional tool '$tool' for $label not found; skipped.");
+        return 1;
+    }
+    logi("Running $label ($tool)...");
+
+    # Run from the repository root so tools with cwd-relative
+    # configuration (htmltest, lychee) behave consistently.
+    my $old = Cwd::getcwd();
+    chdir $root_dir or do {
+        loge("Could not enter $root_dir: $!");
+        $extra_failed = 1;
+        return 0;
+    };
+    my $ok = run_cmd( $tool, @args );
+    chdir $old or warn "Could not return to $old: $!\n";
+
+    if ( !$ok ) {
+        loge("$label failed ($tool).");
+        $extra_failed = 1;
+    }
+    return $ok;
+}
+
+sub run_tests {
+    my $tdir = File::Spec->catdir( $root_dir, 't' );
+    if ( !-d $tdir ) {
+        logw("No t/ directory; skipping regression tests.");
+        return 1;
+    }
+    if ( !have_cmd('prove') ) {
+        logw("prove not found; skipping regression tests.");
+        return 1;
+    }
+    logi("Running regression tests (prove)...");
+    my $ok = run_cmd( 'prove', $tdir );
+    if ( !$ok ) {
+        loge("Regression tests failed (prove).");
+        $extra_failed = 1;
+    }
+    return $ok;
+}
+
+sub run_linters {
+    run_optional( 'HTML validation (Nu)', 'vnu', '--errors-only', @html )
+      if @html;
+
+    if (@css) {
+        my $cfg = File::Spec->catfile( $root_dir, '.stylelintrc.json' );
+        if ( -f $cfg ) {
+            run_optional( 'CSS lint', 'stylelint', @css, '--config', $cfg );
+        }
+        else {
+            logw("No .stylelintrc.json; skipping stylelint.");
+        }
+    }
+
+    my @shell = glob( File::Spec->catfile( $root_dir, 'scripts', '*.sh' ) );
+    if (@shell) {
+        run_optional( 'Shell lint', 'shellcheck', '-s', 'sh', @shell );
+        if ( have_cmd('sh') ) {
+            for my $f (@shell) {
+                run_optional( "Shell syntax " . basename($f), 'sh', '-n', $f );
+            }
+        }
+    }
+
+    my $hcfg = File::Spec->catfile( $root_dir, '.htmltest.yml' );
+    run_optional( 'Internal link check', 'htmltest', '-c', $hcfg )
+      if -f $hcfg;
+
+    if ( have_cmd('lychee') ) {
+        my @excl = (
+            '--exclude-path', '.git',     '--exclude-path', 'archive',
+            '--exclude-path', 'tmp'
+        );
+        push @excl, ( '--exclude-path', 'files' )
+          if -d File::Spec->catdir( $root_dir, 'files' );
+        run_optional( 'Offline link check (lychee)', 'lychee',
+            '--offline', '--no-progress', '--root-dir', $root_dir,
+            @excl, '.' );
+    }
+    else {
+        logw("Optional tool 'lychee' not found; skipped offline link check.");
+    }
+}
+
 sub main {
     run_validations();
     run_link_checks()     if $check_links;
+    run_tests()           if $check_all;
     run_spelling_checks() if $check_spelling;
+    run_linters()         if $check_all;
     summarize_and_exit();
 }
 

@@ -1,4 +1,9 @@
 {
+  "openbsd-hardening": {
+    "en": "openbsd-hardening.html",
+    "pubdate": "2026-10-08",
+    "title_en": "OpenBSD desktop hardening guide"
+  },
   "searxng-on-openbsd": {
     "en": "searxng-on-openbsd.html",
     "pubdate": "2026-06-08",

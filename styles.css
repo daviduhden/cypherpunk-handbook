@@ -78,6 +78,7 @@
 
 html {
   font-size: clamp(16px, 0.3vw + 15px, 18px);
+  -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   max-width: 100%;
 }
@@ -135,15 +136,6 @@ code, pre, kbd, samp {
   hyphens: none;
 }
 
-pre {
-  white-space: pre;
-  overflow-x: auto;
-}
-
-code {
-  white-space: pre-wrap;
-}
-
 /*
  * Link Styles
  * Color and hover effect for all links.
@@ -161,10 +153,6 @@ a:hover {
   color: color-mix(in srgb, var(--link-hover) 52%, var(--blue-light) 48%);
   text-decoration-thickness: 0.1em;
   text-shadow: 0 0 0.45em #3ee6ff4f;
-}
-
-nav a {
-  text-decoration: none;
 }
 
 a:focus-visible,
@@ -305,6 +293,7 @@ nav a {
   color: var(--heading);
   margin: 0 0.35em;
   font-weight: 600;
+  text-decoration: none;
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease,
@@ -766,6 +755,7 @@ code {
     monospace;
   background: var(--nav-bg);
   border: thin solid color-mix(in srgb, var(--border-2) 70%, var(--accent) 30%);
+  white-space: pre-wrap;
 }
 
 /*
@@ -778,6 +768,7 @@ pre {
   border-radius: calc(var(--radius-soft) * 0.9);
   padding: 1em;
   overflow-x: auto;
+  white-space: pre;
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -930,8 +921,8 @@ img {
 
 @media print, (forced-colors: active) {
   body {
-    background: #000;
-    color: #fff;
+    background: #fff;
+    color: #000;
     line-height: 1.8;
   }
 
