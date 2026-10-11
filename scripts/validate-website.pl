@@ -1475,8 +1475,7 @@ sub run_linters {
     }
 
     if ( -f File::Spec->catfile( $root_dir, '.perlcriticrc' ) ) {
-        my @perl =
-          glob( File::Spec->catfile( $root_dir, 'scripts', '*.pl' ) );
+        my @perl = glob( File::Spec->catfile( $root_dir, 'scripts', '*.pl' ) );
         run_optional( 'Perl lint (Perl::Critic)', 'perlcritic', @perl )
           if @perl;
     }
