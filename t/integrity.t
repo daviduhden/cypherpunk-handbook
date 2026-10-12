@@ -22,7 +22,7 @@ sub h1_of {
     my ($path) = @_;
     my $s      = slurp($path);
     my ($h)    = $s =~ m{<h1[^>]*>(.*?)</h1>}s;
-    return undef if !defined $h;
+    return if !defined $h;
     $h =~ s/<[^>]+>//g;
     $h =~ s/\s+/ /g;
     $h =~ s/^\s+|\s+$//g;

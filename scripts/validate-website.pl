@@ -336,8 +336,10 @@ sub make_tmp_file_in_tmp {
         SUFFIX => $ext,
         UNLINK => 0
     );
-    print {$fh} $content;
-    close $fh;
+    print {$fh} $content
+      or die_tool("Cannot write $path: $!");
+    close $fh
+      or die_tool("Cannot close $path: $!");
     return $path;
 }
 
