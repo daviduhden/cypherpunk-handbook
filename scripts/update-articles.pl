@@ -44,11 +44,11 @@ use File::Temp qw(tempfile);
 sub logi { print "[INFO] $_[0]\n"; }
 
 sub logw {
-    print STDERR "[WARN] $_[0]\n";
+    print {*STDERR} "[WARN] $_[0]\n";
 }
 
 sub loge {
-    print STDERR "[ERROR] $_[0]\n";
+    print {*STDERR} "[ERROR] $_[0]\n";
 }
 
 sub die_tool {
@@ -62,7 +62,7 @@ sub question {
     my $suf =
       defined $default && length $default
       ? " [$default]"
-      : "";
+      : q{};
     print "$msg$suf: ";
     my $in = <STDIN>;
     defined $in
@@ -70,7 +70,7 @@ sub question {
     chomp $in;
     return length $in
       ? $in
-      : ( $default // '' );
+      : ( $default // q{} );
 }
 
 sub read_file {
@@ -79,7 +79,7 @@ sub read_file {
       or die_tool "Could not open $path: $!\n";
     local $/ = undef;
     my $c = <$fh>;
-    close $fh;
+    close $fh or die_tool("Could not close $path: $!\n");
     return $c;
 }
 
@@ -101,7 +101,7 @@ sub write_file {
 
     if ( !print {$fh} $content ) {
         my $err = $!;
-        close $fh;
+        close $fh;    ## no critic (RequireCheckedClose, RequireCheckedSyscalls)
         unlink $tmp;
         die_tool("Could not write $path: $err\n");
     }
@@ -125,35 +125,38 @@ sub write_file {
 
 sub esc_html {
     my ($s) = @_;
-    return '' unless defined $s;
-    $s =~ s/&/&amp;/g;
-    $s =~ s/</&lt;/g;
-    $s =~ s/>/&gt;/g;
+    return q{} unless defined $s;
+    $s =~ s/&/&amp;/gsm;
+    $s =~ s/</&lt;/gsm;
+    $s =~ s/>/&gt;/gsm;
     return $s;
 }
 
 my $script_path = abs_path($0);
-my $root        = File::Spec->catdir( dirname($script_path), '..' );
-my $index       = File::Spec->catfile( $root, 'index.html' );
+if ( !defined $script_path || !length $script_path ) {
+    die_tool("Could not resolve script path\n");
+}
+my $root  = File::Spec->catdir( dirname($script_path), q{..} );
+my $index = File::Spec->catfile( $root, 'index.html' );
 
 sub run_update {
     my $content = read_file($index);
 
-    logi( "This will insert a new article link" . " into $index" );
+    logi( 'This will insert a new article link' . " into $index" );
 
     my $subsection =
       lc question( 'Subsection (for example operating-systems/openbsd)',
         'operating-systems/openbsd' );
     my ( $section_id, $subsection_id ) =
-      $subsection =~ m{^([a-z0-9-]+)/([a-z0-9-]+)$}
+      $subsection =~ m{^([a-z0-9-]+)/([a-z0-9-]+)$}s
       or die_tool "Subsection must be a section/subsection identifier.\n";
 
     my $title = question( 'Link text/title', 'New Article' );
     my $slug =
       question( 'Slug (filename without .html,' . ' e.g. android-privacy)',
-        '' );
-    $slug =~ /^[A-Za-z0-9][A-Za-z0-9-]*$/
-      or die_tool( "Slug may only contain letters, digits, and"
+        q{} );
+    $slug =~ /^[A-Za-z0-9][A-Za-z0-9-]*$/s
+      or die_tool( 'Slug may only contain letters, digits, and'
           . " hyphens (and must not be empty).\n" );
 
     my $href = "./articles/$slug.html";
@@ -172,9 +175,9 @@ sub run_update {
       . qq{</a>\n              </li>};
 
     if (
-        $content =~ /(<section\s+id="\Q$section_id\E"[^>]*>
+        $content =~ m{(<section\s+id="\Q$section_id\E"[^>]*>
           .*?<section\s+id="\Q$subsection_id\E"[^>]*>
-          .*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)/sx
+          .*?<ul[^>]*class="article-list"[^>]*>)(.*?)(<\/ul>)}sx
       )
     {
         my ( $pre, $inner, $post ) = ( $1, $2, $3 );
@@ -182,14 +185,14 @@ sub run_update {
         # Drop the trailing indentation so the new item can be
         # positioned immediately before the closing </ul>.
         my $body = $inner;
-        $body =~ s/\n[ \t]*$//;
+        $body =~ s/\n[ \t]*$//s;
         my $new_inner =
           $body . "\n\n              " . $link_html . "\n            ";
 
         my $old_block = $pre . $inner . $post;
         my $pos       = index( $content, $old_block );
-        $pos != -1
-          or die_tool( "Could not locate the article list in"
+        $pos >= 0
+          or die_tool( 'Could not locate the article list in'
               . " $index for subsection $subsection.\n" );
         substr( $content, $pos, length($old_block), $pre . $new_inner . $post );
 

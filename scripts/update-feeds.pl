@@ -49,7 +49,7 @@ my $replace_existing = 0;
 GetOptions( 'replace' => \$replace_existing );
 
 my $root_dir =
-  File::Spec->catdir( ( File::Spec->splitpath($0) )[1] || '.', '..' );
+  File::Spec->catdir( ( File::Spec->splitpath($0) )[1] || q{.}, q{..} );
 my $feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
 my $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
 my $site_url     = 'https://handbook.uhden.dev';
@@ -57,7 +57,7 @@ my $site_url     = 'https://handbook.uhden.dev';
 sub logi { print "[INFO] $_[0]\n"; }
 
 sub logw {
-    print STDERR "[WARN] $_[0]\n";
+    print {*STDERR} "[WARN] $_[0]\n";
 }
 sub die_tool { die "[ERROR] $_[0]\n"; }
 
@@ -66,11 +66,11 @@ sub question {
     my $suffix =
       defined $default && length $default
       ? " [$default]"
-      : '';
+      : q{};
     print "$message$suffix: ";
     my $input = <STDIN>;
     defined $input
-      or die_tool("Could not read input.");
+      or die_tool('Could not read input.');
     chomp $input;
     return length $input ? $input : $default;
 }
@@ -81,7 +81,7 @@ sub read_file {
       or die_tool("Could not read $path: $!");
     local $/ = undef;
     my $content = <$fh>;
-    close $fh;
+    close $fh or die_tool("Could not close $path: $!");
     return $content;
 }
 
@@ -103,7 +103,7 @@ sub write_file {
 
     if ( !print {$fh} $content ) {
         my $err = $!;
-        close $fh;
+        close $fh;    ## no critic (RequireCheckedClose, RequireCheckedSyscalls)
         unlink $tmp;
         die_tool("Could not write $path: $err");
     }
@@ -127,17 +127,17 @@ sub write_file {
 
 sub xml_escape {
     my ($text) = @_;
-    return '' unless defined $text;
-    $text =~ s/&/&amp;/g;
-    $text =~ s/</&lt;/g;
-    $text =~ s/>/&gt;/g;
+    return q{} unless defined $text;
+    $text =~ s/&/&amp;/gsm;
+    $text =~ s/</&lt;/gsm;
+    $text =~ s/>/&gt;/gsm;
     return $text;
 }
 
 sub normalize_slug {
     my ($s) = @_;
-    $s //= '';
-    $s =~ s/^\s+|\s+$//g;
+    $s //= q{};
+    $s =~ s/^\s+|\s+$//gs;
     $s = lc $s;
     return $s;
 }
@@ -146,8 +146,8 @@ sub iso_to_epoch {
     my ($s) = @_;
     return unless defined $s;
     if (
-        $s =~ /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})
-  (Z|([+-])(\d{2}):(\d{2}))?$/x
+        $s =~ m{^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})
+  (Z|([+-])(\d{2}):(\d{2}))?$}xs
       )
     {
         my ( $Y, $M, $D, $h, $m, $sec, undef, $sign, $oh, $om ) =
@@ -155,11 +155,11 @@ sub iso_to_epoch {
         my $epoch = timegm( $sec, $m, $h, $D, $M - 1, $Y );
         if ( defined $sign && defined $oh ) {
             my $ofs = $oh * 3600 + $om * 60;
-            $epoch -= ( $sign eq '+' ) ? $ofs : -$ofs;
+            $epoch -= ( $sign eq q{+} ) ? $ofs : -$ofs;
         }
         return $epoch;
     }
-    if ( $s =~ /^(\d{4})-(\d{2})-(\d{2})$/ ) {
+    if ( $s =~ /^(\d{4})-(\d{2})-(\d{2})$/s ) {
         return timegm( 0, 0, 0, $3, $2 - 1, $1 );
     }
     return;
@@ -180,10 +180,10 @@ sub extract_datetime_from_article {
     my ($path) = @_;
     return unless -e $path;
     my $html = read_file($path);
-    if ( $html =~ /<time[^>]*\sdatetime\s*=\s*"([^"]+)"/i ) {
+    if ( $html =~ /<time[^>]*\sdatetime\s*=\s*"([^"]+)"/ism ) {
         return $1;
     }
-    if ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/i ) {
+    if ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/ism ) {
         return $1;
     }
     return;
@@ -206,7 +206,7 @@ sub detect_feeds {
         $out{es} = $art_es if -f $art_es;
         return \%out;
     }
-    die_tool( "No supported feed file found" . " under $feeds_dir" );
+    die_tool( 'No supported feed file found' . " under $feeds_dir" );
 }
 
 sub update_feed {
@@ -217,19 +217,19 @@ sub update_feed {
     my $link          = "/articles/$slug.html";
     my @link_variants = ( $link, "$site_url$link" );
     my $link_re =
-      join '|',
-      map { quotemeta($_) } @link_variants;
-    my $item = join '',
+      join q{|},
+      map { quotemeta } @link_variants;
+    my $item = join q{},
       "    <item>\n",
-      "      <title>",
+      '      <title>',
       xml_escape( $args{title} ),
       "</title>\n",
       "      <link>$link</link>\n",
-      "      <description>",
+      '      <description>',
       xml_escape( $args{description} ),
       "</description>\n",
       "      <pubDate>$pub</pubDate>\n",
-      "      <guid isPermaLink=\"false\">" . "$link</guid>\n",
+      '      <guid isPermaLink="false">' . "$link</guid>\n",
       "    </item>\n\n";
 
     my $content = read_file($path);
@@ -237,10 +237,13 @@ sub update_feed {
     if ( $content =~ m{<link>\s*(?:$link_re)\s*</link>}s ) {
         if ( !$replace_existing ) {
             logw(   "Feed already has $link in $path"
-                  . " (use --replace to replace)" );
+                  . ' (use --replace to replace)' );
             return;
         }
-        $content =~ s{<item>.*?<link>\s*
+
+        # Keep the leading wildcard inside one item; otherwise a match
+        # on a later item would consume every preceding item too.
+        $content =~ s{<item>(?:(?!</item>).)*?<link>\s*
             (?:$link_re)\s*</link>
             .*?</item>\s*}{}gsx;
     }
@@ -250,12 +253,12 @@ sub update_feed {
     # could overwrite an unrelated item when insertion falls back to
     # appending before </channel>.
     $content =~ s{<lastBuildDate>[^<]*</lastBuildDate>}
-       {<lastBuildDate>$pub</lastBuildDate>}m;
+       {<lastBuildDate>$pub</lastBuildDate>}ms;
 
     my $inserted = $content =~ s{(<lastBuildDate>[^<]*</lastBuildDate>
-        \s*\n)}{$1\n$item}mx;
-    $inserted ||= $content =~ s{(<channel>\s*\n)}{$1$item}m;
-    $inserted ||= $content =~ s{(</channel>)}{$item$1}m;
+        \s*\n)}{$1\n$item}mxs;
+    $inserted ||= $content =~ s{(<channel>\s*\n)}{$1$item}ms;
+    $inserted ||= $content =~ s{(</channel>)}{$item$1}ms;
     $inserted
       or die_tool("Could not insert item into $path");
 
@@ -268,29 +271,29 @@ sub main {
     my $has_es = exists $feeds->{es} ? 1 : 0;
 
     my $slug_en =
-      normalize_slug( question( 'English slug (without .html)', '' ) );
+      normalize_slug( question( 'English slug (without .html)', q{} ) );
     length $slug_en
       or die_tool('English slug is required.');
-    $slug_en =~ /^[a-z0-9][a-z0-9-]*$/
-      or die_tool( "English slug may only contain lowercase letters,"
-          . " digits, and hyphens." );
+    $slug_en =~ /^[a-z0-9][a-z0-9-]*$/s
+      or die_tool( 'English slug may only contain lowercase letters,'
+          . ' digits, and hyphens.' );
     my $slug_es = undef;
     if ($has_es) {
         $slug_es = normalize_slug(
             question( 'Spanish slug (without .html)', "$slug_en-es" ) );
         length $slug_es
           or die_tool('Spanish slug is required.');
-        $slug_es =~ /^[a-z0-9][a-z0-9-]*$/
-          or die_tool( "Spanish slug may only contain lowercase letters,"
-              . " digits, and hyphens." );
+        $slug_es =~ /^[a-z0-9][a-z0-9-]*$/s
+          or die_tool( 'Spanish slug may only contain lowercase letters,'
+              . ' digits, and hyphens.' );
     }
 
-    my $title_en = question( 'Title (English)',       '' );
-    my $desc_en  = question( 'Description (English)', '' );
+    my $title_en = question( 'Title (English)',       q{} );
+    my $desc_en  = question( 'Description (English)', q{} );
     my ( $title_es, $desc_es ) = ( undef, undef );
     if ($has_es) {
-        $title_es = question( 'Title (Spanish)',       '' );
-        $desc_es  = question( 'Description (Spanish)', '' );
+        $title_es = question( 'Title (Spanish)',       q{} );
+        $desc_es  = question( 'Description (Spanish)', q{} );
     }
 
     my $article_en_path = File::Spec->catfile( $articles_dir, "$slug_en.html" );
@@ -305,12 +308,12 @@ sub main {
 
     my $pub_input = $found_iso // question(
         'Publication date ISO' . ' (e.g., 2025-03-06T10:00:00Z)' . ' or blank',
-        ''
+        q{}
     );
     my $pub_epoch = iso_to_epoch($pub_input);
     if ( !defined $pub_epoch ) {
         $pub_epoch = time();
-        logw( "Invalid/empty ISO date," . " using current time." );
+        logw( 'Invalid/empty ISO date,' . ' using current time.' );
     }
 
     my $pub_rfc_en = rfc2822_from_ts_locale($pub_epoch);
@@ -341,10 +344,10 @@ sub main {
             logw("Could not run $rebuild_script: $!");
         }
         elsif ( $rc & 127 ) {
-            logw( "Rebuild script terminated by signal " . ( $rc & 127 ) );
+            logw( 'Rebuild script terminated by signal ' . ( $rc & 127 ) );
         }
         elsif ( $rc >> 8 ) {
-            logw( "Rebuild script exited with code " . ( $rc >> 8 ) );
+            logw( 'Rebuild script exited with code ' . ( $rc >> 8 ) );
         }
     }
 }

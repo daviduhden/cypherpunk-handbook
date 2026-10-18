@@ -57,7 +57,7 @@ sub run_rebuild {
 
 sub item_slugs {
     my ($xml) = @_;
-    my @s = $xml =~ m{<link>/articles/([^<]+)\.html</link>}g;
+    my @s = $xml =~ m{<link>/articles/([^<]+)\.html</link>}gsm;
     return @s;
 }
 
@@ -117,17 +117,20 @@ sub item_slugs {
     my ( $r, $feed ) = run_rebuild($dir);
     is( $r->{status}, 0, 'rebuild succeeds' );
     my $xml = slurp($feed);
-    like( $xml, qr{<title>A &amp; B</title>}, 'ampersand escaped once' );
-    unlike( $xml, qr{&amp;amp;}, 'no double encoding in title' );
+    like( $xml, qr{<title>A &amp; B</title>}sm, 'ampersand escaped once' );
+    unlike( $xml, qr{&amp;amp;}sm, 'no double encoding in title' );
     like(
         $xml,
-        qr{<description>d &amp; d &lt;e&gt;</description>},
+        qr{<description>d &amp; d &lt;e&gt;</description>}sm,
         'entities decoded then re-escaped once'
     );
-    unlike( $xml, qr{<description>d &amp;amp; d}, 'no double encoding' );
-    like( $xml, qr{<title>A bold B</title>},
-        'inline tags stripped from title' );
-    unlike( $xml, qr{<b>}, 'no raw markup in feed' );
+    unlike( $xml, qr{<description>d &amp;amp; d}sm, 'no double encoding' );
+    like(
+        $xml,
+        qr{<title>A bold B</title>}sm,
+        'inline tags stripped from title'
+    );
+    unlike( $xml, qr{<b>}sm, 'no raw markup in feed' );
 }
 
 # --- existing channel entities are preserved (no double encoding) ---
@@ -139,8 +142,8 @@ sub item_slugs {
     my ( $r, $feed ) = run_rebuild($dir);
     is( $r->{status}, 0, 'rebuild succeeds' );
     my $xml = slurp($feed);
-    like( $xml, qr{<title>A &amp; B</title>}, 'channel entity preserved' );
-    unlike( $xml, qr{&amp;amp;}, 'no double encoding' );
+    like( $xml, qr{<title>A &amp; B</title>}sm, 'channel entity preserved' );
+    unlike( $xml, qr{&amp;amp;}sm, 'no double encoding' );
 }
 
 # --- UTF-8 content is written as valid UTF-8 ------------------------
@@ -152,8 +155,8 @@ sub item_slugs {
     my ( $r, $feed ) = run_rebuild($dir);
     is( $r->{status}, 0, 'rebuild succeeds with UTF-8' );
     my $raw = slurp($feed);
-    like( $raw, qr/Caf\xc3\xa9/,  'UTF-8 bytes preserved (é)' );
-    like( $raw, qr/\xe2\x98\xba/, 'UTF-8 bytes preserved (☺)' );
+    like( $raw, qr/Caf\xc3\xa9/sm,  'UTF-8 bytes preserved (é)' );
+    like( $raw, qr/\xe2\x98\xba/sm, 'UTF-8 bytes preserved (☺)' );
 }
 
 # --- atomic write preserves permissions and leaves no temp files ----
@@ -169,7 +172,7 @@ sub item_slugs {
     is( ( stat $f )[2] & 07777, 0640, 'file mode preserved' );
 
     opendir my $dh, File::Spec->catdir( $dir, 'feeds' ) or die $!;
-    my @tmp = grep { /^\.tmp-/ } readdir $dh;
+    my @tmp = grep { /^\.tmp-/s } readdir $dh;
     closedir $dh;
     is_deeply( \@tmp, [], 'no temporary files left behind' );
 }
@@ -193,15 +196,15 @@ sub item_slugs {
     my ( $r, $feed ) = run_rebuild($dir);
     is( $r->{status}, 0, 'rebuild succeeds with no articles' );
     my $xml = slurp($feed);
-    unlike( $xml, qr/<item>/, 'no items' );
-    like( $xml, qr{</channel>}, 'channel closed' );
+    unlike( $xml, qr/<item>/sm, 'no items' );
+    like( $xml, qr{</channel>}sm, 'channel closed' );
 }
 
 # --- article without <time> still works (mtime fallback) ------------
 {
     my $no_time =
-        "<html lang=\"en\"><body><article>"
-      . "<header id=\"article-header\"><h1>No Time</h1></header>"
+        '<html lang="en"><body><article>'
+      . '<header id="article-header"><h1>No Time</h1></header>'
       . "</article></body></html>\n";
     my $dir = fixture(
         'feeds/articles.xml' => feed(),
@@ -209,7 +212,7 @@ sub item_slugs {
     );
     my ( $r, $feed ) = run_rebuild($dir);
     is( $r->{status}, 0, 'rebuild succeeds without <time>' );
-    like( slurp($feed), qr{<link>/articles/nt\.html</link>}, 'item present' );
+    like( slurp($feed), qr{<link>/articles/nt\.html</link>}sm, 'item present' );
 }
 
 # --- missing feed is a hard error -----------------------------------
@@ -220,7 +223,7 @@ sub item_slugs {
     isnt( $r->{status}, 0, 'missing feed target fails' );
     like(
         $r->{stderr},
-        qr/No supported feed files found/,
+        qr/No supported feed files found/sm,
         'clear error message'
     );
 }
@@ -236,22 +239,22 @@ sub item_slugs {
     my $xml = slurp($feed);
     like(
         $xml,
-        qr{<link>https://example\.org/articles/a\.html</link>},
+        qr{<link>https://example\.org/articles/a\.html</link>}sm,
         'item link made absolute'
     );
     like(
         $xml,
-        qr{<link>https://example\.org/</link>},
+        qr{<link>https://example\.org/</link>}sm,
         'channel link made absolute'
     );
     like(
         $xml,
-        qr{<atom:link href="https://example\.org/feeds/articles\.xml"},
+        qr{<atom:link href="https://example\.org/feeds/articles\.xml"}sm,
         'atom self link made absolute'
     );
     like(
         $xml,
-        qr{<guid isPermaLink="false">/articles/a\.html</guid>},
+        qr{<guid isPermaLink="false">/articles/a\.html</guid>}sm,
         'guid stays root-relative and stable'
     );
 }

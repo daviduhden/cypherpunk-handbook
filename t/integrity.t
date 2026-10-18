@@ -16,27 +16,30 @@ use JSON::PP qw(decode_json);
 
 my $root = repo_root();
 
-sub file { File::Spec->catfile( $root, split m{/}, $_[0] ) }
+sub file {
+    my ($relative) = @_;
+    return File::Spec->catfile( $root, split m{/}sm, $relative );
+}
 
 sub h1_of {
     my ($path) = @_;
     my $s      = slurp($path);
-    my ($h)    = $s =~ m{<h1[^>]*>(.*?)</h1>}s;
+    my ($h)    = $s =~ m{<h1[^>]*>(.*?)</h1>}sm;
     return if !defined $h;
-    $h =~ s/<[^>]+>//g;
-    $h =~ s/\s+/ /g;
-    $h =~ s/^\s+|\s+$//g;
+    $h =~ s/<[^>]+>//gsm;
+    $h =~ s/\s+/ /gsm;
+    $h =~ s/^\s+|\s+$//gs;
     return $h;
 }
 
 my $json = eval { decode_json( slurp( file('data/articles.json') ) ) };
 ok( defined $json, 'data/articles.json parses as JSON' )
-  or BAIL_OUT("cannot parse article index");
+  or BAIL_OUT('cannot parse article index');
 
 # --- index <-> files, both directions -------------------------------
 my %covered;
 my @dupes;
-for my $key ( sort keys %$json ) {
+for my $key ( sort keys %{$json} ) {
     my $e = $json->{$key};
     for my $lang (qw(en es)) {
         next if !defined $e->{$lang};
@@ -52,7 +55,7 @@ for my $key ( sort keys %$json ) {
 is_deeply( \@dupes, [], 'no article file is listed twice' );
 
 opendir my $dh, file('articles') or die "opendir articles: $!";
-my @html = sort grep { /\.html$/i } readdir $dh;
+my @html = sort grep { /\.html$/is } readdir $dh;
 closedir $dh;
 for my $fn (@html) {
     ok( $covered{$fn}, "articles/$fn is listed in data/articles.json" );
@@ -61,26 +64,26 @@ for my $fn (@html) {
 # --- feeds reference existing articles ------------------------------
 for my $feed ( glob( file('feeds/*.xml') ) ) {
     my $xml   = slurp($feed);
-    my @links = $xml =~ m{<link>/articles/([^<]+)</link>}g;
+    my @links = $xml =~ m{<link>/articles/([^<]+)</link>}gsm;
     ok( scalar(@links), basename($feed) . ' has items' );
     for my $fn (@links) {
         ok( -f file("articles/$fn"), "feed link targets articles/$fn" );
     }
-    while ( $xml =~ m{<guid\s+isPermaLink="false">([^<]+)</guid>}g ) {
+    while ( $xml =~ m{<guid\s+isPermaLink="false">([^<]+)</guid>}gsm ) {
         my $g = $1;
-        like( $g, qr{^/articles/},
+        like( $g, qr{^/articles/}s,
             'guid is a stable root-relative identifier' );
     }
 }
 
 # --- sitemap targets exist ------------------------------------------
 my $sm   = slurp( file('sitemap.xml') );
-my @locs = $sm =~ m{<loc>(.*?)</loc>}g;
+my @locs = $sm =~ m{<loc>(.*?)</loc>}gm;
 ok( scalar(@locs), 'sitemap has entries' );
 for my $loc (@locs) {
-    ( my $path = $loc ) =~ s{^https?://[^/]+/?}{};
-    $path =~ s{^/}{};
-    if ( $path eq '' || $path =~ m{/$} ) {
+    ( my $path = $loc ) =~ s{^https?://[^/]+/?}{}s;
+    $path =~ s{^/}{}s;
+    if ( $path eq q{} || $path =~ m{/$}s ) {
         my $idx = file( $path . 'index.html' );
         ok( -f $idx, "sitemap $loc maps to $idx" );
     }
@@ -89,7 +92,8 @@ for my $loc (@locs) {
     }
 }
 for my $fn (@html) {
-    like( $sm, qr{/articles/\Q$fn\E</loc>}, "articles/$fn appears in sitemap" );
+    like( $sm, qr{/articles/\Q$fn\E</loc>}s,
+        "articles/$fn appears in sitemap" );
 }
 
 done_testing();

@@ -64,8 +64,12 @@ use Symbol     qw(gensym);
 # -------------------------
 # Options
 # -------------------------
-my $script_dir   = dirname( abs_path($0) );
-my $default_root = File::Spec->catdir( $script_dir, '..' );
+my $script_path = abs_path($0);
+if ( !defined $script_path || !length $script_path ) {
+    die_tool('Could not resolve script path');
+}
+my $script_dir   = dirname($script_path);
+my $default_root = File::Spec->catdir( $script_dir, q{..} );
 
 my $root_dir       = $default_root;
 my $mode_apply     = 1;               # default: apply formatting
@@ -82,7 +86,7 @@ my $spelling_personal_list =
   join( ' or ', map { ".hunspell/$_" } sort values %spelling_dictionary );
 
 sub usage {
-    print STDERR <<"USAGE";
+    print {*STDERR} <<"USAGE";
 Usage:
   $0 [--root DIR] [--apply|--check] [--check-links]
      [--check-links-external] [--check-all]
@@ -138,14 +142,14 @@ USAGE
 }
 
 GetOptions(
-    "root=s"                => \$root_dir,
-    "apply!"                => sub { $mode_apply = 1 },
-    "check!"                => sub { $mode_apply = 0 },
-    "check-links!"          => \$check_links,
-    "check-links-external!" => \$want_external,
-    "check-all!"            => \$check_all,
-    "check-spelling!"       => \$check_spelling,
-    "verbose!"              => \$verbose,
+    'root=s'                => \$root_dir,
+    'apply!'                => sub { $mode_apply = 1 },
+    'check!'                => sub { $mode_apply = 0 },
+    'check-links!'          => \$check_links,
+    'check-links-external!' => \$want_external,
+    'check-all!'            => \$check_all,
+    'check-spelling!'       => \$check_spelling,
+    'verbose!'              => \$verbose,
 ) or usage();
 
 if ($check_all) {
@@ -173,16 +177,16 @@ if ( defined $abs_root && length $abs_root ) {
 sub logi { print "[INFO] $_[0]\n"; }
 
 sub logw {
-    print STDERR "[WARN] $_[0]\n";
+    print {*STDERR} "[WARN] $_[0]\n";
 }
 
 sub loge {
-    print STDERR "[ERROR] $_[0]\n";
+    print {*STDERR} "[ERROR] $_[0]\n";
 }
 
 my ($os_name) = uname();
-$os_name = "" unless defined $os_name;
-my $is_openbsd = ( $os_name eq "OpenBSD" ) ? 1 : 0;
+$os_name = q{} unless defined $os_name;
+my $is_openbsd = ( $os_name eq 'OpenBSD' ) ? 1 : 0;
 
 sub die_tool {
     my ($msg) = @_;
@@ -196,7 +200,7 @@ sub die_tool {
 sub have_cmd {
     my ($cmd) = @_;
     return 0 unless defined $cmd && length $cmd;
-    for my $dir ( split /:/, ( $ENV{PATH} // "" ) ) {
+    for my $dir ( split /:/sm, ( $ENV{PATH} // q{} ) ) {
         my $p = File::Spec->catfile( $dir, $cmd );
         return 1 if -x $p;
     }
@@ -229,18 +233,18 @@ sub run_capture {
     # before the other can deadlock when a child fills the second
     # pipe while we are still draining the first.
     my $sel    = IO::Select->new( $out, $err );
-    my %which  = ( fileno($out) => "out", fileno($err) => "err" );
-    my $stdout = "";
-    my $stderr = "";
+    my %which  = ( fileno($out) => 'out', fileno($err) => 'err' );
+    my $stdout = q{};
+    my $stderr = q{};
     while ( my @ready = $sel->can_read ) {
         for my $fh (@ready) {
-            my $buf = "";
-            my $n   = sysread( $fh, $buf, 65536 );
+            my $buf = q{};
+            my $n   = sysread( $fh, $buf, 65_536 );
             if ( !defined $n || $n == 0 ) {
                 $sel->remove($fh);
                 next;
             }
-            if ( $which{ fileno($fh) } eq "out" ) {
+            if ( $which{ fileno($fh) } eq 'out' ) {
                 $stdout .= $buf;
             }
             else {
@@ -260,7 +264,7 @@ sub read_all {
     open my $fh, '<:raw', $path or return;
     local $/ = undef;
     my $c = <$fh>;
-    close $fh;
+    close $fh or return;
     return $c;
 }
 
@@ -282,7 +286,7 @@ sub write_all {
     binmode $fh, ':raw';
 
     if ( !print {$fh} $content ) {
-        close $fh;
+        close $fh;    ## no critic (RequireCheckedClose, RequireCheckedSyscalls)
         unlink $tmp;
         return 0;
     }
@@ -304,10 +308,12 @@ sub write_all {
 sub chunked {
     my ( $aref, $n ) = @_;
     my @out;
-    for ( my $i = 0 ; $i < @$aref ; $i += $n ) {
+    my $i = 0;
+    while ( $i < @{$aref} ) {
         my $end = $i + $n - 1;
-        $end = $#$aref if $end > $#$aref;
-        push @out, [ @$aref[ $i .. $end ] ];
+        $end = $#{$aref} if $end > $#{$aref};
+        push @out, [ @{$aref}[ $i .. $end ] ];
+        $i += $n;
     }
     return @out;
 }
@@ -315,12 +321,12 @@ sub chunked {
 sub make_tmp_file_in_tmp {
     my ( $suffix, $content ) = @_;
 
-    my ( $base, $ext ) = ( $suffix, "" );
+    my ( $base, $ext ) = ( $suffix, q{} );
     if ( $suffix =~ /^(.*)(\.[^.]*)$/ ) {
         $base = $1;
         $ext  = $2;
     }
-    $base =~ s/^\./-/;
+    $base =~ s/^\./-/s;
 
     # File::Temp requires the TEMPLATE to end with at
     # least 4 'X' characters. Place extension via SUFFIX
@@ -345,29 +351,29 @@ sub make_tmp_file_in_tmp {
 
 sub trim {
     my ($v) = @_;
-    $v = "" unless defined $v;
-    $v =~ s/^\s+//;
-    $v =~ s/\s+$//;
+    $v = q{} unless defined $v;
+    $v =~ s/^\s+//s;
+    $v =~ s/\s+$//s;
     return $v;
 }
 
 sub should_skip_link {
     my ($link) = @_;
-    return 1 if !defined $link || $link eq "";
-    return 1 if $link =~ /^\s*#/;                # in-page anchors
+    return 1 if !defined $link || $link eq q{};
+    return 1 if $link =~ /^\s*#/s;                # in-page anchors
     return 1
-      if $link =~ /^\s*(?:mailto|tel|javascript|data):/i;
+      if $link =~ /^\s*(?:mailto|tel|javascript|data):/is;
     return 1
-      if $link =~ /^\s*[A-Za-z][A-Za-z0-9+.-]*:/
-      && $link !~ /^\s*(?:https?|file):/i;
-    return 1 if $link =~ m{^\s*https?://[^/]+\.(?:onion|i2p)(?::\d+)?(?:/|$)}i;
+      if $link =~ /^\s*[A-Za-z][A-Za-z0-9+.-]*:/s
+      && $link !~ /^\s*(?:https?|file):/is;
+    return 1 if $link =~ m{^\s*https?://[^/]+\.(?:onion|i2p)(?::\d+)?(?:/|$)}is;
     return 0;
 }
 
 sub is_external_link {
     my ($link) = @_;
-    return 1 if $link =~ m{^\s*https?://}i;
-    return 1 if $link =~ m{^\s*//[^/]};       # proto-rel
+    return 1 if $link =~ m{^\s*https?://}is;
+    return 1 if $link =~ m{^\s*//[^/]}s;       # proto-rel
     return 0;
 }
 
@@ -379,8 +385,8 @@ sub strip_query_fragment {
 
 sub url_percent_encode {
     my ($v) = @_;
-    $v //= "";
-    $v =~ s/([^A-Za-z0-9\-\._~])/sprintf("%%%02X", ord($1))/ge;
+    $v //= q{};
+    $v =~ s/([^A-Za-z0-9\-\._~])/sprintf("%%%02X", ord($1))/gesm;
     return $v;
 }
 
@@ -389,7 +395,7 @@ sub extract_links_from_content {
     my @found;
     my %seen;
 
-    while ( $content =~ /\b(?:href|src)\s*=\s*(['"])(.*?)\1/ig ) {
+    while ( $content =~ /\b(?:href|src)\s*=\s*(['"])(.*?)\1/igm ) {
         my $link = trim($2);
         next if should_skip_link($link);
         next if $seen{$link}++;
@@ -399,7 +405,7 @@ sub extract_links_from_content {
     # url(...) is a CSS construct. Scanning it in other file types
     # produces false positives such as JavaScript's `new URL(...)`.
     if ($scan_css_url) {
-        while ( $content =~ /\burl\(\s*(['"]?)([^'")]+)\1\s*\)/ig ) {
+        while ( $content =~ /\burl\(\s*(['"]?)([^'")]+)\1\s*\)/igsm ) {
             my $link = trim($2);
             next if should_skip_link($link);
             next if $seen{$link}++;
@@ -415,21 +421,21 @@ sub internal_candidates {
     my @candidates = ($link);
 
     my $base = $link;
-    my $frag = "";
-    if ( $base =~ s/(#[^#]*)$// ) {
+    my $frag = q{};
+    if ( $base =~ s/(#[^#]*)$//s ) {
         $frag = $1;
     }
-    my $query = "";
-    if ( $base =~ s/(\?[^?]*)$// ) {
+    my $query = q{};
+    if ( $base =~ s/(\?[^?]*)$//s ) {
         $query = $1;
     }
 
     my @path_variants = ($base);
-    if ( $base !~ m{/$} ) {
+    if ( $base !~ m{/$}s ) {
         push @path_variants, "${base}.html"
-          if $base !~ /\.html?$/i;
+          if $base !~ /\.html?$/is;
         push @path_variants, "${base}/index.html"
-          if $base ne "";
+          if $base ne q{};
     }
     else {
         push @path_variants, "${base}index.html";
@@ -445,52 +451,60 @@ sub internal_candidates {
     my @uniq;
     %seen = ();
     for my $c (@candidates) {
-        next if !defined($c) || $c eq "";
+        next if !defined($c) || $c eq q{};
         next if $seen{$c}++;
         push @uniq, $c;
     }
     return @uniq;
 }
 
+sub path_is_within_root {
+    my ($path) = @_;
+    if ( !defined $path || !length $path ) {
+        return 0;
+    }
+    return 1 if $path eq $root_dir;
+    my $prefix = $root_dir;
+    $prefix =~ s{/+$}{}s;
+    return index( $path, "$prefix/" ) == 0;
+}
+
 sub resolve_internal_link {
     my ( $source_file, $raw_link ) = @_;
     my $target = strip_query_fragment($raw_link);
     $target = trim($target);
-    if ( $target eq "" ) {
-        return ( 1, $source_file, "empty/anchor" );
+    if ( $target eq q{} ) {
+        return ( 1, $source_file, 'empty/anchor' );
     }
 
-    $target =~ s{^file://}{};
+    $target =~ s{^file://}{}s;
     my $absolute;
-    if ( $target =~ m{^/} ) {
+    if ( $target =~ m{^/}s ) {
         my $rel = $target;
-        $rel =~ s{^/+}{};
-        $absolute = File::Spec->catfile( $root_dir, split m{/+}, $rel );
+        $rel =~ s{^/+}{}s;
+        $absolute = File::Spec->catfile( $root_dir, split m{/+}sm, $rel );
     }
     else {
         my $src_dir = dirname($source_file);
-        $absolute = File::Spec->catfile( $src_dir, split m{/+}, $target );
+        $absolute = File::Spec->catfile( $src_dir, split m{/+}sm, $target );
     }
 
     my $canon = abs_path($absolute);
-    if (   defined($canon)
-        && index( $canon, $root_dir ) == 0
-        && -f $canon )
-    {
-        return ( 1, $canon, "ok" );
+    if ( defined($canon) && path_is_within_root($canon) && -f $canon ) {
+        return ( 1, $canon, 'ok' );
     }
 
     # Support links to directories by checking index.html
-    my $with_index  = File::Spec->catfile( $absolute, "index.html" );
+    my $with_index  = File::Spec->catfile( $absolute, 'index.html' );
     my $canon_index = abs_path($with_index);
     if (   defined($canon_index)
-        && index( $canon_index, $root_dir ) == 0
+        && path_is_within_root($canon_index)
         && -f $canon_index )
     {
-        return ( 1, $canon_index, "ok-index" );
+        return ( 1, $canon_index, 'ok-index' );
     }
 
-    return ( 0, $absolute, "missing" );
+    return ( 0, $absolute, 'missing' );
 }
 
 my %external_status_cache;
@@ -511,18 +525,18 @@ sub check_external_link {
         '%{http_code}\t%{url_effective}',    $url
     );
 
-    my ( $code, $effective ) = ( "000", $url );
+    my ( $code, $effective ) = ( '000', $url );
     if ( defined $out && $out =~ /^(\d{3})\t(.*)$/s ) {
         $code      = $1;
         $effective = trim($2);
     }
     my $ok =
-      ( $rc == 0 && $code =~ /^(?:[23]\d\d|401|403|405|418|429)$/ ) ? 1 : 0;
+      ( $rc == 0 && $code =~ /^(?:[23]\d\d|401|403|405|418|429)$/s ) ? 1 : 0;
     my $status = {
         ok        => $ok,
         code      => $code,
         effective => $effective,
-        err       => ( $err // "" ),
+        err       => ( $err // q{} ),
     };
     $external_status_cache{$url} = $status;
     return $status;
@@ -531,18 +545,18 @@ sub check_external_link {
 sub find_wayback_url {
     my ($url) = @_;
     my $api =
-      "https://archive.org/wayback/available?url=" . url_percent_encode($url);
+      'https://archive.org/wayback/available?url=' . url_percent_encode($url);
     my ( $rc, $out, $err ) =
       run_capture( 'curl', '-L', '-sS', '--connect-timeout', '8',
         '--max-time', '20', $api );
     return
-      if $rc != 0 || !defined($out) || $out eq "";
+      if $rc != 0 || !defined($out) || $out eq q{};
 
-    if ( $out =~ /"available"\s*:\s*true.*?"url"\s*:\s*"([^"]+)"/s ) {
+    if ( $out =~ /"available"\s*:\s*true.*?"url"\s*:\s*"([^"]+)"/sm ) {
         my $wb = $1;
-        $wb               =~ s{\\\/}{/}g;
-        $wb               =~ s/\\"/"/g;
-        return $wb if $wb =~ m{^https?://};
+        $wb               =~ s{\\\/}{/}gsm;
+        $wb               =~ s/\\"/"/gsm;
+        return $wb if $wb =~ m{^https?://}s;
     }
 
     return;
@@ -554,28 +568,28 @@ sub propose_external_fix {
     if (   $status->{ok}
         && $status->{effective} eq $url )
     {
-        return ( undef, "ok" );
+        return ( undef, 'ok' );
     }
 
     if ( $status->{ok} && $status->{effective} ne $url ) {
-        return ( $status->{effective}, "redirect-final" );
+        return ( $status->{effective}, 'redirect-final' );
     }
 
     my @candidates;
-    if ( $url =~ m{^http://}i ) {
-        ( my $https = $url ) =~ s{^http://}{https://}i;
+    if ( $url =~ m{^http://}is ) {
+        ( my $https = $url ) =~ s{^http://}{https://}is;
         push @candidates, $https;
     }
-    if ( $url =~ m{^https://}i ) {
-        ( my $http = $url ) =~ s{^https://}{http://}i;
+    if ( $url =~ m{^https://}is ) {
+        ( my $http = $url ) =~ s{^https://}{http://}is;
         push @candidates, $http;
     }
-    if ( $url =~ m{^https?://www\.}i ) {
-        ( my $no_www = $url ) =~ s{^(https?://)www\.}{$1}i;
+    if ( $url =~ m{^https?://www\.}is ) {
+        ( my $no_www = $url ) =~ s{^(https?://)www\.}{$1}is;
         push @candidates, $no_www;
     }
-    elsif ( $url =~ m{^https?://[^/]+}i ) {
-        ( my $with_www = $url ) =~ s{^(https?://)}{$1www.}i;
+    elsif ( $url =~ m{^https?://[^/]+}is ) {
+        ( my $with_www = $url ) =~ s{^(https?://)}{$1www.}is;
         push @candidates, $with_www;
     }
 
@@ -584,14 +598,14 @@ sub propose_external_fix {
         next if $seen{$cand}++;
         my $cand_status = check_external_link($cand);
         if ( $cand_status->{ok} ) {
-            return ( $cand_status->{effective}, "official-candidate" );
+            return ( $cand_status->{effective}, 'official-candidate' );
         }
     }
 
     my $wayback = find_wayback_url($url);
-    return ( $wayback, "wayback" ) if defined $wayback;
+    return ( $wayback, 'wayback' ) if defined $wayback;
 
-    return ( undef, "unresolved" );
+    return ( undef, 'unresolved' );
 }
 
 # -------------------------
@@ -618,27 +632,27 @@ File::Find::find(
             return unless -f $path;
 
             my $lc = lc($path);
-            if ( $lc =~ /\.html?$/ ) {
+            if ( $lc =~ /\.html?$/s ) {
                 push @html, $path;
                 return;
             }
-            if ( $lc =~ /\.xml$/ ) {
+            if ( $lc =~ /\.xml$/s ) {
                 push @xml, $path;
                 return;
             }
-            if ( $lc =~ /\.svg$/ ) {
+            if ( $lc =~ /\.svg$/s ) {
                 push @svg, $path;
                 return;
             }
-            if ( $lc =~ /\.css$/ ) {
+            if ( $lc =~ /\.css$/s ) {
                 push @css, $path;
                 return;
             }
-            if ( $lc =~ /\.(js|mjs|cjs)$/ ) {
+            if ( $lc =~ /\.(js|mjs|cjs)$/s ) {
                 push @js, $path;
                 return;
             }
-            if ( $lc =~ /\.json$/ ) {
+            if ( $lc =~ /\.json$/s ) {
                 push @json, $path;
                 return;
             }
@@ -649,68 +663,68 @@ File::Find::find(
 
 my $total = @html + @xml + @svg + @css + @js + @json;
 if ( $total == 0 ) {
-    logi( "No HTML/XML/SVG/CSS/JS/JSON files found" . " under: $root_dir" );
+    logi( 'No HTML/XML/SVG/CSS/JS/JSON files found' . " under: $root_dir" );
     exit 0;
 }
 
 logi(   "Found $total files (HTML="
       . scalar(@html)
-      . ", XML="
+      . ', XML='
       . scalar(@xml)
-      . ", SVG="
+      . ', SVG='
       . scalar(@svg)
-      . ", CSS="
-      . scalar(@css) . ", JS="
+      . ', CSS='
+      . scalar(@css) . ', JS='
       . scalar(@js)
-      . ", JSON="
+      . ', JSON='
       . scalar(@json)
-      . ")" );
+      . q{)} );
 
 # -------------------------
 # Tools (compiled binaries)
 # -------------------------
-my $tidy    = "tidy";
-my $xmllint = "xmllint";
-my $dprint  = "dprint";
+my $tidy    = 'tidy';
+my $xmllint = 'xmllint';
+my $dprint  = 'dprint';
 
-require_cmd( $tidy,    "HTML formatting/validation" )    if @html;
-require_cmd( $xmllint, "XML/SVG formatting/validation" ) if ( @xml || @svg );
-require_cmd( $dprint,  "CSS/JS/JSON formatting/validation" )
+require_cmd( $tidy,    'HTML formatting/validation' )    if @html;
+require_cmd( $xmllint, 'XML/SVG formatting/validation' ) if ( @xml || @svg );
+require_cmd( $dprint,  'CSS/JS/JSON formatting/validation' )
   if ( ( @css || @js || @json ) && !$is_openbsd );
-require_cmd( 'jq',   "JSON formatting/validation (jq)" ) if @json;
-require_cmd( 'curl', "link checking/fixing (--check-links)" )
+require_cmd( 'jq',   'JSON formatting/validation (jq)' ) if @json;
+require_cmd( 'curl', 'link checking/fixing (--check-links)' )
   if $external_links;
-require_cmd( 'hunspell', "spell checking (--check-spelling)" )
+require_cmd( 'hunspell', 'spell checking (--check-spelling)' )
   if $check_spelling;
 
-local $ENV{XMLLINT_INDENT} = "  ";
+local $ENV{XMLLINT_INDENT} = q{  };
 
 # -------------------------
 # Temp dprint config
 # -------------------------
 my @tmp_paths;
-my $dprint_cfg = "";
+my $dprint_cfg = q{};
 
 sub dprint_config_update {
     my ($cfg) = @_;
     return unless defined $cfg && length $cfg;
 
     my ( $rc, $out, $err ) =
-      run_capture( $dprint, "config", "update", "--config", $cfg );
+      run_capture( $dprint, 'config', 'update', '--config', $cfg );
     if ( $rc != 0 ) {
-        logw(   "dprint config update failed;"
-              . " continuing with existing config." );
-        print STDERR $err if $verbose;
+        logw(   'dprint config update failed;'
+              . ' continuing with existing config.' );
+        print {*STDERR} $err if $verbose;
     }
 }
 
 if ( @css || @js || @json ) {
     if ($is_openbsd) {
-        logw( "OpenBSD: skipping dprint for" . " CSS/JS/JSON (not ported)" )
+        logw( 'OpenBSD: skipping dprint for' . ' CSS/JS/JSON (not ported)' )
           if $verbose;
     }
     else {
-        $dprint_cfg = make_tmp_file_in_tmp( ".dprint.json",
+        $dprint_cfg = make_tmp_file_in_tmp( '.dprint.json',
                 "{\n"
               . "  \"lineWidth\": 80,\n"
               . "  \"newLineKind\": \"lf\",\n"
@@ -721,7 +735,7 @@ if ( @css || @js || @json ) {
               . "}\n" );
         push @tmp_paths, $dprint_cfg;
         dprint_config_update($dprint_cfg);
-        logi( "Created temporary dprint config at:" . " $dprint_cfg" )
+        logi( 'Created temporary dprint config at:' . " $dprint_cfg" )
           if $verbose;
     }
 }
@@ -731,12 +745,12 @@ END { unlink $_ for @tmp_paths; }
 # -------------------------
 # Tracking
 # -------------------------
-my %format_needed;               # file => 1 (--check only)
-my %validate_failed;             # file => 1
-my %link_replacements;           # file => { old_link => new_link }
-my $link_report_file     = "";
-my $spelling_report_file = "";
-my $extra_failed         = 0;    # --check-all sub-checks (prove/linters)
+my %format_needed;                # file => 1 (--check only)
+my %validate_failed;              # file => 1
+my %link_replacements;            # file => { old_link => new_link }
+my $link_report_file     = q{};
+my $spelling_report_file = q{};
+my $extra_failed         = 0;     # --check-all sub-checks (prove/linters)
 
 sub mark_format_needed {
     my ($file) = @_;
@@ -756,7 +770,7 @@ sub register_link_replacement {
          if !defined($file)
       || !defined($old)
       || !defined($new);
-    return if $old eq "" || $new eq "" || $old eq $new;
+    return if $old eq q{} || $new eq q{} || $old eq $new;
     $link_replacements{$file} ||= {};
     $link_replacements{$file}{$old} = $new;
 }
@@ -769,27 +783,27 @@ sub apply_link_replacements {
     for my $file (@files) {
         my $content = read_all($file);
         if ( !defined $content ) {
-            loge( "Could not read file to apply" . " link fixes: $file" );
+            loge( 'Could not read file to apply' . " link fixes: $file" );
             mark_validate_failed($file);
             next;
         }
 
         my @pairs =
-          sort { length( $b->[0] ) <=> length( $a->[0] ) }
-          map  { [ $_, $link_replacements{$file}{$_} ] }
+          reverse sort { length( $a->[0] ) <=> length( $b->[0] ) }
+          map          { [ $_, $link_replacements{$file}{$_} ] }
           keys %{ $link_replacements{$file} };
 
         my $changed = 0;
         for my $pair (@pairs) {
-            my ( $old, $new ) = @$pair;
+            my ( $old, $new ) = @{$pair};
             my $quoted = quotemeta($old);
-            my $count  = ( $content =~ s/$quoted/$new/g );
+            my $count  = ( $content =~ s/$quoted/$new/gs );
             $changed += $count;
         }
 
         if ($changed) {
             write_all( $file, $content ) or do {
-                loge( "Failed to write link fixes" . " to file: $file" );
+                loge( 'Failed to write link fixes' . " to file: $file" );
                 mark_validate_failed($file);
                 next;
             };
@@ -802,8 +816,8 @@ sub run_link_checks {
     my @scan_files = ( @html, @xml, @svg, @css, @js );
     return if !@scan_files;
 
-    logi(   "Checking internal/external links and"
-          . " preparing temporary report..." );
+    logi(   'Checking internal/external links and'
+          . ' preparing temporary report...' );
 
     my @local_rows;
     my @external_rows;
@@ -811,12 +825,12 @@ sub run_link_checks {
     for my $file (@scan_files) {
         my $content = read_all($file);
         if ( !defined $content ) {
-            loge( "Could not read file for link" . " check: $file" );
+            loge( 'Could not read file for link' . " check: $file" );
             mark_validate_failed($file);
             next;
         }
 
-        my $is_css = ( $file =~ /\.css$/i ) ? 1 : 0;
+        my $is_css = ( $file =~ /\.css$/is ) ? 1 : 0;
         my @links  = extract_links_from_content( $content, $is_css );
         next if !@links;
 
@@ -827,10 +841,10 @@ sub run_link_checks {
                 my $row    = {
                     file     => $file,
                     link     => $link,
-                    status   => ( $status->{ok} ? "ok" : "broken" ),
-                    detail   => ( "http=" . $status->{code} ),
-                    proposed => "",
-                    reason   => "",
+                    status   => ( $status->{ok} ? 'ok' : 'broken' ),
+                    detail   => ( 'http=' . $status->{code} ),
+                    proposed => q{},
+                    reason   => q{},
                 };
 
                 if (  !$status->{ok}
@@ -856,14 +870,14 @@ sub run_link_checks {
             my $row = {
                 file     => $file,
                 link     => $link,
-                status   => ( $ok ? "ok" : "broken" ),
+                status   => ( $ok ? 'ok' : 'broken' ),
                 detail   => $resolved,
-                proposed => "",
-                reason   => "",
+                proposed => q{},
+                reason   => q{},
             };
 
             if ( !$ok ) {
-                my $fixed = "";
+                my $fixed = q{};
                 for my $cand ( internal_candidates($link) ) {
                     my ( $cand_ok, undef, undef ) =
                       resolve_internal_link( $file, $cand );
@@ -873,9 +887,9 @@ sub run_link_checks {
                     }
                 }
 
-                if ( $fixed ne "" && $fixed ne $link ) {
+                if ( $fixed ne q{} && $fixed ne $link ) {
                     $row->{proposed} = $fixed;
-                    $row->{reason}   = "internal-candidate";
+                    $row->{reason}   = 'internal-candidate';
                     register_link_replacement( $file, $link, $fixed )
                       if $mode_apply;
                 }
@@ -890,19 +904,19 @@ sub run_link_checks {
 
     apply_link_replacements();
 
-    my $report = "";
-    $report .= "validate-website.pl" . " --check-links report\n";
+    my $report = q{};
+    $report .= 'validate-website.pl' . " --check-links report\n";
     $report .= "Root: $root_dir\n";
-    $report .= "Mode: " . ( $mode_apply ? "apply" : "check" ) . "\n\n";
+    $report .= 'Mode: ' . ( $mode_apply ? 'apply' : 'check' ) . "\n\n";
 
     $report .= "=== LOCAL LINKS ===\n";
     if (@local_rows) {
         for my $r (@local_rows) {
-            $report .= join( " | ",
+            $report .= join( ' | ',
                 $r->{status}, $r->{file}, $r->{link},
-                ( $r->{detail}   // "" ),
-                ( $r->{proposed} // "" ),
-                ( $r->{reason}   // "" ) ) . "\n";
+                ( $r->{detail}   // q{} ),
+                ( $r->{proposed} // q{} ),
+                ( $r->{reason}   // q{} ) ) . "\n";
         }
     }
     else {
@@ -912,19 +926,19 @@ sub run_link_checks {
     $report .= "\n=== EXTERNAL LINKS ===\n";
     if (@external_rows) {
         for my $r (@external_rows) {
-            $report .= join( " | ",
+            $report .= join( ' | ',
                 $r->{status}, $r->{file}, $r->{link},
-                ( $r->{detail}   // "" ),
-                ( $r->{proposed} // "" ),
-                ( $r->{reason}   // "" ) ) . "\n";
+                ( $r->{detail}   // q{} ),
+                ( $r->{proposed} // q{} ),
+                ( $r->{reason}   // q{} ) ) . "\n";
         }
     }
     else {
         $report .= "(none)\n";
     }
 
-    $link_report_file = make_tmp_file_in_tmp( ".links-report.txt", $report );
-    logi( "Temporary link report written to:" . " $link_report_file" );
+    $link_report_file = make_tmp_file_in_tmp( '.links-report.txt', $report );
+    logi( 'Temporary link report written to:' . " $link_report_file" );
 }
 
 # -------------------------
@@ -933,20 +947,20 @@ sub run_link_checks {
 sub spelling_dictionary_for_html {
     my ( $file, $content ) = @_;
 
-    my $lang = "";
-    if ( $content =~ /<html\b[^>]*\blang\s*=\s*(['"])([^'"]+)\1/is ) {
+    my $lang = q{};
+    if ( $content =~ /<html\b[^>]*\blang\s*=\s*(['"])([^'"]+)\1/ism ) {
         $lang = lc($2);
         $lang =~ tr/_/-/;
     }
 
-    if ( $lang =~ /^([a-z]{2,3})(?:-|$)/ ) {
+    if ( $lang =~ /^([a-z]{2,3})(?:-|$)/s ) {
         return $spelling_dictionary{$1}
           if exists $spelling_dictionary{$1};
     }
 
-    if ( $lang eq "" ) {
+    if ( $lang eq q{} ) {
         logw("No HTML lang attribute in $file; using en_US for spelling.");
-        return "en_US";
+        return 'en_US';
     }
 
     loge("Unsupported HTML language '$lang' for spelling: $file");
@@ -959,31 +973,31 @@ sub visible_html_text {
 
     # Omit non-editorial and technical blocks. The remaining tags are
     # replaced with spaces so adjacent words cannot be joined.
-    $content =~ s/<!--.*?-->/ /gs;
+    $content =~ s/<!--.*?-->/ /gsm;
     $content =~
-      s{<(script|style|pre|code|kbd|samp|var|svg)\b[^>]*>.*?</\1\s*>}{ }gis;
-    $content =~ s/<[^>]*>/ /gs;
+      s{<(script|style|pre|code|kbd|samp|var|svg)\b[^>]*>.*?</\1\s*>}{ }gism;
+    $content =~ s/<[^>]*>/ /gsm;
 
     # Decode the entities that affect word boundaries and contractions.
-    $content =~ s/(?:&#0*39;|&#x0*27;|&apos;)/'/gi;
-    $content =~ s/(?:&#0*34;|&#x0*22;|&quot;)/"/gi;
-    $content =~ s/(?:&#0*160;|&#x0*a0;|&nbsp;)/ /gi;
-    $content =~ s/&amp;/&/gi;
-    $content =~ s/&lt;/</gi;
-    $content =~ s/&gt;/>/gi;
-    $content =~ s/&[A-Za-z][A-Za-z0-9]+;/ /g;
+    $content =~ s/(?:&#0*39;|&#x0*27;|&apos;)/'/gism;
+    $content =~ s/(?:&#0*34;|&#x0*22;|&quot;)/"/gism;
+    $content =~ s/(?:&#0*160;|&#x0*a0;|&nbsp;)/ /gism;
+    $content =~ s/&amp;/&/gism;
+    $content =~ s/&lt;/</gism;
+    $content =~ s/&gt;/>/gism;
+    $content =~ s/&[A-Za-z][A-Za-z0-9]+;/ /gsm;
 
     # Visible literal URLs and addresses are not natural-language words.
-    $content =~ s{\b(?:https?|ftp)://\S+}{ }gi;
-    $content =~ s{\b[A-Z0-9._%+-]+\@[A-Z0-9.-]+\.[A-Z]{2,}\b}{ }gi;
-    $content =~ s/[ \t]+/ /g;
+    $content =~ s{\b(?:https?|ftp)://\S+}{ }gism;
+    $content =~ s{\b[A-Z0-9._%+-]+\@[A-Z0-9.-]+\.[A-Z]{2,}\b}{ }gism;
+    $content =~ s/[ \t]+/ /gsm;
 
     return $content;
 }
 
 sub hunspell_dictionary_available {
     my ($dictionary) = @_;
-    my $probe = make_tmp_file_in_tmp( ".spell-probe.txt", "" );
+    my $probe = make_tmp_file_in_tmp( '.spell-probe.txt', q{} );
     push @tmp_paths, $probe;
 
     my ( $rc, $out, $err ) =
@@ -991,14 +1005,14 @@ sub hunspell_dictionary_available {
     return 1 if $rc == 0;
 
     loge("Hunspell dictionary '$dictionary' is not available.");
-    print STDERR $err if defined($err) && $err ne "";
+    print {*STDERR} $err if defined($err) && $err ne q{};
     return 0;
 }
 
 sub run_spelling_checks {
     return if !@html;
 
-    logi("Checking spelling in visible HTML text...");
+    logi('Checking spelling in visible HTML text...');
 
     my %dictionary_ok;
     my @report_rows;
@@ -1026,7 +1040,7 @@ sub run_spelling_checks {
         }
 
         my $text  = visible_html_text($content);
-        my $input = make_tmp_file_in_tmp( ".spell-input.txt", $text );
+        my $input = make_tmp_file_in_tmp( '.spell-input.txt', $text );
         push @tmp_paths, $input;
 
         my @cmd = ( 'hunspell', '-d', $dictionary, '-l', '-i', 'UTF-8' );
@@ -1038,17 +1052,17 @@ sub run_spelling_checks {
         my ( $rc, $out, $err ) = run_capture(@cmd);
         if ( $rc != 0 ) {
             loge("Hunspell failed (exit $rc): $file");
-            print STDERR $err if defined($err) && $err ne "";
+            print {*STDERR} $err if defined($err) && $err ne q{};
             mark_validate_failed($file);
             push @report_rows, "$file | $dictionary | ERROR: hunspell failed";
             next;
         }
 
         my %unknown;
-        for my $word ( split /\R/, ( $out // "" ) ) {
-            $word =~ s/^\s+//;
-            $word =~ s/\s+$//;
-            next if $word eq "";
+        for my $word ( split /\R/sm, ( $out // q{} ) ) {
+            $word =~ s/^\s+//s;
+            $word =~ s/\s+$//s;
+            next if $word eq q{};
             $unknown{$word} = 1;
         }
 
@@ -1056,7 +1070,7 @@ sub run_spelling_checks {
             mark_validate_failed($file);
             my @words = sort { lc($a) cmp lc($b) || $a cmp $b }
               keys %unknown;
-            push @report_rows, "$file | $dictionary | " . join( ", ", @words );
+            push @report_rows, "$file | $dictionary | " . join( ', ', @words );
         }
     }
 
@@ -1071,7 +1085,7 @@ sub run_spelling_checks {
     }
 
     $spelling_report_file =
-      make_tmp_file_in_tmp( ".spelling-report.txt", $report );
+      make_tmp_file_in_tmp( '.spelling-report.txt', $report );
     logi("Temporary spelling report written to: $spelling_report_file");
 }
 
@@ -1079,10 +1093,10 @@ sub run_spelling_checks {
 # tidy options
 # -------------------------
 my @tidy_common = (
-    "-indent", "-quiet",              "-wrap", "80",
-    "-utf8",   "--indent-spaces",     "2",     "--tidy-mark",
-    "no",      "--preserve-entities", "yes",   "--vertical-space",
-    "yes",
+    '-indent', '-quiet',              '-wrap', '80',
+    '-utf8',   '--indent-spaces',     '2',     '--tidy-mark',
+    'no',      '--preserve-entities', 'yes',   '--vertical-space',
+    'yes',
 );
 
 sub tidy_validate_one {
@@ -1091,9 +1105,9 @@ sub tidy_validate_one {
     # Non-zero means warnings/errors.
     # Treat as validation failure.
     my ( $rc, $out, $err ) =
-      run_capture( $tidy, @tidy_common, "-errors", $file );
+      run_capture( $tidy, @tidy_common, '-errors', $file );
     if ( $rc != 0 ) {
-        loge( "tidy validation failed" . " (exit $rc): $file" );
+        loge( 'tidy validation failed' . " (exit $rc): $file" );
         mark_validate_failed($file);
     }
 }
@@ -1104,7 +1118,7 @@ sub tidy_format_or_check_one {
     if ($mode_apply) {
 
         # Format in place
-        my @cmd = ( $tidy, @tidy_common, "-m", $file );
+        my @cmd = ( $tidy, @tidy_common, '-m', $file );
         print "[cmd] @cmd\n" if $verbose;
         system(@cmd);
         my $rc = ( $? >> 8 );
@@ -1112,7 +1126,7 @@ sub tidy_format_or_check_one {
 
             # Even in apply, a non-zero indicates
             # issues (warnings/errors)
-            loge( "tidy formatting reported" . " issues (exit $rc): $file" );
+            loge( 'tidy formatting reported' . " issues (exit $rc): $file" );
             mark_validate_failed($file);
         }
         return;
@@ -1122,7 +1136,7 @@ sub tidy_format_or_check_one {
     my ( $rc, $out, $err ) = run_capture( $tidy, @tidy_common, $file );
 
     if ( $rc != 0 ) {
-        loge( "tidy formatting/parse reported" . " issues (exit $rc): $file" );
+        loge( 'tidy formatting/parse reported' . " issues (exit $rc): $file" );
         mark_validate_failed($file);
 
         # Still attempt to mark formatting difference
@@ -1132,7 +1146,7 @@ sub tidy_format_or_check_one {
     my $before = read_all($file);
     if (   defined($before)
         && defined($out)
-        && $out ne ""
+        && $out ne q{}
         && $out ne $before )
     {
         mark_format_needed($file);
@@ -1141,7 +1155,7 @@ sub tidy_format_or_check_one {
 
 sub xmllint_validate_one {
     my ( $file, $label ) = @_;
-    my $ok = run_cmd( $xmllint, "--noout", "--nonet", $file );
+    my $ok = run_cmd( $xmllint, '--noout', '--nonet', $file );
     if ( !$ok ) {
         loge( "$label validation failed" . " (xmllint): $file" );
         mark_validate_failed($file);
@@ -1159,8 +1173,8 @@ sub xmllint_format_or_check_one {
     }
 
     my ( $rc, $out, $err ) =
-      run_capture( $xmllint, "--nonet", "--format", $file );
-    if ( $rc != 0 || !defined($out) || $out eq "" ) {
+      run_capture( $xmllint, '--nonet', '--format', $file );
+    if ( $rc != 0 || !defined($out) || $out eq q{} ) {
         loge( "$label formatting failed" . " (xmllint): $file" );
         mark_validate_failed($file);
         return;
@@ -1169,7 +1183,7 @@ sub xmllint_format_or_check_one {
     if ($mode_apply) {
         if ( $out ne $before ) {
             write_all( $file, $out ) or do {
-                loge( "Failed to write formatted" . " $label file: $file" );
+                loge( 'Failed to write formatted' . " $label file: $file" );
                 mark_validate_failed($file);
             };
         }
@@ -1183,47 +1197,47 @@ sub xmllint_format_or_check_one {
 
 sub dprint_validate_and_check_or_apply {
     my ($files_ref) = @_;
-    return unless @$files_ref;
+    return unless @{$files_ref};
 
     if ($mode_apply) {
-        logi("Formatting CSS/JS with dprint...");
+        logi('Formatting CSS/JS with dprint...');
         for my $chunk ( chunked( $files_ref, 120 ) ) {
 
             # Use run_cmd so dprint writes files
             # in-place and inherits stdout/stderr
-            my @cmd = ( $dprint, "fmt", "--config", $dprint_cfg, @$chunk );
+            my @cmd = ( $dprint, 'fmt', '--config', $dprint_cfg, @{$chunk} );
             print "[cmd] @cmd\n" if $verbose;
             my $ok = run_cmd(@cmd);
 
             # run_cmd returns true on success
             if ( !$ok ) {
-                loge(   "dprint formatting/parse"
-                      . " failed for some files"
-                      . " in chunk." );
+                loge(   'dprint formatting/parse'
+                      . ' failed for some files'
+                      . ' in chunk.' );
                 mark_validate_failed($_)
-                  for @$chunk;
+                  for @{$chunk};
             }
         }
         return;
     }
 
     logi(
-        "Checking CSS/JS formatting and" . " validity with dprint (check)..." );
+        'Checking CSS/JS formatting and' . ' validity with dprint (check)...' );
     for my $chunk ( chunked( $files_ref, 120 ) ) {
 
         my ( $rc, $out, $err ) =
-          run_capture( $dprint, "check", "--config", $dprint_cfg,
-            "--list-different", @$chunk );
+          run_capture( $dprint, 'check', '--config', $dprint_cfg,
+            '--list-different', @{$chunk} );
 
         # If plugin download/resolution fails,
         # skip dprint checks for this run.
         if ( defined($err)
-            && $err =~ /Error (downloading|resolving) plugin/i )
+            && $err =~ /Error (downloading|resolving) plugin/ism )
         {
-            logw(   "dprint plugin download/resolution"
-                  . " failed; skipping dprint"
-                  . " check in this run." );
-            print STDERR $err if $verbose;
+            logw(   'dprint plugin download/resolution'
+                  . ' failed; skipping dprint'
+                  . ' check in this run.' );
+            print {*STDERR} $err if $verbose;
             return;
         }
 
@@ -1234,8 +1248,8 @@ sub dprint_validate_and_check_or_apply {
         # When not formatted, dprint often lists
         # file paths (stdout).
         my $any_listed = 0;
-        for my $line ( split /\n/, ( $out // "" ) ) {
-            $line =~ s/\r$//;
+        for my $line ( split /\n/sm, ( $out // q{} ) ) {
+            $line =~ s/\r$//s;
             next unless length $line;
             $any_listed = 1;
             mark_format_needed($line);
@@ -1245,17 +1259,17 @@ sub dprint_validate_and_check_or_apply {
         # as either "format needed" or
         # "validation failed".
         if ( !$any_listed ) {
-            mark_format_needed($_) for @$chunk;
+            mark_format_needed($_) for @{$chunk};
         }
 
         # If stderr has content, treat as validation
         # failure (parse/plugin/config errors).
-        if ( defined($err) && $err =~ /\S/ ) {
-            loge(   "dprint reported errors while"
-                  . " checking (see stderr with"
-                  . " --verbose)." );
-            mark_validate_failed($_) for @$chunk;
-            print STDERR $err if $verbose;
+        if ( defined($err) && $err =~ /\S/sm ) {
+            loge(   'dprint reported errors while'
+                  . ' checking (see stderr with'
+                  . ' --verbose).' );
+            mark_validate_failed($_) for @{$chunk};
+            print {*STDERR} $err if $verbose;
         }
     }
 }
@@ -1265,14 +1279,14 @@ sub run_validations {
         logi(
             (
                 $mode_apply
-                ? "Formatting"
-                : "Checking formatting of"
+                ? 'Formatting'
+                : 'Checking formatting of'
             )
-            . " HTML with tidy..."
+            . ' HTML with tidy...'
         );
         tidy_format_or_check_one($_) for @html;
 
-        logi( "Validating HTML with tidy" . " (as supported)..." );
+        logi( 'Validating HTML with tidy' . ' (as supported)...' );
         tidy_validate_one($_) for @html;
     }
 
@@ -1280,38 +1294,38 @@ sub run_validations {
         logi(
             (
                 $mode_apply
-                ? "Formatting"
-                : "Checking formatting of"
+                ? 'Formatting'
+                : 'Checking formatting of'
             )
-            . " XML with xmllint..."
+            . ' XML with xmllint...'
         );
-        xmllint_format_or_check_one( $_, "XML" )
+        xmllint_format_or_check_one( $_, 'XML' )
           for @xml;
 
-        logi( "Validating XML well-formedness" . " with xmllint..." );
-        xmllint_validate_one( $_, "XML" ) for @xml;
+        logi( 'Validating XML well-formedness' . ' with xmllint...' );
+        xmllint_validate_one( $_, 'XML' ) for @xml;
     }
 
     if (@svg) {
         logi(
             (
                 $mode_apply
-                ? "Formatting"
-                : "Checking formatting of"
+                ? 'Formatting'
+                : 'Checking formatting of'
             )
-            . " SVG with xmllint..."
+            . ' SVG with xmllint...'
         );
-        xmllint_format_or_check_one( $_, "SVG" )
+        xmllint_format_or_check_one( $_, 'SVG' )
           for @svg;
 
-        logi( "Validating SVG well-formedness" . " with xmllint..." );
-        xmllint_validate_one( $_, "SVG" ) for @svg;
+        logi( 'Validating SVG well-formedness' . ' with xmllint...' );
+        xmllint_validate_one( $_, 'SVG' ) for @svg;
     }
 
     if ( @css || @js || @json ) {
         if ($is_openbsd) {
             logw(
-                "OpenBSD: skipping dprint for" . " CSS/JS/JSON (not ported)" );
+                'OpenBSD: skipping dprint for' . ' CSS/JS/JSON (not ported)' );
         }
         else {
             my @pfiles = ( @css, @js, @json );
@@ -1323,10 +1337,10 @@ sub run_validations {
         logi(
             (
                 $mode_apply
-                ? "Formatting"
-                : "Checking formatting of"
+                ? 'Formatting'
+                : 'Checking formatting of'
             )
-            . " JSON with jq..."
+            . ' JSON with jq...'
         );
         for my $f (@json) {
             my $before = read_all($f);
@@ -1336,19 +1350,19 @@ sub run_validations {
                 next;
             }
 
-            my ( $rc, $out, $err ) = run_capture( 'jq', '.', $f );
+            my ( $rc, $out, $err ) = run_capture( 'jq', q{.}, $f );
             if ( $rc != 0 ) {
-                loge( "jq validation/parse failed" . " (exit $rc): $f" );
+                loge( 'jq validation/parse failed' . " (exit $rc): $f" );
                 mark_validate_failed($f);
-                print STDERR $err if $verbose;
+                print {*STDERR} $err if $verbose;
                 next;
             }
 
             if ($mode_apply) {
                 if ( $out ne $before ) {
                     write_all( $f, $out ) or do {
-                        loge(   "Failed to write"
-                              . " formatted JSON"
+                        loge(   'Failed to write'
+                              . ' formatted JSON'
                               . " file: $f" );
                         mark_validate_failed($f);
                     };
@@ -1368,20 +1382,20 @@ sub summarize_and_exit {
     my @bad = sort keys %validate_failed;
 
     if ( !$mode_apply && @fmt ) {
-        loge(   "Formatting is not clean (--check): "
+        loge(   'Formatting is not clean (--check): '
               . scalar(@fmt)
-              . " file(s) would change." );
+              . ' file(s) would change.' );
         for my $i ( 0 .. $#fmt ) {
             last if $i > 199;
-            print STDERR "  - $fmt[$i]\n";
+            print {*STDERR} "  - $fmt[$i]\n";
         }
     }
 
     if (@bad) {
-        loge( "Validation failed: " . scalar(@bad) . " file(s)." );
+        loge( 'Validation failed: ' . scalar(@bad) . ' file(s).' );
         for my $i ( 0 .. $#bad ) {
             last if $i > 199;
-            print STDERR "  - $bad[$i]\n";
+            print {*STDERR} "  - $bad[$i]\n";
         }
     }
 
@@ -1391,13 +1405,13 @@ sub summarize_and_exit {
 
     logi(
         $mode_apply
-        ? "Done. Formatting applied and" . " validation passed."
-        : "Done. Formatting clean and" . " validation passed."
+        ? 'Done. Formatting applied and' . ' validation passed.'
+        : 'Done. Formatting clean and' . ' validation passed.'
     );
-    if ( $check_links && $link_report_file ne "" ) {
+    if ( $check_links && $link_report_file ne q{} ) {
         logi("Link report: $link_report_file");
     }
-    if ( $check_spelling && $spelling_report_file ne "" ) {
+    if ( $check_spelling && $spelling_report_file ne q{} ) {
         logi("Spelling report: $spelling_report_file");
     }
 
@@ -1436,17 +1450,17 @@ sub run_optional {
 sub run_tests {
     my $tdir = File::Spec->catdir( $root_dir, 't' );
     if ( !-d $tdir ) {
-        logw("No t/ directory; skipping regression tests.");
+        logw('No t/ directory; skipping regression tests.');
         return 1;
     }
     if ( !have_cmd('prove') ) {
-        logw("prove not found; skipping regression tests.");
+        logw('prove not found; skipping regression tests.');
         return 1;
     }
-    logi("Running regression tests (prove)...");
+    logi('Running regression tests (prove)...');
     my $ok = run_cmd( 'prove', $tdir );
     if ( !$ok ) {
-        loge("Regression tests failed (prove).");
+        loge('Regression tests failed (prove).');
         $extra_failed = 1;
     }
     return $ok;
@@ -1462,7 +1476,7 @@ sub run_linters {
             run_optional( 'CSS lint', 'stylelint', @css, '--config', $cfg );
         }
         else {
-            logw("No .stylelintrc.json; skipping stylelint.");
+            logw('No .stylelintrc.json; skipping stylelint.');
         }
     }
 
@@ -1471,7 +1485,7 @@ sub run_linters {
         run_optional( 'Shell lint', 'shellcheck', '-s', 'sh', @shell );
         if ( have_cmd('sh') ) {
             for my $f (@shell) {
-                run_optional( "Shell syntax " . basename($f), 'sh', '-n', $f );
+                run_optional( 'Shell syntax ' . basename($f), 'sh', '-n', $f );
             }
         }
     }
@@ -1489,16 +1503,16 @@ sub run_linters {
     if ( have_cmd('lychee') ) {
         my @excl = (
             '--exclude-path', '.git', '--exclude-path', 'archive',
-            '--exclude-path', 'tmp'
+            '--exclude-path', 'tmp',
         );
-        push @excl, ( '--exclude-path', 'files' )
+        push @excl, qw(--exclude-path files)
           if -d File::Spec->catdir( $root_dir, 'files' );
         run_optional( 'Offline link check (lychee)',
             'lychee', '--offline', '--no-progress', '--root-dir', $root_dir,
-            @excl,    '.' );
+            @excl,    q{.} );
     }
     else {
-        logw("Optional tool 'lychee' not found; skipped offline link check.");
+        logw(q{Optional tool 'lychee' not found; skipped offline link check.});
     }
 }
 

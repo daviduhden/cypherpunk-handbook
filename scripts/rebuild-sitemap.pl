@@ -32,8 +32,11 @@ use File::Spec;
 use File::Temp qw(tempfile);
 
 my $script_dir = ( File::Spec->splitpath($0) )[1];
-my $root_dir   = abs_path( File::Spec->catdir( $script_dir, '..' ) );
-my $site_url   = 'https://handbook.uhden.dev';
+my $root_dir   = abs_path( File::Spec->catdir( $script_dir, q{..} ) );
+if ( !defined $root_dir || !length $root_dir ) {
+    die "Could not resolve repository root\n";
+}
+my $site_url = 'https://handbook.uhden.dev';
 
 sub write_file_atomic {
     my ( $path, $content ) = @_;
@@ -53,7 +56,7 @@ sub write_file_atomic {
 
     if ( !print {$fh} $content ) {
         my $err = $!;
-        close $fh;
+        close $fh;    ## no critic (RequireCheckedClose, RequireCheckedSyscalls)
         unlink $tmp;
         die "Could not write $path: $err\n";
     }
@@ -77,16 +80,16 @@ sub write_file_atomic {
 
 sub xml_escape {
     my ($text) = @_;
-    $text =~ s/&/&amp;/g;
-    $text =~ s/</&lt;/g;
-    $text =~ s/>/&gt;/g;
+    $text =~ s/&/&amp;/gsm;
+    $text =~ s/</&lt;/gsm;
+    $text =~ s/>/&gt;/gsm;
     return $text;
 }
 
 sub sitemap_url {
     my ($path) = @_;
     my $relative = File::Spec->abs2rel( $path, $root_dir );
-    $relative =~ s{\\}{/}g;
+    $relative =~ s{\\}{/}gsm;
 
     return "$site_url/" if $relative eq 'index.html';
     if ( $relative =~ m{^(.*)/index\.html$} ) {
@@ -100,9 +103,9 @@ find(
     {
         no_chdir => 1,
         wanted   => sub {
-            return unless -f $_ && /\.html$/i;
             my $path = $File::Find::name;
-            return if $path =~ m{/(?:archive|templates)/};
+            return unless -f $path && $path =~ /\.html$/is;
+            return if $path =~ m{/(?:archive|templates)/}sm;
             push @pages, sitemap_url($path);
         },
     },

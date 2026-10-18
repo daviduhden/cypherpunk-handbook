@@ -43,7 +43,7 @@ use Getopt::Long qw(GetOptions);
 use Time::Local  qw(timegm);
 
 my $script_dir   = ( File::Spec->splitpath($0) )[1];
-my $root_dir     = File::Spec->catdir( $script_dir, '..' );
+my $root_dir     = File::Spec->catdir( $script_dir, q{..} );
 my $feeds_dir    = File::Spec->catdir( $root_dir,   'feeds' );
 my $articles_dir = File::Spec->catdir( $root_dir,   'articles' );
 my $abs_root     = abs_path($root_dir);
@@ -55,10 +55,10 @@ $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
 # Optional deployment base URL. When empty (the default) links stay
 # root-relative so a single feed works on every mirror (HTTPS, Tor,
 # I2P). GUIDs always stay relative and therefore stable.
-my $base_url = '';
+my $base_url = q{};
 GetOptions( 'base-url=s' => \$base_url )
   or die "Usage: $0 [--base-url https://example.org]\n";
-$base_url =~ s{/+$}{} if length $base_url;
+$base_url =~ s{/+$}{}s if length $base_url;
 
 binmode STDOUT, ':encoding(UTF-8)';
 binmode STDERR, ':encoding(UTF-8)';
@@ -72,7 +72,7 @@ sub read_file {
       or die_tool("Could not read $path: $!");
     local $/ = undef;
     my $content = <$fh>;
-    close $fh;
+    close $fh or die_tool("Could not close $path: $!");
     return $content;
 }
 
@@ -97,7 +97,7 @@ sub write_file {
 
     if ( !print {$fh} $content ) {
         my $err = $!;
-        close $fh;
+        close $fh;    ## no critic (RequireCheckedClose, RequireCheckedSyscalls)
         unlink $tmp;
         die_tool("Could not write $path: $err");
     }
@@ -121,26 +121,26 @@ sub write_file {
 
 sub xml_escape {
     my ($text) = @_;
-    return '' unless defined $text;
-    $text =~ s/&/&amp;/g;
-    $text =~ s/</&lt;/g;
-    $text =~ s/>/&gt;/g;
+    return q{} unless defined $text;
+    $text =~ s/&/&amp;/gsm;
+    $text =~ s/</&lt;/gsm;
+    $text =~ s/>/&gt;/gsm;
     return $text;
 }
 
 sub decode_entities {
     my ($text) = @_;
-    return '' unless defined $text;
+    return q{} unless defined $text;
 
     # Decode the common named entities plus numeric references so that
     # HTML-sourced text can be safely re-encoded as XML without double
     # encoding. Unknown entities are left untouched.
     my %named = (
-        amp  => '&',
-        lt   => '<',
-        gt   => '>',
-        quot => '"',
-        apos => "'",
+        amp  => q{&},
+        lt   => q{<},
+        gt   => q{>},
+        quot => q{"},
+        apos => q{'},
         nbsp => "\x{a0}",
     );
 
@@ -158,24 +158,24 @@ sub decode_entities {
         else {
             "&$e;";
         }
-    }ge;
+    }gesm;
 
     return $text;
 }
 
 sub as_root_relative_url {
     my ($url) = @_;
-    return '' unless defined $url;
-    $url =~ s/^\s+|\s+$//g;
-    return '' unless length $url;
-    return $url if $url =~ m{^/};
+    return q{} unless defined $url;
+    $url =~ s/^\s+|\s+$//gs;
+    return q{} unless length $url;
+    return $url if $url =~ m{^/}s;
 
     if ( $url =~ m{^[a-z][a-z0-9+.-]*://[^/]+(/.*)?$}i ) {
-        my $path = defined $1 && length $1 ? $1 : '/';
+        my $path = defined $1 && length $1 ? $1 : q{/};
         return $path;
     }
     if ( $url =~ m{^//[^/]+(/.*)?$} ) {
-        my $path = defined $1 && length $1 ? $1 : '/';
+        my $path = defined $1 && length $1 ? $1 : q{/};
         return $path;
     }
     return $url;
@@ -183,30 +183,30 @@ sub as_root_relative_url {
 
 sub strip_tags_and_trim {
     my ($text) = @_;
-    $text //= '';
-    $text =~ s/<[^>]+>//g;
-    $text =~ s/\s+/ /g;
-    $text =~ s/^\s+|\s+$//g;
+    $text //= q{};
+    $text =~ s/<[^>]+>//gsm;
+    $text =~ s/\s+/ /gsm;
+    $text =~ s/^\s+|\s+$//gs;
     return $text;
 }
 
 sub normalize_summary {
     my ($text) = @_;
     $text = strip_tags_and_trim($text);
-    return '' unless length $text;
+    return q{} unless length $text;
     my $max = 420;
     return $text if length($text) <= $max;
     $text = substr( $text, 0, $max - 1 );
-    $text =~ s/\s+\S*$//;
-    return $text . '...';
+    $text =~ s/\s+\S*$//s;
+    return $text . q{...};
 }
 
 sub iso_to_epoch {
     my ($iso) = @_;
     return unless defined $iso;
     if (
-        $iso =~ /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})
-  (Z|([+-])(\d{2}):(\d{2}))?$/x
+        $iso =~ m{^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})
+  (Z|([+-])(\d{2}):(\d{2}))?$}xs
       )
     {
         my ( $Y, $M, $D, $h, $m, $s, undef, $sign, $oh, $om ) =
@@ -214,11 +214,11 @@ sub iso_to_epoch {
         my $epoch = timegm( $s, $m, $h, $D, $M - 1, $Y );
         if ( defined $sign && defined $oh ) {
             my $ofs = $oh * 3600 + $om * 60;
-            $epoch -= ( $sign eq '+' ) ? $ofs : -$ofs;
+            $epoch -= ( $sign eq q{+} ) ? $ofs : -$ofs;
         }
         return $epoch;
     }
-    if ( $iso =~ /^(\d{4})-(\d{2})-(\d{2})$/ ) {
+    if ( $iso =~ /^(\d{4})-(\d{2})-(\d{2})$/s ) {
         return timegm( 0, 0, 0, $3, $2 - 1, $1 );
     }
     return;
@@ -253,7 +253,7 @@ sub detect_feeds {
         $out{es} = $art_es if -f $art_es;
         return \%out;
     }
-    die_tool( "No supported feed files found in" . " $feeds_dir" );
+    die_tool( 'No supported feed files found in' . " $feeds_dir" );
 }
 
 sub extract_metadata {
@@ -261,49 +261,49 @@ sub extract_metadata {
     my $html             = read_file($path);
     my ($article_header) = $html =~ m{<header[^>]*\bid\s*=\s*["']
         article-header["'][^>]*>
-        (.*?)</header>}isx;
+        (.*?)</header>}isxm;
     my $content_scope =
       defined $article_header
       ? $article_header
       : $html;
 
-    my ($lang) = $html =~ /<html[^>]*\blang\s*=\s*"([^"]+)"/i;
+    my ($lang) = $html =~ /<html[^>]*\blang\s*=\s*"([^"]+)"/ism;
     $lang =
-      defined $lang && $lang =~ /^es/i
+      defined $lang && $lang =~ /^es/is
       ? 'es'
       : 'en';
 
-    my ($title) = $content_scope =~ /<h[12][^>]*>\s*(.*?)\s*<\/h[12]>/is;
+    my ($title) = $content_scope =~ /<h[12][^>]*>\s*(.*?)\s*<\/h[12]>/ism;
     $title //= 'Untitled';
     $title = strip_tags_and_trim($title);
     $title = decode_entities($title);
 
-    my ($desc) = $html =~ /<meta[^>]*\bname\s*=\s*["']
+    my ($desc) = $html =~ m{<meta[^>]*\bname\s*=\s*["']
        description["'][^>]*\bcontent
-       \s*=\s*["'](.*?)["'][^>]*>/isx;
-    $desc = ''
+       \s*=\s*["'](.*?)["'][^>]*>}isxm;
+    $desc = q{}
       unless defined $desc && length $desc;
     if ( !length $desc ) {
-        ($desc) = $content_scope =~ /<p[^>]*\bclass\s*=\s*["']
+        ($desc) = $content_scope =~ m{<p[^>]*\bclass\s*=\s*["']
            [^"']*\blede\b[^"']*["'][^>]*>
-           \s*(.*?)\s*<\/p>/isx;
-        $desc //= '';
+           \s*(.*?)\s*<\/p>}isxm;
+        $desc //= q{};
     }
     if ( !length $desc ) {
-        ($desc) = $content_scope =~ /<p[^>]*>\s*(.*?)\s*<\/p>/is;
-        $desc //= '';
+        ($desc) = $content_scope =~ /<p[^>]*>\s*(.*?)\s*<\/p>/ism;
+        $desc //= q{};
     }
     $desc = normalize_summary($desc);
     $desc = decode_entities($desc);
 
-    my ($iso) = $html =~ /<time[^>]*\sdatetime\s*=\s*"([^"]+)"/i;
-    $iso //= ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/i )[0];
+    my ($iso) = $html =~ /<time[^>]*\sdatetime\s*=\s*"([^"]+)"/ism;
+    $iso //= ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/ism )[0];
     my $mtime = ( stat($path) )[9] || time;
     my $epoch = iso_to_epoch($iso);
     $epoch = $mtime unless defined $epoch;
 
     my ( undef, undef, $file ) = File::Spec->splitpath($path);
-    $file =~ s/\.html$//i;
+    $file =~ s/\.html$//is;
 
     return {
         slug  => $file,
@@ -321,14 +321,14 @@ sub collect_articles {
         {
             no_chdir => 1,
             wanted   => sub {
-                return unless -f $_;
-                return unless /\.html$/i;
-
-                # With no_chdir => 1, $_ is the full path, so match the
-                # basename rather than comparing to 'index.html'.
-                return if m{(?:^|/)index\.html$}i;
-
                 my $path = $File::Find::name;
+                return unless -f $path;
+                return unless $path =~ /\.html$/is;
+
+                # With no_chdir => 1, $path is the full path, so match the
+                # basename rather than comparing to 'index.html'.
+                return if $path =~ m{(?:^|/)index\.html$}is;
+
                 my $meta = extract_metadata($path);
                 if ( !$has_es_feed ) {
                     $meta->{lang} = 'en';
@@ -347,9 +347,9 @@ sub collect_articles {
 sub abs_url {
     my ($path) = @_;
     return $path        if !length $base_url;
-    return $path        if $path =~ m{^[a-z][a-z0-9+.-]*://}i;
-    return "$base_url/" if $path eq '/';
-    return $path        if $path !~ m{^/};
+    return $path        if $path =~ m{^[a-z][a-z0-9+.-]*://}is;
+    return "$base_url/" if $path eq q{/};
+    return $path        if $path !~ m{^/}s;
     return "$base_url$path";
 }
 
@@ -357,56 +357,56 @@ sub rebuild_feed_file {
     my ( $feed_path, $lang, $rows ) = @_;
     my $xml = read_file($feed_path);
 
-    my ($channel_title) = $xml =~ m{<title>(.*?)</title>}s;
+    my ($channel_title) = $xml =~ m{<title>(.*?)</title>}sm;
     $channel_title //= 'RSS Feed';
-    my ($channel_link) = $xml =~ m{<link>(.*?)</link>}s;
+    my ($channel_link) = $xml =~ m{<link>(.*?)</link>}sm;
     $channel_link = as_root_relative_url($channel_link);
-    $channel_link = '/'
+    $channel_link = q{/}
       unless length $channel_link;
     $channel_link = abs_url($channel_link);
-    my ($channel_desc) = $xml =~ m{<description>(.*?)</description>}s;
-    $channel_desc //= '';
+    my ($channel_desc) = $xml =~ m{<description>(.*?)</description>}sm;
+    $channel_desc //= q{};
     my $feed_name = basename($feed_path);
     my $feed_url  = abs_url("/feeds/$feed_name");
 
-    my $items = '';
-    for my $r (@$rows) {
+    my $items = q{};
+    for my $r ( @{$rows} ) {
         next if $r->{lang} ne $lang;
         my $pub         = format_pubdate( $r->{epoch} );
         my $rel_url     = "/articles/$r->{slug}.html";
         my $article_url = abs_url($rel_url);
-        $items .= join '',
+        $items .= join q{},
           "    <item>\n",
-          "      <title>",
+          '      <title>',
           xml_escape( $r->{title} ),
           "</title>\n",
           "      <link>$article_url</link>\n",
-          "      <description>",
+          '      <description>',
           xml_escape( $r->{desc} ),
           "</description>\n",
           "      <pubDate>$pub</pubDate>\n",
-          "      <guid" . " isPermaLink=\"false\">" . "$rel_url</guid>\n",
+          '      <guid' . ' isPermaLink="false">' . "$rel_url</guid>\n",
           "    </item>\n";
     }
 
     my $last_epoch = time;
-    for my $r (@$rows) {
+    for my $r ( @{$rows} ) {
         next if $r->{lang} ne $lang;
         $last_epoch = $r->{epoch};
         last;
     }
     my $last_build = format_pubdate($last_epoch);
 
-    my $new_xml = join '',
+    my $new_xml = join q{},
       qq(<?xml version="1.0" encoding="UTF-8"?>\n),
-      qq(<rss xmlns:atom="http://www.w3.org/) . qq(2005/Atom" version="2.0">\n),
+      '<rss xmlns:atom="http://www.w3.org/' . qq(2005/Atom" version="2.0">\n),
       qq(  <channel>\n),
       qq(    <title>$channel_title</title>\n),
       qq(    <link>$channel_link</link>\n),
       qq(    <description>$channel_desc</description>\n),
       qq(    <lastBuildDate>$last_build) . qq(</lastBuildDate>\n),
       qq(    <atom:link href="$feed_url")
-      . qq( rel="self")
+      . ' rel="self"'
       . qq( type="application/rss+xml"/>\n),
       $items,
       qq(  </channel>\n),

@@ -14,13 +14,13 @@ use File::Spec;
 my $sdir = File::Spec->catdir( repo_root(), 'scripts' );
 
 opendir my $dh, $sdir or die "opendir $sdir: $!";
-my @pl = sort grep { /\.pl$/ } readdir $dh;
+my @pl = sort grep { /\.pl$/s } readdir $dh;
 rewinddir $dh;
-my @sh = sort grep { /\.sh$/ } readdir $dh;
+my @sh = sort grep { /\.sh$/s } readdir $dh;
 closedir $dh;
 
-ok( scalar(@pl), "found Perl scripts" ) or BAIL_OUT("no scripts found");
-ok( scalar(@sh), "found shell scripts" );
+ok( scalar(@pl), 'found Perl scripts' ) or BAIL_OUT('no scripts found');
+ok( scalar(@sh), 'found shell scripts' );
 
 for my $f (@pl) {
     my $path = File::Spec->catfile( $sdir, $f );

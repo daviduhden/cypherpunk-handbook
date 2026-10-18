@@ -12,7 +12,7 @@ use Test::More;
 use TestSite       qw(script run slurp spew);
 use File::Temp     qw(tempdir);
 use File::Path     qw(make_path);
-use File::Basename qw(dirname);
+use File::Basename qw(basename dirname);
 
 my $validator = script('validate-website.pl');
 
@@ -49,8 +49,8 @@ sub check_links {
 
 sub report_of {
     my ($r)    = @_;
-    my ($path) = $r->{stdout} =~ m{Temporary link report written to:\s*(\S+)};
-    return defined $path ? slurp($path) : '';
+    my ($path) = $r->{stdout} =~ m{Temporary link report written to:\s*(\S+)}sm;
+    return defined $path ? slurp($path) : q{};
 }
 
 # --- valid internal links pass --------------------------------------
@@ -69,8 +69,25 @@ sub report_of {
     write_page( $dir, 'index.html', '<p><a href="missing.html">x</a></p>' );
     my $r = check_links($dir);
     is( $r->{status}, 2, 'broken internal link fails' );
-    like( report_of($r), qr/missing\.html/, 'report names the link' );
-    like( report_of($r), qr/^broken \|/m,   'report marks it broken' );
+    like( report_of($r), qr/missing\.html/sm, 'report names the link' );
+    like( report_of($r), qr/^broken \|/ms,    'report marks it broken' );
+}
+
+# --- a prefix-sharing sibling directory is outside the root --------
+{
+    my $dir     = tempdir( CLEANUP => 1 );
+    my $outside = "$dir-outside";
+    make_path($outside);
+    spew( "$outside/secret.html", page('<p>secret</p>') );
+
+    my $rel = '../' . basename($dir) . '-outside/secret.html';
+    write_page( $dir, 'index.html', qq{<p><a href="$rel">x</a></p>} );
+    my $r = check_links($dir);
+    is( $r->{status}, 2, 'link outside the root is rejected' );
+    like( report_of($r), qr/^broken [|]/m, 'report marks it broken' );
+
+    unlink "$outside/secret.html";
+    rmdir $outside;
 }
 
 # --- JavaScript `new URL(...)` is not treated as a CSS url() --------
@@ -83,7 +100,7 @@ sub report_of {
     my $r = check_links($dir);
     is( $r->{status}, 0, 'new URL(...) in a script is ignored' )
       or diag( $r->{stderr} );
-    unlike( report_of($r), qr/window\.location/,
+    unlike( report_of($r), qr/window\.location/sm,
         'script text not treated as a link' );
 }
 

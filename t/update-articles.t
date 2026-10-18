@@ -51,12 +51,15 @@ sub run_update {
     my $html = slurp("$dir/index.html");
     like(
         $html,
-        qr{<a href="\./articles/new-article\.html">New Article Title</a>},
+        qr{<a href="\./articles/new-article\.html">New Article Title</a>}sm,
         'link inserted with escaped title'
     );
-    like( $html, qr{Why OpenBSD stands alone}, 'existing entry preserved' );
-    like( $html, qr{^\s{2}<title>Index</title>}m,
-        'document still well-formed' );
+    like( $html, qr{Why OpenBSD stands alone}sm, 'existing entry preserved' );
+    like(
+        $html,
+        qr{^\s{2}<title>Index</title>}ms,
+        'document still well-formed'
+    );
 }
 
 # --- duplicate insert is refused ------------------------------------
@@ -66,7 +69,7 @@ sub run_update {
     my $before = slurp("$dir/index.html");
     my $r      = run_update( $dir, "operating-systems/openbsd\nT\nslug\n" );
     is( $r->{status}, 0, 'duplicate returns success without change' );
-    like( $r->{stderr}, qr/already exists/, 'duplicate reported' );
+    like( $r->{stderr}, qr/already exists/sm, 'duplicate reported' );
     is( slurp("$dir/index.html"), $before, 'index unchanged on duplicate' );
 }
 
@@ -75,8 +78,8 @@ sub run_update {
     my $dir = fixture( 'index.html' => $INDEX );
     run_update( $dir, "operating-systems/openbsd\nA & B <c>\nescaped\n" );
     my $html = slurp("$dir/index.html");
-    like( $html, qr{A &amp; B &lt;c&gt;}, 'title escaped' );
-    unlike( $html, qr{<c>}, 'no raw tag injected' );
+    like( $html, qr{A &amp; B &lt;c&gt;}sm, 'title escaped' );
+    unlike( $html, qr{<c>}sm, 'no raw tag injected' );
 }
 
 # --- invalid slug rejected ------------------------------------------
@@ -84,7 +87,7 @@ sub run_update {
     my $dir = fixture( 'index.html' => $INDEX );
     my $r   = run_update( $dir, "operating-systems/openbsd\nT\n../evil\n" );
     isnt( $r->{status}, 0, 'invalid slug rejected' );
-    like( $r->{stderr}, qr/may only contain letters/, 'message' );
+    like( $r->{stderr}, qr/may only contain letters/sm, 'message' );
 }
 
 # --- invalid subsection format rejected -----------------------------
@@ -92,7 +95,7 @@ sub run_update {
     my $dir = fixture( 'index.html' => $INDEX );
     my $r   = run_update( $dir, "just-a-section\n" );
     isnt( $r->{status}, 0, 'subsection must be section/subsection' );
-    like( $r->{stderr}, qr/Subsection must be/, 'message' );
+    like( $r->{stderr}, qr/Subsection must be/sm, 'message' );
 }
 
 # --- unknown subsection fails cleanly -------------------------------
@@ -100,7 +103,7 @@ sub run_update {
     my $dir = fixture( 'index.html' => $INDEX );
     my $r   = run_update( $dir, "nope/nope\nT\nslug\n" );
     isnt( $r->{status}, 0, 'unknown subsection fails' );
-    like( $r->{stderr}, qr/Could not locate subsection/, 'message' );
+    like( $r->{stderr}, qr/Could not locate subsection/sm, 'message' );
 }
 
 # --- repeated runs on distinct slugs are deterministic --------------

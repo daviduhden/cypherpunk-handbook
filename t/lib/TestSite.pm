@@ -7,6 +7,7 @@ package TestSite;
 use strict;
 use warnings;
 
+use Carp           qw(croak);
 use File::Basename qw(dirname);
 use File::Copy     qw(copy);
 use File::Path     qw(make_path);
@@ -23,7 +24,7 @@ our @EXPORT_OK =
 # Repository root derived from this file: <root>/t/lib/TestSite.pm
 sub repo_root {
     my $here = dirname(__FILE__);    # <root>/t/lib
-    return File::Spec->rel2abs( File::Spec->catdir( $here, '..', '..' ) );
+    return File::Spec->rel2abs( File::Spec->catdir( $here, q{..}, q{..} ) );
 }
 
 sub script {
@@ -33,19 +34,19 @@ sub script {
 
 sub slurp {
     my ($path) = @_;
-    open my $fh, '<:raw', $path or die "slurp $path: $!";
-    local $/;
+    open my $fh, '<:raw', $path or croak "slurp $path: $!";
+    local $/ = undef;
     my $c = <$fh>;
-    close $fh;
+    close $fh or croak "slurp close $path: $!";
     return $c;
 }
 
 sub spew {
     my ( $path, $content ) = @_;
     utf8::encode($content) if utf8::is_utf8($content);
-    open my $fh, '>:raw', $path or die "spew $path: $!";
+    open my $fh, '>:raw', $path or croak "spew $path: $!";
     print {$fh} $content;
-    close $fh or die "spew close $path: $!";
+    close $fh or croak "spew close $path: $!";
     return 1;
 }
 
@@ -58,12 +59,12 @@ sub fixture {
     make_path("$dir/scripts");
 
     my $sdir = File::Spec->catdir( repo_root(), 'scripts' );
-    opendir my $dh, $sdir or die "opendir $sdir: $!";
+    opendir my $dh, $sdir or croak "opendir $sdir: $!";
     for my $f ( readdir $dh ) {
-        next unless $f =~ /\.(?:pl|sh)$/;
+        next unless $f =~ /\.(?:pl|sh)$/s;
         my $src = File::Spec->catfile( $sdir, $f );
         next unless -f $src;
-        copy( $src, "$dir/scripts/$f" ) or die "copy $f: $!";
+        copy( $src, "$dir/scripts/$f" ) or croak "copy $f: $!";
         chmod 0755, "$dir/scripts/$f";
     }
     closedir $dh;
@@ -82,20 +83,20 @@ sub _run {
     my $wtr = gensym;
     my $rdr = gensym;
     my $err = gensym;
-    my $pid = open3( $wtr, $rdr, $err, $cmd, @$args );
+    my $pid = open3( $wtr, $rdr, $err, $cmd, @{$args} );
 
     if ( defined $input ) {
         print {$wtr} $input;
     }
-    close $wtr;
+    close $wtr;    ## no critic (RequireCheckedClose, RequireCheckedSyscalls)
 
     my $sel   = IO::Select->new( $rdr, $err );
     my %which = ( fileno($rdr) => 'out', fileno($err) => 'err' );
-    my ( $out, $er ) = ( '', '' );
+    my ( $out, $er ) = ( q{}, q{} );
     while ( my @ready = $sel->can_read ) {
         for my $fh (@ready) {
-            my $buf = '';
-            my $n   = sysread( $fh, $buf, 65536 );
+            my $buf = q{};
+            my $n   = sysread( $fh, $buf, 65_536 );
             if ( !defined $n || $n == 0 ) {
                 $sel->remove($fh);
                 next;
@@ -140,28 +141,28 @@ sub clone_repo {
     my $src = repo_root();
     my $dst = tempdir( CLEANUP => 1 );
 
-    my @dirs = ('');
+    my @dirs = (q{});
     while ( defined( my $rel = shift @dirs ) ) {
         my $sdir =
-            $rel eq ''
+            $rel eq q{}
           ? $src
-          : File::Spec->catdir( $src, split m{/}, $rel );
+          : File::Spec->catdir( $src, split m{/}sm, $rel );
         opendir my $dh, $sdir or next;
         my @entries = readdir $dh;
         closedir $dh;
         for my $e (@entries) {
-            next if $e eq '.' || $e eq '..';
-            my $r = $rel eq '' ? $e : "$rel/$e";
+            next if $e eq q{.} || $e eq q{..};
+            my $r = $rel eq q{} ? $e : "$rel/$e";
             next if $skip{$r} || $skip{$e};
-            my $s = File::Spec->catfile( $src, split m{/}, $r );
-            my $d = File::Spec->catfile( $dst, split m{/}, $r );
+            my $s = File::Spec->catfile( $src, split m{/}sm, $r );
+            my $d = File::Spec->catfile( $dst, split m{/}sm, $r );
             if ( -d $s ) {
                 make_path($d);
                 push @dirs, $r;
             }
             elsif ( -f $s ) {
                 make_path( dirname($d) );
-                copy( $s, $d ) or die "copy $r: $!";
+                copy( $s, $d ) or croak "copy $r: $!";
                 my $mode = ( stat $s )[2] & 07777;
                 chmod $mode, $d;
             }

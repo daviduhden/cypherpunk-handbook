@@ -12,8 +12,14 @@ use File::Spec;
 
 sub locs {
     my ($xml) = @_;
-    my @l = $xml =~ m{<loc>(.*?)</loc>}g;
+    my @l = $xml =~ m{<loc>(.*?)</loc>}gm;
     return @l;
+}
+
+sub strip_origin {
+    my ($url) = @_;
+    $url =~ s{^https?://[^/]+}{}s;
+    return $url;
 }
 
 sub run_sitemap {
@@ -23,7 +29,7 @@ sub run_sitemap {
     return ( $r, "$dir/sitemap.xml" );
 }
 
-my $page = "<!DOCTYPE html><html lang=\"en\"><head>"
+my $page = '<!DOCTYPE html><html lang="en"><head>'
   . "<title>x</title></head><body><p>x</p></body></html>\n";
 
 {
@@ -40,7 +46,7 @@ my $page = "<!DOCTYPE html><html lang=\"en\"><head>"
       or diag( $r->{stdout} . $r->{stderr} );
 
     my @locs  = locs( slurp($sm) );
-    my @paths = map { my $x = $_; $x =~ s{^https?://[^/]+}{}; $x } @locs;
+    my @paths = map { strip_origin($_) } @locs;
 
     is_deeply(
         [ sort @paths ],
@@ -60,13 +66,13 @@ my $page = "<!DOCTYPE html><html lang=\"en\"><head>"
     is( ( stat $sm )[2] & 07777, 0640, 'file mode preserved' );
 
     opendir my $dh, $dir or die $!;
-    my @tmp = grep { /^\.tmp-/ } readdir $dh;
+    my @tmp = grep { /^\.tmp-/s } readdir $dh;
     closedir $dh;
     is_deeply( \@tmp, [], 'no temp files left behind' );
 
     like(
         slurp($sm),
-        qr{^<\?xml version="1\.0" encoding="UTF-8"\?>},
+        qr{^<\?xml version="1\.0" encoding="UTF-8"\?>}s,
         'XML declaration present'
     );
 }

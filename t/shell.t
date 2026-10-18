@@ -45,19 +45,19 @@ my $rsvg_ok =
     my $tmpd = tempdir( CLEANUP => 1 );
     spew( "$dir/a.html", "<html><body><p>hi</p></body></html>\n" );
 
-    local $ENV{PATH}   = "$bin:" . ( $ENV{PATH} // '' );
+    local $ENV{PATH}   = "$bin:" . ( $ENV{PATH} // q{} );
     local $ENV{TMPDIR} = $tmpd;
 
     my $r = run_input( "1\n", $sh, script('html2ogg.sh'), "$dir/a.html" );
     is( $r->{status}, 0, 'html2ogg succeeds' )
       or diag( $r->{stdout} . $r->{stderr} );
     ok( -f "$dir/a.ogg", 'output .ogg created' );
-    like( $r->{stdout}, qr/\[OK\]/, 'reports success' );
+    like( $r->{stdout}, qr/\[OK\]/sm, 'reports success' );
 
     opendir my $dh, $tmpd or die $!;
-    my @left = grep { !/^\.\.?$/ } readdir $dh;
+    my @remaining = grep { !/^\.\.?$/s } readdir $dh;
     closedir $dh;
-    is_deeply( \@left, [], 'temporary file cleaned up' );
+    is_deeply( \@remaining, [], 'temporary file cleaned up' );
 }
 
 # html2ogg: pandoc failure aborts without producing output
@@ -70,7 +70,7 @@ my $rsvg_ok =
     my $dir  = tempdir( CLEANUP => 1 );
     my $tmpd = tempdir( CLEANUP => 1 );
     spew( "$dir/b.html", "<html><body>x</body></html>\n" );
-    local $ENV{PATH}   = "$bin:" . ( $ENV{PATH} // '' );
+    local $ENV{PATH}   = "$bin:" . ( $ENV{PATH} // q{} );
     local $ENV{TMPDIR} = $tmpd;
 
     my $r = run_input( "1\n", $sh, script('html2ogg.sh'), "$dir/b.html" );
@@ -87,10 +87,10 @@ my $rsvg_ok =
     );
     my $dir = tempdir( CLEANUP => 1 );
     spew( "$dir/c.html", "<html><body>x</body></html>\n" );
-    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // '' );
+    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // q{} );
     my $r = run_input( "9\n", $sh, script('html2ogg.sh'), "$dir/c.html" );
     isnt( $r->{status}, 0, 'invalid option rejected' );
-    like( $r->{stderr}, qr/Invalid option/, 'message' );
+    like( $r->{stderr}, qr/Invalid option/sm, 'message' );
 }
 
 # html2ogg: missing dependency is reported (empty PATH)
@@ -101,7 +101,7 @@ my $rsvg_ok =
     local $ENV{PATH} = $empty;
     my $r = run_input( "1\n", $sh, script('html2ogg.sh'), "$dir/d.html" );
     isnt( $r->{status}, 0, 'missing dependency fails' );
-    like( $r->{stderr}, qr/is not installed/, 'message' );
+    like( $r->{stderr}, qr/is not installed/sm, 'message' );
 }
 
 # ------------------------------------------------------------------
@@ -111,7 +111,7 @@ my $rsvg_ok =
     my $bin = mkstubs( 'rsvg-convert' => $rsvg_ok );
     my $dir = tempdir( CLEANUP => 1 );
     spew( "$dir/a.svg", "<svg xmlns='http://www.w3.org/2000/svg'/>\n" );
-    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // '' );
+    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // q{} );
 
     my $r = run( $sh, script('svg2png.sh'), $dir );
     is( $r->{status}, 0, 'svg2png succeeds' ) or diag( $r->{stderr} );
@@ -119,7 +119,8 @@ my $rsvg_ok =
 
     my $r2 = run( $sh, script('svg2png.sh'), $dir );
     is( $r2->{status}, 0, 'second run succeeds' );
-    like( $r2->{stdout}, qr/Skipping \(already exists\)/, 'existing skipped' );
+    like( $r2->{stdout}, qr/Skipping \(already exists\)/sm,
+        'existing skipped' );
 }
 
 # svg2png: names with spaces are handled
@@ -127,7 +128,7 @@ my $rsvg_ok =
     my $bin = mkstubs( 'rsvg-convert' => $rsvg_ok );
     my $dir = tempdir( CLEANUP => 1 );
     spew( "$dir/my icon.svg", "<svg xmlns='http://www.w3.org/2000/svg'/>\n" );
-    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // '' );
+    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // q{} );
     my $r = run( $sh, script('svg2png.sh'), $dir );
     is( $r->{status}, 0, 'spaces handled' );
     ok( -f "$dir/my icon.png", 'png created for spaced name' );
@@ -136,7 +137,7 @@ my $rsvg_ok =
 # svg2png: missing directory fails
 {
     my $bin = mkstubs( 'rsvg-convert' => $rsvg_ok );
-    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // '' );
+    local $ENV{PATH} = "$bin:" . ( $ENV{PATH} // q{} );
     my $r = run( $sh, script('svg2png.sh'), '/no/such/dir/exists' );
     isnt( $r->{status}, 0, 'missing directory fails' );
 }
@@ -149,7 +150,7 @@ my $rsvg_ok =
     local $ENV{PATH} = $empty;
     my $r = run( $sh, script('svg2png.sh'), $dir );
     isnt( $r->{status}, 0, 'missing rsvg-convert fails' );
-    like( $r->{stderr}, qr/is not installed/, 'message' );
+    like( $r->{stderr}, qr/is not installed/sm, 'message' );
 }
 
 done_testing();

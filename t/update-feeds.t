@@ -15,7 +15,7 @@ use File::Spec;
 
 sub feed {
     my (%a) = @_;
-    my $body = $a{body} // '';
+    my $body = $a{body} // q{};
     return <<"XML";
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
@@ -60,17 +60,17 @@ sub strip_rebuild {
     my $r = run_update( $dir, "newslug\nA & B\nD & D\n2026-03-04\n" );
     is( $r->{status}, 0, 'insert succeeds' ) or diag( $r->{stderr} );
     my $xml = slurp("$dir/feeds/articles.xml");
-    like( $xml, qr{<link>/articles/newslug\.html</link>}, 'link inserted' );
+    like( $xml, qr{<link>/articles/newslug\.html</link>}sm, 'link inserted' );
     like(
         $xml,
-        qr{<guid isPermaLink="false">/articles/newslug\.html</guid>},
+        qr{<guid isPermaLink="false">/articles/newslug\.html</guid>}sm,
         'guid uses stable relative identifier'
     );
-    like( $xml, qr{<title>A &amp; B</title>},             'title escaped' );
-    like( $xml, qr{<description>D &amp; D</description>}, 'desc escaped' );
+    like( $xml, qr{<title>A &amp; B</title>}sm,             'title escaped' );
+    like( $xml, qr{<description>D &amp; D</description>}sm, 'desc escaped' );
     like(
         $xml,
-        qr{<lastBuildDate>Wed, 04 Mar 2026 00:00:00 GMT</lastBuildDate>},
+        qr{<lastBuildDate>Wed, 04 Mar 2026 00:00:00 GMT</lastBuildDate>}sm,
         'lastBuildDate refreshed'
     );
 }
@@ -85,16 +85,16 @@ sub strip_rebuild {
     );
     my $dir = fixture(
         'feeds/articles.xml' => feed( body => $existing ),
-        'articles/dup.html'  => "<html lang=\"en\"><body><article>"
-          . "<header id=\"article-header\"><h1>Dup</h1>"
-          . "<time datetime=\"2026-01-01\">x</time></header>"
+        'articles/dup.html'  => '<html lang="en"><body><article>'
+          . '<header id="article-header"><h1>Dup</h1>'
+          . '<time datetime="2026-01-01">x</time></header>'
           . "</article></body></html>\n",
     );
     strip_rebuild($dir);
     my $before = slurp("$dir/feeds/articles.xml");
     my $r      = run_update( $dir, "dup\nT\nD\n" );
     is( $r->{status}, 0, 'kept without --replace' );
-    like( $r->{stderr}, qr/Feed already has/, 'warns about existing link' );
+    like( $r->{stderr}, qr/Feed already has/sm, 'warns about existing link' );
     is( slurp("$dir/feeds/articles.xml"), $before, 'feed unchanged' );
 }
 
@@ -108,19 +108,52 @@ sub strip_rebuild {
     );
     my $dir = fixture(
         'feeds/articles.xml' => feed( body => $existing ),
-        'articles/gpl.html'  => "<html lang=\"en\"><body><article>"
-          . "<header id=\"article-header\"><h1>GPL</h1>"
-          . "<time datetime=\"2026-03-04\">x</time></header>"
+        'articles/gpl.html'  => '<html lang="en"><body><article>'
+          . '<header id="article-header"><h1>GPL</h1>'
+          . '<time datetime="2026-03-04">x</time></header>'
           . "</article></body></html>\n",
     );
     strip_rebuild($dir);
     my $r = run_update( $dir, "gpl\nNew Title\nNew Desc\n", '--replace' );
     is( $r->{status}, 0, 'replace succeeds' ) or diag( $r->{stderr} );
     my $xml   = slurp("$dir/feeds/articles.xml");
-    my $count = () = $xml =~ m{/articles/gpl\.html}g;
+    my $count = () = $xml =~ m{/articles/gpl\.html}gsm;
     is( $count, 2, 'exactly one item link and one guid' );
-    like( $xml, qr{<title>New Title</title>}, 'new title present' );
-    unlike( $xml, qr{<title>Old</title>}, 'old title removed' );
+    like( $xml, qr{<title>New Title</title>}sm, 'new title present' );
+    unlike( $xml, qr{<title>Old</title>}sm, 'old title removed' );
+}
+
+# --- --replace must not consume unrelated preceding items ----------
+{
+    my $keep = item(
+        title => 'Keep',
+        link  => '/articles/keep.html',
+        desc  => 'keep',
+        pub   => 'Thu, 01 Jan 2026 00:00:00 GMT'
+    );
+    my $old = item(
+        title => 'Old',
+        link  => '/articles/gpl.html',
+        desc  => 'old',
+        pub   => 'Thu, 01 Jan 2026 00:00:00 GMT'
+    );
+    my $dir = fixture(
+        'feeds/articles.xml' => feed( body => $keep . $old ),
+        'articles/gpl.html'  => '<html lang="en"><body><article>'
+          . '<header id="article-header"><h1>GPL</h1>'
+          . '<time datetime="2026-03-04">x</time></header>'
+          . "</article></body></html>\n",
+    );
+    strip_rebuild($dir);
+    my $r = run_update( $dir, "gpl\nNew Title\nNew Desc\n", '--replace' );
+    is( $r->{status}, 0, 'replace succeeds with multiple items' )
+      or diag( $r->{stderr} );
+    my $xml = slurp("$dir/feeds/articles.xml");
+    like( $xml, qr{<title>Keep</title>}sm, 'preceding item preserved' );
+    unlike( $xml, qr{<title>Old</title>}sm, 'replaced item removed' );
+    like( $xml, qr{<title>New Title</title>}sm, 'new item present' );
+    my $items = () = $xml =~ m{<item>}gsm;
+    is( $items, 2, 'one unrelated item and one replacement item' );
 }
 
 # --- invalid slug is rejected ---------------------------------------
@@ -132,7 +165,7 @@ sub strip_rebuild {
     isnt( $r->{status}, 0, 'invalid slug rejected' );
     like(
         $r->{stderr},
-        qr/may only contain lowercase letters/,
+        qr/may only contain lowercase letters/sm,
         'error explains the slug rule'
     );
     is( slurp("$dir/feeds/articles.xml"), $before, 'feed untouched' );
@@ -142,17 +175,17 @@ sub strip_rebuild {
 {
     my $dir = fixture(
         'feeds/articles.xml' => feed(),
-        'articles/auto.html' => "<html lang=\"en\"><body><article>"
-          . "<header id=\"article-header\"><h1>Auto</h1>"
-          . "<time datetime=\"2026-03-04\">x</time></header>"
+        'articles/auto.html' => '<html lang="en"><body><article>'
+          . '<header id="article-header"><h1>Auto</h1>'
+          . '<time datetime="2026-03-04">x</time></header>'
           . "</article></body></html>\n",
     );
     my $r = run_update( $dir, "auto\nAuto\nAuto desc\n" );
     is( $r->{status}, 0, 'run with rebuild succeeds' );
     my $xml = slurp("$dir/feeds/articles.xml");
-    like( $xml, qr{<link>/articles/auto\.html</link>}, 'item after rebuild' );
-    like( $xml, qr{<title>Auto</title>}, 'title from article after rebuild' );
-    unlike( $xml, qr{<title>Auto desc</title>}, 'no stray fields' );
+    like( $xml, qr{<link>/articles/auto\.html</link>}sm, 'item after rebuild' );
+    like( $xml, qr{<title>Auto</title>}sm, 'title from article after rebuild' );
+    unlike( $xml, qr{<title>Auto desc</title>}sm, 'no stray fields' );
 }
 
 done_testing();
