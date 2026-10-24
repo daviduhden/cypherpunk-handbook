@@ -104,4 +104,64 @@ sub report_of {
         'script text not treated as a link' );
 }
 
+# --- a proposed fix does not make a broken link pass in --check ---
+{
+    my $dir = tempdir( CLEANUP => 1 );
+    write_page( $dir, 'index.html', '<p><a href="target">x</a></p>' );
+    write_page( $dir, 'target.html', '<p>ok</p>' );
+    my $r = check_links($dir);
+    is( $r->{status}, 2, 'broken link with a candidate still fails' );
+    like( report_of($r), qr/^broken [|]/m, 'report marks it broken' );
+    like( report_of($r), qr/target\.html/sm,
+        'report records the proposed candidate' );
+}
+
+# --- ignored build directories are pruned ---------------------------
+{
+    my $dir = tempdir( CLEANUP => 1 );
+    write_page( $dir, 'index.html', '<p>ok</p>' );
+    make_path("$dir/node_modules");
+    spew( "$dir/node_modules/broken.html",
+        page('<p><a href="missing.html">x</a></p>') );
+    my $r = check_links($dir);
+    is( $r->{status}, 0, 'node_modules is not validated' )
+      or diag( $r->{stdout} . $r->{stderr} );
+    unlike( $r->{stdout} . $r->{stderr}, qr/node_modules/sm,
+        'node_modules does not appear in the run' );
+}
+
+# --- --noapply does not rewrite tracked target files ----------------
+{
+    my $dir = tempdir( CLEANUP => 1 );
+    my $p   = write_page( $dir, 'index.html',
+        '<p><a href="target">x</a></p>' );
+    write_page( $dir, 'target.html', '<p>ok</p>' );
+    my $before = slurp($p);
+    my $r      = run( $^X, $validator, '--root', $dir, '--noapply',
+        '--check-links' );
+    is( $r->{status}, 2, '--noapply leaves check mode active' );
+    is( slurp($p), $before, '--noapply leaves the link unfixed' );
+}
+
+# --- --check-links-external implies internal link checking ----------
+{
+    my $dir = tempdir( CLEANUP => 1 );
+    write_page( $dir, 'index.html', '<p><a href="missing.html">x</a></p>' );
+    my $have_curl = ( run( 'curl', '--version' )->{status} == 0 );
+  SKIP: {
+        skip 'curl not available', 1 if !$have_curl;
+        my $r = run( $^X, $validator, '--root', $dir, '--check',
+            '--check-links-external' );
+        is( $r->{status}, 2,
+            '--check-links-external performs internal link checks' );
+    }
+}
+
+# --- a missing root is a tooling error, not success -----------------
+{
+    my $dir = tempdir( CLEANUP => 1 );
+    my $r   = run( $^X, $validator, '--root', "$dir/missing", '--check' );
+    is( $r->{status}, 1, 'missing root exits 1' );
+}
+
 done_testing();

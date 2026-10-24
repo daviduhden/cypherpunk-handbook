@@ -23,12 +23,16 @@
 # format.
 #
 # Usage:
-#   update-feeds.pl [--replace]
+#   update-feeds.pl [--replace] [ARTICLE]
 #
 # Options:
 #   --replace   If an item with the same link already exists,
 #               replace it. Without this flag, existing links
 #               are kept and reported.
+#
+# Arguments:
+#   ARTICLE     Optional article HTML file. Its <time datetime>
+#               value supplies the publication date.
 #
 # Behavior:
 #   - Detects available feed targets under ../feeds
@@ -39,6 +43,7 @@
 use strict;
 use warnings;
 
+use Cwd            qw(abs_path);
 use File::Basename qw(dirname);
 use File::Spec;
 use File::Temp qw(tempfile);
@@ -46,10 +51,30 @@ use Getopt::Long;
 use Time::Local qw(timegm);
 
 my $replace_existing = 0;
-GetOptions( 'replace' => \$replace_existing );
+GetOptions( 'replace' => \$replace_existing )
+  or die "Usage: $0 [--replace] [ARTICLE]\n";
+my $article_argument = shift @ARGV;
+die "Usage: $0 [--replace] [ARTICLE]\n" if @ARGV;
+if ( defined $article_argument && !-f $article_argument ) {
+    die "[ERROR] Article file not found: $article_argument\n";
+}
 
-my $root_dir =
-  File::Spec->catdir( ( File::Spec->splitpath($0) )[1] || q{.}, q{..} );
+sub resolve_script_path {
+    my $direct = abs_path($0);
+    return $direct if defined $direct;
+    return if $0 =~ m{/};
+    for my $dir ( File::Spec->path ) {
+        my $resolved = abs_path( File::Spec->catfile( $dir, $0 ) );
+        return $resolved if defined $resolved;
+    }
+    return;
+}
+
+my $script_path = resolve_script_path();
+if ( !defined $script_path || !length $script_path ) {
+    die "[ERROR] Could not resolve script path\n";
+}
+my $root_dir = File::Spec->catdir( dirname($script_path), q{..} );
 my $feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
 my $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
 my $site_url     = 'https://handbook.uhden.dev';
@@ -302,7 +327,10 @@ sub main {
       ? File::Spec->catfile( $articles_dir, "$slug_es.html" )
       : undef;
 
-    my $found_iso = extract_datetime_from_article($article_en_path);
+    my $found_iso = q{};
+    $found_iso = extract_datetime_from_article($article_argument)
+      if defined $article_argument;
+    $found_iso ||= extract_datetime_from_article($article_en_path);
     $found_iso ||= extract_datetime_from_article($article_es_path)
       if $has_es;
 

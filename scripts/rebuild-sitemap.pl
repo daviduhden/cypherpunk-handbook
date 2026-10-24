@@ -26,13 +26,26 @@ use strict;
 use warnings;
 
 use Cwd            qw(abs_path);
-use File::Basename qw(dirname);
+use File::Basename qw(basename dirname);
 use File::Find;
 use File::Spec;
 use File::Temp qw(tempfile);
 
-my $script_dir = ( File::Spec->splitpath($0) )[1];
-my $root_dir   = abs_path( File::Spec->catdir( $script_dir, q{..} ) );
+sub resolve_script_path {
+    my $direct = abs_path($0);
+    return $direct if defined $direct;
+    return if $0 =~ m{/};
+    for my $dir ( File::Spec->path ) {
+        my $resolved = abs_path( File::Spec->catfile( $dir, $0 ) );
+        return $resolved if defined $resolved;
+    }
+    return;
+}
+
+my $script_path = resolve_script_path();
+my $root_dir    = defined $script_path
+  ? abs_path( File::Spec->catdir( dirname($script_path), q{..} ) )
+  : undef;
 if ( !defined $root_dir || !length $root_dir ) {
     die "Could not resolve repository root\n";
 }
@@ -98,12 +111,21 @@ sub sitemap_url {
     return "$site_url/$relative";
 }
 
+my %skip_dir =
+  map { $_ => 1 } qw(.git node_modules dist build .cache tmp);
+
 my @pages;
 find(
     {
         no_chdir => 1,
         wanted   => sub {
             my $path = $File::Find::name;
+            if ( -d $path ) {
+                if ( $skip_dir{ basename($path) } ) {
+                    $File::Find::prune = 1;
+                }
+                return;
+            }
             return unless -f $path && $path =~ /\.html$/is;
             return if $path =~ m{/(?:archive|templates)/}sm;
             push @pages, sitemap_url($path);

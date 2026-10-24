@@ -841,6 +841,7 @@ blockquote cite {
  */
 .article-content img {
   display: block;
+  width: auto;
   max-width: 100%;
   height: auto;
   margin: 1.5em auto;
@@ -873,6 +874,7 @@ blockquote cite {
  * Generic image styling (outside article content)
  */
 img {
+  width: auto;
   max-width: 100%;
   height: auto;
   display: block;
@@ -880,6 +882,16 @@ img {
   border-radius: calc(var(--radius) * 1.1);
   border: thin solid var(--border);
   box-shadow: var(--shadow-img);
+}
+
+/*
+ * Fluid content image. The width follows the viewport and is capped
+ * by a relative measure; no fixed pixel width is applied.
+ */
+.img-qr {
+  width: clamp(12rem, 40vw, 18rem);
+  max-width: 100%;
+  height: auto;
 }
 
 /*

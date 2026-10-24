@@ -16,16 +16,17 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# UPDATE article listings/pages from local templates and
-# structured metadata. It asks for a subsection, title, and slug,
-# builds a safe article link, and injects it into the matching
-# section of index.html while preserving existing markup.
+# UPDATE the article listing in index.html. It asks for a
+# subsection, title, and slug, builds a safe article link, and
+# injects it into the matching section while preserving existing
+# markup.
 #
 # Usage:
 #   update-articles.pl
 #
 # Behavior:
 #   - Uses ../index.html as the edit target
+#   - Does not create the article file or update data/articles.json
 #   - Validates the target subsection and prevents duplicate article links
 #   - Writes updated HTML back to disk with explicit error
 #     reporting

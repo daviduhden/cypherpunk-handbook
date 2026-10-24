@@ -103,14 +103,15 @@ Options:
   --check-links   Check internal links, write a temporary report
                   and (in --apply) try to auto-fix them.
   --check-links-external
-                  Also contact remote URLs. Off by default so the
-                  checks stay offline and deterministic.
-  --check-all     Run every available check: formatting and
-                  validation, internal link checking, the t/
-                  regression suite (prove), and optional
-                  linters (vnu, stylelint, shellcheck, sh -n,
-                  htmltest, lychee) when installed. Implies
-                  --check.
+                  Also contact remote URLs. Implies --check-links.
+                  Off by default so the checks stay offline and
+                  deterministic.
+  --check-all     Run formatting/validation, internal link
+                  checking, the t/ regression suite (prove), and
+                  optional linters (vnu, stylelint, shellcheck,
+                  sh -n, perlcritic, htmltest, lychee) when
+                  installed. Implies --check. Does not enable
+                  spelling or external-link checks.
   --check-spelling
                   Check visible HTML text with the dictionary
                   selected from the document's lang attribute.
@@ -125,7 +126,7 @@ Dependencies (compiled binaries):
   xmllint         XML/SVG formatting + validation
   dprint          CSS/JS formatting + parse/check
   curl            External link checking/fixing when
-                  --check-links is used
+                  --check-links-external is used
   hunspell        Spell checking when --check-spelling is used;
                   each configured dictionary is required
   Optional for --check-all: prove, vnu, stylelint, shellcheck,
@@ -143,8 +144,8 @@ USAGE
 
 GetOptions(
     'root=s'                => \$root_dir,
-    'apply!'                => sub { $mode_apply = 1 },
-    'check!'                => sub { $mode_apply = 0 },
+    'apply!'                => \$mode_apply,
+    'check!'                => sub { $mode_apply = $_[1] ? 0 : 1 },
     'check-links!'          => \$check_links,
     'check-links-external!' => \$want_external,
     'check-all!'            => \$check_all,
@@ -157,6 +158,7 @@ if ($check_all) {
     $check_links = 1;
 }
 $external_links = $want_external;
+$check_links = 1 if $external_links;
 
 # Normalize the root directory to a canonical absolute
 # path where possible. This avoids leaving `..` segments
@@ -167,8 +169,10 @@ if ( defined $abs_root && length $abs_root ) {
     $root_dir = $abs_root;
 }
 
--d $root_dir
-  or die "ERROR: root is not a directory: $root_dir\n";
+if ( !-d $root_dir ) {
+    print {*STDERR} "ERROR: root is not a directory: $root_dir\n";
+    exit 1;
+}
 
 # -------------------------
 # Logging
@@ -614,7 +618,7 @@ sub propose_external_fix {
 my ( @html, @xml, @svg, @css, @js, @json );
 
 my %skip_dir =
-  map { $_ => 1 } qw(.git node_modules dist build .cache);
+  map { $_ => 1 } qw(.git node_modules dist build .cache tmp);
 
 File::Find::find(
     {
@@ -623,8 +627,7 @@ File::Find::find(
             my $path = $File::Find::name;
 
             if ( -d $path ) {
-                my $base = $_;
-                if ( $skip_dir{$base} ) {
+                if ( $skip_dir{ basename($path) } ) {
                     $File::Find::prune = 1;
                 }
                 return;
@@ -859,7 +862,9 @@ sub run_link_checks {
                     }
                 }
 
-                if ( !$status->{ok} && !$row->{proposed} ) {
+                if ( !$status->{ok}
+                    && ( !$mode_apply || !$row->{proposed} ) )
+                {
                     mark_validate_failed($file);
                 }
                 push @external_rows, $row;
@@ -893,7 +898,11 @@ sub run_link_checks {
                     register_link_replacement( $file, $link, $fixed )
                       if $mode_apply;
                 }
-                else {
+
+                # A proposed fix is not a passing link. In --check
+                # mode the file still contains the broken link, so
+                # report it as a failure until it is actually applied.
+                if ( !$mode_apply || $fixed eq q{} ) {
                     mark_validate_failed($file);
                 }
             }

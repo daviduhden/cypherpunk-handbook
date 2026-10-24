@@ -38,8 +38,13 @@ my $page = '<!DOCTYPE html><html lang="en"><head>'
         'a.html'           => $page,
         'sub/index.html'   => $page,
         'sub/b.html'       => $page,
-        'archive/old.html' => $page,
-        'templates/t.html' => $page,
+        'archive/old.html'          => $page,
+        'templates/t.html'          => $page,
+        'tmp/ignored.html'          => $page,
+        'node_modules/ignored.html' => $page,
+        'dist/ignored.html'         => $page,
+        'build/ignored.html'        => $page,
+        '.cache/ignored.html'       => $page,
     );
     my ( $r, $sm ) = run_sitemap($dir);
     is( $r->{status}, 0, 'sitemap rebuild succeeds' )
@@ -51,7 +56,7 @@ my $page = '<!DOCTYPE html><html lang="en"><head>'
     is_deeply(
         [ sort @paths ],
         [ sort qw( / /a.html /sub/ /sub/b.html ) ],
-        'index pages map to directories; archive/templates excluded'
+        'index pages map to directories; non-public dirs excluded'
     );
     is_deeply( \@paths, [ sort @paths ], 'entries are sorted' );
 

@@ -27,7 +27,7 @@
 # Behavior:
 #   - Detects supported feed files under ../feeds
 #   - Reads metadata from ../articles/*.html
-#   - Generates locale-aware pubDate values (EN/ES)
+#   - Generates RFC 2822 pubDate values (English month/day names)
 #   - Rewrites feed files in UTF-8 with escaped XML content
 
 use strict;
@@ -42,15 +42,24 @@ use File::Temp   qw(tempfile);
 use Getopt::Long qw(GetOptions);
 use Time::Local  qw(timegm);
 
-my $script_dir   = ( File::Spec->splitpath($0) )[1];
-my $root_dir     = File::Spec->catdir( $script_dir, q{..} );
-my $feeds_dir    = File::Spec->catdir( $root_dir,   'feeds' );
-my $articles_dir = File::Spec->catdir( $root_dir,   'articles' );
-my $abs_root     = abs_path($root_dir);
-$root_dir = $abs_root
-  if defined $abs_root && length $abs_root;
-$feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
-$articles_dir = File::Spec->catdir( $root_dir, 'articles' );
+sub resolve_script_path {
+    my $direct = abs_path($0);
+    return $direct if defined $direct;
+    return if $0 =~ m{/};
+    for my $dir ( File::Spec->path ) {
+        my $resolved = abs_path( File::Spec->catfile( $dir, $0 ) );
+        return $resolved if defined $resolved;
+    }
+    return;
+}
+
+my $script_path = resolve_script_path();
+if ( !defined $script_path || !length $script_path ) {
+    die "[ERROR] Could not resolve script path\n";
+}
+my $root_dir = File::Spec->catdir( dirname($script_path), q{..} );
+my $feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
+my $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
 
 # Optional deployment base URL. When empty (the default) links stay
 # root-relative so a single feed works on every mirror (HTTPS, Tor,

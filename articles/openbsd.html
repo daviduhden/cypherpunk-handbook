@@ -392,8 +392,8 @@
         random input is needed, arc4random is the standard choice across the
         base system. It is an abstraction over ciphers considered safe today,
         currently using ChaCha20. The name comes from ARC4, the RC4-based
-        generator of the original 1996 implementation, not from a backronym.
-        It needs no file descriptor, cannot fail, and stays safe after fork,
+        generator of the original 1996 implementation, not from a backronym. It
+        needs no file descriptor, cannot fail, and stays safe after fork,
         chroot and pledge, and it quickly generates high-quality 32-bit
         pseudorandom numbers.</p>
 
@@ -457,8 +457,8 @@
         <p>By default, HTTP daemons are chrooted in /var/www. As an OpenBSD
         system administrator, you do not need extra setup to run a secure web
         server installation. The base httpd(8) does this out of the box;
-        packaged servers such as apache2 or nginx need it configured, so do
-        not assume the same default there.</p>
+        packaged servers such as apache2 or nginx need it configured, so do not
+        assume the same default there.</p>
       </section>
 
       <section aria-labelledby="obsd-6">
@@ -512,25 +512,24 @@
 
         <p>OpenBSD maps userland text without read permission. The linker
         option <code>--execute-only</code> is on by default, and on
-        architectures where the MMU cannot enforce this, the kernel refuses
-        to read the program's text through copyin/copyinst. Coverage as of
-        8.0: arm64, riscv64, hppa, amd64, powerpc64, powerpc (G5) and
-        octeon. sparc64 is unfinished.</p>
+        architectures where the MMU cannot enforce this, the kernel refuses to
+        read the program's text through copyin/copyinst. Coverage as of 8.0:
+        arm64, riscv64, hppa, amd64, powerpc64, powerpc (G5) and octeon.
+        sparc64 is unfinished.</p>
 
-        <p>ROP and JIT-spray attacks need to find gadgets, and the easiest
-        way is to read the program's own text through an information leak.
-        If text is not readable, the attacker must guess addresses or find
-        another leak. The kernel-side rule also removes the kernel as a read
-        primitive against text. Threat model: a remote attacker with an
-        infoleak and a control-flow hijack, and a local attacker reading
-        process memory.</p>
+        <p>ROP and JIT-spray attacks need to find gadgets, and the easiest way
+        is to read the program's own text through an information leak. If text
+        is not readable, the attacker must guess addresses or find another
+        leak. The kernel-side rule also removes the kernel as a read primitive
+        against text. Threat model: a remote attacker with an infoleak and a
+        control-flow hijack, and a local attacker reading process memory.</p>
 
         <ul>
           <li>No mainstream OS ships execute-only userland text by default.
-          Linux cannot do it on x86, where a readable mapping is implied by
-          the page tables, and distributions do not build with execute-only
-          text elsewhere. Windows and macOS have no project-wide equivalent.
-          This is one of the clearest OpenBSD-only properties.</li>
+          Linux cannot do it on x86, where a readable mapping is implied by the
+          page tables, and distributions do not build with execute-only text
+          elsewhere. Windows and macOS have no project-wide equivalent. This is
+          one of the clearest OpenBSD-only properties.</li>
         </ul>
       </section>
 
@@ -544,9 +543,8 @@
 
         <p>This is an example of a fully hardened doas.conf configuration:</p>
 
-        <pre>
-permit &lt;user&gt; as root
-permit root</pre>
+        <pre><code>permit &lt;user&gt; as root
+permit root</code></pre>
         <p>Compare this with the simplest sudo configuration and you will see
         the difference.</p>
 
@@ -577,28 +575,27 @@ permit root</pre>
       <section aria-labelledby="obsd-51">
         <h2 id="obsd-51">fork+exec in privilege-separated programs</h2>
 
-        <p>OpenBSD privilege-separated daemons start their children with
-        fork plus exec, not fork alone. Each child therefore gets a fresh
-        address space: a new ASLR layout, a new stack canary, new
-        .openbsd.randomdata values. First used in sshd in 2004, then bgpd in
-        2015, smtpd in 2016, and most base daemons since.</p>
+        <p>OpenBSD privilege-separated daemons start their children with fork
+        plus exec, not fork alone. Each child therefore gets a fresh address
+        space: a new ASLR layout, a new stack canary, new .openbsd.randomdata
+        values. First used in sshd in 2004, then bgpd in 2015, smtpd in 2016,
+        and most base daemons since.</p>
 
-        <p>Classic privilege separation keeps the same memory layout in
-        every child, because they are copies of one process. One infoleak in
-        the unprivileged child then reveals the layout used by the
-        privileged parent and by every sibling, which is exactly what an
-        attacker needs to turn a leak into a full exploit. With re-exec, a
-        leak in one process says nothing about the others. Threat model: an
-        attacker who compromises the unprivileged half of a daemon and wants
-        to attack the privileged half.</p>
+        <p>Classic privilege separation keeps the same memory layout in every
+        child, because they are copies of one process. One infoleak in the
+        unprivileged child then reveals the layout used by the privileged
+        parent and by every sibling, which is exactly what an attacker needs to
+        turn a leak into a full exploit. With re-exec, a leak in one process
+        says nothing about the others. Threat model: an attacker who
+        compromises the unprivileged half of a daemon and wants to attack the
+        privileged half.</p>
 
         <ul>
           <li>OpenSSH does this on every OS because it is the same upstream
           code, and some individual daemons elsewhere re-exec. It is not a
           system-wide rule on Linux, where many privsep designs still fork
           without exec and share the layout. Windows services are separate
-          processes, which gives a similar boundary for different
-          reasons.</li>
+          processes, which gives a similar boundary for different reasons.</li>
         </ul>
       </section>
 
@@ -634,8 +631,8 @@ permit root</pre>
         on simplicity, secure defaults, and robust privilege separation.</p>
 
         <p>OpenBSD 8.0 also random-relinks smtpd(8) at boot. The daemon is
-        split into six separate binaries and each is relinked independently,
-        so a leak in one process says little about the others.</p>
+        split into six separate binaries and each is relinked independently, so
+        a leak in one process says little about the others.</p>
       </section>
 
       <section aria-labelledby="obsd-11">
@@ -795,28 +792,28 @@ permit root</pre>
         <h2 id="obsd-52">mimmutable(2)</h2>
 
         <p>A process can make the permissions of a memory region permanent.
-        After mimmutable(2), mmap(2), mprotect(2) and munmap(2) on that
-        region fail with EPERM. The mechanism landed in December 2022 and
-        shipped in OpenBSD 7.3; most of a program's static address space,
-        including the main binary, ld.so, the main stack, load-time libraries
-        and dlopen'ed libraries, is made immutable automatically. Code that
-        needs mutable data can opt out with the openbsd.mutable section, and
-        heap objects can be sealed with mimmutable(2).</p>
+        After mimmutable(2), mmap(2), mprotect(2) and munmap(2) on that region
+        fail with EPERM. The mechanism landed in December 2022 and shipped in
+        OpenBSD 7.3; most of a program's static address space, including the
+        main binary, ld.so, the main stack, load-time libraries and dlopen'ed
+        libraries, is made immutable automatically. Code that needs mutable
+        data can opt out with the openbsd.mutable section, and heap objects can
+        be sealed with mimmutable(2).</p>
 
-        <p>The standard exploit step after a memory-corruption bug is to
-        change permissions: flip a region to writable and executable for
-        shellcode, or make read-only data writable to overwrite a function
-        pointer or a relocation entry. If the kernel refuses the permission
-        change, that step disappears. The attacker must work inside the
-        permissions the region already has. Threat model: an attacker with
-        an arbitrary write primitive or with the ability to call mprotect
-        inside a compromised process.</p>
+        <p>The standard exploit step after a memory-corruption bug is to change
+        permissions: flip a region to writable and executable for shellcode, or
+        make read-only data writable to overwrite a function pointer or a
+        relocation entry. If the kernel refuses the permission change, that
+        step disappears. The attacker must work inside the permissions the
+        region already has. Threat model: an attacker with an arbitrary write
+        primitive or with the ability to call mprotect inside a compromised
+        process.</p>
 
         <ul>
-          <li>Linux 6.10 (2024) added mseal(2), which is close in effect,
-          but it is opt-in per mapping and no distribution applies it by
-          default. Windows and macOS have no equivalent. OpenBSD applies it
-          to the static address space of every program without the program
+          <li>Linux 6.10 (2024) added mseal(2), which is close in effect, but
+          it is opt-in per mapping and no distribution applies it by default.
+          Windows and macOS have no equivalent. OpenBSD applies it to the
+          static address space of every program without the program
           asking.</li>
         </ul>
       </section>
@@ -910,8 +907,8 @@ permit root</pre>
         also prefers X25519MLKEM768 for TLS 1.3.</p>
 
         <p>OpenSSH 10.0 also split the user authentication phase into a
-        separate sshd-auth binary, so the pre-authentication attack surface
-        has an address space disjoint from the rest of the connection.</p>
+        separate sshd-auth binary, so the pre-authentication attack surface has
+        an address space disjoint from the rest of the connection.</p>
       </section>
 
       <section aria-labelledby="obsd-21">
@@ -990,24 +987,23 @@ permit root</pre>
         exact address of every system call stub used by the program, and
         registers those addresses with the kernel using pinsyscalls(2). A
         system call instruction anywhere else kills the process. Added in
-        January 2024, it replaced the earlier pinsyscall(2) for execve and
-        the msyscall(2) mechanism, which were narrower and more
-        expensive.</p>
+        January 2024, it replaced the earlier pinsyscall(2) for execve and the
+        msyscall(2) mechanism, which were narrower and more expensive.</p>
 
         <p>A ROP chain or a shellcode stub must execute a system call to do
         damage. With pinned entries, the attacker cannot place a syscall
-        instruction in writable memory, cannot reuse one from another
-        library, and must land exactly on a registered entry point. Combined
-        with immutable memory permissions, the classic "one gadget, then
-        syscall" path is closed. Threat model: an attacker with a
-        control-flow hijack inside a process.</p>
+        instruction in writable memory, cannot reuse one from another library,
+        and must land exactly on a registered entry point. Combined with
+        immutable memory permissions, the classic "one gadget, then syscall"
+        path is closed. Threat model: an attacker with a control-flow hijack
+        inside a process.</p>
 
         <ul>
-          <li>seccomp filters which syscall numbers are allowed, not where
-          the instruction lives, and it does not stop a permitted syscall
-          issued from attacker-controlled memory. No mainstream OS pins
-          syscall entry addresses. OpenBSD is the only one that does it for
-          every base binary.</li>
+          <li>seccomp filters which syscall numbers are allowed, not where the
+          instruction lives, and it does not stop a permitted syscall issued
+          from attacker-controlled memory. No mainstream OS pins syscall entry
+          addresses. OpenBSD is the only one that does it for every base
+          binary.</li>
         </ul>
       </section>
 
@@ -1034,11 +1030,11 @@ permit root</pre>
           </li>
 
           <li>FreeBSD has Capsium (capability-based sandboxing) and Jails
-          (OS-level virtualization), both can provide a stronger 
-          sandboxing/isolation than pledge and unveil, but Capsium is not
-          used or configured strictly on almost the entire base system and
-          Jails is just not used at all. In addition, the complexity compared
-          to pledge/unveil are much greater.</li>
+          (OS-level virtualization), both can provide a stronger
+          sandboxing/isolation than pledge and unveil, but Capsium is not used
+          or configured strictly on almost the entire base system and Jails is
+          just not used at all. In addition, the complexity compared to
+          pledge/unveil are much greater.</li>
 
           <li>Windows has no direct pledge analogue. macOS has sandbox_init /
           Seatbelt, more integrated for GUI apps but more complex for arbitrary
@@ -1064,10 +1060,10 @@ permit root</pre>
         elsewhere. That turns the browser into a much tighter container for
         malware.</p>
 
-        <p>For another example: OpenBSD 8.0 also put man(1), makewhatis(8)
-        and man.cgi(8) under unveil, so the documentation tools can no longer
-        read or write arbitrary paths. This is one more example of a base
-        system where unveil is the rule rather than an exception.</p>
+        <p>For another example: OpenBSD 8.0 also put man(1), makewhatis(8) and
+        man.cgi(8) under unveil, so the documentation tools can no longer read
+        or write arbitrary paths. This is one more example of a base system
+        where unveil is the rule rather than an exception.</p>
 
         <ul>
           <li>Linux Landlock, AppArmor, SELinux, Smack: filesystem and broader
@@ -1082,10 +1078,10 @@ permit root</pre>
 
           <li>FreeBSD has Capsium (capability-based sandboxing) and Jails
           (OS-level virtualization), both can provide a stronger
-          sandboxing/isolation than pledge and unveil, but Capsium is not
-          used or configured strictly on almost the entire base system and
-          Jails is just not used at all. In addition, the complexity compared
-          to pledge/unveil are much greater.</li>
+          sandboxing/isolation than pledge and unveil, but Capsium is not used
+          or configured strictly on almost the entire base system and Jails is
+          just not used at all. In addition, the complexity compared to
+          pledge/unveil are much greater.</li>
 
           <li>Windows has no direct unveil analogue, nor does macOS.</li>
         </ul>
@@ -1119,8 +1115,8 @@ permit root</pre>
           the opposite.</li>
 
           <li>No Linux distributions other than Secureblue and GrapheneOS have
-          good enough configurations. Linux has many tools, but no one uses them
-          because of such complexity.</li>
+          good enough configurations. Linux has many tools, but no one uses
+          them because of such complexity.</li>
         </ul>
       </section>
 
@@ -1146,8 +1142,7 @@ permit root</pre>
 
         <p>OpenBSD lets you use randomized MAC addresses via ifconfig.</p>
 
-        <pre>
-ifconfig iwm0 lladdr random</pre>
+        <pre><code>ifconfig iwm0 lladdr random</code></pre>
         <p>Randomizing your MAC address improves anonymity while using your
         laptop in public Wi-Fi or similar networks.</p>
 
@@ -1158,32 +1153,30 @@ ifconfig iwm0 lladdr random</pre>
       </section>
 
       <section aria-labelledby="obsd-54">
-        <h2 id="obsd-54">Network configuration without root shell
-        scripts</h2>
+        <h2 id="obsd-54">Network configuration without root shell scripts</h2>
 
         <p>slaacd(8) (IPv6 autoconfiguration), dhcpleased(8) (DHCP client),
-        rad(8) (router advertisements) and resolvd(8) (nameserver
-        management) replaced the old model where root ran shell scripts over
-        parsed network input, such as netstart and dhclient-script. The
-        daemons are privilege separated and pledged: the privileged part
-        performs the specific ioctl, and parsing happens unprivileged.</p>
+        rad(8) (router advertisements) and resolvd(8) (nameserver management)
+        replaced the old model where root ran shell scripts over parsed network
+        input, such as netstart and dhclient-script. The daemons are privilege
+        separated and pledged: the privileged part performs the specific ioctl,
+        and parsing happens unprivileged.</p>
 
         <p>On any untrusted network, DHCP and router advertisements are
-        attacker-controlled input. Root shell scripts that consume that
-        input have produced command injection and arbitrary file write bugs
-        across the industry, because shell quoting and environment handling
-        are fragile. Removing the root shell removes the entire
-        vulnerability class, not one instance of it. Threat model: a
-        malicious DHCP server or rogue router on a public or hotel
-        network.</p>
+        attacker-controlled input. Root shell scripts that consume that input
+        have produced command injection and arbitrary file write bugs across
+        the industry, because shell quoting and environment handling are
+        fragile. Removing the root shell removes the entire vulnerability
+        class, not one instance of it. Threat model: a malicious DHCP server or
+        rogue router on a public or hotel network.</p>
 
         <ul>
           <li>Linux commonly still runs dhclient-script, NetworkManager
-          dispatcher scripts or similar hooks as root; systemd-networkd is
-          a daemon but a large one. Windows runs its DHCP client inside a
-          SYSTEM service. OpenBSD's advantage is the combination: small
-          single-purpose daemons, privilege separation, pledge, and no root
-          shell in the path.</li>
+          dispatcher scripts or similar hooks as root; systemd-networkd is a
+          daemon but a large one. Windows runs its DHCP client inside a SYSTEM
+          service. OpenBSD's advantage is the combination: small single-purpose
+          daemons, privilege separation, pledge, and no root shell in the
+          path.</li>
         </ul>
       </section>
 
@@ -1225,46 +1218,44 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-55">
         <h2 id="obsd-55">Relinking at boot</h2>
 
-        <p>Random relinking is the next step after address-space
-        randomization. At boot, rc(8) rebuilds selected binaries from object
-        files taken in random order, then installs the result. Internal
-        offsets, function order and the location of every internal branch
-        change, so the binary an attacker studies today is not the binary
-        that runs after the next reboot. Each relink kit in
-        /usr/share/relink contains a test command; rc(8) only installs the
-        new binary if the test exits successfully.</p>
+        <p>Random relinking is the next step after address-space randomization.
+        At boot, rc(8) rebuilds selected binaries from object files taken in
+        random order, then installs the result. Internal offsets, function
+        order and the location of every internal branch change, so the binary
+        an attacker studies today is not the binary that runs after the next
+        reboot. Each relink kit in /usr/share/relink contains a test command;
+        rc(8) only installs the new binary if the test exits successfully.</p>
 
         <p>The list is deliberately short and network-facing: sshd(8),
         sshd-auth(8), sshd-session(8) and ssh-agent(1), plus httpd(8) and
         smtpd(8) with its six helper binaries (smtpd-ca, smtpd-control,
-        smtpd-dispatcher, smtpd-lka, smtpd-queue and smtpd-scheduler). sshd
-        was first, in 2023. httpd and smtpd followed in OpenBSD 8.0, and the
-        relink rules moved into bsd.prog.mk in 2026. The kernel gets the
-        same treatment through KARL, and libc, libcrypto and ld.so through
-        library order randomization.</p>
+        smtpd-dispatcher, smtpd-lka, smtpd-queue and smtpd-scheduler). sshd was
+        first, in 2023. httpd and smtpd followed in OpenBSD 8.0, and the relink
+        rules moved into bsd.prog.mk in 2026. The kernel gets the same
+        treatment through KARL, and libc, libcrypto and ld.so through library
+        order randomization.</p>
 
-        <p>An exploitation attempt against a remote daemon usually begins
-        with learning the layout: the address of a function, a gadget, or a
-        pointer into libc. Base-address randomization changes where the
-        binary is loaded, but the relative positions inside the binary stay
-        the same for every copy of that build. Relinking changes those
-        relative positions too, per boot and per daemon. A leak obtained
-        from one boot, or from a different privsep process, does not carry
-        over to the next. In smtpd, each of the six processes is relinked
-        separately, so a hole in one IPC path gives no reliable map of its
-        neighbours. Threat model: a remote attacker with an infoleak or a
-        partial ROP chain against a network daemon, and lateral movement
-        between privilege-separated processes after one is compromised.</p>
+        <p>An exploitation attempt against a remote daemon usually begins with
+        learning the layout: the address of a function, a gadget, or a pointer
+        into libc. Base-address randomization changes where the binary is
+        loaded, but the relative positions inside the binary stay the same for
+        every copy of that build. Relinking changes those relative positions
+        too, per boot and per daemon. A leak obtained from one boot, or from a
+        different privsep process, does not carry over to the next. In smtpd,
+        each of the six processes is relinked separately, so a hole in one IPC
+        path gives no reliable map of its neighbours. Threat model: a remote
+        attacker with an infoleak or a partial ROP chain against a network
+        daemon, and lateral movement between privilege-separated processes
+        after one is compromised.</p>
 
         <ul>
           <li>Linux, Windows and macOS randomize load addresses (ASLR and
-          KASLR), and their binaries are PIE. None of them relinks daemons
-          from object files in random order at boot, so internal offsets
-          remain fixed for a given build and distribution update. Linux
-          historically went the other way with prelink, which fixed layouts
-          to speed up loading. OpenBSD is the only mainstream OS that
-          regenerates its network daemons and its kernel layout at every
-          boot.</li>
+          KASLR), and their binaries are PIE. None of them relinks daemons from
+          object files in random order at boot, so internal offsets remain
+          fixed for a given build and distribution update. Linux historically
+          went the other way with prelink, which fixed layouts to speed up
+          loading. OpenBSD is the only mainstream OS that regenerates its
+          network daemons and its kernel layout at every boot.</li>
         </ul>
       </section>
 
@@ -1300,8 +1291,8 @@ ifconfig iwm0 lladdr random</pre>
         implementing relevant open Internet standards.</p>
 
         <p>OpenBGPD also supports ASPA (Autonomous System Provider
-        Authorization) and validates routes against ASPA data received over
-        RTR version 2, which catches route leaks that origin validation alone
+        Authorization) and validates routes against ASPA data received over RTR
+        version 2, which catches route leaks that origin validation alone
         cannot.</p>
 
         <ul>
@@ -1383,23 +1374,22 @@ ifconfig iwm0 lladdr random</pre>
         <h2 id="obsd-56">SROP mitigation</h2>
 
         <p>sigreturn(2) loads a complete register set from a frame on the
-        stack. OpenBSD only accepts it when it comes from the signal
-        trampoline context that the kernel itself set up; anywhere else, the
-        process is killed. Implemented in 2016 and enabled by default since
-        OpenBSD 6.0.</p>
+        stack. OpenBSD only accepts it when it comes from the signal trampoline
+        context that the kernel itself set up; anywhere else, the process is
+        killed. Implemented in 2016 and enabled by default since OpenBSD
+        6.0.</p>
 
         <p>SROP (sigreturn-oriented programming) turns a single call to
-        sigreturn into a Turing-complete primitive: the attacker writes a
-        fake signal frame and controls every register without needing a
-        gadget chain. Killing off-context sigreturn removes the primitive
-        entirely, so the attacker is back to needing real gadgets. Threat
-        model: an attacker with a stack write and one controllable
-        syscall.</p>
+        sigreturn into a Turing-complete primitive: the attacker writes a fake
+        signal frame and controls every register without needing a gadget
+        chain. Killing off-context sigreturn removes the primitive entirely, so
+        the attacker is back to needing real gadgets. Threat model: an attacker
+        with a stack write and one controllable syscall.</p>
 
         <ul>
-          <li>No mainstream OS enforces this by default. The original
-          research by Bosman and Bos targeted Linux, where sigreturn remains
-          usable from attacker-controlled frames.</li>
+          <li>No mainstream OS enforces this by default. The original research
+          by Bosman and Bos targeted Linux, where sigreturn remains usable from
+          attacker-controlled frames.</li>
         </ul>
       </section>
 
@@ -1474,28 +1464,27 @@ ifconfig iwm0 lladdr random</pre>
       <section aria-labelledby="obsd-57">
         <h2 id="obsd-57">trapsleds and -fret-clean</h2>
 
-        <p>trapsleds (2017) rewrites incidental NOP padding in the
-        instruction stream into trap instructions, and the compiler
-        re-encodes instruction sequences to avoid embedded polymorphic RET
-        bytes (2018). -fret-clean, a clang extension, wipes the return value
-        off the stack after a call, removing a common leak of pointers into
-        other shared objects. The kernel, libc, libcrypto and ld.so are
-        built with it on amd64.</p>
+        <p>trapsleds (2017) rewrites incidental NOP padding in the instruction
+        stream into trap instructions, and the compiler re-encodes instruction
+        sequences to avoid embedded polymorphic RET bytes (2018). -fret-clean,
+        a clang extension, wipes the return value off the stack after a call,
+        removing a common leak of pointers into other shared objects. The
+        kernel, libc, libcrypto and ld.so are built with it on amd64.</p>
 
-        <p>Every exploit chain spends effort on two things: finding gadgets
-        and leaking addresses. Alignment padding is a free source of
-        gadgets, and stale return values are a free source of pointers that
-        defeat ASLR. Removing both raises the cost of writing a reliable
-        exploit and shrinks the value of a small infoleak. Threat model: a
-        remote attacker building a ROP chain against a base daemon, and a
-        local attacker defeating ASLR with a stack leak.</p>
+        <p>Every exploit chain spends effort on two things: finding gadgets and
+        leaking addresses. Alignment padding is a free source of gadgets, and
+        stale return values are a free source of pointers that defeat ASLR.
+        Removing both raises the cost of writing a reliable exploit and shrinks
+        the value of a small infoleak. Threat model: a remote attacker building
+        a ROP chain against a base daemon, and a local attacker defeating ASLR
+        with a stack leak.</p>
 
         <ul>
-          <li>No Linux distribution converts NOP padding into traps or
-          builds with -fret-clean. The closest analogue is
-          -fzero-call-used-regs (GCC 11, Clang 13), which zeroes registers
-          rather than the return slot; the Linux kernel can be built with
-          it, but distributions do not enable it by default.</li>
+          <li>No Linux distribution converts NOP padding into traps or builds
+          with -fret-clean. The closest analogue is -fzero-call-used-regs (GCC
+          11, Clang 13), which zeroes registers rather than the return slot;
+          the Linux kernel can be built with it, but distributions do not
+          enable it by default.</li>
         </ul>
       </section>
 
@@ -1631,27 +1620,28 @@ ifconfig iwm0 lladdr random</pre>
         consistent process isolation throughout userland device emulation.</p>
 
         <p>The following <code>cloc</code> counts describe the hypervisor
-        implementations themselves, not the complete virtualization stack:
-        Xen is about 650,000 lines of code; KVM is about 83,500 lines for x86
-        only and 217,700 lines across all architectures; bhyve is about
-        80,000 lines; NOVA is about 24,000 lines; and OpenBSD's
-        <code>vmm(4)</code> is about 9,950 lines, including its SEV support.
-        This is why vmm's deliberately restricted design matters: a smaller
-        implementation leaves less hypervisor code to audit and less code
-        that can contain an escape.</p>
+        implementations themselves, not the complete virtualization stack: Xen
+        is about 650,000 lines of code; KVM is about 83,500 lines for x86 only
+        and 217,700 lines across all architectures; bhyve is about 80,000
+        lines; NOVA is about 24,000 lines; and OpenBSD's <code>vmm(4)</code> is
+        about 9,950 lines, including its SEV support. This is why vmm's
+        deliberately restricted design matters: a smaller implementation leaves
+        less hypervisor code to audit and less code that can contain an
+        escape.</p>
 
         <p>The hypervisor alone is not the whole virtualization attack surface.
         OpenBSD's stack adds about 16,600 lines of guest-reachable
         <code>vmd(8)</code> emulation and run-path code, for an approximately
         26,600-line host attack surface. Local management and provisioning
         (configuration, control socket, logging, SNMP, SEV setup) adds about
-        6,500 lines and is not reachable from a guest. Linux/KVM deployments also
-        include QEMU (if used) and their surrounding management and device-emulation
-        components. Depending on the boundary being measured, Qubes OS also
-        includes dom0, toolstack and AppVM infrastructure, while CPU firmware
-        related to virtualization belongs to the broader virtualization attack
-        surface. External compartmentalization is useful when upstream software
-        cannot practically be modified, but it does not eliminate attack surface.</p>
+        6,500 lines and is not reachable from a guest. Linux/KVM deployments
+        also include QEMU (if used) and their surrounding management and
+        device-emulation components. Depending on the boundary being measured,
+        Qubes OS also includes dom0, toolstack and AppVM infrastructure, while
+        CPU firmware related to virtualization belongs to the broader
+        virtualization attack surface. External compartmentalization is useful
+        when upstream software cannot practically be modified, but it does not
+        eliminate attack surface.</p>
 
         <ul>
           <li>QEMU/KVM, Xen, Hyper-V, VMware, VirtualBox, and other hypervisors
@@ -1716,15 +1706,15 @@ ifconfig iwm0 lladdr random</pre>
         binary drivers to hide how their devices work, and OpenBSD answers by
         reverse engineering the hardware instead of trusting a black box.</p>
 
-        <p>Firmware is a separate case: firmware with a redistributable
-        license is shipped in base, while firmware that cannot be redistributed
-        (mostly Wi-Fi) is downloaded externally by fw_update(8). Firmware is
-        still closed source, but it does not run on the CPU: the driver uploads
-        it to the device, where it executes on the device's own processor.</p>
+        <p>Firmware is a separate case: firmware with a redistributable license
+        is shipped in base, while firmware that cannot be redistributed (mostly
+        Wi-Fi) is downloaded externally by fw_update(8). Firmware is still
+        closed source, but it does not run on the CPU: the driver uploads it to
+        the device, where it executes on the device's own processor.</p>
 
         <p>A closed driver is code running in the kernel that nobody outside
-        the vendor can audit, fix or even test for defects. A vendor can ship
-        a buggy or malicious driver, or a driver that cannot be patched because
+        the vendor can audit, fix or even test for defects. A vendor can ship a
+        buggy or malicious driver, or a driver that cannot be patched because
         only the vendor holds the source. OpenBSD can fix a bug in any driver
         the same day it is found, and can replace a driver entirely when a
         better design appears. The policy also removes the legal wall of NDAs,
@@ -1736,9 +1726,9 @@ ifconfig iwm0 lladdr random</pre>
           and Ubuntu ship the non-free-firmware section enabled, most others
           ship firmware packages by default, and users routinely load
           out-of-tree proprietary drivers such as NVIDIA's. Only Linux-libre
-          distributions, such as Guix, Trisquel and Parabola, remove
-          blobs, and they do so at the cost of hardware support that OpenBSD
-          keeps by shipping redistributable firmware.</li>
+          distributions, such as Guix, Trisquel and Parabola, remove blobs, and
+          they do so at the cost of hardware support that OpenBSD keeps by
+          shipping redistributable firmware.</li>
 
           <li>FreeBSD accepts vendor drivers and firmware with restrictive
           licenses in its source tree, and NetBSD ships firmware in base as
@@ -2022,10 +2012,10 @@ ifconfig iwm0 lladdr random</pre>
 
         <p>As of 2026-10-22, the entire OpenBSD operating system (src +
         xenocara) has 36,299,895 lines of code. The OpenBSD kernel (src/sys)
-        has a total of 8,025,609 lines of code. Both figures are cloc 2.00
-        code counts, with comments and blank lines excluded. loccount gives
-        7,896,621 for the kernel, so the choice of tool moves the total by
-        less than two percent.</p>
+        has a total of 8,025,609 lines of code. Both figures are cloc 2.00 code
+        counts, with comments and blank lines excluded. loccount gives
+        7,896,621 for the kernel, so the choice of tool moves the total by less
+        than two percent.</p>
 
         <p>Is that a lot? Yes. Is it too much? In my view, yes. But compare it
         with alternatives:</p>
@@ -2042,7 +2032,7 @@ ifconfig iwm0 lladdr random</pre>
           </li>
 
           <li>Debian 7.0 in 2012 had 419 million lines of code. Currently,
-         Debian (Trixie) reached the mark of ~1.6 billion LoC:
+          Debian (Trixie) reached the mark of ~1.6 billion LoC:
             <ul>
               <li>
                 <a href=
