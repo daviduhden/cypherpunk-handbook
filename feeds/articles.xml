@@ -4,8 +4,15 @@
     <title>The Cypherpunk Handbook - Articles</title>
     <link>/</link>
     <description>Latest articles and updates from the Cypherpunk Handbook.</description>
-    <lastBuildDate>Thu, 08 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 22 Oct 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="/feeds/articles.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Why OpenBSD stands alone</title>
+      <link>/articles/openbsd.html</link>
+      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
+      <pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">/articles/openbsd.html</guid>
+    </item>
     <item>
       <title>OpenBSD desktop hardening guide</title>
       <link>/articles/openbsd-hardening.html</link>
@@ -19,13 +26,6 @@
       <description>C is not memory-safe. This article argues that flawless memory management in C is not a realistic expectation and presents the statistical case that memory-management errors remain a dominant security problem.</description>
       <pubDate>Fri, 04 Sep 2026 00:00:00 GMT</pubDate>
       <guid isPermaLink="false">/articles/c-language.html</guid>
-    </item>
-    <item>
-      <title>Why OpenBSD stands alone</title>
-      <link>/articles/openbsd.html</link>
-      <description>This article explains why OpenBSD is one of the most secure operating systems in the world, and why Windows, macOS, iOS, Android, and Linux are still weaker even when hardened. It also compares OpenBSD with other BSDs, Qubes OS, Fedora Secureblue, and Hardened Gentoo.</description>
-      <pubDate>Fri, 04 Sep 2026 00:00:00 GMT</pubDate>
-      <guid isPermaLink="false">/articles/openbsd.html</guid>
     </item>
     <item>
       <title>From a strict security perspective, Qubes OS is not reliable</title>
