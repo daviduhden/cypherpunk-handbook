@@ -1028,10 +1028,17 @@ permit root</pre>
           error-prone.</li>
 
           <li>I do not consider seccomp practically usable for ordinary
-          hardening, and this critique explains why: <a href=
+          hardening, and this critique shows why: <a href=
           "https://blog.habets.se/2022/03/seccomp-unsafe-at-any-speed.html">Seccomp
           is unsafe at any speed</a>
           </li>
+
+          <li>FreeBSD has Capsium (capability-based sandboxing) and Jails
+          (OS-level virtualization), both can provide a stronger 
+          sandboxing/isolation than pledge and unveil, but Capsium is not
+          used or configured strictly on almost the entire base system and
+          Jails is just not used at all. In addition, the complexity compared
+          to pledge/unveil are much greater.</li>
 
           <li>Windows has no direct pledge analogue. macOS has sandbox_init /
           Seatbelt, more integrated for GUI apps but more complex for arbitrary
@@ -1057,21 +1064,28 @@ permit root</pre>
         elsewhere. That turns the browser into a much tighter container for
         malware.</p>
 
-        <p>OpenBSD 8.0 also put man(1), makewhatis(8) and man.cgi(8) under
-        unveil, so the documentation tools can no longer read or write
-        arbitrary paths. This is one more example of a base system where
-        unveil is the rule rather than an exception.</p>
+        <p>For another example: OpenBSD 8.0 also put man(1), makewhatis(8)
+        and man.cgi(8) under unveil, so the documentation tools can no longer
+        read or write arbitrary paths. This is one more example of a base
+        system where unveil is the rule rather than an exception.</p>
 
         <ul>
           <li>Linux Landlock, AppArmor, SELinux, Smack: filesystem and broader
           MAC policies can restrict file access like unveil, but they are
           configured externally and with a lot of additional complexity, and
-          are disabled or misconfigured in all Linux distros besides Secureblue
-          and Android (debatable, perhaps none of them). Linux has no single,
-          simple process-centric API combining easy syscall profiles + built-in
-          per-process filesystem veil like pledge+unveil. Such complexity,
-          something common in the Linux world, only leads to more
+          are disabled or misconfigured in most Linux operating systems
+          (Secureblue and Android are the only exception probably). Linux has
+          no single, simple process-centric API combining easy syscall profiles
+          + built-in per-process filesystem veil like pledge+unveil. Such
+          complexity, something common in the Linux world, only leads to more
           insecurity.</li>
+
+          <li>FreeBSD has Capsium (capability-based sandboxing) and Jails
+          (OS-level virtualization), both can provide a stronger
+          sandboxing/isolation than pledge and unveil, but Capsium is not
+          used or configured strictly on almost the entire base system and
+          Jails is just not used at all. In addition, the complexity compared
+          to pledge/unveil are much greater.</li>
 
           <li>Windows has no direct unveil analogue, nor does macOS.</li>
         </ul>
@@ -1101,11 +1115,11 @@ permit root</pre>
 
           <li>A lot of complexity only leads to more problems. In theory,
           Windows has much stronger privilege separation than Linux and macOS,
-          but it has never proven to be functional and reliable; on the
-          contrary.</li>
+          but it has never proven to be functional and reliable; it is actually
+          the opposite.</li>
 
           <li>No Linux distributions other than Secureblue and GrapheneOS have
-          good configurations. Linux has many tools, but no one uses them
+          good enough configurations. Linux has many tools, but no one uses them
           because of such complexity.</li>
         </ul>
       </section>
@@ -1585,10 +1599,6 @@ ifconfig iwm0 lladdr random</pre>
           <li>Live hardware change</li>
         </ul>
 
-        <p>OpenBSD 8.0 added SMP guests, up to 64 vCPUs per VM, so the
-        remaining gaps are graphics, snapshots, hardware passthrough, live
-        migration and live hardware change.</p>
-
         <p>Supported guest operating systems are currently limited to OpenBSD
         and Linux. Because there is no VGA support yet, the guest OS must
         support a serial console. A graphical interface is still possible with
@@ -1631,9 +1641,11 @@ ifconfig iwm0 lladdr random</pre>
         that can contain an escape.</p>
 
         <p>The hypervisor alone is not the whole virtualization attack surface.
-        OpenBSD's stack also includes about 23,100 lines in <code>vmd(8)</code>,
-        including its SEV and PSP helpers, for an approximately 33,100-line
-        OpenBSD virtualization stack. Linux/KVM deployments also
+        OpenBSD's stack adds about 16,600 lines of guest-reachable
+        <code>vmd(8)</code> emulation and run-path code, for an approximately
+        26,600-line host attack surface. Local management and provisioning
+        (configuration, control socket, logging, SNMP, SEV setup) adds about
+        6,500 lines and is not reachable from a guest. Linux/KVM deployments also
         include QEMU (if used) and their surrounding management and device-emulation
         components. Depending on the boundary being measured, Qubes OS also
         includes dom0, toolstack and AppVM infrastructure, while CPU firmware
@@ -1649,7 +1661,7 @@ ifconfig iwm0 lladdr random</pre>
 
           <li>The NOVA microhypervisor is also focused on security and it's
           probably more secure than the virtualization stack on OpenBSD as a
-          whole, but vmm alone has less attack surface.</li>
+          whole, but vmm hypervisor has less attack surface.</li>
 
           <li>Hardware passthrough greatly increases the attack surface.
           Additional hardware technology (such as IOMMU) is required for
@@ -2029,8 +2041,8 @@ ifconfig iwm0 lladdr random</pre>
             </ul>
           </li>
 
-          <li>Debian 7.0 in 2012 had 419 million lines of code. Currently it
-          must have surpassed the billion LoC:
+          <li>Debian 7.0 in 2012 had 419 million lines of code. Currently,
+         Debian (Trixie) reached the mark of ~1.6 billion LoC:
             <ul>
               <li>
                 <a href=
