@@ -55,7 +55,7 @@
         <h1>OpenBSD desktop hardening guide</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
-        <time datetime="2026-10-08">Updated October 8, 2026</time></p>
+        <time datetime="2026-10-26">Updated October 26, 2026</time></p>
 
         <p class="lede">This is a guide on how to harden OpenBSD, and is
         dedicated to desktop users, although information here may be useful to
@@ -326,23 +326,13 @@ pass in quick on $vm_if from $vm_ip to any
 pass out quick on $ext_if received-on $vm_if
 
 ## Pass out specific user to ssh into VM
-pass out quick on $vm_if inet proto tcp \
-        from self to $vm_ip port ssh \
-        user flywithme
-
-### Same thing as before
-### (Idk why, but this is necessary if you use securelevel=2)
 pass out quick on tap0 inet proto tcp \
-        from 100.64.1.2 to 100.64.1.3 port 22 \
+        from 100.64.1.2 to $vm_ip port ssh \
         user flywithme
-
-## Permit SLAAC (if you want IPv6)
-pass in quick on $ext_if inet6 proto udp from \
-        fe80::/10 port dhcpv6-server to \
-        fe80::/10 port dhcpv6-client no state
 
 ## Pass out NTP for time synchronization
-pass out quick on $ext_if proto { udp tcp } user _ntp
+pass out quick on $ext_if proto udp to any port ntp user _ntp
+pass out quick on $ext_if proto tcp to any port https user _ntp
 
 ## Pass out the users that you set up at the beginning
 pass out quick on $ext_if proto { udp tcp } user $allowed_users
