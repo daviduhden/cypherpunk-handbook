@@ -100,6 +100,9 @@ exclusion.
   optional `Z` or `±HH:MM` offset. Date-only becomes midnight UTC. If no valid
   value exists, it falls back to the file modification time.
 - Sorts by date descending, then slug ascending.
+- Sets the channel `lastBuildDate` to the date of the first item in that sorted
+  list, so it tracks the newest article modification date. When articles change,
+  regenerate the feed to keep both item dates and the channel date current.
 - Uses the basename as the slug. A nested article in a subdirectory is
   published at the root article URL for its basename, so duplicate basenames
   collide.
