@@ -3,14 +3,17 @@
 # URLs are intentionally NOT requested here; use lychee for that.
 # Run from the repository root, e.g. `htmltest -c .htmltest.yml`.
 DirectoryPath: "."
+# Check document structure and local references without fetching remote URLs.
 CheckDoctype: true
 CheckAnchors: true
 CheckLinks: true
 CheckInternal: true
+# Keep remote link requests disabled so this check stays offline.
 CheckExternal: false
 CheckImages: true
 CheckMeta: true
 CheckGeneric: true
+# These protocol targets are not HTTP pages that htmltest can resolve.
 CheckMailto: false
 CheckTel: false
 IgnoreURLs:

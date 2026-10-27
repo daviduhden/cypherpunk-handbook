@@ -130,15 +130,24 @@ documentation. Instead:
   fresh generator output, or if generator output is nondeterministic.
 - An article without `<time datetime>` falls back to file mtime and can make
   reproducibility fail across clones.
-- Tests do not modify tracked files. CI does not run them; the only workflow
-  archives, signs, and force-pushes.
+- Tests do not modify tracked files. The site tests and site validator are not
+  run in CI. The separate `agent-knowledge-validation.yml` workflow runs only
+  the shared contract tests and the read-only pull request range gate.
 
 ### CI and archives
 
 `.github/workflows/archive.yml` runs daily and on manual dispatch. It builds
 and signs the archive, rewrites history with `git filter-repo`, and
-force-pushes `main`. It does not run tests or linters. Never invoke that
+force-pushes `main`. It does not run site tests or linters. The separate
+`.github/workflows/agent-knowledge-validation.yml` workflow is read-only and
+validates only the shared agent-knowledge contract. Never invoke the archive
 workflow's destructive steps locally.
+
+The source tar excludes GitHub and maintainer Markdown, VCS metadata, agent
+instructions, development configuration, tests, caches, and known editor
+backups while retaining public site files. Keep the same internal-path policy
+in the OpenBSD server sync; exclude only verified repository-only paths rather
+than all Markdown or hidden files.
 
 ## Minimum matrix
 
@@ -147,7 +156,7 @@ workflow's destructive steps locally.
 | Article prose only | `git diff --check`; source spot-check; `prove t` if metadata or links changed |
 | Article title, date, filename, or metadata | Update `data/articles.json`; regenerate feeds and sitemap; `prove t` |
 | New article | JSON, index, feeds, sitemap; `prove t`; `--check-all` when possible |
-| `styles.css` or HTML structure | `stylelint`; `prove t`; `--check-all` when possible |
+| `styles.css` or HTML structure | `stylelint`; `prove t`; `--check-all` when possible; inspect responsive and focus behavior in a browser when available |
 | Perl script | `perl -c`; `perlcritic`; `prove t` |
 | Shell script | `sh -n`; `shellcheck`; `prove t` |
 | `AGENTS.md` or skills | YAML parse, path/link checks, `git diff --check`; no site-test claim |
@@ -192,3 +201,19 @@ Final diff: <files changed; git diff --check result>
 - `.htmltest.yml`, `.perlcriticrc`, `.stylelintrc.json`, `dprint.json` —
   checker configuration.
 - `.github/workflows/archive.yml` — CI behavior; do not modify for validation.
+
+## Maintenance & Continuous Learning
+
+Whenever this skill is used to change the repository, review this skill after
+the implementation. Correct procedures that proved wrong, update commands,
+paths, configuration and examples, incorporate reusable findings, and remove
+outdated assumptions. Review the applicable root and nested `AGENTS.md` files,
+specialized agents and related skills; update only the knowledge affected by
+the work. Validate local references and run
+`python3 scripts/validate-agent-knowledge.py --scope worktree` plus the
+applicable project checks. For pull request comparisons, use the documented
+`--scope range --base BASE_REF --head HEAD_REF` command. The canonical validator
+is read-only and is required even when a task restricts execution of project
+scripts; this does not authorize running installers or changing the host.
+Report checks actually performed. A structural pass does not prove semantic
+relevance, and a task is incomplete until synchronization is validated.

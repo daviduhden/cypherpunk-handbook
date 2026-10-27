@@ -1,6 +1,7 @@
 # AGENTS.md
 
-Instructions for agents working in The Cypherpunk Handbook repository.
+Instructions for agents working in The Cypherpunk Handbook repository. Read
+`docs/ARCHITECTURE.md` for the source, generated-file, and workflow map.
 
 ## Project
 
@@ -27,6 +28,7 @@ the voice and register the author chose.
 | `archive/` | CI-produced tarball, checksum, signature, public key | No: never edit |
 | `scripts/` | Perl/shell maintenance and validation tools | Yes, when the task requires it |
 | `t/` | Perl regression tests (`Test::More`/`prove`) | Yes, when the task requires it |
+| `README.md`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `docs/` | GitHub and maintainer documentation; excluded from archives and server sync | Yes, as repository documentation only |
 
 Article HTML is the source. Do not introduce Markdown as a site source, a
 generator, or a template engine, and do not assume one exists.
@@ -78,8 +80,10 @@ build-like steps, and they modify tracked files.
 - `t/links.t` requires `tidy`; without it the file skips rather than fails.
 - `t/shell.t` stubs external conversion tools, but requires `sh`, `mktemp`,
   `find`, and `sed`.
-- CI does not run the tests or site validators. `.github/workflows/archive.yml`
-  only archives, signs, commits, and force-pushes.
+- Pull requests run `.github/workflows/agent-knowledge-validation.yml`, which
+  executes only the shared validator contract tests and range gate.
+  `.github/workflows/archive.yml` separately archives, signs, commits, and
+  force-pushes; do not trigger or edit it for routine validation.
 - For documentation-only changes, still check YAML, relative paths, commands,
   `git diff --check`, and the final diff. Full site tests are not required
   unless the change touches site sources or generated artifacts.
@@ -120,8 +124,10 @@ build-like steps, and they modify tracked files.
   `.sig`, or `.pub` by hand. CI creates them; the signature covers the checksum,
   not the tarball.
 - Do not edit `.github/workflows/archive.yml` or the LFS rule in
-  `.gitattributes` unless explicitly asked. Never run `git filter-repo`,
-  force-push, or reproduce the signing step.
+  `.gitattributes` unless explicitly asked. When archive membership is changed,
+  preserve all triggers and signing/history steps, and keep repository-only
+  documentation and development files out of the tarball. Never run
+  `git filter-repo`, force-push, or reproduce the signing step.
 - Do not install packages, change system configuration, use credentials, or
   run destructive tests. Do not run `--check-links-external` unless the task
   explicitly requires network access.
@@ -149,3 +155,43 @@ Load the matching skill before acting:
 - Test suite: `t/`
 - Validation tool: `scripts/validate-website.pl`
 - Archive workflow: `.github/workflows/archive.yml`
+
+## Continuous Agent & Skills Maintenance
+
+Every repository change MUST trigger an Agent & Skills Maintenance Review.
+Agent instructions and skills are living repository artifacts. Before
+completing any repository modification, review all applicable `AGENTS.md`
+files, specialized agents, and `SKILL.md` files. Update the affected knowledge
+artifacts to reflect the implementation, correct outdated instructions, and
+incorporate reusable knowledge. A task is incomplete until knowledge
+synchronization has been performed and validated. Never skip synchronization
+silently or claim that unexecuted checks have passed.
+
+After each change:
+
+1. Identify and review the applicable agents and skills, even when no update
+   initially appears necessary.
+2. Update relevant operational guidance, reusable procedures, references,
+   commands, and paths; remove stale or contradictory instructions.
+3. Do not use whitespace-only, timestamp-only, empty, or otherwise cosmetic
+   edits to satisfy synchronization. For a project change, at least one
+   relevant knowledge artifact must receive a substantive update.
+4. Run `python3 scripts/validate-agent-knowledge.py --scope worktree` and the
+   applicable project checks. For a pull request, CI compares the base and head
+   revisions with `--scope range --base BASE_SHA --head HEAD_SHA`.
+5. Review the validator output and final diff, then report the synchronization
+   result. Warnings require human review; a structural pass does not establish
+   semantic relevance.
+
+Run the validator tests with
+`python3 -m unittest discover -s tests/agent_knowledge_validator -p 'test_*.py'`.
+The validator is read-only and uses Python 3.11+ and the standard library. It
+must not be confused with project-specific validation or installation tools.
+See [Agent Knowledge Validation Contract](docs/agent-knowledge-validation.md)
+for AK001–AK006, JSON schema, exit codes, configuration, and maintenance rules.
+
+All repositories must implement the same Agent Knowledge Validation CLI
+contract, rule identifiers, output conventions and exit codes. Repository-
+specific validations may extend the canonical behavior but must not silently
+redefine it. Any change to the validator contract must be reflected in the
+repository's agent instructions, related skills and tests.
