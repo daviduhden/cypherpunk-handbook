@@ -9,6 +9,10 @@ Thank you for helping improve Cypherpunk Handbook. Contributions should make the
 - Keep each pull request focused. Explain what changed, why it is needed, and which checks you ran. Link related issues when applicable.
 - Do not include secrets, private personal data, generated archive artifacts, or unrelated formatting changes.
 
+## AI-assisted contributions
+
+The use of artificial intelligence (AI) tools is explicitly permitted. Contributors are not required to disclose AI assistance. Contributors remain responsible for reviewing AI-assisted changes, verifying factual claims and sources, and ensuring that contributions follow the project's standards and license.
+
 ## HTML and content
 
 - Follow the existing semantic HTML, heading hierarchy, language metadata, and relative-link conventions.
