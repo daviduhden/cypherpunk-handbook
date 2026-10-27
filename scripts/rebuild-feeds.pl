@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
-# Copyright (c) 2025-2026 David Uhden Collado
+# Copyright (c) 2025-2026, David Uhden Collado
 #
 # Permission to use, copy, modify, and distribute this software
 # for any purpose with or without fee is hereby granted, provided
@@ -268,6 +268,8 @@ sub detect_feeds {
 sub extract_metadata {
     my ($path)           = @_;
     my $html             = read_file($path);
+    # Prefer the authored article header, but allow older pages without the
+    # wrapper to remain feedable by falling back to the whole document.
     my ($article_header) = $html =~ m{<header[^>]*\bid\s*=\s*["']
         article-header["'][^>]*>
         (.*?)</header>}isxm;
@@ -309,6 +311,8 @@ sub extract_metadata {
     $iso //= ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/ism )[0];
     my $mtime = ( stat($path) )[9] || time;
     my $epoch = iso_to_epoch($iso);
+    # The mtime fallback keeps legacy pages publishable but can vary by
+    # checkout.
     $epoch = $mtime unless defined $epoch;
 
     my ( undef, undef, $file ) = File::Spec->splitpath($path);

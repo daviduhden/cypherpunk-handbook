@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
-# Copyright (c) 2025-2026 David Uhden Collado
+# Copyright (c) 2025-2026, David Uhden Collado
 #
 # Permission to use, copy, modify, and distribute this software
 # for any purpose with or without fee is hereby granted, provided
@@ -168,6 +168,8 @@ sub run_update {
         return 0;
     }
 
+    # The slug validation above keeps the generated relative path within the
+    # expected article naming convention; escape user-supplied link text below.
     # Build a list item that matches the formatting produced by
     # tidy(1) so the inserted markup stays formatting-clean.
     my $link_html =

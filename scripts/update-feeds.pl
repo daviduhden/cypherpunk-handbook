@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
-# Copyright (c) 2025-2026 David Uhden Collado
+# Copyright (c) 2025-2026, David Uhden Collado
 #
 # Permission to use, copy, modify, and distribute this software
 # for any purpose with or without fee is hereby granted, provided
@@ -244,6 +244,8 @@ sub update_feed {
     my $link_re =
       join q{|},
       map { quotemeta } @link_variants;
+    # Match both historical absolute links and the root-relative form emitted
+    # by the rebuild script, while quoting the slug-derived strings literally.
     my $item = join q{},
       "    <item>\n",
       '      <title>',

@@ -1,6 +1,6 @@
 #!/bin/sh
-#
-# Copyright (c) 2025-2026 David Uhden Collado
+
+# Copyright (c) 2025-2026, David Uhden Collado
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -82,6 +82,8 @@ create_temp_wav() {
 }
 
 convert_html_to_ogg() {
+	# The destination is adjacent to the source; ffmpeg's -y option below
+	# intentionally replaces an existing recording with the same basename.
 	OUT="${HTML%.*}.ogg"
 	echo "Converting HTML to audio..."
 	# Run pandoc as a separate, checked command so a text
