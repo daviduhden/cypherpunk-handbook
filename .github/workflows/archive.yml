@@ -144,17 +144,94 @@ jobs:
           rm -f "$ARCHIVE" "$CHECKSUM" "$SIGNATURE" "$KEYFILE"
 
           # Create tar.gz archive
-          # Excluded:
-          # - .git/           (VCS metadata)
-          # - .github/        (CI configuration)
-          # - .gitattributes  (LFS rules / derived config)
-          # - archive/        (derived artifacts)
-          # - tmp_archive/    (temporary files)
+          # Keep repository-only documentation, VCS metadata, agent guidance,
+          # development settings, tests, caches, and archive output out of the
+          # public source bundle. Do not exclude Markdown or hidden files broadly:
+          # public content and site resources may use those names.
+          # archive/ and tmp_archive/ are generated output and staging paths.
           tar \
             --format=pax \
             --exclude="./.git" \
             --exclude="./.github" \
+            --exclude="./.agents" \
+            --exclude="./.claude" \
+            --exclude="./.codex" \
+            --exclude="./.cursor" \
+            --exclude="./.vscode" \
+            --exclude="./.idea" \
+            --exclude="./.devcontainer" \
+            --exclude="./.zed" \
+            --exclude="./.gitignore" \
+            --exclude="./.gitmodules" \
             --exclude="./.gitattributes" \
+            --exclude="./README.md" \
+            --exclude="./CODE_OF_CONDUCT.md" \
+            --exclude="./CODEOFCONDUCT.md" \
+            --exclude="./CONTRIBUTING.md" \
+            --exclude="./AGENTS.md" \
+            --exclude="./CLAUDE.md" \
+            --exclude="./GEMINI.md" \
+            --exclude="./copilot-instructions.md" \
+            --exclude="./.cursorrules" \
+            --exclude="./.windsurfrules" \
+            --exclude="./.aider.conf.yml" \
+            --exclude="./.editorconfig" \
+            --exclude="./.htmltest.yml" \
+            --exclude="./.perlcriticrc" \
+            --exclude="./.stylelintrc.json" \
+            --exclude="./dprint.json" \
+            --exclude="./Makefile" \
+            --exclude="./docs" \
+            --exclude="./t" \
+            --exclude="./tests" \
+            --exclude="./tmp" \
+            --exclude="./.cache" \
+            --exclude="./.pytest_cache" \
+            --exclude="./.ruff_cache" \
+            --exclude="./.mypy_cache" \
+            --exclude="./.htmltest" \
+            --exclude="./node_modules" \
+            --exclude="./__pycache__" \
+            --exclude="./build" \
+            --exclude="./dist" \
+            --exclude="*/AGENTS.md" \
+            --exclude="*/CLAUDE.md" \
+            --exclude="*/GEMINI.md" \
+            --exclude="*/copilot-instructions.md" \
+            --exclude="*/.git" \
+            --exclude="*/.github" \
+            --exclude="*/.agents" \
+            --exclude="*/.claude" \
+            --exclude="*/.codex" \
+            --exclude="*/.cursor" \
+            --exclude="*/.vscode" \
+            --exclude="*/.idea" \
+            --exclude="*/.devcontainer" \
+            --exclude="*/.zed" \
+            --exclude="*/.cache" \
+            --exclude="*/.pytest_cache" \
+            --exclude="*/.ruff_cache" \
+            --exclude="*/.mypy_cache" \
+            --exclude="*/.htmltest" \
+            --exclude="*/node_modules" \
+            --exclude="*/__pycache__" \
+            --exclude="*/.gitignore" \
+            --exclude="*/.gitmodules" \
+            --exclude="*/.gitattributes" \
+            --exclude="*/.editorconfig" \
+            --exclude="*/.htmltest.yml" \
+            --exclude="*/.perlcriticrc" \
+            --exclude="*/.stylelintrc.json" \
+            --exclude="*/dprint.json" \
+            --exclude="*/.DS_Store" \
+            --exclude="*.swp" \
+            --exclude="*.swo" \
+            --exclude="*~" \
+            --exclude="*.bak" \
+            --exclude="*.orig" \
+            --exclude="*.rej" \
+            --exclude="./scripts/openbsd-tools.txt" \
+            --exclude="./scripts/validate-agent-knowledge.py" \
             --exclude="./archive" \
             --exclude="./tmp_archive" \
             --use-compress-program="gzip -9" \
