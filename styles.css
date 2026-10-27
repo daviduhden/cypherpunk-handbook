@@ -555,6 +555,7 @@ ul ul, ol ol, ul ol, ol ul {
   counter-reset: toc-level-2;
 }
 
+/* Article depth classes drive separate counters for nested outline entries. */
 .toc li {
   display: grid;
   grid-template-columns: minmax(2.5ch, max-content) minmax(0, 1fr);
@@ -599,6 +600,7 @@ ul ul, ol ol, ul ol, ol ul {
 }
 
 @media (max-width: 60em) {
+  /* Preserve the outline's reading order when the two-column layout narrows. */
   .toc ol {
     column-count: 1;
   }
@@ -683,6 +685,7 @@ ul ul, ol ol, ul ol, ol ul {
 }
 
 @media (max-width: 48em) {
+  /* Tighten panel spacing on narrow screens as the grid wraps columns. */
   .articles {
     padding: 1em;
   }
@@ -918,6 +921,357 @@ img {
   .articles {
     padding: 1.25em;
   }
+}
+
+/*
+ * Defaults for semantic HTML added to articles or future page components.
+ * Low-specificity selectors leave existing component rules in charge.
+ */
+:where(article, aside, hgroup, main, search, section) {
+  display: block;
+}
+
+hgroup > :where(h1, h2, h3, h4, h5, h6) {
+  margin-block: 0.2em;
+}
+
+/* Inline text semantics */
+:where(span, time, data, bdi, bdo, wbr) {
+  font-family: inherit;
+}
+
+:where(strong, b) {
+  font-weight: 700;
+}
+
+:where(em, i, dfn, cite, var) {
+  font-style: italic;
+}
+
+:where(u, ins) {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+:where(s, del) {
+  text-decoration: line-through;
+}
+
+:where(small) {
+  font-size: 0.875em;
+}
+
+:where(mark) {
+  padding: 0.05em 0.2em;
+  background: color-mix(in srgb, var(--link) 24%, var(--panel) 76%);
+  color: var(--text);
+}
+
+:where(sub, sup) {
+  position: relative;
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+:where(abbr[title]) {
+  text-decoration: underline dotted;
+  text-underline-offset: 0.12em;
+  cursor: help;
+}
+
+q {
+  quotes: auto;
+}
+
+ruby {
+  ruby-position: over;
+}
+
+rt {
+  font-size: 0.6em;
+  text-align: center;
+}
+
+rp {
+  display: none;
+}
+
+:where(bdi) {
+  unicode-bidi: isolate;
+}
+
+:where(bdo[dir="ltr"]) {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+
+:where(bdo[dir="rtl"]) {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+/* Lists and horizontal separators */
+menu {
+  margin: 0.5em 0 0.9em;
+  padding-inline-start: 1.8em;
+  list-style: disc;
+}
+
+hr {
+  margin-block: 1.5em;
+  border: 0;
+  border-top: thin solid var(--border);
+}
+
+figure {
+  margin: 1.25em auto;
+}
+
+figcaption {
+  margin-block-start: 0.5em;
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
+/* Media and table elements */
+:where(audio, canvas, embed, iframe, object, video, svg) {
+  max-inline-size: 100%;
+}
+
+/*
+ * Media sources, text tracks, datalists, and column groups keep native behavior.
+ */
+picture,
+:where(audio, embed, iframe, object, video) {
+  display: block;
+}
+
+:where(thead, tbody, tfoot) {
+  vertical-align: middle;
+}
+
+:where(th, td) {
+  padding: 0.6em 0.8em;
+  border-bottom: thin solid var(--border);
+}
+
+video {
+  block-size: auto;
+}
+
+/* Form controls */
+form {
+  margin-block: 1em;
+}
+
+fieldset {
+  min-inline-size: 0;
+  margin: 0 0 1em;
+  padding: 1em;
+  border: thin solid var(--border);
+  border-radius: var(--radius-soft);
+}
+
+legend {
+  padding-inline: 0.4em;
+  color: var(--heading);
+  font-weight: 600;
+}
+
+label {
+  color: var(--text);
+}
+
+:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  max-inline-size: 100%;
+  padding: 0.45em 0.6em;
+  border: thin solid var(--border);
+  border-radius: var(--radius-soft);
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+
+:where(input[type="range"], input[type="color"]) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+textarea {
+  inline-size: min(100%, 60ch);
+  min-block-size: 8em;
+  resize: vertical;
+}
+
+:where(button, input[type="button"], input[type="reset"], input[type="submit"]) {
+  max-inline-size: 100%;
+  padding: 0.45em 0.75em;
+  border: thin solid var(--border);
+  border-radius: var(--radius-soft);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+:where(button, input[type="button"], input[type="reset"], input[type="submit"]):enabled:hover {
+  border-color: var(--border-hover);
+  background: var(--nav-bg-hover);
+}
+
+:where(button, input[type="button"], input[type="reset"], input[type="submit"]):active {
+  background: var(--border);
+}
+
+:where(input[type="checkbox"], input[type="radio"], progress, meter) {
+  accent-color: var(--link);
+}
+
+:where(input[type="checkbox"], input[type="radio"]):checked,
+:where(input[type="checkbox"], input[type="radio"]):indeterminate {
+  accent-color: var(--link-hover);
+}
+
+:where(progress, meter):indeterminate {
+  accent-color: var(--link-hover);
+}
+
+:where(progress, meter) {
+  inline-size: min(100%, 24em);
+  vertical-align: middle;
+}
+
+output {
+  color: var(--heading);
+  font-weight: 600;
+}
+
+:where(option, optgroup) {
+  background: var(--panel);
+  color: var(--text);
+}
+
+/* Control states and keyboard focus */
+:where(input, select, textarea, button, summary):focus {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+:where(input, select, textarea, button, summary):focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+:where(input, select, textarea, button):disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+:where(input, select, textarea, button):enabled {
+  color: var(--text);
+}
+
+:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea):required {
+  border-inline-start-width: 2px;
+  border-inline-start-color: var(--link);
+}
+
+:where(input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea):optional {
+  border-inline-start-width: 1px;
+  border-inline-start-color: var(--border);
+}
+
+:where(input, select, textarea):valid {
+  border-color: var(--border-hover);
+}
+
+:where(input, select, textarea):invalid:focus {
+  border-color: var(--link-hover);
+}
+
+:where(input, textarea):read-only {
+  background: var(--panel-2);
+}
+
+:where(input, textarea):read-write {
+  color: var(--text);
+}
+
+:where(input, textarea):placeholder-shown {
+  text-overflow: ellipsis;
+}
+
+::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+::selection {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+::marker {
+  color: var(--muted);
+}
+
+/* Disclosure and dialog elements */
+details {
+  margin-block: 1em;
+  padding: 0.65em 0.85em;
+  border: thin solid var(--border);
+  border-radius: var(--radius-soft);
+  background: var(--panel-2);
+}
+
+summary {
+  color: var(--heading);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+dialog {
+  max-inline-size: min(42em, calc(100% - 2em));
+  padding: 1.25em;
+  border: thin solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--text);
+}
+
+dialog::backdrop {
+  background: #0009;
+}
+
+a:visited {
+  color: var(--link);
+}
+
+nav a:visited {
+  color: var(--heading);
+}
+
+nav a:visited:hover {
+  color: var(--heading);
+}
+
+a:visited:hover {
+  color: var(--link-hover);
+}
+
+a:active {
+  color: var(--link-hover);
 }
 
 /*
