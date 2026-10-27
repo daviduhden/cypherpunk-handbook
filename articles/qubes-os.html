@@ -57,7 +57,7 @@
         <h1>From a strict security perspective, Qubes OS is not reliable</h1>
 
         <p class="meta">Written by FlyWithMe (a SimpleX Chat user) -
-        <time datetime="2026-09-04">Updated September 4, 2026</time></p>
+        <time datetime="2026-10-26">Updated October 26, 2026</time></p>
 
         <p class="lede">This article is a critical look at Qubes OS, or "XenOS"
         as I sometimes call it. I focus on its security weaknesses, note where
@@ -248,29 +248,36 @@
         security.</p>
 
         <p>Xen supports hardware-assisted virtualization (HVM) with Intel VT-x
-        and AMD-V. Full virtualization can run unmodified guest operating
-        systems and usually provides stronger isolation characteristics than
-        paravirtualization. Qubes OS relies too much on paravirtualized paths
-        in most templates, and this is a security weakness. Xen offers five
-        approaches to running the guest operating system, but only the
-        Microsoft Windows template in Qubes OS supports fully hardware-assisted
-        virtualization.</p>
+        and AMD-V. Qubes 4.0+ runs qubes without PCI devices in PVH:
+        hardware-assisted memory virtualization plus PV drivers. HVM is
+        reserved for qubes with PCI devices (sys-net, sys-usb), Windows and
+        standalones; those run QEMU in a stubdomain, a larger attack surface
+        than PVH. PVH removes QEMU from the guest path and relies on SLAT for
+        page tables. The exposure is concentrated in the HVM qubes that face
+        the network and USB.</p>
 
-        <p>This is a problem, because the less secure the guest operating
-        system is, the more vulnerable it will be to being exploited in a
-        direct attack on the hypervisor. This means that while using the
-        Windows template in Qubes OS is necessary to have a more secure form of
-        virtualization, it is also the most insecure possible way to protect
-        yourself against attacks. After all, Windows isn't known for being
-        secure...</p>
+        <p>That is the problem. The Windows qube is HVM, and so are sys-net and
+        sys-usb. The qubes that parse network and USB input are the ones
+        carrying QEMU, while the ordinary AppVMs use the narrower PVH path.
+        Qubes therefore carries QEMU's attack surface inside its own TCB for
+        every HVM qube.</p>
 
-        <p>In comparison to paravirtualization, full virtualization completely
-        emulates the underlying hardware in a virtual machine, which means the
-        VM is fully isolated from the host system without requiring guest-side
-        modifications. This usually costs more resources, but can simplify
-        trust boundaries. Examples of full virtualization with
-        hardware-assisted virtualization include KVM, Hyper-V, VirtualBox, and
-        OpenBSD VMM.</p>
+        <h3 id="qubes-hypervisor-size">Hypervisor attack surface by size</h3>
+
+        <p>Line count isn't a vulnerability count, but it's the only comparable
+        measure of how much privileged code a hypervisor carries. Using the
+        same cloc method as my OpenBSD article: Xen has 650,000 lines; KVM has
+        83,500 for x86 and 217,700 across all architectures; bhyve has 80,000;
+        NOVA has 24,000; OpenBSD vmm has 9,950. Xen is 7.8 times KVM's x86
+        module, 3 times KVM across all architectures, 8 times bhyve, 27 times
+        NOVA and 65 times vmm. It is the largest mainstream open-source
+        hypervisor by code size.</p>
+
+        <p>Qubes does not stop at Xen. It runs QEMU stubdomains for sys-net,
+        sys-usb, Windows and standalones, plus a Fedora dom0. The privileged
+        stack is not 650,000 lines; it is Xen plus QEMU/toolstack plus dom0.
+        QEMU alone is larger than Xen. Qubes chose the largest hypervisor core
+        and a second large device model, then called the result secure.</p>
 
         <p>Several attacks on Qubes OS originate in an AppVM, and some
         historical exploits have used Xen vulnerabilities to escape the guest
@@ -319,10 +326,10 @@
         "bypass" the need to escape from a VM to access it; this simply does
         not protect against the escape of one or more compromised VMs. Logical
         isolation loses effectiveness if all VMs and services depend on the
-        same underlying platform (in this case, Xen). Even Hyper-V (the Windows
-        hypervisor) has had far fewer CVEs and VM leaks than Xen in recent
-        years. The Windows virtualizer security model is more mature,
-        especially on supported enterprise hardware, than Qubes OS.</p>
+        same underlying platform (in this case, Xen). Qubes also runs QEMU
+        stubdomains for its HVM qubes, so it inherits the QEMU attack surface
+        on top of Xen. The isolation is not one boundary; it is two, and both
+        are privileged.</p>
 
         <p>I could write another 10,000 lines about why hypervisors and virtual
         machines are unreliable and insecure, covering everything from hardware
@@ -470,13 +477,41 @@
         <p>The argument I see most often from Qubes OS developers is
         dismissive: "A hypervisor escape is rare," "these attacks are difficult
         to carry out," or "you have no reason to worry about it." That misses
-        the point entirely. Xen has accumulated hundreds of published XSAs (Xen
-        Security Advisories) since its inception, many of them critical,
-        including numerous guest-to-host escape vulnerabilities. By comparison,
-        KVM and Hyper-V have had far fewer escape-class vulnerabilities in the
-        same period. Hypervisors still benefit from a kind of security by
-        obscurity, because most commodity malware does not expect to be running
-        inside a VM and therefore does not bother attacking the hypervisor.</p>
+        the point entirely. Definition: a hypervisor escape is any crossing of
+        the guest/host isolation boundary: unauthorized modification of host
+        or other-guest memory or state, code execution in a host-side
+        component, or privilege escalation to host control. Host DoS and
+        information disclosure are escapes too, but they are counted
+        separately and excluded from these figures.</p>
+
+        <p>Xen has 507 published XSAs since 2011. Sixty-two confirmed Xen-only
+        vulnerabilities meet that definition. Thirty more confirmed escapes
+        are QEMU or Xen toolstack bugs that let a guest reach the host. KVM's
+        kernel has seven confirmed guest-to-host escapes. QEMU-only has 35
+        (36 minus one information-disclosure CVE). Qubes uses QEMU for
+        sys-net, sys-usb, Windows and standalones, so the QEMU attack surface
+        is part of the Qubes stack. The Qubes problem is the size of the
+        trusted stack and the impact when one escape succeeds, not only a Xen
+        escape epidemic.</p>
+
+        <p>That split is the argument: 30 of the 92 confirmed Xen escapes are
+        not Xen hypervisor bugs. They are QEMU and toolstack bugs. The entire
+        Qubes toolstack is attack surface for the hypervisor, not only Xen's
+        code.</p>
+
+        <p><strong>Verification.</strong> Xen-only: XSA-3, 7, 15, 18, 47, 64,
+        78, 80, 83, 98, 124, 148, 155, 163, 167, 182, 185, 186, 195, 212,
+        213, 214, 215, 217, 222, 224, 227, 228, 234, 241, 244, 247, 260,
+        285, 288, 299, 302, 303, 306, 310, 328, 373, 378, 379, 384, 387,
+        390, 393, 401, 402, 442, 472, 475, 480, 490, 493, 494, 500, 501,
+        516, 517; CVE-2008-3687. QEMU/toolstack: XSA-19, 55, 57, 61, 86,
+        99, 109, 133, 135, 138, 139, 162, 164, 175, 197, 198, 208, 209,
+        270, 322, 353, 417, 443, 478, 497, 502, 508, 513, 521;
+        CVE-2007-4993. KVM: CVE-2021-3653, CVE-2021-3656, CVE-2021-4093,
+        CVE-2023-4155, CVE-2026-46316, CVE-2026-53359 and CVE-2026-64561.
+        Sources: <a href="https://xenbits.xen.org/xsa/">Xen XSA index</a>,
+        <a href="https://github.com/charlesfg/xenAdvisoryStudy">XSA impact
+        corpus</a>, <a href="https://nvd.nist.gov/">NVD</a>.</p>
 
         <p>If this model becomes more popular (and it is), attackers will have
         more reason to target hypervisors, especially Xen. Qubes OS also does
@@ -534,9 +569,10 @@
         remote access may, upon realizing that they are in a virtualized
         environment, seek to exploit the hypervisor.</p>
 
-        <p>Because Qubes templates are already modified operating-system
-        images, implementing spoofing should not be an absurd idea. Qubes OS
-        could improve here if the developers wanted it.</p>
+        <p>Qubes cannot add this. A determined guest detects Xen through CPUID,
+        timing and exit latency; a hypervisor cannot hide those from code
+        running on the same CPU. Qubes documents a marker file that guests can
+        check. Anti-detection is not a security boundary.</p>
       </section>
 
       <section aria-labelledby="qubes-3">
@@ -672,8 +708,10 @@
         <p>Getting full hardware compatibility with this OS feels like playing
         the lottery. Outside the small certified-hardware list, it is hard to
         know which devices are truly stable and which are effectively
-        experimental. That list has only 11 devices, and three of them no
-        longer receive CPU microcode updates.</p>
+        experimental. That list has only 13 models from six vendors. Three are
+        refurbished 2012-2013 ThinkPads (X230/T430) whose Intel microcode
+        updates ended in February 2019, so it is unreliable according to the
+        QubesOS developers.</p>
 
         <p>If you look closely at the "Remark" field (HCL page), you'll see
         ridiculous bugs and/or workarounds to make the system work, such
@@ -786,7 +824,7 @@
         require a huge amount of engineering work, and the problem is specific
         to Qubes OS rather than inherent to Linux systems in general.</p>
 
-        <p>So if you do not have one of the following 11 devices, you should
+        <p>So if you do not have one of the following 13 models, you should
         assume you may not get full support for all Qubes OS features,
         including some basic security features and vulnerability fixes (either
         from vendors, Linux or Qubes OS). Do I need to explain why this is a
@@ -821,8 +859,8 @@
         cannot be wished away.</p>
 
         <p>One major and serious problem that no one seems to realize is that
-        Qubes OS, being "an operating system for only 11 selected hardware
-        devices," makes it extremely vulnerable to coordinated and focused
+        Qubes OS, being "an operating system for only 13 selected hardware
+        models," makes it extremely vulnerable to coordinated and focused
         attacks, such as hardware backdoors and supply-chain attacks. Look, if
         you know that a specific group of people (the ones you want to target)
         use specific devices from specific vendors, it becomes much easier to
@@ -846,8 +884,8 @@
         hardware backdoors; in fact, all OSs are, but Qubes OS is the MOST
         vulnerable to this type of thing. A Linux or BSD user who doesn't use
         virtual machines doesn't need to worry about backdoors in the specific
-        CPU's virtualization technology microcode, or about 11 specific
-        devices.</p>
+        CPU's virtualization technology microcode, or about 13 specific
+        models.</p>
 
         <p>And it gets even worse when dom0 can only use Fedora, meaning, "it
         got 1000 times worse!", compromising the Fedora repositories makes any
@@ -863,10 +901,28 @@
         engine; it does not use TPM 2.0. Without AEM, Qubes OS remains
         vulnerable to physical attacks such as an Evil Maid attack.</p>
 
-        <p><a href=
-        "https://doc.qubes-os.org/en/latest/user/security-in-qubes/anti-evil-maid.html">
-        Anti Evil Maid (AEM) package</a>
-        </p>
+        <p>The official AEM package is frozen on 2018 technology: TPM 1.2,
+        Intel TXT and legacy BIOS. It does not support UEFI, TPM 2.0 or AMD.
+        Those exist only in the unofficial TrenchBoot build. The default
+        install still attaches a USB drive directly to dom0.</p>
+
+        <ul>
+          <li>
+            <a href="https://www.qubes-os.org/doc/anti-evil-maid/">Qubes AEM
+            documentation</a>
+          </li>
+
+          <li>
+            <a href="https://github.com/QubesOS/qubes-antievilmaid">qubes-antievilmaid
+            (GitHub)</a>
+          </li>
+
+          <li>
+            <a href=
+            "https://www.qubes-os.org/news/2023/01/31/trenchboot-aem-for-qubes-os/">
+            TrenchBoot AEM for Qubes OS</a>
+          </li>
+        </ul>
 
         <p>But that is not a defense. AEM adds a dependency on TPM 1.2, Intel
         TXT, firmware, and a separate boot-time security workflow. That adds
@@ -1203,7 +1259,7 @@
         incompatibilities with enterprise management/orchestration tooling.
         This increases the cost, complexity, and uncertainty of deploying Qubes
         in corporate, critical-infrastructure, or regulated environments. In
-        addition, Qubes remains limited to ~10 laptop models without vendor
+        addition, Qubes remains limited to 13 certified models without vendor
         validation.</p>
 
         <p>RHEL (Red Hat Enterprise Linux), for example, can push patches to
@@ -1542,7 +1598,7 @@
         <p>This is the key point of the section: hypervisor trust is a critical
         assumption that cannot be ignored. What guarantees Xen security?</p>
 
-        <p>The code? No, it was written in C/C++/Assembly, so no memory
+        <p>The code? No, it was written in C/Assembly, so no memory
         security, and it is also not formally verified. Isolation then? No, a
         type-1 hypervisor runs on bare metal, has full access to the hardware
         and control of the devices. Randomization? No. Obscurity? Yes, that is
@@ -1747,9 +1803,10 @@
         already much larger than the entire TempleOS. Furthermore, the attack
         surface of Qubes OS is not just Xen, but everything (devices,
         management tools, hypercalls, etc.), since not even the /boot partition
-        can be encrypted, and what do you do to mitigate this? Nothing, they
-        rely on unreliable proprietary firmware like Intel ME and TPM that only
-        increase the attack surface.</p>
+        can be encrypted, and what do you do to mitigate this? Nothing. While
+        base Qubes does not require a TPM or Intel ME, AEM does: it needs TPM
+        1.2 and Intel TXT, and TXT runs on ME, which makes ME part of the attack
+        surface.</p>
 
         <p>In fact, everything related to hardware can increase the attack
         surface of Qubes OS, as it is the OS that most requires specific
@@ -1785,10 +1842,9 @@
         it does not eliminate risk and introduces other surfaces that have
         already been explored in Xen. Lines of code are no substitute for
         attack surface analysis; therefore, monolithic does not mean inherently
-        insecure, nor does Xen mean inherently secure. The fact is that the
-        vast majority of vulnerabilities found in Xen are serious (CVSS &gt;=
-        7.0), and Xen's total XSA count far exceeds KVM and Hyper-V combined
-        over the same period.</p>
+        insecure, nor does Xen mean inherently secure. Xen has 62 Xen-only and
+        30 QEMU/toolstack confirmed guest-to-host escapes out of 507 XSAs plus
+        pre-2011 CVEs; KVM's kernel has seven and QEMU-only has 35.</p>
 
         <p>In comparison, a minority of vulnerabilities found in operating
         systems such as OpenBSD, FreeBSD, and NetBSD are severe (&gt;7.0). This
@@ -1844,19 +1900,18 @@
         this as if it were something exclusive to Xen. She and the Qubes OS
         devs seem to live in a separate reality; they have isolated themselves
         from reality through Xen somehow. VMware ESXi and Hyper-V are other
-        examples of type-1 hypervisors that are more secure than Xen.</p>
+        examples of type-1 hypervisors.</p>
 
         <p>For instance, KVM, vmm (OpenBSD), and bhyve are kernel modules that
         effectively convert the host operating system into a type-1 hypervisor.
-        And this is safer than type-1 hypervisors like Xen, as the host kernel
+        And this is arguably safer than type-1 hypervisors like Xen, as the host kernel
         can directly control and isolate resources/permissions given to the
-        hypervisor, and therefore has more control over it.</p>
+        hypervisor, and therefore has more control over it. KVM's kernel has
+        seven confirmed guest-to-host escapes; the Xen hypervisor has 62.</p>
 
-        <p>Paravirtualization is also much less secure than full
-        virtualization, as I already said in the first topic of the article.
-        This is literally a negative point of Xen, and Qubes OS only supports
-        full virtualization (through HVM) for Windows templates; everything
-        else is paravirtualized.</p>
+        <p>Paravirtualization is not the weak mode here. Qubes 4.0+ runs
+        ordinary qubes in PVH; the HVM qubes (Windows, sys-net, sys-usb) are
+        the ones carrying QEMU and the larger attack surface.</p>
 
         <blockquote>
           <p>How is Qubes better than Google Chrome OS?</p>
@@ -2195,11 +2250,12 @@
         other cases, such as Intel ME and TPM, it is not, and ends up bringing
         more bugs, increasing the attack surface.</p>
 
-        <p>OpenBSD, one of the most secure operating systems in the world, is
-        an example of an OS that doesn't ship proprietary blobs by default in
-        the base system, and hands the decision of whether or not to install
-        proprietary firmware to the user. Also, of course, OpenBSD doesn't rely
-        on processor virtualization technology to be secure.</p>
+        <p>OpenBSD, one of the most secure operating systems in the world,
+        accepts no binary drivers: every driver is open source and auditable.
+        It ships only redistributable firmware in base and fetches the rest
+        with fw_update(8), and that firmware runs on the device, not on the
+        CPU. Also, of course, OpenBSD doesn't rely on processor virtualization
+        technology to be secure.</p>
 
         <p>My criticism is not about having firmware security updates from
         vendors, but about handing over the entire critical security base of
@@ -2452,11 +2508,11 @@
         resistance to zero-day attacks.</p>
 
         <p>"Qubes OS allows you to use OpenBSD and all these other operating
-        systems inside qubes," you might say. But no, it doesn't. The only
-        officially supported templates are Fedora, Debian, and Windows. There
-        are templates for other OSes maintained by the community, but they are
-        not even actively updated or tested by Qubes OS devs, which further
-        diminishes trust.</p>
+        systems inside qubes," you might say. But no, it doesn't. Official
+        templates are Fedora and Debian. Whonix is supported by the Whonix
+        project. Windows runs as an HVM qube with Qubes Windows Tools, not as
+        a template. Community templates get no Qubes updates, are not tested
+        by Qubes OS developers, and further diminish trust.</p>
 
         <blockquote>
           <p>In all cases, the Qubes OS Project does not provide updates for
@@ -2482,8 +2538,8 @@
         complexity and the propensity for bugs. That's not how security works.
         You can't accumulate more and more code and think that this will give
         you security; it's totally the opposite. Qubes templates are limited.
-        They run modified versions of OSes and are paravirtualized; all of this
-        is harmful when it comes to security, as I said many times before. And
+        They run modified versions of OSes; all of this is harmful when it
+        comes to security, as I said many times before. And
         again, what protects the hypervisor from the guest operating
         system?</p>
 
@@ -2569,15 +2625,13 @@
 
         <p>After much reluctance, even from the creator of OpenBSD, it arrived
         in the system, but it was created from scratch to be safe, minimalist,
-        and focused on absolute security, unlike all other existing
-        hypervisors. And that's why it won't have some features like:</p>
+        and focused on security first, unlike all other existing hypervisors.
+        And that's why it won't have some features like:</p>
 
         <ul>
           <li>Graphics</li>
 
           <li>Snapshots</li>
-
-          <li>Guest SMP support</li>
 
           <li>Hardware passthrough</li>
 
@@ -2587,7 +2641,8 @@
         </ul>
 
         <p>Other than that, use KVM, Hyper-V, bhyve, or VMware ESXi; they will
-        serve you well and historically they're safer than Xen.</p>
+        serve you well. KVM's kernel has seven confirmed guest-to-host escapes
+        against the Xen hypervisor's 62.</p>
 
         <p>Other criticisms of Qubes OS made by other people that you might
         want to see, but that doesn't mean I agree 100% with them (and may
@@ -2632,7 +2687,7 @@
         <h3 id="qubes-reco-openbsd">OpenBSD</h3>
 
         <p>Simply the most secure Unix-like operating system by default.
-        Created from the beginning in 1995 for first-place security, it is an
+        Designed from the beginning in 1995 for first-place security, it is an
         operating system with the ultimate goal of being the safest in the
         world. It was a fork of NetBSD, already a secure OS at the time, that
         did not please the paranoid and wise <strong>Theo de Raadt (the
@@ -2661,8 +2716,8 @@
         other operating systems, read my other article: <a href=
         "./openbsd.html">Why OpenBSD stands alone</a></p>
 
-        <p>OpenBSD is perfect for servers; after all, it was created for that,
-        but it's also a good choice for desktops (I use it myself for daily
+        <p>OpenBSD is excellent on servers, but it's also a good choice for
+        desktops (I use it myself for daily
         driving, and I'm writing this article on it).</p>
 
         <p>As I said before, for virtualization, OpenBSD relies on the vmm(4)
@@ -2683,8 +2738,9 @@
         <p><a href="https://www.freebsd.org/">The FreeBSD project</a>
         </p>
 
-        <p>FreeBSD has "jails," something no other Unix-like operating system
-        has. This provides a high level of isolation (through sandboxing),
+        <p>FreeBSD has "jails," a complete, mature OS-level isolation and
+        virtualization mechanism. This provides a high level of isolation
+        (through sandboxing),
         although it is not configured by default. Jails virtualize access to
         the file system, the set of users, and the networking subsystem. This
         allows you to isolate the base system, services, network, and Linux
@@ -3075,17 +3131,15 @@
 
         <p>Proxmox VE is the answer for anyone who wants to escape Qubes OS
         without sacrificing virtualization-based isolation. Built on a Debian
-        base with a hardened Ubuntu LTS kernel, Proxmox uses KVM for full
-        virtualization (HVM) and LXC for lightweight containers, both far more
-        secure than Xen's paravirtualized approach. KVM converts the Linux
+        base with a hardened Ubuntu LTS kernel. KVM converts the Linux
         kernel into a type-1 hypervisor, allowing the host OS to directly
         control and isolate resources given to VMs.</p>
 
         <p>The security model is simpler: a hardened Debian host running KVM,
-        without Xen's extra paravirtualization surface, grant tables, or
+        without Xen's extra virtualization surface, grant tables, or
         hypercall interfaces. Every VM runs fully hardware-virtualized, so no
-        modified paravirtualized templates are required. You get stronger
-        isolation without Qubes' compromised security trade-offs.</p>
+        modified templates are required. You get virtualization without
+        Qubes' compromised security trade-offs.</p>
 
         <p>By design, Proxmox is an enterprise virtualization platform with
         commercial support, SLAs, and certified hardware compatibility lists.
@@ -3101,8 +3155,7 @@
         Space Station. It receives predictable, tested security updates through
         both free and enterprise subscription channels. It does not need Intel
         ME or TPM for its security model, and does not "force" users into a
-        tiny set of certified laptops. The attack surface is dramatically
-        smaller than Qubes OS.</p>
+        tiny set of certified laptops.</p>
 
         <p>For users who want virtualization-based isolation with real
         enterprise security, commercial support, and a proven track record,
