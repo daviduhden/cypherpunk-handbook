@@ -191,7 +191,7 @@ sub strip_rebuild {
 # --- an explicit article path supplies the publication date --------
 {
     my $dir = fixture(
-        'feeds/articles.xml' => feed(),
+        'feeds/articles.xml'   => feed(),
         'articles/source.html' => '<html lang="en"><body><article>'
           . '<header id="article-header"><h1>Source</h1>'
           . '<time datetime="2026-05-06">x</time></header>'
@@ -199,7 +199,7 @@ sub strip_rebuild {
     );
     strip_rebuild($dir);
     my $source = "$dir/articles/source.html";
-    my $r = run_update( $dir, "frompath\nTitle\nDescription\n", $source );
+    my $r      = run_update( $dir, "frompath\nTitle\nDescription\n", $source );
     is( $r->{status}, 0, 'explicit article path succeeds' )
       or diag( $r->{stderr} );
     my $xml = slurp("$dir/feeds/articles.xml");
@@ -208,8 +208,11 @@ sub strip_rebuild {
         qr{<lastBuildDate>Wed, 06 May 2026 00:00:00 GMT</lastBuildDate>}sm,
         'date comes from the explicit article path'
     );
-    like( $xml, qr{<link>/articles/frompath\.html</link>}sm,
-        'slug still controls the feed link' );
+    like(
+        $xml,
+        qr{<link>/articles/frompath\.html</link>}sm,
+        'slug still controls the feed link'
+    );
 }
 
 # --- a missing or unknown argument is rejected early ----------------
@@ -219,8 +222,11 @@ sub strip_rebuild {
 
     my $missing = run_update( $dir, q{}, "$dir/articles/missing.html" );
     isnt( $missing->{status}, 0, 'missing article path is rejected' );
-    like( $missing->{stderr}, qr/Article file not found/sm,
-        'missing article path is reported' );
+    like(
+        $missing->{stderr},
+        qr/Article file not found/sm,
+        'missing article path is reported'
+    );
 
     my $unknown = run_update( $dir, q{}, '--bogus' );
     isnt( $unknown->{status}, 0, 'unknown option is rejected' );

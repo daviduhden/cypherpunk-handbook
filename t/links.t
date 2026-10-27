@@ -107,7 +107,7 @@ sub report_of {
 # --- a proposed fix does not make a broken link pass in --check ---
 {
     my $dir = tempdir( CLEANUP => 1 );
-    write_page( $dir, 'index.html', '<p><a href="target">x</a></p>' );
+    write_page( $dir, 'index.html',  '<p><a href="target">x</a></p>' );
     write_page( $dir, 'target.html', '<p>ok</p>' );
     my $r = check_links($dir);
     is( $r->{status}, 2, 'broken link with a candidate still fails' );
@@ -126,21 +126,20 @@ sub report_of {
     my $r = check_links($dir);
     is( $r->{status}, 0, 'node_modules is not validated' )
       or diag( $r->{stdout} . $r->{stderr} );
-    unlike( $r->{stdout} . $r->{stderr}, qr/node_modules/sm,
-        'node_modules does not appear in the run' );
+    unlike( $r->{stdout} . $r->{stderr},
+        qr/node_modules/sm, 'node_modules does not appear in the run' );
 }
 
 # --- --noapply does not rewrite tracked target files ----------------
 {
     my $dir = tempdir( CLEANUP => 1 );
-    my $p   = write_page( $dir, 'index.html',
-        '<p><a href="target">x</a></p>' );
+    my $p   = write_page( $dir, 'index.html', '<p><a href="target">x</a></p>' );
     write_page( $dir, 'target.html', '<p>ok</p>' );
     my $before = slurp($p);
-    my $r      = run( $^X, $validator, '--root', $dir, '--noapply',
-        '--check-links' );
-    is( $r->{status}, 2, '--noapply leaves check mode active' );
-    is( slurp($p), $before, '--noapply leaves the link unfixed' );
+    my $r =
+      run( $^X, $validator, '--root', $dir, '--noapply', '--check-links' );
+    is( $r->{status}, 2,       '--noapply leaves check mode active' );
+    is( slurp($p),    $before, '--noapply leaves the link unfixed' );
 }
 
 # --- --check-links-external implies internal link checking ----------

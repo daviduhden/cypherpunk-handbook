@@ -158,7 +158,7 @@ if ($check_all) {
     $check_links = 1;
 }
 $external_links = $want_external;
-$check_links = 1 if $external_links;
+$check_links    = 1 if $external_links;
 
 # Normalize the root directory to a canonical absolute
 # path where possible. This avoids leaving `..` segments

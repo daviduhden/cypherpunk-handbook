@@ -62,7 +62,7 @@ if ( defined $article_argument && !-f $article_argument ) {
 sub resolve_script_path {
     my $direct = abs_path($0);
     return $direct if defined $direct;
-    return if $0 =~ m{/};
+    return         if $0 =~ m{/};
     for my $dir ( File::Spec->path ) {
         my $resolved = abs_path( File::Spec->catfile( $dir, $0 ) );
         return $resolved if defined $resolved;
@@ -74,9 +74,9 @@ my $script_path = resolve_script_path();
 if ( !defined $script_path || !length $script_path ) {
     die "[ERROR] Could not resolve script path\n";
 }
-my $root_dir = File::Spec->catdir( dirname($script_path), q{..} );
-my $feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
-my $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
+my $root_dir     = File::Spec->catdir( dirname($script_path), q{..} );
+my $feeds_dir    = File::Spec->catdir( $root_dir,             'feeds' );
+my $articles_dir = File::Spec->catdir( $root_dir,             'articles' );
 my $site_url     = 'https://handbook.uhden.dev';
 
 sub logi { print "[INFO] $_[0]\n"; }
@@ -244,6 +244,7 @@ sub update_feed {
     my $link_re =
       join q{|},
       map { quotemeta } @link_variants;
+
     # Match both historical absolute links and the root-relative form emitted
     # by the rebuild script, while quoting the slug-derived strings literally.
     my $item = join q{},

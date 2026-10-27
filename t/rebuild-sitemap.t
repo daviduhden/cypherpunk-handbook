@@ -34,10 +34,10 @@ my $page = '<!DOCTYPE html><html lang="en"><head>'
 
 {
     my $dir = fixture(
-        'index.html'       => $page,
-        'a.html'           => $page,
-        'sub/index.html'   => $page,
-        'sub/b.html'       => $page,
+        'index.html'                => $page,
+        'a.html'                    => $page,
+        'sub/index.html'            => $page,
+        'sub/b.html'                => $page,
         'archive/old.html'          => $page,
         'templates/t.html'          => $page,
         'tmp/ignored.html'          => $page,

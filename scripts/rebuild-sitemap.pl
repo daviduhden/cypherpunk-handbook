@@ -34,7 +34,7 @@ use File::Temp qw(tempfile);
 sub resolve_script_path {
     my $direct = abs_path($0);
     return $direct if defined $direct;
-    return if $0 =~ m{/};
+    return         if $0 =~ m{/};
     for my $dir ( File::Spec->path ) {
         my $resolved = abs_path( File::Spec->catfile( $dir, $0 ) );
         return $resolved if defined $resolved;
@@ -43,7 +43,8 @@ sub resolve_script_path {
 }
 
 my $script_path = resolve_script_path();
-my $root_dir    = defined $script_path
+my $root_dir =
+  defined $script_path
   ? abs_path( File::Spec->catdir( dirname($script_path), q{..} ) )
   : undef;
 if ( !defined $root_dir || !length $root_dir ) {
@@ -123,6 +124,7 @@ find(
         wanted   => sub {
             my $path = $File::Find::name;
             if ( -d $path ) {
+
                 # These trees are generated, tool-only, or reference-only.
                 if ( $skip_dir{ basename($path) } ) {
                     $File::Find::prune = 1;

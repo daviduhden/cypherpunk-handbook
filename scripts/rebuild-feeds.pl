@@ -45,7 +45,7 @@ use Time::Local  qw(timegm);
 sub resolve_script_path {
     my $direct = abs_path($0);
     return $direct if defined $direct;
-    return if $0 =~ m{/};
+    return         if $0 =~ m{/};
     for my $dir ( File::Spec->path ) {
         my $resolved = abs_path( File::Spec->catfile( $dir, $0 ) );
         return $resolved if defined $resolved;
@@ -57,9 +57,9 @@ my $script_path = resolve_script_path();
 if ( !defined $script_path || !length $script_path ) {
     die "[ERROR] Could not resolve script path\n";
 }
-my $root_dir = File::Spec->catdir( dirname($script_path), q{..} );
-my $feeds_dir    = File::Spec->catdir( $root_dir, 'feeds' );
-my $articles_dir = File::Spec->catdir( $root_dir, 'articles' );
+my $root_dir     = File::Spec->catdir( dirname($script_path), q{..} );
+my $feeds_dir    = File::Spec->catdir( $root_dir,             'feeds' );
+my $articles_dir = File::Spec->catdir( $root_dir,             'articles' );
 
 # Optional deployment base URL. When empty (the default) links stay
 # root-relative so a single feed works on every mirror (HTTPS, Tor,
@@ -266,8 +266,9 @@ sub detect_feeds {
 }
 
 sub extract_metadata {
-    my ($path)           = @_;
-    my $html             = read_file($path);
+    my ($path) = @_;
+    my $html = read_file($path);
+
     # Prefer the authored article header, but allow older pages without the
     # wrapper to remain feedable by falling back to the whole document.
     my ($article_header) = $html =~ m{<header[^>]*\bid\s*=\s*["']
@@ -311,6 +312,7 @@ sub extract_metadata {
     $iso //= ( $html =~ /<time[^>]*\sdatetime\s*=\s*'([^']+)'/ism )[0];
     my $mtime = ( stat($path) )[9] || time;
     my $epoch = iso_to_epoch($iso);
+
     # The mtime fallback keeps legacy pages publishable but can vary by
     # checkout.
     $epoch = $mtime unless defined $epoch;
