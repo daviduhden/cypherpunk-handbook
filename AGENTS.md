@@ -111,6 +111,10 @@ build-like steps, and they modify tracked files.
   license text, and author attribution. Do not add unsourced image credits.
 - Keep content images fluid: use `max-width: 100%` and `height: auto`, never a
   fixed pixel width. Prefer the existing responsive classes over inline styles.
+- Style semantic captions in `styles.css`: table `caption` elements are bold,
+  centered headings above their tables; `figcaption` elements are centered,
+  italic subheadings below their images. Keep these styles on the elements
+  rather than adding presentational markup to page HTML.
 - Respect the site license in `license.html`. Scripts and `styles.css` are
   separately ISC-like; do not relicense either. Content outside the site
   license needs an explicit `EXCEPTIONS:` notice as described in
