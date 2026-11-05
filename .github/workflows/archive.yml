@@ -231,7 +231,7 @@ jobs:
             --exclude="*.orig" \
             --exclude="*.rej" \
             --exclude="./scripts/openbsd-tools.txt" \
-            --exclude="./scripts/validate-agent-knowledge.py" \
+            --exclude="./scripts/validate-agent-knowledge.pl" \
             --exclude="./archive" \
             --exclude="./tmp_archive" \
             --use-compress-program="gzip -9" \
