@@ -23,7 +23,7 @@ articles/*.html ──metadata and content──> scripts/rebuild-feeds.pl ─�
 published HTML ──loads──> styles.css
 index.html ──includes JSON-LD data only; there are no standalone browser JS modules
 
-scripts/validate-agent-knowledge.py ──read-only policy and instruction gate
+scripts/validate-agent-knowledge.pl ──read-only policy and instruction gate
 scripts/*.pl and scripts/*.sh ──manual site maintenance and validation
 .github/workflows/agent-knowledge-validation.yml ──read-only PR tests and range gate
 .github/workflows/archive.yml ──daily/manual archive, signing, history rewrite, force-push
