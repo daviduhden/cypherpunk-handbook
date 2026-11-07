@@ -131,12 +131,12 @@ documentation. Instead:
 - An article without `<time datetime>` falls back to file mtime and can make
   reproducibility fail across clones.
 - Tests do not modify tracked files. The site tests and site validator are not
-  run in CI. The separate `agent-knowledge-validation.yml` workflow runs only
-  the shared contract tests and the read-only pull request range gate.
+  run manually. The separate `agent-knowledge-validation.yml` workflow runs
+  only the shared contract tests and the read-only worktree gate.
 
 ### CI and archives
 
-`.github/workflows/archive.yml` runs daily and on manual dispatch. It builds
+`.github/workflows/archive.yml` is manual-only and starts with `workflow_dispatch`. It builds
 and signs the archive, rewrites history with `git filter-repo`, and
 force-pushes `main`. It does not run site tests or linters. The separate
 `.github/workflows/agent-knowledge-validation.yml` workflow is read-only and
@@ -211,7 +211,7 @@ outdated assumptions. Review the applicable root and nested `AGENTS.md` files,
 specialized agents and related skills; update only the knowledge affected by
 the work. Validate local references and run
 `perl scripts/validate-agent-knowledge.pl --scope worktree` plus the
-applicable project checks. For pull request comparisons, use the documented
+applicable project checks. For committed comparisons, use the documented
 `--scope range --base BASE_REF --head HEAD_REF` command. The canonical validator
 is read-only and is required even when a task restricts execution of project
 scripts; this does not authorize running installers or changing the host.

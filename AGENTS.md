@@ -80,10 +80,11 @@ build-like steps, and they modify tracked files.
 - `t/links.t` requires `tidy`; without it the file skips rather than fails.
 - `t/shell.t` stubs external conversion tools, but requires `sh`, `mktemp`,
   `find`, and `sed`.
-- Pull requests run `.github/workflows/agent-knowledge-validation.yml`, which
-  executes only the shared validator contract tests and range gate.
-  `.github/workflows/archive.yml` separately archives, signs, commits, and
-  force-pushes; do not trigger or edit it for routine validation.
+- Both `.github/workflows/agent-knowledge-validation.yml` and
+  `.github/workflows/archive.yml` are manual-only (`workflow_dispatch`). The
+  agent workflow executes the shared validator contract tests and worktree
+  gate; the archive workflow separately archives, signs, commits, and
+  force-pushes. Do not trigger or edit either for routine validation.
 - For documentation-only changes, still check YAML, relative paths, commands,
   `git diff --check`, and the final diff. Full site tests are not required
   unless the change touches site sources or generated artifacts.
@@ -201,7 +202,7 @@ After each change:
    edits to satisfy synchronization. For a project change, at least one
    relevant knowledge artifact must receive a substantive update.
 4. Run `perl scripts/validate-agent-knowledge.pl --scope worktree` and the
-   applicable project checks. For a pull request, CI compares the base and head
+   applicable project checks. For a branch review, compare the base and head
    revisions with `--scope range --base BASE_SHA --head HEAD_SHA`.
 5. Review the validator output and final diff, then report the synchronization
    result. Warnings require human review; a structural pass does not establish

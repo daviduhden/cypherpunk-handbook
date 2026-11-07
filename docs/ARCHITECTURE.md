@@ -91,8 +91,8 @@ verified from the repository.
 | `robots.txt` | Permits crawler access and advertises the HTTPS sitemap; it does not restrict direct access. |
 | `scripts/openbsd-tools.txt` | Informational mapping from tools to OpenBSD ports; scripts do not parse it. |
 | `data/articles.json` | Maps each article key to filename, first-publication date, and exact English `<h1>` title. `pubdate` is not the last-modified `<time>` used by the feed. |
-| `.github/workflows/agent-knowledge-validation.yml` | Runs the shared contract tests and range gate on pull requests with read-only repository permission. |
-| `.github/workflows/archive.yml` | Runs on a daily schedule or manual dispatch. It creates a tarball, checksum, and signature, then rewrites history and force-pushes `main`. It does not test, build, or deploy the site. |
+| `.github/workflows/agent-knowledge-validation.yml` | Runs the shared contract tests and worktree gate on manual dispatch with read-only repository permission. |
+| `.github/workflows/archive.yml` | Runs only on manual dispatch. It creates a tarball, checksum, and signature, then rewrites history and force-pushes `main`. It does not test, build, or deploy the site. |
 
 The archive workflow retrieves `signify` over the network (with clearnet/Tor
 and package fallbacks), uses the `SIGNIFY_KEY` secret to sign the checksum, and
