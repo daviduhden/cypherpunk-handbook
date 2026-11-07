@@ -132,6 +132,26 @@ build-like steps, and they modify tracked files.
   preserve all triggers and signing/history steps, and keep repository-only
   documentation and development files out of the tarball. Never run
   `git filter-repo`, force-push, or reproduce the signing step.
+- Dependency pins in the archive workflow are the only routine exception, and
+  only when a task explicitly authorizes it. Such a change must preserve the
+  triggers, permissions, environment, secret handling, and the
+  signing/archive/push steps. The toolchain is pinned for supply-chain
+  integrity: `git-filter-repo==2.47.0` (reviewed stable release) and `signify`
+  tag `v33` (`133c411404447c761b167be4118fc0dad01d30d4`). `clone_signify`
+  clones that tag, then fails the attempt if `git rev-parse HEAD` differs from
+  the pinned commit; keep the clearnet -> Tor -> `signify-openbsd` package
+  fallback order. To update, confirm the release and peeled commit from
+  upstream, change the version/commit values and their explanatory comment
+  together, and do not reintroduce "latest tag" discovery.
+- Both workflows pin `actions/checkout` to v7.0.1
+  (`3d3c42e5aac5ba805825da76410c181273ba90b1`) by full commit SHA. Never
+  restore a floating `@v4` tag; update the SHA and its version comment
+  together and validate with `actionlint`.
+- `zizmor` 1.32.0 must report zero findings in regular, pedantic and auditor
+  modes. `archive.yml` declares `permissions: {}` at workflow level and grants
+  `contents: write` only to the archive job, with an explanatory comment. Its
+  `concurrency` group prevents overlapping archive runs. Do not move the write
+  permission back to the workflow level or remove the job name.
 - Do not install packages, change system configuration, use credentials, or
   run destructive tests. Do not run `--check-links-external` unless the task
   explicitly requires network access.

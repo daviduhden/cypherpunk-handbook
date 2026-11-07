@@ -6,12 +6,18 @@ name: Archive website (LFS + history cleanup)
     - cron: '0 0 * * *'   # Daily at midnight UTC
   workflow_dispatch: {}
 
-permissions:
-  contents: write
+permissions: {}
+
+concurrency:
+  group: archive-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   archive:
+    name: Archive and sign
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # required to rewrite history and force-push the archive commit
     environment:
       name: archive-signing
 
@@ -20,7 +26,7 @@ jobs:
       # Checkout repository (full history + LFS)
       # ----------------------------
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           lfs: true
           fetch-depth: 0
@@ -34,7 +40,8 @@ jobs:
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y clang libbsd-dev
-          python3 -m pip install --upgrade git-filter-repo
+          # Reviewed stable release; keep pinned for reproducible archives.
+          python3 -m pip install --upgrade "git-filter-repo==2.47.0"
 
       - name: Install signify (build from source or fall back to package)
         id: signify
@@ -42,6 +49,12 @@ jobs:
           set -euo pipefail
 
           SIGNIFY_REPO="https://codeberg.org/aperezdc/signify.git"
+          # Pinned for supply-chain integrity: build the reviewed release only.
+          # To update: choose the new release tag, resolve its commit with
+          #   git ls-remote --tags "$SIGNIFY_REPO" 'refs/tags/vNN^{}'
+          # then update SIGNIFY_TAG/SIGNIFY_COMMIT and re-review this workflow.
+          SIGNIFY_TAG="v33"
+          SIGNIFY_COMMIT="133c411404447c761b167be4118fc0dad01d30d4"
           SIGNIFY_DIR="$(mktemp -d)"
           trap 'rm -rf "$SIGNIFY_DIR"' EXIT
 
@@ -52,24 +65,23 @@ jobs:
 
           clone_signify() {
             local proxy_cfg="$1"
+            local resolved
 
-            LATEST_TAG="$(
-              git ${proxy_cfg} ls-remote \
-                --tags --sort='version:refname' \
-                "$SIGNIFY_REPO" 'refs/tags/v*' |
-                awk '{print $2}' |
-                sed 's#refs/tags/##; s#\^{}##' |
-                uniq |
-                tail -n1
-            )"
+            rm -rf "$SIGNIFY_DIR"
+            mkdir -p "$SIGNIFY_DIR"
 
-            test -n "$LATEST_TAG"
-
+            # proxy_cfg is intentionally unquoted: empty or multiple -c flags.
+            # shellcheck disable=SC2086
             git ${proxy_cfg} clone --quiet --depth 1 \
+              --branch "$SIGNIFY_TAG" \
               "$SIGNIFY_REPO" "$SIGNIFY_DIR"
-            git -C "$SIGNIFY_DIR" ${proxy_cfg} fetch --quiet --depth 1 origin \
-              "refs/tags/$LATEST_TAG:refs/tags/$LATEST_TAG"
-            git -C "$SIGNIFY_DIR" checkout --quiet "tags/$LATEST_TAG"
+
+            resolved="$(git -C "$SIGNIFY_DIR" rev-parse HEAD)"
+            if [ "$resolved" != "$SIGNIFY_COMMIT" ]; then
+              echo "signify $SIGNIFY_TAG resolved to $resolved," \
+                "expected $SIGNIFY_COMMIT" >&2
+              return 1
+            fi
           }
 
           # Attempt 1: clearnet clone from Codeberg
