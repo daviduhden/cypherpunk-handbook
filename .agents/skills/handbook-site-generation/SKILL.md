@@ -13,6 +13,7 @@ artifacts:
 - Adding, renaming, or removing an article in `articles/`.
 - Changing an article title, description, language, or date.
 - Adding or reordering an entry in `index.html`.
+- Changing a published mirror endpoint (clearnet, Tor onion, or I2P).
 - Regenerating `feeds/articles.xml` or `sitemap.xml`.
 - Debugging a mismatch reported by `t/integrity.t` or
   `t/reproducible.t`.
@@ -45,6 +46,23 @@ documentation, VCS metadata, agent instructions, tooling configuration, tests,
 and caches. Keep generated feeds, article metadata, images, and normal public
 assets eligible for publication. Do not use a blanket `.md` or hidden-file
 exclusion.
+
+## Mirror endpoints
+
+Published mirror addresses are hand-maintained in two places and are not
+derived from each other:
+
+- `index.html`, section `#domains`, lists the clearnet, Tor onion, and I2P
+  addresses (short and full base32).
+- `contribute.html`, section `#downloads`, repeats the clearnet URL and the
+  onion/I2P hosts inside `curl` commands for the archive, signature, and
+  checksum.
+
+When an endpoint changes, update every occurrence in both files in the same
+change, keep the archive paths and filenames identical, and run `prove t` plus
+`perl scripts/validate-website.pl --check`. Neither generator rewrites these
+links; `t/integrity.t` does not detect a stale host. A Tor v3 onion host is 56
+base32 characters plus `.onion`; count it before committing.
 
 ## Procedure
 
